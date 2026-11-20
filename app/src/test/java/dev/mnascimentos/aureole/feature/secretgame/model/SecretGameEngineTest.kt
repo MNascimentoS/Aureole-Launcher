@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworksTuning
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -157,26 +158,34 @@ class SecretGameEngineTest {
     }
 
     @Test
-    fun `difficulty grows and is capped`() {
-        assertTrue(secretFallSpeed(30f) > secretFallSpeed(0f))
-        assertEquals(T.SPEED_MAX, secretFallSpeed(HOUR), EPS)
-        assertTrue(secretSpawnInterval(30f) < secretSpawnInterval(0f))
-        assertEquals(T.SPAWN_MIN_MS, secretSpawnInterval(HOUR), EPS)
-        assertEquals(0f, secretDoubleChance(10f), EPS)
-        assertTrue(secretDoubleChance(30f) > 0f)
-        assertEquals(T.DOUBLE_MAX, secretDoubleChance(HOUR), EPS)
+    fun `waves never fill three lanes and keep an exit next to the previous one`() {
+        var s = playing().copy(score = HIGH_SCORE, faces = emptyList())
+        repeat(WAVES) {
+            val before = s.nextFaceId
+            val lastSafe = s.lastSafeLane
+            s = engine.step(s.copy(spawnCooldownMs = 0f, faces = emptyList()), 1L).state
+            val lanes = s.faces.filter { it.id >= before }.map { it.lane }
+            assertTrue(lanes.size in 1..2)
+            assertFalse(s.lastSafeLane in lanes)
+            assertTrue(kotlin.math.abs(s.lastSafeLane - lastSafe) <= 1)
+        }
     }
 
     @Test
-    fun `a wave never fills all three lanes`() {
-        var s = playing().copy(playMs = (HOUR * 1000).toLong(), faces = emptyList())
-        repeat(WAVES) {
-            val before = s.nextFaceId
-            s = engine.step(s.copy(spawnCooldownMs = 0f, faces = emptyList()), 1L).state
-            val wave = s.faces.filter { it.id >= before }
-            assertTrue(wave.size in 1..2)
-            assertEquals(wave.size, wave.map { it.lane }.distinct().size)
-        }
+    fun `crossing 100 points levels up once and flashes the hud`() {
+        val s = playing().copy(score = 90, spawnCooldownMs = BIG)
+        val passing = s.copy(faces = listOf(face(99, 0, layout.aspect + T.PASS_MARGIN - 0.001f)))
+        val step = engine.step(passing, STEP)
+        assertEquals(listOf(SecretGameEvent.LevelUp(1)), step.events)
+        assertEquals(T.LEVEL_FLASH_MS, step.state.levelFlashMs)
+        val later = run(step.state, T.LEVEL_FLASH_MS)
+        assertEquals(0L, later.levelFlashMs)
+    }
+
+    @Test
+    fun `ship reaches the lane in about 90 ms`() {
+        assertTrue(1f - secretShipFollow(0.1f) < 0.01f)
+        assertTrue(secretTiltKeep(0.5f) < 0.01f)
     }
 
     @Test
@@ -188,12 +197,29 @@ class SecretGameEngineTest {
     }
 
     @Test
-    fun `new record sparkles during the result`() {
-        val s = playing().copy(isNewRecord = true).to(SecretGamePhase.RESULT)
-        val sparkled = run(s, T.RESULT_IN_MS)
-        assertTrue(sparkled.particles.isNotEmpty())
-        val plain = run(playing().copy(isNewRecord = false).to(SecretGamePhase.RESULT), T.RESULT_IN_MS)
-        assertTrue(plain.particles.isEmpty())
+    fun `a new record launches six fireworks during the result`() {
+        val s = playing(best = 10).copy(score = 50, spawnCooldownMs = BIG)
+        var step = engine.step(s.copy(faces = listOf(face(7, s.lane, s.shipY))), STEP)
+        assertEquals(FireworksTuning.ROCKETS, step.state.fireworks.left)
+        var bursts = 0
+        while (step.state.phase != SecretGamePhase.DONE) {
+            step = engine.step(step.state, STEP)
+            bursts += step.events.count { it == SecretGameEvent.FireworkBurst }
+        }
+        assertEquals(FireworksTuning.ROCKETS, bursts)
+        assertTrue(step.state.fireworks.isIdle)
+    }
+
+    @Test
+    fun `no fireworks without a record`() {
+        val s = playing(best = 500).copy(score = 50, spawnCooldownMs = BIG)
+        var step = engine.step(s.copy(faces = listOf(face(7, s.lane, s.shipY))), STEP)
+        var bursts = 0
+        while (step.state.phase != SecretGamePhase.DONE) {
+            step = engine.step(step.state, STEP)
+            bursts += step.events.count { it == SecretGameEvent.FireworkBurst }
+        }
+        assertEquals(0, bursts)
     }
 
     @Test
@@ -210,7 +236,7 @@ class SecretGameEngineTest {
         const val STEP = 16L
         const val LONG_MS = 3000L
         const val BIG = 1_000_000f
-        const val HOUR = 3600f
+        const val HIGH_SCORE = 3000
         const val WAVES = 200
         const val EPS = 0.001f
     }

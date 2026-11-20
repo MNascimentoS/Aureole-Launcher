@@ -110,7 +110,8 @@ fun SecretGameOverlay(
 
 private fun handleEvent(event: SecretGameEvent, haptic: HapticFeedback, onGameOver: (Int) -> Unit) {
     when (event) {
-        SecretGameEvent.LaneTick -> haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        SecretGameEvent.LaneTick, SecretGameEvent.FireworkBurst, is SecretGameEvent.LevelUp ->
+            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
         SecretGameEvent.Crash -> haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         is SecretGameEvent.GameOver -> onGameOver(event.score)
     }

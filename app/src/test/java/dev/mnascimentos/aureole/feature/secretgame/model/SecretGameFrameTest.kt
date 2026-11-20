@@ -72,6 +72,25 @@ class SecretGameFrameTest {
     }
 
     @Test
+    fun `faces only trail while falling and the trail grows with the level`() {
+        val face = SecretFace(0, 0, 0.5f, SecretFaceKind.CREATOR, 0f)
+        val s = base.copy(faces = listOf(face))
+        assertEquals(0f, at(SecretGamePhase.COUNTDOWN, 10L, s).faces.single().trail, EPS)
+        assertEquals(0f, at(SecretGamePhase.INTIMIDATE, 10L, s).faces.single().trail, EPS)
+        val slow = at(SecretGamePhase.PLAY, 10L, s).faces.single().trail
+        val fast = at(SecretGamePhase.PLAY, 10L, s.copy(score = 2000)).faces.single().trail
+        assertTrue(slow > 0f && fast > slow)
+        assertEquals(slow, at(SecretGamePhase.PAUSED, 10L, s).faces.single().trail, EPS)
+    }
+
+    @Test
+    fun `hud flashes after a level up and shows the next level`() {
+        val f = at(SecretGamePhase.PLAY, 10L, base.copy(score = 120, levelFlashMs = T.LEVEL_FLASH_MS / 2))
+        assertEquals(0.5f, f.hudFlash, EPS)
+        assertEquals(2, f.levelLabel)
+    }
+
+    @Test
     fun `explosion shakes, flashes, removes the ship and collapses the frames`() {
         val s = base.copy(crashedFaceId = 3, faces = listOf(SecretFace(3, 1, 1f, SecretFaceKind.DREAMER, 0f)))
         assertNotNull(at(SecretGamePhase.EXPLODE, 10L, s).ship)

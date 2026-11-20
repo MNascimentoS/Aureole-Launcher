@@ -1,12 +1,15 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworkRocket
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworkSpark
 import kotlin.math.sin
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
 /** Um sprite em larguras de tela: centro ([x], [y]), largura, rotação em radianos e alpha. */
 data class SecretSprite(val x: Float, val y: Float, val width: Float, val rotation: Float, val alpha: Float)
 
-data class SecretFaceSprite(val kind: SecretFaceKind, val sprite: SecretSprite)
+/** [trail]: comprimento do rastro acima do rosto, em larguras; 0 = sem rastro (parado ou fora do jogo). */
+data class SecretFaceSprite(val kind: SecretFaceKind, val sprite: SecretSprite, val trail: Float = 0f)
 
 /** Brilho radial (troca logo → nave e explosão). */
 data class SecretGlow(val x: Float, val y: Float, val radius: Float, val alpha: Float)
@@ -34,6 +37,10 @@ data class SecretGameFrame(
     val streaks: List<SecretStreak> = emptyList(),
     val particles: List<SecretParticle> = emptyList(),
     val hudScore: Int? = null,
+    val hudFlash: Float = 0f,
+    val levelLabel: Int = 1,
+    val rockets: List<FireworkRocket> = emptyList(),
+    val sparks: List<FireworkSpark> = emptyList(),
     val isPaused: Boolean = false,
     val result: SecretResultFrame? = null,
 )
@@ -43,6 +50,8 @@ fun SecretGameState.toFrame(): SecretGameFrame {
         settingsAlpha = settingsAlpha(),
         settingsLogoVisible = phase == SecretGamePhase.EXIT || phase == SecretGamePhase.DONE,
         particles = particles,
+        rockets = fireworks.rockets,
+        sparks = fireworks.sparks,
     )
     return when (phase) {
         SecretGamePhase.ENTER -> enterFrame(base)
@@ -117,6 +126,8 @@ private fun SecretGameState.arenaFrame(base: SecretGameFrame): SecretGameFrame {
         countdown = if (phase == SecretGamePhase.COUNTDOWN) countdownFrame() else null,
         streaks = if (inGame) streaks else emptyList(),
         hudScore = if (inGame) score else null,
+        hudFlash = levelFlashMs.toFloat() / T.LEVEL_FLASH_MS,
+        levelLabel = secretLevel(score) + 1,
         isPaused = phase == SecretGamePhase.PAUSED,
     )
 }

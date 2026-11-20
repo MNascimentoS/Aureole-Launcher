@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworksState
 enum class SecretGamePhase { ENTER, INTIMIDATE, COUNTDOWN, PLAY, PAUSED, EXPLODE, RESULT, EXIT, DONE }
 
 enum class SecretFaceKind { CREATOR, DREAMER }
@@ -53,6 +54,9 @@ data class SecretGameState(
     val nextFaceId: Int = 0,
     val crashedFaceId: Int? = null,
     val hasExploded: Boolean = false,
+    val lastSafeLane: Int = 1,
+    val levelFlashMs: Long = 0L,
+    val fireworks: FireworksState = FireworksState(),
 ) {
     val shipY: Float get() = layout.aspect - SecretGameTuning.SHIP_BOTTOM_OFFSET
     val isRunning: Boolean get() = phase != SecretGamePhase.DONE
@@ -63,6 +67,10 @@ sealed interface SecretGameEvent {
     data object LaneTick : SecretGameEvent
 
     data object Crash : SecretGameEvent
+
+    data class LevelUp(val level: Int) : SecretGameEvent
+
+    data object FireworkBurst : SecretGameEvent
 
     /** Fim da partida: salvar [score] como recorde se for maior. */
     data class GameOver(val score: Int) : SecretGameEvent

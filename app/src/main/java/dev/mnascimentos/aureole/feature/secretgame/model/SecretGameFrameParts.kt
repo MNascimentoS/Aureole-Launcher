@@ -13,7 +13,15 @@ internal fun SecretGameState.faceSprite(face: SecretFace, alpha: Float): SecretF
         0f
     }
     val swing = sin(clockMs / MS_PER_SECOND * T.FACE_SWING_FREQ + face.wobble) * T.FACE_SWING
-    return SecretFaceSprite(face.kind, SecretSprite(laneX(face.lane), face.y + hover, T.FACE_SIZE, swing, alpha))
+    val sprite = SecretSprite(laneX(face.lane), face.y + hover, T.FACE_SIZE, swing, alpha)
+    return SecretFaceSprite(face.kind, sprite, trail = faceTrail())
+}
+
+/** Rastro só com o rosto caindo; cresce com a velocidade do nível. */
+internal fun SecretGameState.faceTrail(): Float {
+    val falling = phase == SecretGamePhase.PLAY || phase == SecretGamePhase.PAUSED
+    if (!falling) return 0f
+    return T.FACE_SIZE * (T.TRAIL_BASE + secretFallSpeed(secretLevel(score)) * T.TRAIL_SPEED)
 }
 
 internal fun SecretGameState.countdownFrame(): SecretCountdownFrame {
