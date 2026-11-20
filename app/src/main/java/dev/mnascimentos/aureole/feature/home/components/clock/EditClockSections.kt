@@ -137,15 +137,17 @@ private fun EditClockDateSubsection(
     onSelect: (String) -> Unit
 ) {
     val dimmed = Modifier.alpha(if (showsDate) 1f else EditClockMetrics.DISABLED_ALPHA)
-    FormatSubtitle(text = stringResource(R.string.home_clock_date_format_label), modifier = dimmed)
-    if (!showsDate) EditClockNoDateNotice()
-    EditClockDateTiles(
-        selectedKey = selectedKey,
-        nowMillis = nowMillis,
-        onSelect = onSelect,
-        enabled = showsDate,
-        modifier = dimmed
-    )
+    Column {
+        FormatSubtitle(text = stringResource(R.string.home_clock_date_format_label), modifier = dimmed)
+        if (!showsDate) EditClockNoDateNotice()
+        EditClockDateTiles(
+            selectedKey = selectedKey,
+            nowMillis = nowMillis,
+            onSelect = onSelect,
+            enabled = showsDate,
+            modifier = dimmed
+        )
+    }
 }
 
 @Composable

@@ -29,7 +29,6 @@ import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
 import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
 import dev.mnascimentos.aureole.feature.home.model.verticalSwipeOf
 
-
 /**
  * Home gestures: a vertical swipe opens the drawer (up) or the notification shade (down); a touch that starts on the
  * alphabet edge, as tall as the letters, opens the drawer on the letter under the finger once it rests for

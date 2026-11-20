@@ -56,8 +56,8 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottom
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeSwipeDownNestedScroll
-import dev.mnascimentos.aureole.feature.home.components.overlays.swipeDownNestedConnection
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
+import dev.mnascimentos.aureole.feature.home.components.overlays.swipeDownNestedConnection
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions

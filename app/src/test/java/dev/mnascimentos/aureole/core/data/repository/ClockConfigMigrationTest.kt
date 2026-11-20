@@ -184,4 +184,3 @@ class ClockConfigMigrationTest {
         assertEquals(ClockConfig(style = "MSG_TIME_DATE", message = "CUSTOM", customGreeting = "Oi"), config)
     }
 }
-

@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -59,18 +60,13 @@ class SettingsRepository(
 
     /** The clock layout key; an old style saved by 0.9.59 or older reads as its layout ([resolveClockLayout]). */
     var clockStyle: String
-        get() = savedClockLayout().layout.key
+        get() = prefs.savedClockLayout().layout.key
         set(value) = prefs.edit { putString(KEY_CLOCK_STYLE, value) }
 
     /** What the message line shows; an old style with a greeting reads as its message ([resolveClockLayout]). */
     var clockMessage: String
-        get() = savedClockLayout().message.key
+        get() = prefs.savedClockLayout().message.key
         set(value) = prefs.edit { putString(KEY_CLOCK_MESSAGE, value) }
-
-    private fun savedClockLayout() = resolveClockLayout(
-        style = prefs.getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE),
-        message = prefs.getString(KEY_CLOCK_MESSAGE, null)
-    )
 
     var clockCustomGreeting: String
         get() = prefs.getString(KEY_CLOCK_CUSTOM_GREETING, "") ?: ""
@@ -424,6 +420,12 @@ class SettingsRepository(
         private const val KEY_CLOCK_STYLE = "clock_style"
         private const val KEY_CLOCK_CUSTOM_GREETING = "clock_custom_greeting"
         private const val KEY_CLOCK_MESSAGE = "clock_message"
+
+        private fun SharedPreferences.savedClockLayout() = resolveClockLayout(
+            style = getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE),
+            message = getString(KEY_CLOCK_MESSAGE, null)
+        )
+
         private const val KEY_CLOCK_ALIGNMENT = "clock_alignment"
         private const val KEY_CLOCK_FONT_FAMILY = "clock_font_family"
         private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"

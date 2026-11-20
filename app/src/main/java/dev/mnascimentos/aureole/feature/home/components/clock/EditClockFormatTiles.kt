@@ -86,9 +86,8 @@ internal fun EditClockDateTiles(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),
             selected = option.format == selected,
-            onClick = { onSelect(option.format.storageKey) },
-            modifier = tileModifier,
-            enabled = enabled
+            onClick = if (enabled) ({ onSelect(option.format.storageKey) }) else null,
+            modifier = tileModifier
         )
     }
 }

@@ -18,9 +18,9 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toggleC
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockAlignment
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockBackgroundColor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockCustomGreeting
-import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockMessage
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockDateFormat
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockFontFamily
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockMessage
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockStyle
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTextColor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTimeFormat
@@ -135,11 +135,7 @@ class HomeActionsFactory(
             onSetAddAppToFolderDialogVisible = { viewModel.setAddAppToFolderDialogVisible(it) },
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
             onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
-            onSettingsClick = {
-                viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
-                val intent = Intent(context, SettingsActivity::class.java)
-                context.startActivity(intent)
-            },
+            onSettingsClick = { openSettings() },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onAllAppsDrawerOpenFromEdge = { viewModel.setAllAppsDrawerOpen(true, AllAppsOpenSource.EDGE) },
@@ -169,6 +165,11 @@ class HomeActionsFactory(
         val homeActions = attachGridActions(baseActions)
         val onboarding = OnboardingActionsFactory(context, viewModel, homeActions, launchDefaultHomeRequest)
         return homeActions.copy(onboarding = onboarding.createOnboardingActions())
+    }
+
+    private fun openSettings() {
+        viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
+        context.startActivity(Intent(context, SettingsActivity::class.java))
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {
