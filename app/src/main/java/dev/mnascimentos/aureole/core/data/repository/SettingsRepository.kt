@@ -20,7 +20,10 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 
-class SettingsRepository(private val context: Context) {
+class SettingsRepository(
+    private val context: Context,
+    private val database: () -> AppDatabase = { AppDatabase.getInstance(context) }
+) {
 
     /**
      * Ends the app process after a factory reset. Unit tests replace it so the reset
@@ -344,7 +347,7 @@ class SettingsRepository(private val context: Context) {
     }
 
     private fun wipeLocalData() {
-        runCatching { AppDatabase.getInstance(context).clearAllTables() }
+        runCatching { database().clearAllTables() }
             .onFailure { Timber.tag(TAG).w(it, "Error clearing Room database") }
         context.deleteDatabase("aureole_app_database.db")
         context.deleteDatabase("aureole_folders.db")
