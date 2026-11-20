@@ -25,7 +25,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.core.designsystem.icons.Logo
@@ -139,7 +138,7 @@ fun AureoleDialogHeader(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(52.dp)
+            .height(AureoleDS.dimens.itemHeightExtraLarge)
             .background(AureoleDS.colors.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
