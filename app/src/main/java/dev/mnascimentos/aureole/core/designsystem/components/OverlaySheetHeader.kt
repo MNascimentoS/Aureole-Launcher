@@ -59,6 +59,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.rememberSystemAnimations
 @Composable
 internal fun OverlaySheetHeader(
     title: OverlayHeaderTitle,
+    modifier: Modifier = Modifier,
     action: (@Composable () -> Unit)? = null,
     isLeftHanded: Boolean = false,
     leadingAction: (@Composable () -> Unit)? = null
@@ -71,7 +72,7 @@ internal fun OverlaySheetHeader(
     val drawsStartSlot = hasAction && (!isStartAligned || startSlot != null)
     val drawsEndSlot = hasAction && (!isStartAligned || endSlot != null)
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(headerPadding(hasAction, drawsStartSlot, drawsEndSlot)),
         verticalAlignment = Alignment.CenterVertically

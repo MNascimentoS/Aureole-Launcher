@@ -78,7 +78,7 @@ fun FolderFormSheet(
     val save = { onSave(draft.toDetails(placeholder)) }
     val title = stringResource(folderFormTitleRes(mode, isEditing))
     val preview: @Composable BoxScope.() -> Unit = {
-        FolderFormPreview(
+        FolderFormGlyphCard(
             draft = draft,
             label = resolveFolderName(draft.name, placeholder),
             onNameChange = { draft = draft.copy(name = it) },

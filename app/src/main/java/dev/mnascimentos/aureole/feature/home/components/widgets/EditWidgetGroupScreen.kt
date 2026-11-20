@@ -105,7 +105,7 @@ private fun StackPreview(
     draft: WidgetStackDraft,
     scrollState: ScrollState
 ) {
-    EditWidgetGroupPreviewCarousel(
+    EditWidgetGroupCarousel(
         params = EditWidgetCarouselParams(
             currentWidgets = draft.widgets,
             appWidgetHost = params.appWidgetHost,

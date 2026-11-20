@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.dialogs.FolderFormContent
-import dev.mnascimentos.aureole.composable.dialogs.FolderFormPreview
+import dev.mnascimentos.aureole.composable.dialogs.FolderFormGlyphCard
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormContentActions
 import dev.mnascimentos.aureole.composable.dialogs.model.folderFormTitleRes
 import dev.mnascimentos.aureole.composable.dialogs.model.resolveFolderName
@@ -77,7 +77,7 @@ internal fun ManageItemsEditorPreview(
         page is ManageItemsPage.FolderEditor -> {
             val placeholder = stringResource(R.string.home_folder_name_placeholder)
             AureolePreviewFrame {
-                FolderFormPreview(
+                FolderFormGlyphCard(
                     draft = editor.folderDraft,
                     label = resolveFolderName(editor.folderDraft.name, placeholder),
                     onNameChange = { name ->
