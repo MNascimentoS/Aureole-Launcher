@@ -14,6 +14,10 @@ ou monetização.
 - A única coisa que sai é relatório técnico de falha (**Firebase Crashlytics**), sem nome, contatos, localização nem
   lista de apps.
 - Qualquer feature que mande dado para fora do aparelho exige atualizar a política de privacidade (PT e EN) antes.
+- **Permissões:** a política (`docs/privacy/*/`, seção "Permissões utilizadas") lista cada `uses-permission` do
+  manifest. Permissão nova entra na tabela, nos dois idiomas, no mesmo commit. `EXPAND_STATUS_BAR` (normal, sem
+  diálogo) abre a aba de notificações: deslizar para baixo na home e atalho "Notifications"
+  (`ajustes-review-aislan-2` fase 2).
 
 ## 3. Pessoas e créditos
 - Créditos no app: **Mateus** ("The Creator") e **Aislan Tavares** ("The Dreamer").

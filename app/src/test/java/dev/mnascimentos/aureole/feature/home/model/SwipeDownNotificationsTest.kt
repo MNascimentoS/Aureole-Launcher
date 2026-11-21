@@ -75,6 +75,35 @@ class SwipeDownNotificationsTest {
     }
 
     @Test
+    fun `with nothing scrollable under the finger, no nested scroll arrives and the swipe counts as at the top`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+        tracker.reset()
+
+        val conditions = SwipeDownConditions(isEnabled = true, hasScrolledContent = tracker.hasScrolledContent)
+
+        assertTrue(conditions.opensNotifications())
+    }
+
+    @Test
+    fun `with nothing scrollable under the finger and the toggle off, should not open`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+
+        val conditions = SwipeDownConditions(isEnabled = false, hasScrolledContent = tracker.hasScrolledContent)
+
+        assertFalse(conditions.opensNotifications())
+    }
+
+    @Test
+    fun `a list that scrolled during the gesture should block the open in the conditions too`() {
+        val tracker = SwipeDownScrollTracker(threshold)
+        tracker.onPostScroll(consumedY = 40f, availableY = 0f)
+
+        val conditions = SwipeDownConditions(isEnabled = true, hasScrolledContent = tracker.hasScrolledContent)
+
+        assertFalse(conditions.opensNotifications())
+    }
+
+    @Test
     fun `should open only once per gesture`() {
         val tracker = SwipeDownScrollTracker(threshold)
 

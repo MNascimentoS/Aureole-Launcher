@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import android.util.Log
 import androidx.core.net.toUri
 import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
@@ -14,6 +15,11 @@ object IntentUtils {
 
     // Value of the deprecated Intent.ACTION_UNINSTALL_PACKAGE, kept as the fallback for older devices.
     private const val ACTION_UNINSTALL_PACKAGE_FALLBACK = "android.intent.action.UNINSTALL_PACKAGE"
+
+    // Context.STATUS_BAR_SERVICE and StatusBarManager.expandNotificationsPanel are hidden APIs.
+    private const val STATUS_BAR_SERVICE = "statusbar"
+    private const val STATUS_BAR_MANAGER_CLASS = "android.app.StatusBarManager"
+    private const val EXPAND_METHOD = "expandNotificationsPanel"
 
     fun openAppInfo(context: Context, packageName: String) {
         try {
@@ -60,24 +66,37 @@ object IntentUtils {
         }
     }
 
+    /** Opens the system notification shade; needs `EXPAND_STATUS_BAR` in the manifest. */
     fun expandNotificationShade(context: Context) {
-        try {
-            val statusBarService = context.getSystemService("statusbar")
-            val statusBarManager = Class.forName("android.app.StatusBarManager")
-            val expandMethod = statusBarManager.getMethod("expandNotificationsPanel")
-            expandMethod.invoke(statusBarService)
-        } catch (e: ClassNotFoundException) {
-            Timber.tag(TAG).w(e, "StatusBarManager class not found")
-        } catch (e: NoSuchMethodException) {
-            Timber.tag(TAG).w(e, "expandNotificationsPanel method not found")
-        } catch (e: IllegalAccessException) {
-            Timber.tag(TAG).w(e, "Illegal access expanding notifications panel")
-        } catch (e: InvocationTargetException) {
-            Timber.tag(TAG).w(e, "Invocation target exception expanding notifications panel")
-        } catch (e: IllegalArgumentException) {
-            Timber.tag(TAG).w(e, "Illegal argument expanding notifications panel")
-        } catch (e: SecurityException) {
-            Timber.tag(TAG).w(e, "Security exception expanding notifications panel")
+        runShadeExpansion {
+            val statusBarService = context.getSystemService(STATUS_BAR_SERVICE)
+                ?: error("No status bar service")
+            Class.forName(STATUS_BAR_MANAGER_CLASS).getMethod(EXPAND_METHOD).invoke(statusBarService)
         }
+    }
+
+    /**
+     * Runs [expand] and logs any failure with `Log.w`, so it shows in release builds too (Timber only logs in debug).
+     * The reflective call wraps the real failure, such as the SecurityException thrown without `EXPAND_STATUS_BAR`,
+     * in an [InvocationTargetException]: the log carries that cause. True when the shade was asked to open.
+     */
+    internal fun runShadeExpansion(expand: () -> Unit): Boolean = try {
+        expand()
+        true
+    } catch (e: InvocationTargetException) {
+        logShadeFailure(e.targetException ?: e)
+    } catch (e: ReflectiveOperationException) {
+        logShadeFailure(e)
+    } catch (e: IllegalArgumentException) {
+        logShadeFailure(e)
+    } catch (e: IllegalStateException) {
+        logShadeFailure(e)
+    } catch (e: SecurityException) {
+        logShadeFailure(e)
+    }
+
+    private fun logShadeFailure(cause: Throwable): Boolean {
+        Log.w(TAG, "Could not expand the notifications panel", cause)
+        return false
     }
 }

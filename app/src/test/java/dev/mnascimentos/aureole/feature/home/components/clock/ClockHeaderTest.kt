@@ -87,9 +87,9 @@ class ClockHeaderTest {
         var longClicked = false
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                HomeClockHeader {
+                HomeClockHeader(onLongClick = {
                     longClicked = true
-                }
+                })
             }
         }
 

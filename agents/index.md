@@ -33,7 +33,7 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
 
 6. **[Product Context](aureole_product.md)**
    - O que é o app, pacote, "Teu Apps", créditos e contatos.
-   - Promessa de privacidade (só Crashlytics sai do aparelho).
+   - Promessa de privacidade (só Crashlytics sai do aparelho); toda permissão do manifest listada na política.
    - Site em `docs/` (aureolelauncher.app, privacidade e termos PT/EN) e premium planejado (compra única, sem login).
 
 7. **[Workflow: Specs, Fases e Git](aureole_workflow.md)**
