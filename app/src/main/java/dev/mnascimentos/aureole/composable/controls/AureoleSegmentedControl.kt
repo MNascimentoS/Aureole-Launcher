@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -59,11 +57,7 @@ fun AureoleSegmentedControl(
     )
 }
 
-/**
- * [AureoleSegmentedControl] whose segments may have an icon before the label (see [SegmentedOption]). The bar and the
- * selected pill are as tall as [itemHeight] asks, but the touch area of each segment is never under
- * [AureoleDS.dimens.minTouchTarget]: a shorter bar keeps its 48 dp of touch, centered on the visible bar.
- */
+/** [AureoleSegmentedControl] whose segments may have an icon before the label (see [SegmentedOption]). */
 @Composable
 fun AureoleIconSegmentedControl(
     options: List<SegmentedOption>,
@@ -72,43 +66,33 @@ fun AureoleIconSegmentedControl(
     modifier: Modifier = Modifier,
     itemHeight: Dp = AureoleDS.dimens.minTouchTarget
 ) {
-    val barPadding = AureoleDS.dimens.xxSmall
-    val barHeight = itemHeight + barPadding * 2
-    Box(
-        modifier = modifier.fillMaxWidth().height(maxOf(barHeight, AureoleDS.dimens.minTouchTarget)),
-        contentAlignment = Alignment.Center
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .background(AureoleDS.colors.surfaceVariant.copy(alpha = INACTIVE_BACKGROUND_ALPHA))
+            .padding(AureoleDS.dimens.xxSmall)
+            .selectableGroup(),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(barHeight)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = INACTIVE_BACKGROUND_ALPHA))
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = barPadding)
-                .selectableGroup(),
-            horizontalArrangement = Arrangement.spacedBy(barPadding)
-        ) {
-            options.forEachIndexed { index, option ->
-                SegmentItem(
-                    option = option,
-                    isSelected = index == selectedIndex,
-                    height = itemHeight,
-                    onClick = { onSelect(index) }
-                )
-            }
+        options.forEachIndexed { index, option ->
+            SegmentItem(
+                label = option.label,
+                isSelected = index == selectedIndex,
+                height = itemHeight,
+                icon = option.icon,
+                onClick = { onSelect(index) }
+            )
         }
     }
 }
 
 @Composable
 private fun RowScope.SegmentItem(
-    option: SegmentedOption,
+    label: String,
     isSelected: Boolean,
     height: Dp,
+    icon: (@Composable (Color) -> Unit)?,
     onClick: () -> Unit
 ) {
     val container = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
@@ -116,29 +100,22 @@ private fun RowScope.SegmentItem(
     Box(
         modifier = Modifier
             .weight(1f)
-            .fillMaxHeight()
+            .height(height)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
+            .background(container)
             .selectable(selected = isSelected, role = Role.Tab, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(height)
-                .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
-                .background(container),
-            contentAlignment = Alignment.Center
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
-            ) {
-                option.icon?.invoke(content)
-                AureoleText(
-                    text = option.label,
-                    color = content,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
-                )
-            }
+            icon?.invoke(content)
+            AureoleText(
+                text = label,
+                color = content,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
+            )
         }
     }
 }

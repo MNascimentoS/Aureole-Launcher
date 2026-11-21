@@ -108,6 +108,7 @@ internal fun SheetSurface(
                 edgeToEdgeContent = config.edgeToEdgeContent,
                 showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
                 isLeftHanded = config.isLeftHanded,
+                hasTabBottomBar = config.hasTabBottomBar,
                 headerSlots = OverlayHeaderSlots(
                     headerIcon = config.headerIcon,
                     titleIcon = config.titleIcon,

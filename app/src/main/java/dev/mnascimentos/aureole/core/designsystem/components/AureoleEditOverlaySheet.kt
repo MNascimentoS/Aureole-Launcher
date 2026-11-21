@@ -290,8 +290,8 @@ internal fun OverlaySheetBody(
                 modifier = Modifier.padding(
                     start = AureoleDS.dimens.small,
                     end = AureoleDS.dimens.small,
-                    top = AureoleDS.dimens.small,
-                    bottom = AureoleDS.dimens.medium
+                    top = if (decorations.hasTabBottomBar) AureoleDS.dimens.xSmall else AureoleDS.dimens.small,
+                    bottom = if (decorations.hasTabBottomBar) AureoleDS.dimens.xSmall else AureoleDS.dimens.medium
                 )
             ) {
                 bottomBarContent()
