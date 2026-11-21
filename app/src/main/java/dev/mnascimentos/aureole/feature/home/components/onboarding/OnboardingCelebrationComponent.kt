@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,21 +20,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.fireworks.AureoleFireworks
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleLogoRing
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.drawParticles
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -69,7 +68,7 @@ fun OnboardingCelebrationComponent(
         delay(OnboardingMotionSpec.CELEBRATION_MS)
         onFinished()
     }
-    val haptics = LocalHapticFeedback.current
+    val particleColor = AureoleDS.colors.onSurfaceHigh
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -79,6 +78,9 @@ fun OnboardingCelebrationComponent(
             },
         contentAlignment = Alignment.Center
     ) {
+        if (loopsEnabled) {
+            Canvas(modifier = Modifier.fillMaxSize()) { drawParticles(burst.value, particleColor) }
+        }
         OnboardingGlassCard(
             glass = glass,
             modifier = Modifier
@@ -107,9 +109,6 @@ fun OnboardingCelebrationComponent(
                     )
                 )
             }
-        }
-        if (loopsEnabled) {
-            AureoleFireworks(onBurst = { haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove) })
         }
     }
 }

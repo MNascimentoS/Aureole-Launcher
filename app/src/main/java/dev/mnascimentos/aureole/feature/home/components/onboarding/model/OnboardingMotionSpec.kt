@@ -66,6 +66,8 @@ object OnboardingMotionSpec {
     const val CELEBRATION_MS = 4500L
     const val CELEBRATION_BURST_MS = 2600
     const val HALO_CLOSE_MS = 700
+    const val MAX_PARTICLES = 40
+    val PARTICLE_RADIUS = 3.dp
 
     // Default home success message before moving on
     const val DEFAULT_HOME_SUCCESS_MS = 1400L
