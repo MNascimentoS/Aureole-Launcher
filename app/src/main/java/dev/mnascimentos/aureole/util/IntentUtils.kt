@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import androidx.core.net.toUri
 import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
@@ -76,7 +75,7 @@ object IntentUtils {
     }
 
     /**
-     * Runs [expand] and logs any failure with `Log.w`, so it shows in release builds too (Timber only logs in debug).
+     * Runs [expand] and logs any failure as a warning; `WarnLogTree` keeps warnings in release builds too.
      * The reflective call wraps the real failure, such as the SecurityException thrown without `EXPAND_STATUS_BAR`,
      * in an [InvocationTargetException]: the log carries that cause. True when the shade was asked to open.
      */
@@ -96,7 +95,7 @@ object IntentUtils {
     }
 
     private fun logShadeFailure(cause: Throwable): Boolean {
-        Log.w(TAG, "Could not expand the notifications panel", cause)
+        Timber.tag(TAG).w(cause, "Could not expand the notifications panel")
         return false
     }
 }

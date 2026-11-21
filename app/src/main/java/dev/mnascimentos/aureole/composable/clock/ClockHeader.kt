@@ -34,8 +34,7 @@ fun ClockHeader(
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     onClick: (() -> Unit)? = null,
-    onLongClick: (() -> Unit)? = null,
-    isVerticallyBalanced: Boolean = false
+    onLongClick: (() -> Unit)? = null
 ) {
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
     val isHazeEnabled = hazeConfig.isHazeEnabled
@@ -77,13 +76,13 @@ fun ClockHeader(
             .background(containerBgColor)
             .clockClickable(onClick, onLongClick)
             // Inner room (D-11): the top keeps 8 dp; the sides (16 → 24 dp) and the bottom (8 → 16 dp) get 8 dp
-            // more, in every alignment. The editor preview asks for [isVerticallyBalanced]: the same room above and below
-            // the lines (RF-D3).
+            // more, in every alignment. The editor preview sets `isVerticallyBalanced`: the same room above
+            // and below the lines (RF-D3).
             .padding(
                 start = AureoleDS.dimens.large,
                 end = AureoleDS.dimens.large,
-                top = if (isVerticallyBalanced) AureoleDS.dimens.small else AureoleDS.dimens.xSmall,
-                bottom = if (isVerticallyBalanced) AureoleDS.dimens.small else AureoleDS.dimens.medium
+                top = if (resolvedConfig.isVerticallyBalanced) AureoleDS.dimens.small else AureoleDS.dimens.xSmall,
+                bottom = if (resolvedConfig.isVerticallyBalanced) AureoleDS.dimens.small else AureoleDS.dimens.medium
             )
     ) {
         ClockHeaderContent(

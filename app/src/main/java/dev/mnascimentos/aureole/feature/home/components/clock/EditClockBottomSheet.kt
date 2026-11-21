@@ -185,8 +185,10 @@ private fun EditClockPreviewCard(
                 isBackgroundEnabled = uiState.isClockBackgroundEnabled
             ),
             // The clock fields of uiState hold the edited clock (forClockEditor); all of them, the background too.
-            config = uiState.defaultClockConfig().toHeaderConfig().copy(customGreeting = tempCustomGreeting),
-            isVerticallyBalanced = true
+            config = uiState.defaultClockConfig().toHeaderConfig().copy(
+                customGreeting = tempCustomGreeting,
+                isVerticallyBalanced = true
+            )
         )
     }
 }

@@ -44,7 +44,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | AureoleThemeSwatchRow, AureolePaletteSwatchRow | composable/color/AureolePaletteRows.kt | Amostras de tema e paletas | Peças do picker |
 | AureoleHueSlider | composable/color/AureoleHueSlider.kt | Slider de matiz | Cor livre (evitar, ver regra §8) |
 | AureoleSegmentedControl, AureoleIconSegmentedControl | composable/controls/AureoleSegmentedControl.kt | Controle segmentado | Poucas opções exclusivas |
-| AureoleOptionTile | composable/optiontile/AureoleOptionTile.kt | Tile de opção visual (`enabled` opcional) | Escolha visual |
+| AureoleOptionTile / AureoleCenteredOptionTile | composable/optiontile/AureoleOptionTile.kt (+ `model/OptionTileContent.kt`) | Tile de opção visual (`onClick` nulo = desligado); a versão `Centered` centraliza amostra e rótulo (pills do Format do relógio) | Escolha visual |
 | AureoleIconCatalogGrid | composable/icons/AureoleIconCatalogGrid.kt | Catálogo de ícones | Escolher ícone |
 | AureoleSearchField | composable/search/AureoleSearchField.kt | Campo de busca | Busca em sheet |
 | AureoleFloatingSearchBar | core/designsystem/components/AureoleFloatingSearchBar.kt | Busca flutuante | Busca principal |

@@ -48,7 +48,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Não 
 | single | `AppDatabase`, os 4 DAOs e `IconCache`; App, Widget, Settings, Folder, FavoriteContainer, Container, Grid, ClockConfig repositories; `DefaultTelemetryLogger` (bind `TelemetryLogger`), `SpkiPinValidator`, `ApiClient` |
 | factory | `HomeRepositories` (agrupa os 8 repositórios), `UndoController` |
 | viewModel | `HomeViewModel`, `SettingsViewModel`, `WidgetPickerViewModel` |
-- `AureoleApplication.onCreate` chama `startKoin` (se `GlobalContext` nulo), configura Crashlytics (coleta off em DEBUG) e Timber em DEBUG.
+- `AureoleApplication.onCreate` chama `startKoin` (se `GlobalContext` nulo), configura Crashlytics (coleta off em DEBUG) e Timber: `DebugTree` em DEBUG e `util/WarnLogTree` (só warning e error no logcat) em release.
 
 ## Lifecycle observers (`core/lifecycle/`)
 | Arquivo | O que faz | Registrado em |

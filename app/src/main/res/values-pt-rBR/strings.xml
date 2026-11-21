@@ -31,7 +31,7 @@
     <!-- Folders -->
     <string name="home_folder_edit_title">Editar pasta</string>
     <string name="home_folder_new_title">Nova pasta</string>
-    <string name="home_folder_name_placeholder">Nova Pasta</string>
+    <string name="home_folder_name_placeholder">Nova pasta</string>
     <string name="home_folder_apps_in_folder">Apps na Pasta: %1$s</string>
     <string name="core_common_no_apps_found">Nenhum aplicativo encontrado.</string>
     <string name="home_folder_add_apps">Adicionar apps</string>

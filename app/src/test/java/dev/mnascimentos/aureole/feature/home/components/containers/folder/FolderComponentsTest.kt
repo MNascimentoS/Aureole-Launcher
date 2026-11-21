@@ -222,7 +222,7 @@ class FolderComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("New folder").assertIsDisplayed()
 
         // Type the name in the pill under the preview and create.
         composeTestRule.onNode(hasSetTextAction()).performTextInput("My New Folder")
@@ -603,6 +603,6 @@ class FolderComponentsTest {
             }
         }
 
-        composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("New folder")[0].assertIsDisplayed()
     }
 }

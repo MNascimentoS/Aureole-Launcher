@@ -74,7 +74,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("New folder").assertIsDisplayed()
         composeTestRule.closeOverlayWithBack()
         assertTrue(createClosed)
     }
@@ -91,7 +91,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("New Folder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("New folder").assertDoesNotExist()
     }
 
     @Config(qualifiers = TALL_WINDOW)

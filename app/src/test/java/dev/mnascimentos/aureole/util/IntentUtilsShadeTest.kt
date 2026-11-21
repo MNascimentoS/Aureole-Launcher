@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -13,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowLog
+import timber.log.Timber
 import java.lang.reflect.InvocationTargetException
 
 /** Opening the notification shade (ajustes-review-aislan-2 RF-A1, RF-A5). */
@@ -23,7 +25,15 @@ class IntentUtilsShadeTest {
 
     @Before
     fun setUp() {
+        // The application plants its own tree at every test; keep one tree so each warning is logged once.
+        Timber.uprootAll()
+        Timber.plant(WarnLogTree())
         ShadowLog.clear()
+    }
+
+    @After
+    fun tearDown() {
+        Timber.uprootAll()
     }
 
     @Test
@@ -49,7 +59,8 @@ class IntentUtilsShadeTest {
         assertFalse(opened)
         val log = ShadowLog.getLogsForTag(tag).single()
         assertEquals(Log.WARN, log.type)
-        assertEquals(denied, log.throwable)
+        // The tree writes the cause as a stack trace in the message.
+        assertTrue(log.msg.contains("SecurityException: needs EXPAND_STATUS_BAR"))
     }
 
     @Test

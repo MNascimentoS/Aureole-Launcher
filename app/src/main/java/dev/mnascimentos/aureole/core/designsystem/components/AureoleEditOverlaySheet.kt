@@ -36,8 +36,8 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.hasHeaderAction
-import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
 import dev.mnascimentos.aureole.core.designsystem.model.isPreviewHidden
+import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
 import dev.mnascimentos.aureole.core.designsystem.model.previewAlpha
 import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS

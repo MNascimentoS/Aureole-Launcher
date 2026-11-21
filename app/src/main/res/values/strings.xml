@@ -31,7 +31,7 @@
     <!-- Folders -->
     <string name="home_folder_edit_title">Edit folder</string>
     <string name="home_folder_new_title">New folder</string>
-    <string name="home_folder_name_placeholder">New Folder</string>
+    <string name="home_folder_name_placeholder">New folder</string>
     <string name="home_folder_apps_in_folder">Apps in Folder: %1$s</string>
     <string name="core_common_no_apps_found">No apps found.</string>
     <string name="home_folder_add_apps">Add apps</string>

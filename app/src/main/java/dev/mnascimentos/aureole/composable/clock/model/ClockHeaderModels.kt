@@ -26,7 +26,9 @@ data class ClockHeaderConfig(
     val backgroundColor: Int? = null,
     val textColorRef: String? = null,
     val backgroundColorRef: String? = null,
-    val isBackgroundEnabled: Boolean? = null
+    val isBackgroundEnabled: Boolean? = null,
+    /** The editor preview: the same room above and below the lines (RF-D3). */
+    val isVerticallyBalanced: Boolean = false
 )
 
 internal data class ClockHeaderContentParams(
@@ -59,5 +61,6 @@ data class ResolvedClockConfig(
     val timeFormat: String,
     val dateFormat: String,
     val textColor: Int,
-    val backgroundColor: Int
+    val backgroundColor: Int,
+    val isVerticallyBalanced: Boolean = false
 )

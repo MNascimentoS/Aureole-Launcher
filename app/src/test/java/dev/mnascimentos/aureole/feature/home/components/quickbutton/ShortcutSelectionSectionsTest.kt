@@ -54,7 +54,7 @@ class ShortcutSelectionSectionsTest {
         // Assert
         composeTestRule.onNodeWithText("All apps").assertIsDisplayed()
         composeTestRule.onNodeWithText("AUREOLE").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Aureole settings").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Aureole Settings").assertIsDisplayed().performClick()
         assertEquals(ShortcutAction.Settings, appliedShortcut)
     }
 

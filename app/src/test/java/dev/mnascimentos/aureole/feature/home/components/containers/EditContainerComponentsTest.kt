@@ -53,7 +53,7 @@ class EditContainerComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Item alignment").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Space Between").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Space between").assertIsDisplayed().performClick()
 
         composeTestRule.onNodeWithText("Center").assertIsDisplayed().performClick()
         assertEquals("Center", selectedPosition)

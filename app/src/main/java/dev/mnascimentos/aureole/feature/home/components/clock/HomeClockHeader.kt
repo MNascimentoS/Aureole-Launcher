@@ -20,8 +20,7 @@ fun HomeClockHeader(
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     config: ClockHeaderConfig = ClockHeaderConfig(),
     onClick: (() -> Unit)? = null,
-    onLongClick: (() -> Unit)? = null,
-    isVerticallyBalanced: Boolean = false
+    onLongClick: (() -> Unit)? = null
 ) {
     val uiState = LocalHomeUiState.current
     ClockHeader(
@@ -29,8 +28,7 @@ fun HomeClockHeader(
         modifier = modifier,
         hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
         onClick = onClick,
-        onLongClick = onLongClick,
-        isVerticallyBalanced = isVerticallyBalanced
+        onLongClick = onLongClick
     )
 }
 
@@ -40,6 +38,7 @@ internal fun resolveClockConfig(
     colors: AureoleColors? = null
 ): ResolvedClockConfig {
     return ResolvedClockConfig(
+        isVerticallyBalanced = config.isVerticallyBalanced,
         style = config.style ?: uiState.clockStyle,
         customGreeting = config.customGreeting ?: uiState.clockCustomGreeting,
         message = config.message ?: uiState.clockMessage,

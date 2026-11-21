@@ -23,7 +23,7 @@ import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
 import dev.mnascimentos.aureole.composable.clock.model.ClockDateFormat
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeFormat
 import dev.mnascimentos.aureole.composable.clock.model.formatClockSample
-import dev.mnascimentos.aureole.composable.optiontile.AureoleOptionTile
+import dev.mnascimentos.aureole.composable.optiontile.AureoleCenteredOptionTile
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -55,13 +55,12 @@ internal fun EditClockTimeTiles(
         val (_, format24) = ClockHeaderUtils.resolveClockTimeFormats(option.format.key)
         val uses12Hour = option.format == ClockTimeFormat.H12 || (option.format == ClockTimeFormat.SYSTEM && !is24Hour)
         val pattern = if (uses12Hour) TIME_SAMPLE_PATTERN_12H else format24
-        AureoleOptionTile(
+        AureoleCenteredOptionTile(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),
             selected = option.format == selected,
             onClick = { onSelect(option.format.key) },
-            modifier = tileModifier,
-            isCentered = true
+            modifier = tileModifier
         )
     }
 }
@@ -83,13 +82,12 @@ internal fun EditClockDateTiles(
         items = ClockDateOption.entries
     ) { option, tileModifier ->
         val pattern = ClockHeaderUtils.resolveClockDatePattern(option.format.storageKey, locale)
-        AureoleOptionTile(
+        AureoleCenteredOptionTile(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),
             selected = option.format == selected,
             onClick = if (enabled) ({ onSelect(option.format.storageKey) }) else null,
-            modifier = tileModifier,
-            isCentered = true
+            modifier = tileModifier
         )
     }
 }
