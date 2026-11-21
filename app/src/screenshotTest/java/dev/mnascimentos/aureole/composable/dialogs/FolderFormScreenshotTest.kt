@@ -91,7 +91,7 @@ private fun FolderFormEmojiScreenshotTest() = FolderFormCase(isLeftHanded = fals
 private fun FolderFormPreviewTileScreenshotTest() {
     AureoleLauncherTheme {
         Column(modifier = Modifier.padding(AureoleDS.dimens.medium)) {
-            FolderFormPreview(
+            FolderFormGlyphCard(
                 draft = FolderFormDraft(
                     name = "Bank",
                     color = ThemeColorRef.Role(ThemeColorRole.OUTLINE)

@@ -76,7 +76,7 @@ private const val ADD_CARD_FILL_ALPHA = 0.35f
  * follows the scroll.
  */
 @Composable
-fun EditWidgetGroupPreviewCarousel(
+fun EditWidgetGroupCarousel(
     params: EditWidgetCarouselParams,
     modifier: Modifier = Modifier
 ) {
@@ -273,7 +273,7 @@ private fun Modifier.previewCardShape(size: DpSize, border: BorderStroke, fill: 
 private fun EditWidgetGroupPreviewCarouselPreview() {
     var widgets by remember { mutableStateOf(List(PREVIEW_ITEM_COUNT) { it + 1 }) }
     AureoleLauncherTheme {
-        EditWidgetGroupPreviewCarousel(
+        EditWidgetGroupCarousel(
             params = EditWidgetCarouselParams(
                 currentWidgets = widgets,
                 appWidgetHost = null,

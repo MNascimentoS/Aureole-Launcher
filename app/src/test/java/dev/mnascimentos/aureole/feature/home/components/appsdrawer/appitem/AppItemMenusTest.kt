@@ -85,7 +85,7 @@ class AppItemMenusTest {
         }
 
         composeTestRule.onNodeWithText("Test App Header").assertIsDisplayed()
-        composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
+        composeTestRule.onNodeWithText("App info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Uninstall").assertIsDisplayed()
     }
 
@@ -148,7 +148,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Info").performClick()
+        composeTestRule.onNodeWithText("App info").performClick()
         assertTrue(appInfoClicked)
         assertTrue(dismissed)
     }
@@ -171,7 +171,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Info").performClick()
+        composeTestRule.onNodeWithText("App info").performClick()
         assertTrue(dismissed)
     }
 
@@ -389,27 +389,7 @@ class AppItemMenusTest {
     }
 
     @Test
-    fun `when header settings button is clicked, should invoke onOpenSettings`() {
-        var settingsOpened = false
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                AppItemBottomSheet(
-                    params = AppItemBottomSheetParams(
-                        app = sampleApp,
-                        actions = AppItemRowActions(onOpenSettings = { settingsOpened = true })
-                    ),
-                    onDismiss = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithContentDescription("Aureole settings").performClick()
-
-        assertTrue(settingsOpened)
-    }
-
-    @Test
-    fun `when onOpenSettings is null, should not show the header settings button`() {
+    fun `app menu does not show the Aureole settings logo in the header`() {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AppItemBottomSheet(params = AppItemBottomSheetParams(app = sampleApp), onDismiss = {})
@@ -435,7 +415,7 @@ class AppItemMenusTest {
         }
 
         fun top(text: String) = composeTestRule.onNodeWithText(text).getUnclippedBoundsInRoot().top
-        val order = listOf("App Info", "Container settings", "Remove from folder", "Uninstall")
+        val order = listOf("App info", "Container settings", "Remove from folder", "Uninstall")
         assertEquals(order, order.sortedBy { top(it) })
         composeTestRule.onNodeWithText("Hold to confirm").assertIsDisplayed()
     }

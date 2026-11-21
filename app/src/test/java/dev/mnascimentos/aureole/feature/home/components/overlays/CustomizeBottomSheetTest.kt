@@ -140,19 +140,10 @@ class CustomizeBottomSheetTest {
     }
 
     @Test
-    fun `when the header logo is tapped, should open the Aureole settings and dismiss`() {
-        var opened = 0
-        var dismissed = 0
-        show(
-            createDefaultHomeScreenActions().copy(onSettingsClick = { opened++ }),
-            onDismiss = { dismissed++ }
-        )
+    fun `the header should not show the logo, the Add to home grid has the Settings tile`() {
+        show(createDefaultHomeScreenActions())
 
-        composeTestRule.onNodeWithContentDescription("Aureole settings").performClick()
-        composeTestRule.mainClock.advanceTimeBy(DISMISS_WAIT_MS)
-
-        assertEquals(1, opened)
-        assertEquals(1, dismissed)
+        composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
     }
 
     @Test
@@ -187,7 +178,7 @@ class CustomizeBottomSheetTest {
 
         composeTestRule.onNodeWithText("Font").performClick()
 
-        composeTestRule.onNodeWithText("Pick Font").assertExists()
+        composeTestRule.onNodeWithText("Pick font").assertExists()
         composeTestRule.onNodeWithText("ADD TO HOME").assertDoesNotExist()
     }
 

@@ -76,7 +76,11 @@ class GestureCoachGeometryTest {
     fun `when the screen turns during the scrub step, should move on`() {
         val almost = atScrub.copy(
             onboarding = atScrub.onboarding.copy(
-                completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.CUSTOMIZE)
+                completedSteps = setOf(
+                    GestureCoachStep.OPEN_APPS,
+                    GestureCoachStep.NOTIFICATIONS,
+                    GestureCoachStep.CUSTOMIZE
+                )
             )
         )
 

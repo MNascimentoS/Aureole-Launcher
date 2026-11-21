@@ -13,15 +13,23 @@ internal fun SecretGameState.faceSprite(face: SecretFace, alpha: Float): SecretF
         0f
     }
     val swing = sin(clockMs / MS_PER_SECOND * T.FACE_SWING_FREQ + face.wobble) * T.FACE_SWING
-    return SecretFaceSprite(face.kind, SecretSprite(laneX(face.lane), face.y + hover, T.FACE_SIZE, swing, alpha))
+    val sprite = SecretSprite(laneX(face.lane), face.y + hover, T.FACE_SIZE, swing, alpha)
+    return SecretFaceSprite(face.kind, sprite, trail = faceTrail())
+}
+
+/** Rastro só com o rosto caindo; cresce com a velocidade do nível. */
+internal fun SecretGameState.faceTrail(): Float {
+    val falling = phase == SecretGamePhase.PLAY || phase == SecretGamePhase.PAUSED
+    if (!falling) return 0f
+    return T.FACE_SIZE * (T.TRAIL_BASE + secretFallSpeed(secretLevel(score)) * T.TRAIL_SPEED)
 }
 
 internal fun SecretGameState.countdownFrame(): SecretCountdownFrame {
-    val index = (phaseMs / T.COUNT_STEP_MS).toInt().coerceAtMost(T.COUNT_STEPS - 1)
+    val label = countdownLabel() ?: SecretCountdownLabel.THREE
     val k = (phaseMs % T.COUNT_STEP_MS).toFloat() / T.COUNT_STEP_MS
     val alpha = if (k < T.COUNT_FADE_FROM) 1f else 1f - (k - T.COUNT_FADE_FROM) / (1f - T.COUNT_FADE_FROM)
     val scale = T.COUNT_SCALE_FROM - (T.COUNT_SCALE_FROM - 1f) * easeOutCubic(k * T.COUNT_SCALE_SPEED)
-    return SecretCountdownFrame(SecretCountdownLabel.entries[index], alpha, scale)
+    return SecretCountdownFrame(label, alpha, scale)
 }
 
 internal fun SecretGameState.resultAlpha(): Float = when {

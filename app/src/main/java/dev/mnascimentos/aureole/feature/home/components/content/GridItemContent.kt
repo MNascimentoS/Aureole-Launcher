@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.content
 
-import android.annotation.SuppressLint
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
@@ -239,7 +238,6 @@ fun SingleAppWidgetContent(
     }
 }
 
-@SuppressLint("SetTextI18n")
 private fun createSingleWidgetView(context: Context, widgetId: Int, appWidgetHost: AppWidgetHost?): View {
     if (appWidgetHost == null) {
         return TextView(

@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -44,7 +43,7 @@ fun AddWidgetButton(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeStyle(
-                blurRadius = 24.dp,
+                blurRadius = AureoleDS.dimens.large,
                 tint = HazeTint(AureoleDS.colors.surfaceVariant.copy(alpha = hazeOpacity))
             )
         ) {
@@ -66,7 +65,7 @@ fun AddWidgetButton(
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .defaultMinSize(minWidth = 48.dp, minHeight = 48.dp)
+            .defaultMinSize(minWidth = AureoleDS.dimens.minTouchTarget, minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .then(hazeModifier)
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = buttonAlpha))

@@ -123,13 +123,14 @@ class OnboardingLandscapeLayoutTest {
     }
 
     @Test
-    fun `a portrait widget stack should bring its children`() {
+    fun `a portrait widget stack should come empty, with its own id (D-17)`() {
         val child = LauncherItemState(id = "calendar", type = LauncherItemType.WIDGET_LIST, widgetId = 7)
         val stack = portraitItem(LauncherItemType.WIDGET_LIST, children = listOf(child))
 
         val widgets = onboardingLandscapeLayout(listOf(stack), isLeftHanded = false).single()
 
-        assertEquals(listOf(child), widgets.safeChildren)
+        assertTrue(widgets.safeChildren.isEmpty())
+        assertTrue(widgets.id != stack.id && widgets.id != child.id)
     }
 
     @Test

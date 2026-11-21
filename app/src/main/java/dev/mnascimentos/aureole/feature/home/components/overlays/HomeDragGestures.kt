@@ -5,11 +5,15 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.AwaitPointerEventScope
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.EDGE_HOLD_MS
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.EdgePressOutcome
@@ -20,10 +24,11 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberE
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.edgePressOutcome
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberBoundsFor
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
-import kotlin.math.abs
-
-private const val VERTICAL_INTENT_THRESHOLD_DP = 36
-private const val VERTICAL_GESTURE_RATIO = 1.5f
+import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
+import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
+import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
+import dev.mnascimentos.aureole.feature.home.model.opensHome
+import dev.mnascimentos.aureole.feature.home.model.verticalSwipeOf
 
 /**
  * Home gestures: a vertical swipe opens the drawer (up) or the notification shade (down); a touch that starts on the
@@ -35,6 +40,39 @@ private const val VERTICAL_GESTURE_RATIO = 1.5f
  */
 fun Modifier.homeDragGestures(params: HomeDragParams): Modifier =
     homeVerticalGestures(params).homeEdgeScrubGestures(params)
+
+/**
+ * A swipe that starts on something scrollable (the apps list, a scrolling group, a widget) is taken by it, so the
+ * home sees only the delta it leaves: a swipe down at its top opens the shade, a swipe up at its bottom opens the
+ * drawer, each through its [tracker] (RF-B2). The tracker starts over on every new finger.
+ */
+fun Modifier.homeSwipeNestedScroll(
+    tracker: SwipeScrollTracker,
+    connection: NestedScrollConnection
+): Modifier = pointerInput(tracker) {
+    awaitEachGesture {
+        awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+        tracker.reset()
+    }
+}.nestedScroll(connection)
+
+/** The nested scroll side of [homeSwipeNestedScroll]; [canOpen] is read on each step, as the state changes. */
+fun swipeNestedConnection(
+    tracker: SwipeScrollTracker,
+    canOpen: () -> Boolean,
+    onOpen: () -> Unit
+): NestedScrollConnection = object : NestedScrollConnection {
+    override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+        val isUserDrag = source == NestedScrollSource.UserInput
+        if (isUserDrag && tracker.onPostScroll(consumed.y, available.y) && canOpen()) onOpen()
+        return Offset.Zero
+    }
+
+    override suspend fun onPreFling(available: Velocity): Velocity {
+        tracker.reset()
+        return Velocity.Zero
+    }
+}
 
 /** The alphabet edge strip of the home, or null when the alphabet is off. */
 internal fun HomeDragParams.scrubberEdgeZone(): ScrubberEdgeZone? {
@@ -50,6 +88,8 @@ internal fun HomeDragParams.scrubberEdgeZone(): ScrubberEdgeZone? {
 private fun Modifier.homeVerticalGestures(params: HomeDragParams): Modifier = pointerInput(
     params.isLeftHandedMode,
     params.isAlphabetScrubberDisabled,
+    params.isSwipeDownEnabled,
+    params.isSwipeUpEnabled,
     params.screenHeightPx,
     params.screenWidthPx
 ) {
@@ -164,13 +204,13 @@ private fun handleVerticalGesture(
     var triggered = hasTriggered
     if (!triggered) {
         val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
-        val absX = abs(totalDx)
-        val absY = abs(totalDy)
-
-        if (absY > verticalIntentThresholdPx && absY > VERTICAL_GESTURE_RATIO * absX) {
+        val swipe = verticalSwipeOf(totalDx, totalDy, verticalIntentThresholdPx)
+        // With a swipe off, it does nothing and leaves the finger to the home.
+        val opens = swipe.opensHome(isUpEnabled = params.isSwipeUpEnabled, isDownEnabled = params.isSwipeDownEnabled)
+        if (opens) {
             triggered = true
             change.consume()
-            if (totalDy > 0) {
+            if (swipe == VerticalSwipe.DOWN) {
                 params.onExpandNotificationShade()
             } else {
                 params.onAllAppsDrawerOpen()

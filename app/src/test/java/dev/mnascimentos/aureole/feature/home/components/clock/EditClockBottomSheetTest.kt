@@ -81,8 +81,8 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Assert
-        composeTestRule.onNodeWithText("Customize Clock").assertIsDisplayed()
-        composeTestRule.onNodeWithText("STYLE").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Customize clock").assertIsDisplayed()
+        composeTestRule.onNodeWithText("LAYOUT").assertIsDisplayed()
         composeTestRule.onNodeWithText("ALIGNMENT").performScrollTo().assertIsDisplayed()
 
         composeTestRule.onNodeWithText("Format").performClick()
@@ -120,7 +120,7 @@ class EditClockBottomSheetTest {
         advanceAnimation()
 
         // Assert field is shown
-        composeTestRule.onNodeWithText("Greeting Text").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Greeting text").performScrollTo().assertIsDisplayed()
 
         // Act - type in text field specifically using hasSetTextAction
         composeTestRule.onNode(hasSetTextAction()).performTextInput("Olá Amigo")
@@ -282,8 +282,8 @@ class EditClockBottomSheetTest {
 
         composeTestRule.onNodeWithText("Time only").performClick()
         assertEquals("TIME_ONLY", selectedStyle)
-        composeTestRule.onNodeWithText("Info and date").performClick()
-        assertEquals("GREETING_AND_DATE", selectedStyle)
+        composeTestRule.onNodeWithText("Msg, Time, Date").performClick()
+        assertEquals("MSG_TIME_DATE", selectedStyle)
     }
 
     @androidx.compose.runtime.Composable

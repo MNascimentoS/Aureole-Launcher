@@ -96,6 +96,8 @@ data class HomeScreenActions(
     val onCloseEditClockBottomSheet: () -> Unit = {},
     val onUpdateClockStyle: (String) -> Unit = {},
     val onUpdateClockCustomGreeting: (String) -> Unit = {},
+    /** Picks what the message line shows: a `ClockMessage` key. */
+    val onUpdateClockMessage: (String) -> Unit = {},
     val onUpdateClockAlignment: (String) -> Unit = {},
     val onUpdateClockFontFamily: (String) -> Unit = {},
     val onUpdateClockTimeFormat: (String) -> Unit = {},

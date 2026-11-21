@@ -16,7 +16,9 @@ import dev.mnascimentos.aureole.feature.settings.extensions.changeTheme
 import dev.mnascimentos.aureole.feature.settings.extensions.createFolder
 import dev.mnascimentos.aureole.feature.settings.extensions.finishCardsGlass
 import dev.mnascimentos.aureole.feature.settings.extensions.finishWallpaperEditor
+import dev.mnascimentos.aureole.feature.settings.extensions.onSecretGameOpened
 import dev.mnascimentos.aureole.feature.settings.extensions.onSecretGameOver
+import dev.mnascimentos.aureole.feature.settings.extensions.onSecretSoundToggled
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndo
 import dev.mnascimentos.aureole.feature.settings.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.settings.extensions.performFactoryReset
@@ -72,6 +74,8 @@ private fun buildSettingsScreenActions(
     val baseActions = SettingsScreenActions(
         onBackClick = onFinish,
         onSecretGameOver = viewModel::onSecretGameOver,
+        onSecretGameOpened = viewModel::onSecretGameOpened,
+        onSecretSoundToggled = viewModel::onSecretSoundToggled,
         onSetDefaultLauncherClick = openDefaultLauncherSettings,
         onChangeWallpaperClick = {
             photoPickerLauncher.launch(
@@ -127,6 +131,8 @@ private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScree
         onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
         onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
         onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
+        onToggleSwipeDownNotifications = { viewModel.toggleSetting(SettingToggle.SWIPE_DOWN_NOTIFICATIONS) },
+        onToggleSwipeUpAllApps = { viewModel.toggleSetting(SettingToggle.SWIPE_UP_ALL_APPS) },
         onToggleShowSettingsButtonInAllApps = {
             viewModel.toggleSetting(
                 SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS

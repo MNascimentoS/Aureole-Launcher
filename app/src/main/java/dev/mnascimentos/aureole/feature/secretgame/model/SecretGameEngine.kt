@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
-import kotlin.math.pow
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworksState
+import dev.mnascimentos.aureole.composable.fireworks.model.step
 import kotlin.random.Random
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
@@ -13,8 +14,8 @@ class SecretGameEngine(private val random: Random = Random.Default) {
     fun step(state: SecretGameState, deltaMs: Long): SecretGameStep {
         if (state.phase == SecretGamePhase.PAUSED || state.phase == SecretGamePhase.DONE) return SecretGameStep(state)
         val dt = deltaMs.coerceIn(0L, T.MAX_STEP_MS)
-        val moved = state.advanceMotion(dt, random)
-        return when (moved.phase) {
+        val (moved, bursts) = state.advanceMotion(dt).advanceFireworks(dt, random)
+        val step = when (moved.phase) {
             SecretGamePhase.ENTER -> SecretGameStep(moved.stepEnter())
             SecretGamePhase.INTIMIDATE -> SecretGameStep(moved.stepIntimidate())
             SecretGamePhase.COUNTDOWN -> SecretGameStep(moved.stepCountdown())
@@ -24,6 +25,8 @@ class SecretGameEngine(private val random: Random = Random.Default) {
             SecretGamePhase.EXIT -> SecretGameStep(moved.stepExit())
             SecretGamePhase.PAUSED, SecretGamePhase.DONE -> SecretGameStep(moved)
         }
+        val extra = phaseEvents(state, step.state) + List(bursts) { SecretGameEvent.FireworkBurst }
+        return if (extra.isEmpty()) step else step.copy(events = step.events + extra)
     }
 
     /** [direction] -1 = esquerda, 1 = direita. Fora do jogo, ou na borda, não faz nada. */
@@ -60,16 +63,24 @@ internal fun SecretGameState.finishRun(): SecretGameState {
     return copy(isNewRecord = record, bestScore = maxOf(score, bestScore))
 }
 
-private fun SecretGameState.advanceMotion(dt: Long, random: Random): SecretGameState {
+private fun SecretGameState.advanceMotion(dt: Long): SecretGameState {
     val seconds = dt / MS_PER_SECOND
-    val follow = 1f - T.LANE_FOLLOW_REST.pow(seconds)
     return copy(
         phaseMs = phaseMs + dt,
         clockMs = clockMs + dt,
-        tilt = tilt * T.TILT_DECAY_REST.pow(seconds),
-        shipX = lerp(shipX, laneX(lane), follow),
+        tilt = tilt * secretTiltKeep(seconds),
+        shipX = lerp(shipX, laneX(lane), secretShipFollow(seconds)),
         particles = particles.advance(seconds),
-    ).maybeSparkle(seconds, random)
+        levelFlashMs = (levelFlashMs - dt).coerceAtLeast(0L),
+    )
+}
+
+/** Fogos andam no resultado e terminam de cair na saída. Devolve o estado e quantos estouraram. */
+private fun SecretGameState.advanceFireworks(dt: Long, random: Random): Pair<SecretGameState, Int> {
+    val active = phase == SecretGamePhase.RESULT || phase == SecretGamePhase.EXIT
+    if (!active || fireworks.isIdle) return this to 0
+    val step = fireworks.step(dt, layout.aspect, random)
+    return copy(fireworks = step.fireworks) to step.bursts
 }
 
 private fun SecretGameState.stepEnter(): SecretGameState {
@@ -99,7 +110,11 @@ private fun SecretGameState.stepResult(): SecretGameState =
     if (phaseMs >= T.RESULT_TOTAL_MS) to(SecretGamePhase.EXIT) else this
 
 private fun SecretGameState.stepExit(): SecretGameState =
-    if (phaseMs >= T.EXIT_MS) copy(particles = emptyList()).to(SecretGamePhase.DONE) else this
+    if (phaseMs < T.EXIT_MS) {
+        this
+    } else {
+        copy(particles = emptyList(), fireworks = FireworksState()).to(SecretGamePhase.DONE)
+    }
 
 internal const val MS_PER_SECOND = 1000f
 private const val FACE_WOBBLE_OFFSET = 3f

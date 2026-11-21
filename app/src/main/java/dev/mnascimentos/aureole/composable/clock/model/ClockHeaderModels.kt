@@ -4,6 +4,8 @@ import android.graphics.Typeface
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.data.model.ClockConfig
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
 
 data class ClockHazeConfig(
     val hazeState: HazeState? = null,
@@ -15,6 +17,7 @@ data class ClockHazeConfig(
 data class ClockHeaderConfig(
     val style: String? = null,
     val customGreeting: String? = null,
+    val message: String? = null,
     val alignment: String? = null,
     val fontFamily: String? = null,
     val timeFormat: String? = null,
@@ -23,7 +26,9 @@ data class ClockHeaderConfig(
     val backgroundColor: Int? = null,
     val textColorRef: String? = null,
     val backgroundColorRef: String? = null,
-    val isBackgroundEnabled: Boolean? = null
+    val isBackgroundEnabled: Boolean? = null,
+    /** The editor preview: the same room above and below the lines (RF-D3). */
+    val isVerticallyBalanced: Boolean = false
 )
 
 internal data class ClockHeaderContentParams(
@@ -31,7 +36,7 @@ internal data class ClockHeaderContentParams(
     val colorPrimary: Int,
     val composeTextColor: Color,
     val greeting: String,
-    val clockStyle: String,
+    val layout: ClockLayout,
     val alignment: String,
     val fontFamily: String,
     val timeFormat: String,
@@ -50,10 +55,12 @@ internal data class ClockTimeDisplayParams(
 data class ResolvedClockConfig(
     val style: String,
     val customGreeting: String,
+    val message: String = ClockConfig.DEFAULT_MESSAGE,
     val alignment: String,
     val fontFamily: String,
     val timeFormat: String,
     val dateFormat: String,
     val textColor: Int,
-    val backgroundColor: Int
+    val backgroundColor: Int,
+    val isVerticallyBalanced: Boolean = false
 )

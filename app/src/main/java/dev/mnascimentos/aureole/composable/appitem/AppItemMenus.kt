@@ -67,7 +67,7 @@ fun AppItemBottomSheet(
                     params = AureoleAppIconParams(contentDescription = params.app.label)
                 )
             },
-            onSettingsClick = params.actions.onOpenSettings
+            showHeaderAction = false
         )
     ) {
         appMenuEntries(params = params, shortcuts = shortcuts, onDismiss = onDismiss, context = context)

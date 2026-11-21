@@ -93,6 +93,8 @@ data class AureoleEditOverlayConfig(
     val edgeToEdgeContent: Boolean = false,
     val hasExternalBackdrop: Boolean = false,
     val host: OverlayHostSpec = OverlayHostSpec(),
+    /** The bottom bar is the tab bar: it keeps a tight margin above and below, unlike a row of buttons. */
+    val hasTabBottomBar: Boolean = false,
     val dismissOnTapOutside: Boolean = true,
     val isLocked: Boolean = false,
     val headerAccessory: (@Composable () -> Unit)? = null,
@@ -140,6 +142,7 @@ internal class OverlaySheetDecorations(
     val showHeaderAction: Boolean = true,
     /** Left-handed: the logo goes to the start of the title line. */
     val isLeftHanded: Boolean = false,
+    val hasTabBottomBar: Boolean = false,
     val headerSlots: OverlayHeaderSlots = OverlayHeaderSlots()
 )
 

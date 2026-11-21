@@ -23,6 +23,8 @@ data class SettingsAdvancedDialogActions(
 data class SettingsScreenActions(
     val onBackClick: () -> Unit = {},
     val onSecretGameOver: (Int) -> Unit = {},
+    val onSecretGameOpened: () -> Unit = {},
+    val onSecretSoundToggled: () -> Unit = {},
     val onSetDefaultLauncherClick: () -> Unit = {},
     val onOpenFavoritePickerClick: () -> Unit = {},
     val onToggleFavorite: (String) -> Unit = {},
@@ -56,6 +58,8 @@ data class SettingsScreenActions(
     val onHeaderOffsetChanged: (Int) -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},
     val onToggleDisableAlphabetScrubber: () -> Unit = {},
+    val onToggleSwipeDownNotifications: () -> Unit = {},
+    val onToggleSwipeUpAllApps: () -> Unit = {},
     val onOpenResetGridDialog: () -> Unit = {},
     val onConfirmResetGrid: () -> Unit = {},
     val onDismissResetGridDialog: () -> Unit = {},

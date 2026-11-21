@@ -2,9 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -103,7 +101,8 @@ internal fun EditClockOverlay(
                 hazeState = effectiveHazeState,
                 isVisible = isVisible,
                 isLeftHanded = clockState.isLeftHandedMode,
-                edgeToEdgeContent = true
+                edgeToEdgeContent = true,
+                hasTabBottomBar = true
             ),
             previewContent = {
                 EditClockPreviewCard(
@@ -148,13 +147,12 @@ private fun rememberClockPagerState(initialTab: ClockTab): PagerState {
     return pagerState
 }
 
-/** Footer: tabs fixed below the preview. */
+/** Footer: tabs fixed below the preview; the margin around the bar comes from `hasTabBottomBar`. */
 @Composable
 private fun ColumnScope.EditClockFooter(
     pagerState: PagerState
 ) {
     val scope = rememberCoroutineScope()
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
     EditClockTabBar(
         selected = ClockTab.resolve(
             currentPage = pagerState.currentPage,
@@ -163,7 +161,6 @@ private fun ColumnScope.EditClockFooter(
         ),
         onTabSelected = { tab -> scope.launch { pagerState.animateScrollToPage(tab.index) } }
     )
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
 }
 
 @Composable
@@ -185,7 +182,10 @@ private fun EditClockPreviewCard(
                 isBackgroundEnabled = uiState.isClockBackgroundEnabled
             ),
             // The clock fields of uiState hold the edited clock (forClockEditor); all of them, the background too.
-            config = uiState.defaultClockConfig().toHeaderConfig().copy(customGreeting = tempCustomGreeting)
+            config = uiState.defaultClockConfig().toHeaderConfig().copy(
+                customGreeting = tempCustomGreeting,
+                isVerticallyBalanced = true
+            )
         )
     }
 }

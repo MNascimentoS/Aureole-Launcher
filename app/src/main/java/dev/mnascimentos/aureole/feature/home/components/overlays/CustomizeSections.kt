@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -22,6 +24,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
@@ -105,12 +108,15 @@ internal fun CustomizeAddSection(
         LeftHandMirror(isLeftHanded) {
             Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
                 CustomizeAddItem.rows.forEach { row ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
+                    Row(
+                        modifier = Modifier.height(IntrinsicSize.Max),
+                        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+                    ) {
                         row.forEach { item ->
                             AddTile(
                                 item = item,
                                 onClick = { onAdd(item) },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f).fillMaxHeight()
                             )
                         }
                         repeat(CUSTOMIZE_ADD_COLUMNS - row.size) { Spacer(modifier = Modifier.weight(1f)) }
@@ -126,7 +132,7 @@ internal fun CustomizeAddSection(
 private fun AddTile(item: CustomizeAddItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
-            .height(AureoleDS.dimens.shortcutTileHeight)
+            .heightIn(min = AureoleDS.dimens.shortcutTileHeight)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = CustomizeMetrics.CARD_ALPHA))
             .clickable(role = Role.Button, onClick = onClick)
@@ -150,7 +156,9 @@ private fun AddTile(item: CustomizeAddItem, onClick: () -> Unit, modifier: Modif
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
                 textAlign = TextAlign.Center,
-                maxLines = 2
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
+                minLines = 2
             )
         )
     }

@@ -133,8 +133,8 @@ class AppItemRowTest {
 
         composeTestRule.onNodeWithText("Row App Test").performTouchInput { longClick() }
 
-        composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
-        composeTestRule.onNodeWithText("App Info").performClick()
+        composeTestRule.onNodeWithText("App info").assertIsDisplayed()
+        composeTestRule.onNodeWithText("App info").performClick()
 
         assertTrue(appInfoClicked)
     }

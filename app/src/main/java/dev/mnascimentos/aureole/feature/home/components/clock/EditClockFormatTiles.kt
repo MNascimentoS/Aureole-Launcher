@@ -23,7 +23,7 @@ import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
 import dev.mnascimentos.aureole.composable.clock.model.ClockDateFormat
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeFormat
 import dev.mnascimentos.aureole.composable.clock.model.formatClockSample
-import dev.mnascimentos.aureole.composable.optiontile.AureoleOptionTile
+import dev.mnascimentos.aureole.composable.optiontile.AureoleCenteredOptionTile
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -55,7 +55,7 @@ internal fun EditClockTimeTiles(
         val (_, format24) = ClockHeaderUtils.resolveClockTimeFormats(option.format.key)
         val uses12Hour = option.format == ClockTimeFormat.H12 || (option.format == ClockTimeFormat.SYSTEM && !is24Hour)
         val pattern = if (uses12Hour) TIME_SAMPLE_PATTERN_12H else format24
-        AureoleOptionTile(
+        AureoleCenteredOptionTile(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),
             selected = option.format == selected,
@@ -71,7 +71,8 @@ internal fun EditClockDateTiles(
     selectedKey: String,
     nowMillis: Long,
     onSelect: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     val locale = LocalConfiguration.current.locales[0]
     val selected = ClockDateFormat.fromKey(selectedKey)
@@ -81,11 +82,11 @@ internal fun EditClockDateTiles(
         items = ClockDateOption.entries
     ) { option, tileModifier ->
         val pattern = ClockHeaderUtils.resolveClockDatePattern(option.format.storageKey, locale)
-        AureoleOptionTile(
+        AureoleCenteredOptionTile(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),
             selected = option.format == selected,
-            onClick = { onSelect(option.format.storageKey) },
+            onClick = if (enabled) ({ onSelect(option.format.storageKey) }) else null,
             modifier = tileModifier
         )
     }
@@ -96,9 +97,10 @@ private fun TileSample(text: String) {
     AureoleText(
         text = text,
         color = AureoleDS.colors.onSurfaceHigh,
+        modifier = Modifier.fillMaxWidth(),
         format = AureoleTextFormatParams(
             style = AureoleDS.typography.bodyMedium,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

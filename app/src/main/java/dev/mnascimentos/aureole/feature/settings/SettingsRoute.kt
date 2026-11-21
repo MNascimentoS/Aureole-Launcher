@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameActions
 import dev.mnascimentos.aureole.feature.settings.components.SettingsSheetHost
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsNavigationActions
@@ -45,7 +46,8 @@ fun SettingsNavGraph(
                         onNavigateToAppearance = { onOpenArea(SettingsArea.APPEARANCE) },
                         onNavigateToAdvanced = { onOpenArea(SettingsArea.ADVANCED) }
                     ),
-                    onSecretGameOver = actions.onSecretGameOver
+                    onSecretGameOver = actions.onSecretGameOver,
+                    secretActions = SecretGameActions(actions.onSecretGameOpened, actions.onSecretSoundToggled)
                 )
             }
         }

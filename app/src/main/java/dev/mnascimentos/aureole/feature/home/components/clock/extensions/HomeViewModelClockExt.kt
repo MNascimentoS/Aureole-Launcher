@@ -5,6 +5,8 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
 fun HomeViewModel.updateClockStyle(style: String) = editClock { it.copy(style = style) }
 
+fun HomeViewModel.updateClockMessage(message: String) = editClock { it.copy(message = message) }
+
 fun HomeViewModel.updateClockCustomGreeting(greeting: String) = editClock { it.copy(customGreeting = greeting) }
 
 fun HomeViewModel.updateClockAlignment(alignment: String) = editClock { it.copy(alignment = alignment) }

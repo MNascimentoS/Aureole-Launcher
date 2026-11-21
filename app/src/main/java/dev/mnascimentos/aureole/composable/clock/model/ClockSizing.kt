@@ -14,14 +14,20 @@ private const val LARGE_TIME_SIZE_PX = 68f
 private const val MEDIUM_TIME_SIZE_PX = 56f
 private val TIME_SIZES_PX = listOf(LARGE_TIME_SIZE_PX, MEDIUM_TIME_SIZE_PX)
 private const val SMALLEST_TIME_SIZE_PX = 42f
+private const val MIN_TIME_SIZE_PX = 12f
 
-/** What the clock header draws for a given height: the size of the time and whether the greeting fits. */
-data class ClockSizing(val textSizePx: Float, val showGreeting: Boolean)
+/**
+ * What the clock header draws for a given height: the size of the time, whether the greeting fits, and the height
+ * the lines take ([blockHeightDp], in dp with the font scale), which never goes over the height given when the time
+ * can still shrink, so the time never covers the date or the message.
+ */
+data class ClockSizing(val textSizePx: Float, val showGreeting: Boolean, val blockHeightDp: Float = 0f)
 
 /**
  * Time and date come first: picks the biggest time size whose block (time plus date, scaled by [fontScale]) fits in
- * [maxHeightDp], or the smallest one. The greeting only shows when the style allows it ([greetingAllowed]) and it
- * still fits at that size. [hasDate] is false for the time-only style.
+ * [maxHeightDp]. When not even the smallest fixed size fits (a short landscape cell), the time takes the height
+ * left by the date, down to a floor. The greeting only shows when the layout has one ([greetingAllowed]) and it
+ * still fits at that size. [hasDate] is false for the layouts without a date.
  */
 fun resolveClockSizing(
     maxHeightDp: Float,
@@ -33,8 +39,9 @@ fun resolveClockSizing(
     fun blockHeight(sizePx: Float, withGreeting: Boolean): Float =
         (sizePx * TIME_HEIGHT_FACTOR + dateReserve + if (withGreeting) GREETING_RESERVE_DP else 0f) * fontScale
 
+    val fittedSize = (maxHeightDp / fontScale - dateReserve) / TIME_HEIGHT_FACTOR
     val size = TIME_SIZES_PX.firstOrNull { blockHeight(it, withGreeting = false) <= maxHeightDp }
-        ?: SMALLEST_TIME_SIZE_PX
+        ?: fittedSize.coerceIn(MIN_TIME_SIZE_PX, SMALLEST_TIME_SIZE_PX)
     val showGreeting = greetingAllowed && blockHeight(size, withGreeting = true) <= maxHeightDp
-    return ClockSizing(size, showGreeting)
+    return ClockSizing(size, showGreeting, blockHeight(size, showGreeting))
 }

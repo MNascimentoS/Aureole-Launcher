@@ -34,7 +34,7 @@ class PickFontBottomSheetTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Pick Font").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Pick font").assertIsDisplayed()
         composeTestRule.onNodeWithText(firstFont).assertIsDisplayed()
     }
 

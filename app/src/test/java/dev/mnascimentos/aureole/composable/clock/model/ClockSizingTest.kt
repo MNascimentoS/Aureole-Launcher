@@ -24,11 +24,44 @@ class ClockSizingTest {
     }
 
     @Test
-    fun `when the container is at the minimum, should use the small size`() {
-        val sizing = resolveClockSizing(maxHeightDp = 40f, fontScale = 1f, greetingAllowed = true)
+    fun `when the smallest fixed size fits, should use it`() {
+        val sizing = resolveClockSizing(maxHeightDp = 50f, fontScale = 1f, greetingAllowed = true)
 
         assertEquals(42f, sizing.textSizePx)
         assertFalse(sizing.showGreeting)
+    }
+
+    @Test
+    fun `when the container is a short landscape cell, should size the time by the height left by the date`() {
+        val sizing = resolveClockSizing(maxHeightDp = 40f, fontScale = 1f, greetingAllowed = true)
+
+        assertTrue(sizing.textSizePx < 42f)
+        assertFalse(sizing.showGreeting)
+        assertTrue(sizing.blockHeightDp <= 40f)
+    }
+
+    @Test
+    fun `when in landscape heights, should keep the lines inside the height with no negative room`() {
+        listOf(36f, 40f, 44f, 48f, 56f, 64f, 72f).forEach { height ->
+            listOf(1f, 1.15f, 1.3f).forEach { fontScale ->
+                listOf(true, false).forEach { hasDate ->
+                    val sizing = resolveClockSizing(height, fontScale, greetingAllowed = true, hasDate = hasDate)
+
+                    assertTrue("h=$height scale=$fontScale date=$hasDate", sizing.blockHeightDp <= height)
+                    assertTrue(height - sizing.blockHeightDp >= 0f)
+                    assertTrue(sizing.textSizePx > 0f)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when the greeting is shown, should count it in the lines height`() {
+        val sizing = resolveClockSizing(maxHeightDp = 160f, fontScale = 1f, greetingAllowed = true)
+        val withoutGreeting = resolveClockSizing(maxHeightDp = 160f, fontScale = 1f, greetingAllowed = false)
+
+        assertTrue(sizing.blockHeightDp > withoutGreeting.blockHeightDp)
+        assertTrue(sizing.blockHeightDp <= 160f)
     }
 
     @Test

@@ -63,7 +63,7 @@ class QuickButtonNameTest {
     fun `when there is no shortcut and no name, should use the generic quick button name`() {
         showTitle(model(null, ShortcutAction.None))
 
-        composeTestRule.onNodeWithText("Quick Button").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Quick button").assertIsDisplayed()
     }
 
     @Test

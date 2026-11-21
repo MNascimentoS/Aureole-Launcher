@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
@@ -181,7 +180,7 @@ private fun ExposedDropdownMenuBoxScope.AddAppDropdownMenu(
             width = AureoleDS.dimens.borderMinimal,
             color = AureoleDS.colors.outline.copy(alpha = 0.3f)
         ),
-        shadowElevation = 8.dp,
+        shadowElevation = AureoleDS.dimens.floatingElevation,
         modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
         filteredApps.forEach { app ->

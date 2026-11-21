@@ -198,7 +198,7 @@ class SettingsSheetHostTest {
         setSettings()
         openArea("Appearance")
         composeTestRule.onNodeWithText("Custom colors").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Set Background").assertExists()
+        composeTestRule.onNodeWithText("Set background").assertExists()
     }
 
     @Test

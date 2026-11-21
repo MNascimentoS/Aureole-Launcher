@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
+import dev.mnascimentos.aureole.composable.optiontile.model.OptionTileContent
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -28,17 +29,39 @@ private object OptionTileMetrics {
 }
 
 /**
- * Selectable tile with a [sample] of the option on top and its [label] below. Stateless: the tap is reported through
- * [onClick]. The selected tile gets an outline in the high-emphasis color and is exposed as a radio button.
+ * Selectable tile with a [sample] of the option on top and its [label] below, both at the start. Stateless: the tap
+ * is reported through [onClick]. The selected tile gets an outline in the high-emphasis color and is exposed as a
+ * radio button. A null [onClick] leaves the tile disabled: it ignores taps and is exposed as disabled; dimming it is
+ * up to the caller.
  */
 @Composable
 fun AureoleOptionTile(
     sample: @Composable () -> Unit,
     label: String,
     selected: Boolean,
-    onClick: () -> Unit,
+    onClick: (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
+    OptionTileBody(OptionTileContent(sample, label, selected, onClick), isCentered = false, modifier = modifier)
+}
+
+/** [AureoleOptionTile] with the sample and the label in the middle of the tile (the clock Format pills). */
+@Composable
+fun AureoleCenteredOptionTile(
+    sample: @Composable () -> Unit,
+    label: String,
+    selected: Boolean,
+    onClick: (() -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    OptionTileBody(OptionTileContent(sample, label, selected, onClick), isCentered = true, modifier = modifier)
+}
+
+@Composable
+private fun OptionTileBody(content: OptionTileContent, isCentered: Boolean, modifier: Modifier = Modifier) {
+    val (sample, label) = content
+    val selected = content.selected
+    val onClick = content.onClick
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
     val borderColor = if (selected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
     Column(
@@ -47,18 +70,26 @@ fun AureoleOptionTile(
             .clip(shape)
             .background(AureoleDS.colors.surfaceVariant.copy(alpha = OptionTileMetrics.UNSELECTED_ALPHA))
             .border(AureoleDS.dimens.borderMax, borderColor, shape)
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
+            .selectable(
+                selected = selected,
+                enabled = onClick != null,
+                role = Role.RadioButton,
+                onClick = { onClick?.invoke() }
+            )
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = if (isCentered) Alignment.CenterHorizontally else Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) { sample() }
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = if (isCentered) Alignment.Center else Alignment.CenterStart
+        ) { sample() }
         AureoleText(
             text = label,
             color = if (selected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
-                textAlign = TextAlign.Start,
+                textAlign = if (isCentered) TextAlign.Center else TextAlign.Start,
                 maxLines = 2
             )
         )

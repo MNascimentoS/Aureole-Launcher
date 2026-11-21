@@ -1,19 +1,22 @@
-@file:Suppress(
-    "LargeClass",
-    "TooManyFunctions",
-    "FileLength",
-    "MagicNumber",
-    "MatchingDeclarationName",
-    "unused"
-)
-// Suppressed detekt rules because this file serves as the unified Design System color palette registry.
-
 package dev.mnascimentos.aureole.core.designsystem.palette
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.ColorUtils
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
+
+private const val HSL_SIZE = 3
+private const val DARK_LUMINANCE_LIMIT = 0.5f
+private const val SURFACE_DELTA = 0.08f
+private const val VARIANT_DELTA = 0.16f
+private const val OUTLINE_DELTA = 0.28f
+private const val TEXT_SATURATION = 0.3f
+private const val MEDIUM_LIGHT_ON_DARK = 0.82f
+private const val MEDIUM_LIGHT_ON_LIGHT = 0.22f
+private const val LOW_LIGHT_ON_DARK = 0.65f
+private const val LOW_LIGHT_ON_LIGHT = 0.38f
+private const val ON_HIGH_DARK_BG = 0xFFFFFFFF
+private const val ON_HIGH_LIGHT_BG = 0xFF101418
 
 data class ThemePalette(
     val name: String,
@@ -41,18 +44,10 @@ fun ThemePalette.toLight(): ThemePalette = ThemePalette(
     )
 )
 
-val frostbitePalette = ThemePalette(
-    name = "Frostbite",
-    category = PaletteCategory.COLD,
-    colors = AureoleColors(
-        onSurfaceHigh = Color(0xFFFFFFFF),
-        onSurfaceMedium = Color(0xFFC5D8E8),
-        onSurfaceLow = Color(0xFF9BB4C8),
-        outline = Color(0xFF7D96AA),
-        surfaceVariant = Color(0xFF4A5D6B),
-        surface = Color(0xFF2B373E),
-        background = Color(0xFF12181D),
-    )
+val frostbitePalette = presetPalette(
+    "Frostbite",
+    PaletteCategory.COLD,
+    "FFFFFF C5D8E8 9BB4C8 7D96AA 4A5D6B 2B373E 12181D"
 )
 
 /**
@@ -72,24 +67,27 @@ fun createPaletteFromSeedColor(seedColorInt: Int, isDarkTheme: Boolean = true): 
 }
 
 private fun buildSeedAureoleColors(seedColorInt: Int): AureoleColors {
-    val hsl = FloatArray(3)
+    val hsl = FloatArray(HSL_SIZE)
     ColorUtils.colorToHSL(seedColorInt, hsl)
     val hue = hsl[0]
     val sat = hsl[1]
-    val isDarkBg = ColorUtils.calculateLuminance(seedColorInt) < 0.5f
+    val isDarkBg = ColorUtils.calculateLuminance(seedColorInt) < DARK_LUMINANCE_LIMIT
 
     val offset = if (isDarkBg) 1f else -1f
     fun adjustLightness(delta: Float) = (hsl[2] + offset * delta).coerceIn(0f, 1f)
 
-    val surfaceColor = Color(ColorUtils.HSLToColor(floatArrayOf(hue, sat, adjustLightness(0.08f))))
-    val surfaceVariantColor = Color(ColorUtils.HSLToColor(floatArrayOf(hue, sat, adjustLightness(0.16f))))
-    val outlineColor = Color(ColorUtils.HSLToColor(floatArrayOf(hue, sat, adjustLightness(0.28f))))
+    val surfaceColor = Color(ColorUtils.HSLToColor(floatArrayOf(hue, sat, adjustLightness(SURFACE_DELTA))))
+    val surfaceVariantColor = Color(ColorUtils.HSLToColor(floatArrayOf(hue, sat, adjustLightness(VARIANT_DELTA))))
+    val outlineColor = Color(ColorUtils.HSLToColor(floatArrayOf(hue, sat, adjustLightness(OUTLINE_DELTA))))
 
-    val onHigh = if (isDarkBg) Color(0xFFFFFFFF) else Color(0xFF101418)
-    val onMedium =
-        Color(ColorUtils.HSLToColor(floatArrayOf(hue, (sat * 0.3f).coerceIn(0f, 1f), if (isDarkBg) 0.82f else 0.22f)))
-    val onLow =
-        Color(ColorUtils.HSLToColor(floatArrayOf(hue, (sat * 0.3f).coerceIn(0f, 1f), if (isDarkBg) 0.65f else 0.38f)))
+    val onHigh = if (isDarkBg) Color(ON_HIGH_DARK_BG) else Color(ON_HIGH_LIGHT_BG)
+    val textSat = (sat * TEXT_SATURATION).coerceIn(0f, 1f)
+    val onMedium = Color(
+        ColorUtils.HSLToColor(floatArrayOf(hue, textSat, if (isDarkBg) MEDIUM_LIGHT_ON_DARK else MEDIUM_LIGHT_ON_LIGHT))
+    )
+    val onLow = Color(
+        ColorUtils.HSLToColor(floatArrayOf(hue, textSat, if (isDarkBg) LOW_LIGHT_ON_DARK else LOW_LIGHT_ON_LIGHT))
+    )
 
     return AureoleColors(
         background = Color(seedColorInt),

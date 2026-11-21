@@ -48,7 +48,7 @@ fun AureolePopupMenuItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(AureoleDS.dimens.minTouchTarget)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusXSmall))
             .clickable(
                 onClick = onClick,

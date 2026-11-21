@@ -1,5 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworksState
+import dev.mnascimentos.aureole.feature.secretgame.audio.SecretSoundPlayer
 enum class SecretGamePhase { ENTER, INTIMIDATE, COUNTDOWN, PLAY, PAUSED, EXPLODE, RESULT, EXIT, DONE }
 
 enum class SecretFaceKind { CREATOR, DREAMER }
@@ -53,6 +55,9 @@ data class SecretGameState(
     val nextFaceId: Int = 0,
     val crashedFaceId: Int? = null,
     val hasExploded: Boolean = false,
+    val lastSafeLane: Int = 1,
+    val levelFlashMs: Long = 0L,
+    val fireworks: FireworksState = FireworksState(),
 ) {
     val shipY: Float get() = layout.aspect - SecretGameTuning.SHIP_BOTTOM_OFFSET
     val isRunning: Boolean get() = phase != SecretGamePhase.DONE
@@ -63,6 +68,16 @@ sealed interface SecretGameEvent {
     data object LaneTick : SecretGameEvent
 
     data object Crash : SecretGameEvent
+
+    data class LevelUp(val level: Int) : SecretGameEvent
+
+    data object FireworkBurst : SecretGameEvent
+
+    /** Mudou o número da contagem (3, 2, 1, VAI). */
+    data class CountdownTick(val label: SecretCountdownLabel) : SecretGameEvent
+
+    /** Entrou na tela de pontos: recorde ou "mais sorte na próxima". */
+    data class ResultShown(val isNewRecord: Boolean) : SecretGameEvent
 
     /** Fim da partida: salvar [score] como recorde se for maior. */
     data class GameOver(val score: Int) : SecretGameEvent
@@ -105,3 +120,9 @@ internal data class SecretBurst(
     val count: Int,
     val power: Float
 )
+
+/** What Settings tells the game: the 5th tap opened it, the sound button of the pause was pressed. */
+data class SecretGameActions(val onOpened: () -> Unit = {}, val onSoundToggled: () -> Unit = {})
+
+/** The sound of the game: the [player], whether it is [isOn] (saved) and the [onToggle] of the pause button. */
+data class SecretGameSound(val player: SecretSoundPlayer, val isOn: Boolean, val onToggle: () -> Unit)

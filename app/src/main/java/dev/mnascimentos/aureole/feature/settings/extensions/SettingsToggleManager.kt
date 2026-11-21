@@ -21,7 +21,9 @@ internal object SettingsToggleManager {
             SettingToggle.SHOW_SEARCH_BAR_IN_ALL_APPS -> toggleGroupTwo(vm, toggle)
             SettingToggle.DYNAMIC_WALLPAPER,
             SettingToggle.IN_APP_UPDATE,
-            SettingToggle.THEMED_APP_ICONS -> toggleGroupThree(vm, toggle)
+            SettingToggle.THEMED_APP_ICONS,
+            SettingToggle.SWIPE_DOWN_NOTIFICATIONS,
+            SettingToggle.SWIPE_UP_ALL_APPS -> toggleGroupThree(vm, toggle)
         }
     }
 
@@ -119,6 +121,16 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.isThemedAppIconsEnabled
                 vm.settingsRepository.isThemedAppIconsEnabled = newValue
                 vm.updateUiState { it.copy(isThemedAppIconsEnabled = newValue) }
+            }
+            SettingToggle.SWIPE_DOWN_NOTIFICATIONS -> {
+                val newValue = !vm.uiState.value.isSwipeDownNotificationsEnabled
+                vm.settingsRepository.isSwipeDownNotificationsEnabled = newValue
+                vm.updateUiState { it.copy(isSwipeDownNotificationsEnabled = newValue) }
+            }
+            SettingToggle.SWIPE_UP_ALL_APPS -> {
+                val newValue = !vm.uiState.value.isSwipeUpAllAppsEnabled
+                vm.settingsRepository.isSwipeUpAllAppsEnabled = newValue
+                vm.updateUiState { it.copy(isSwipeUpAllAppsEnabled = newValue) }
             }
             else -> {}
         }

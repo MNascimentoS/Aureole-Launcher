@@ -134,7 +134,13 @@ class OnboardingReducerTest {
     fun `when the last step succeeds, should wait for the surface to close before the checklist`() {
         val previous = stateAt(
             OnboardingStage.GESTURES,
-            OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB))
+            OnboardingUiState(
+                completedSteps = setOf(
+                    GestureCoachStep.OPEN_APPS,
+                    GestureCoachStep.ALPHABET_SCRUB,
+                    GestureCoachStep.NOTIFICATIONS
+                )
+            )
         )
 
         val opened = OnboardingReducer.reduce(previous, previous.copy(showCustomizeBottomSheet = true))
@@ -150,7 +156,11 @@ class OnboardingReducerTest {
         val previous = stateAt(
             OnboardingStage.GESTURES,
             OnboardingUiState(
-                completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.CUSTOMIZE),
+                completedSteps = setOf(
+                    GestureCoachStep.OPEN_APPS,
+                    GestureCoachStep.NOTIFICATIONS,
+                    GestureCoachStep.CUSTOMIZE
+                ),
                 succeededStep = GestureCoachStep.CUSTOMIZE
             )
         ).copy(showCustomizeBottomSheet = true, isAlphabetScrubberDisabled = true)

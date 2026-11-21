@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.core.designsystem.theme
 
 import android.os.Build
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
@@ -10,9 +11,11 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIcons
 import dev.mnascimentos.aureole.core.designsystem.icons.LocalAureoleIcons
+import dev.mnascimentos.aureole.core.designsystem.utils.aureolePressIndication
 
 data class AureoleThemeConfig(
     val darkTheme: Boolean,
@@ -48,8 +51,10 @@ fun AureoleLauncherTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = aureoleTypography.toMaterialTypography(),
-            content = content,
-        )
+        ) {
+            val pressIndication = remember(config.aureoleColors) { aureolePressIndication(config.aureoleColors) }
+            CompositionLocalProvider(LocalIndication provides pressIndication, content = content)
+        }
     }
 }
 

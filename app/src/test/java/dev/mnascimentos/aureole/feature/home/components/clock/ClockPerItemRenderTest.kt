@@ -134,7 +134,7 @@ class ClockPerItemRenderTest {
         composeTestRule.waitForIdle()
 
         // Clock B greets with its own text, although the default look has no greeting at all.
-        composeTestRule.onNodeWithText("Greeting Text").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Greeting text").performScrollTo().assertIsDisplayed()
         composeTestRule.onNode(hasSetTextAction()).assert(hasText("Clock B"))
     }
 

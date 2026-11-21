@@ -52,7 +52,7 @@ class AppearanceBackgroundInnerTest {
         }
         composeTestRule.onNodeWithText("Appearance").performScrollTo().performClick()
         composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithText("Set Background").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Set background").performScrollTo().performClick()
         composeTestRule.waitForIdle()
     }
 
