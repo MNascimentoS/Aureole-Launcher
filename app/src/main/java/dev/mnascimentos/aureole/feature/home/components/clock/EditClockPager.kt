@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -51,7 +50,8 @@ internal fun EditClockPager(
         state = pagerState,
         modifier = modifier
             .fillMaxWidth()
-            .then(if (params.isExpanded) Modifier.animateContentSize() else Modifier)
+            // No animateContentSize: its spring lagged behind the sheet while it grew, so the content was
+            // revealed from the bottom up instead of moving 1:1 with the finger (ajustes-review-aislan-2 RF-F1).
             .followActivePage(pagerState, pageHeights, params.isExpanded),
         verticalAlignment = Alignment.Top,
         beyondViewportPageCount = OFFSCREEN_PAGES,

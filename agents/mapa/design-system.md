@@ -41,6 +41,7 @@ Base: `app/src/main/java/dev/mnascimentos/aureole/core/designsystem/`. Acesso: `
 ## Strings e helpers
 - **Não existe `AureoleDS.strings`.** Texto vem de `stringResource(R.string.x)` ou `@StringRes` em models.
 - `model/TextResource.kt`: `Res(id, args)` ou `Raw(text)`, para texto que vem de resource ou literal.
+- `model/PreviewFade.kt`: `previewAlpha(expandFraction)` (1 → 0, linear) e `isPreviewHidden(alpha)`: a prévia acima da sheet só some em fade ao expandir, sem escala (substitui `previewFit`/`PreviewFit`, removidos).
 - `LocalLeftHanded` (model/), `LocalHazeState` (`utils/HazeUtils.kt`).
 
 ## Ícones (`icons/`)

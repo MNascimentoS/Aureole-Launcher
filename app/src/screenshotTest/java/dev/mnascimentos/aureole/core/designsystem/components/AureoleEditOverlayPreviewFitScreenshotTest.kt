@@ -25,7 +25,7 @@ private fun PreviewFitShortSheetScreenshotTest() {
 
 /**
  * A tall sheet: the preview takes only the room left above it, never reaching the top padding (RF-A2). Past that
- * (the sheet dragged up) the fade to alpha 0 is covered by `PreviewFitTest`.
+ * (the sheet expanding) the preview only fades, covered by `PreviewFadeTest`.
  */
 @PreviewTest
 @AureolePreview
