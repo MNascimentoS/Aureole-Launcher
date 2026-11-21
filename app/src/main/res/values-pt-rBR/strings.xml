@@ -94,6 +94,7 @@
     <string name="settings_behavior_home_opens_all_apps">Home abre todos os apps</string>
     <string name="settings_behavior_all_apps_left_side">Todos os apps do lado esquerdo</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Desativar rolagem alfabética</string>
+    <string name="settings_behavior_swipe_up_all_apps">Deslizar para cima abre todos os apps</string>
     <string name="settings_behavior_swipe_down_notifications">Deslizar para baixo abre notificações</string>
     <string name="settings_behavior_check_for_updates">Verificar atualizações</string>
     <string name="settings_behavior_header_offset">Deslocamento do cabeçalho</string>

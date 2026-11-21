@@ -177,6 +177,11 @@ class SettingsRepository(
         get() = prefs.getBoolean(KEY_SWIPE_DOWN_NOTIFICATIONS, DEFAULT_SWIPE_DOWN_NOTIFICATIONS)
         set(value) = prefs.edit { putBoolean(KEY_SWIPE_DOWN_NOTIFICATIONS, value) }
 
+    /** Swiping up on the home opens the all apps drawer; on by default, also for updates. */
+    var isSwipeUpAllAppsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SWIPE_UP_ALL_APPS, DEFAULT_SWIPE_UP_ALL_APPS)
+        set(value) = prefs.edit { putBoolean(KEY_SWIPE_UP_ALL_APPS, value) }
+
     var showSettingsButtonInAllApps: Boolean
         get() = prefs.getBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, true)
         set(value) = prefs.edit { putBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, value) }
@@ -464,6 +469,8 @@ class SettingsRepository(
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SWIPE_DOWN_NOTIFICATIONS = "swipe_down_notifications"
         const val DEFAULT_SWIPE_DOWN_NOTIFICATIONS = true
+        private const val KEY_SWIPE_UP_ALL_APPS = "swipe_up_all_apps"
+        const val DEFAULT_SWIPE_UP_ALL_APPS = true
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
         private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"
         private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"

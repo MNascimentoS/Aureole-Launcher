@@ -22,6 +22,8 @@ data class HomeDragParams(
     val onExpandNotificationShade: () -> Unit,
     /** The swipe down may open the shade now (toggle on, nothing in front, not editing): see `SwipeDownConditions`. */
     val isSwipeDownEnabled: Boolean = true,
+    /** Settings › Behavior "Swipe up for all apps": off leaves an upward swipe to the home. */
+    val isSwipeUpEnabled: Boolean = true,
     /** Opens the apps list from the alphabet edge (the edge scrub), so it slides in from that side. */
     val onAllAppsDrawerOpenFromEdge: () -> Unit = onAllAppsDrawerOpen,
     /** Y of the finger inside the letters column while an edge scrub runs; -1 when it ends. */

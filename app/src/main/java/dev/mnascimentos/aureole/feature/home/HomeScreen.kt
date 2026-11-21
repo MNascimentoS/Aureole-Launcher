@@ -55,9 +55,9 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
-import dev.mnascimentos.aureole.feature.home.components.overlays.homeSwipeDownNestedScroll
+import dev.mnascimentos.aureole.feature.home.components.overlays.homeSwipeNestedScroll
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
-import dev.mnascimentos.aureole.feature.home.components.overlays.swipeDownNestedConnection
+import dev.mnascimentos.aureole.feature.home.components.overlays.swipeNestedConnection
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
@@ -73,10 +73,13 @@ import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.SwipeDownConditions
-import dev.mnascimentos.aureole.feature.home.model.SwipeDownScrollTracker
+import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
+import dev.mnascimentos.aureole.feature.home.model.SwipeUpConditions
 import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
+import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
+import dev.mnascimentos.aureole.feature.home.model.opensAllApps
 import dev.mnascimentos.aureole.feature.home.model.opensNotifications
 
 private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
@@ -164,12 +167,28 @@ private fun Modifier.homeDragModifier(
     val currentCanSwipeDown by rememberUpdatedState(canSwipeDown)
     val currentOnExpand by rememberUpdatedState(actions.onExpandNotificationShade)
     val tracker = remember(density) {
-        SwipeDownScrollTracker(thresholdPx = with(density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() })
+        SwipeScrollTracker(thresholdPx = with(density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() })
     }
     val connection = remember(tracker) {
-        swipeDownNestedConnection(tracker, canOpen = { currentCanSwipeDown }, onOpen = { currentOnExpand() })
+        swipeNestedConnection(tracker, canOpen = { currentCanSwipeDown }, onOpen = { currentOnExpand() })
     }
-    return homeSwipeDownNestedScroll(tracker, connection).homeDragGestures(
+    val canSwipeUp = SwipeUpConditions(
+        isEnabled = uiState.isSwipeUpAllAppsEnabled,
+        isOverlayActive = uiState.isOverlayActive,
+        isEditing = uiState.isGridEditMode
+    ).opensAllApps()
+    val currentCanSwipeUp by rememberUpdatedState(canSwipeUp)
+    val currentOnOpenDrawer by rememberUpdatedState(actions.onAllAppsDrawerOpen)
+    val upTracker = remember(density) {
+        SwipeScrollTracker(
+            thresholdPx = with(density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() },
+            direction = VerticalSwipe.UP
+        )
+    }
+    val upConnection = remember(upTracker) {
+        swipeNestedConnection(upTracker, canOpen = { currentCanSwipeUp }, onOpen = { currentOnOpenDrawer() })
+    }
+    return homeSwipeNestedScroll(tracker, connection).homeSwipeNestedScroll(upTracker, upConnection).homeDragGestures(
         HomeDragParams(
             isLeftHandedMode = uiState.isLeftHandedMode,
             // No alphabet in landscape, so no edge scrub there either.
@@ -179,6 +198,7 @@ private fun Modifier.homeDragModifier(
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = density,
             isSwipeDownEnabled = canSwipeDown,
+            isSwipeUpEnabled = uiState.isSwipeUpAllAppsEnabled,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
             onExpandNotificationShade = actions.onExpandNotificationShade,

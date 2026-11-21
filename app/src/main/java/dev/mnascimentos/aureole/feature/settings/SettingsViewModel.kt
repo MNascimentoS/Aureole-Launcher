@@ -97,6 +97,7 @@ class SettingsViewModel(
                 isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
                 isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
                 isSwipeDownNotificationsEnabled = settingsRepository.isSwipeDownNotificationsEnabled,
+                isSwipeUpAllAppsEnabled = settingsRepository.isSwipeUpAllAppsEnabled,
                 showSettingsButtonInAllApps = settingsRepository.showSettingsButtonInAllApps,
                 settingsButtonPosition = settingsRepository.settingsButtonPosition,
                 showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,

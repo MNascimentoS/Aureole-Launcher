@@ -24,9 +24,10 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberE
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.edgePressOutcome
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberBoundsFor
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
-import dev.mnascimentos.aureole.feature.home.model.SwipeDownScrollTracker
+import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
 import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
 import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
+import dev.mnascimentos.aureole.feature.home.model.opensHome
 import dev.mnascimentos.aureole.feature.home.model.verticalSwipeOf
 
 /**
@@ -41,12 +42,12 @@ fun Modifier.homeDragGestures(params: HomeDragParams): Modifier =
     homeVerticalGestures(params).homeEdgeScrubGestures(params)
 
 /**
- * A swipe down that starts on something scrollable (the apps list, a scrolling group, a widget) is taken by it, so
- * the home sees only the delta it leaves: at its top, that delta opens the shade through [tracker] (RF-B2). The
- * tracker starts over on every new finger.
+ * A swipe that starts on something scrollable (the apps list, a scrolling group, a widget) is taken by it, so the
+ * home sees only the delta it leaves: a swipe down at its top opens the shade, a swipe up at its bottom opens the
+ * drawer, each through its [tracker] (RF-B2). The tracker starts over on every new finger.
  */
-fun Modifier.homeSwipeDownNestedScroll(
-    tracker: SwipeDownScrollTracker,
+fun Modifier.homeSwipeNestedScroll(
+    tracker: SwipeScrollTracker,
     connection: NestedScrollConnection
 ): Modifier = pointerInput(tracker) {
     awaitEachGesture {
@@ -55,9 +56,9 @@ fun Modifier.homeSwipeDownNestedScroll(
     }
 }.nestedScroll(connection)
 
-/** The nested scroll side of [homeSwipeDownNestedScroll]; [canOpen] is read on each step, as the state changes. */
-fun swipeDownNestedConnection(
-    tracker: SwipeDownScrollTracker,
+/** The nested scroll side of [homeSwipeNestedScroll]; [canOpen] is read on each step, as the state changes. */
+fun swipeNestedConnection(
+    tracker: SwipeScrollTracker,
     canOpen: () -> Boolean,
     onOpen: () -> Unit
 ): NestedScrollConnection = object : NestedScrollConnection {
@@ -88,6 +89,7 @@ private fun Modifier.homeVerticalGestures(params: HomeDragParams): Modifier = po
     params.isLeftHandedMode,
     params.isAlphabetScrubberDisabled,
     params.isSwipeDownEnabled,
+    params.isSwipeUpEnabled,
     params.screenHeightPx,
     params.screenWidthPx
 ) {
@@ -203,8 +205,8 @@ private fun handleVerticalGesture(
     if (!triggered) {
         val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
         val swipe = verticalSwipeOf(totalDx, totalDy, verticalIntentThresholdPx)
-        // With the swipe down off, a downward swipe does nothing and leaves the finger to the home.
-        val opens = swipe == VerticalSwipe.UP || (swipe == VerticalSwipe.DOWN && params.isSwipeDownEnabled)
+        // With a swipe off, it does nothing and leaves the finger to the home.
+        val opens = swipe.opensHome(isUpEnabled = params.isSwipeUpEnabled, isDownEnabled = params.isSwipeDownEnabled)
         if (opens) {
             triggered = true
             change.consume()

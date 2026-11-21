@@ -13,7 +13,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | Repositórios | via `model/HomeRepositories.kt`: App, Widget, Settings, Folder, FavoriteContainer, Container, Grid, ClockConfig (+ `UndoController`) |
 | UiState | `model/MainUiState.kt`: apps/busca, widgets, relógio, tema/vidro, wallpaper, pastas, favoritos, grade, containers, flags de sheets, `undoSnackbar`, `onboarding` |
 | Actions | `model/HomeScreenActions.kt` (data class de lambdas `onXxx`); params em `model/HomeScreenConfigs.kt` |
-| Outros models | `MainUiStateFavorites.kt`, `AllAppsOpenSource.kt`, `GestureExclusion.kt`, `HomeLocalProvider.kt`, `SwipeDownNotifications.kt` (`verticalSwipeOf`, `SwipeDownConditions.opensNotifications`, `SwipeDownScrollTracker`: quando o deslizar para baixo abre as notificações) |
+| Outros models | `MainUiStateFavorites.kt`, `AllAppsOpenSource.kt`, `GestureExclusion.kt`, `HomeLocalProvider.kt`, `SwipeDownNotifications.kt` (`verticalSwipeOf`, `SwipeDownConditions.opensNotifications`, `SwipeUpConditions.opensAllApps`, `VerticalSwipe.opensHome`, `SwipeScrollTracker (direção DOWN ou UP)`: quando o deslizar para baixo abre as notificações) |
 - `updateUiState` passa pelo `OnboardingReducer`. Há também `components/widgets/WidgetPickerViewModel.kt`.
 - Estados `showWidgetPopup`, `showWidgetResizeDialog` e `showSettingsDialog` estão no `MainUiState` mas nenhum composable os consome.
 

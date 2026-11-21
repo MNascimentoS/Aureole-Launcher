@@ -48,4 +48,17 @@ class SettingsRepositoryMethodsTest {
 
         repository.prefs.edit().remove("swipe_down_notifications").commit()
     }
+
+    @Test
+    fun `swipe up for all apps should be on by default and keep what is saved`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val repository = SettingsRepository(context)
+        repository.prefs.edit().remove("swipe_up_all_apps").commit()
+
+        assertTrue(repository.isSwipeUpAllAppsEnabled)
+        repository.isSwipeUpAllAppsEnabled = false
+        assertFalse(SettingsRepository(context).isSwipeUpAllAppsEnabled)
+
+        repository.prefs.edit().remove("swipe_up_all_apps").commit()
+    }
 }

@@ -132,6 +132,7 @@ private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScree
         onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
         onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
         onToggleSwipeDownNotifications = { viewModel.toggleSetting(SettingToggle.SWIPE_DOWN_NOTIFICATIONS) },
+        onToggleSwipeUpAllApps = { viewModel.toggleSetting(SettingToggle.SWIPE_UP_ALL_APPS) },
         onToggleShowSettingsButtonInAllApps = {
             viewModel.toggleSetting(
                 SettingToggle.SHOW_SETTINGS_BUTTON_IN_ALL_APPS

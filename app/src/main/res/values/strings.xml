@@ -94,6 +94,7 @@
     <string name="settings_behavior_home_opens_all_apps">Home opens all apps</string>
     <string name="settings_behavior_all_apps_left_side">All apps on left side</string>
     <string name="settings_behavior_disable_alphabet_scrubber">Disable alphabet scrubber</string>
+    <string name="settings_behavior_swipe_up_all_apps">Swipe up for all apps</string>
     <string name="settings_behavior_swipe_down_notifications">Swipe down for notifications</string>
     <string name="settings_behavior_check_for_updates">Check for updates</string>
     <string name="settings_behavior_header_offset">Header offset</string>
