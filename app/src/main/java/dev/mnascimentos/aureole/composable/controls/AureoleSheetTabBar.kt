@@ -10,7 +10,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
  * The one tab bar of every sheet with pages (clock: Style | Format | Colors; quick button: Icon | Colors): a
- * segmented control fixed at the bottom of the sheet, the selected tab light with dark text (RF-E1, RF-E2).
+ * segmented control fixed at the bottom of the sheet, the selected tab light with dark text (RF-E1, RF-E2). The bar
+ * and the pill are low ([AureoleDS.dimens.xLarge] tall); the touch area still has 48 dp.
  * A target selector inside a page ("Icon color | Background color") is not this bar and stays in the content.
  */
 @Composable
@@ -26,7 +27,7 @@ fun AureoleSheetTabBar(
         selectedIndex = selectedIndex,
         onSelect = onSelect,
         modifier = modifier.semantics { contentDescription = description },
-        itemHeight = AureoleDS.dimens.controlHeight
+        itemHeight = AureoleDS.dimens.xLarge
     )
 }
 

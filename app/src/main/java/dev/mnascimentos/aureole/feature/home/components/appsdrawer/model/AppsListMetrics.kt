@@ -20,8 +20,8 @@ object AppsListMetrics {
     /** Half of the growth: the circle sticks out this much on each side, so the label stays aligned with the apps. */
     val SettingsIconOverflow: Dp = SettingsIconGrowth / 2
 
-    /** Extra space above the divider, on top of the divider's own padding: 32 dp from the last app (RF-B2). */
-    val DividerExtraTop: Dp = 24.dp
+    /** Extra space above the divider, on top of the divider's own padding: 64 dp from the last app. */
+    val DividerExtraTop: Dp = 56.dp
 
     /** Extra space below the divider, on top of the divider's own padding: 16 dp to the item (RF-B2). */
     val DividerExtraBottom: Dp = 8.dp

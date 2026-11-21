@@ -67,7 +67,7 @@ internal fun EditClockPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { contentDescription = description }
-                .fadingEdges(scrollState, AureoleDS.dimens.fadingEdge)
+                .fadingEdges(scrollState, AureoleDS.dimens.xSmall)
                 .verticalScroll(scrollState)
                 .padding(horizontal = AureoleDS.dimens.small)
         ) {
@@ -83,7 +83,7 @@ internal fun EditClockPager(
                 }
                 // Room under the last control so it is not cut in half at the edge of the scroll; the
                 // expanded sheet does not scroll, so the divider sits right after the content instead.
-                if (!params.isExpanded) Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
+                if (!params.isExpanded) Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
             }
         }
     }
