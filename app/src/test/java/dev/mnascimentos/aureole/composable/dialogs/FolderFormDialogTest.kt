@@ -202,7 +202,7 @@ class FolderFormDialogTest {
         var deleted = false
         setForm(folder = AppFolder(id = "1", name = "Tools", icon = "build"), onDelete = { deleted = true })
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit folder").assertIsDisplayed()
         composeTestRule.onNodeWithText("Tools").assertExists()
         composeTestRule.onNodeWithText("Save").assertDoesNotExist()
         composeTestRule.onNodeWithText("Create and pick apps").assertDoesNotExist()

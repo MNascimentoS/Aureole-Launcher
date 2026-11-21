@@ -171,12 +171,9 @@ private fun CustomizeOverlay(
                 title = stringResource(R.string.home_customize_title),
                 isVisible = params.isVisible,
                 isLeftHanded = uiState.isLeftHandedMode,
-                // The logo on the title line opens the settings, as in the other home sheets (RF-05b). In the
-                // showcase it is not clickable and wears the countdown ring instead.
-                onSettingsClick = {
-                    actions.onSettingsClick()
-                    onHide()
-                }.takeUnless { isShowcase },
+                // No logo on the title line: the "Add to home" grid already has the Settings tile (RF-C1). Only the
+                // showcase keeps its slot, for the countdown ring.
+                showHeaderAction = isShowcase,
                 hasExternalBackdrop = true,
                 isLocked = isShowcase,
                 headerAccessory = showcaseProgress?.let { progress -> { CustomizeShowcaseRing(progress) } }

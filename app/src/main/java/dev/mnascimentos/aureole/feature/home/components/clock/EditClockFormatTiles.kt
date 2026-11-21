@@ -60,7 +60,8 @@ internal fun EditClockTimeTiles(
             label = stringResource(option.labelRes),
             selected = option.format == selected,
             onClick = { onSelect(option.format.key) },
-            modifier = tileModifier
+            modifier = tileModifier,
+            isCentered = true
         )
     }
 }
@@ -87,7 +88,8 @@ internal fun EditClockDateTiles(
             label = stringResource(option.labelRes),
             selected = option.format == selected,
             onClick = if (enabled) ({ onSelect(option.format.storageKey) }) else null,
-            modifier = tileModifier
+            modifier = tileModifier,
+            isCentered = true
         )
     }
 }
@@ -97,9 +99,10 @@ private fun TileSample(text: String) {
     AureoleText(
         text = text,
         color = AureoleDS.colors.onSurfaceHigh,
+        modifier = Modifier.fillMaxWidth(),
         format = AureoleTextFormatParams(
             style = AureoleDS.typography.bodyMedium,
-            textAlign = TextAlign.Start,
+            textAlign = TextAlign.Center,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

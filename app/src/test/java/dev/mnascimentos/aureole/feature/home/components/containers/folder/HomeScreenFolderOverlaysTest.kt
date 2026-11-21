@@ -144,7 +144,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit folder").assertIsDisplayed()
         composeTestRule.closeOverlayWithBack()
         assertTrue(renameClosed)
     }
@@ -294,7 +294,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
+        composeTestRule.onNodeWithText("App info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
     }
 }

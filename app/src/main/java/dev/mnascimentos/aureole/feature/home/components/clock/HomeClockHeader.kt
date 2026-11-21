@@ -20,7 +20,8 @@ fun HomeClockHeader(
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     config: ClockHeaderConfig = ClockHeaderConfig(),
     onClick: (() -> Unit)? = null,
-    onLongClick: (() -> Unit)? = null
+    onLongClick: (() -> Unit)? = null,
+    isVerticallyBalanced: Boolean = false
 ) {
     val uiState = LocalHomeUiState.current
     ClockHeader(
@@ -28,7 +29,8 @@ fun HomeClockHeader(
         modifier = modifier,
         hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
         onClick = onClick,
-        onLongClick = onLongClick
+        onLongClick = onLongClick,
+        isVerticallyBalanced = isVerticallyBalanced
     )
 }
 

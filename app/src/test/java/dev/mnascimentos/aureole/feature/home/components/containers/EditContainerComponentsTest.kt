@@ -32,7 +32,7 @@ class EditContainerComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Container Orientation").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container orientation").assertIsDisplayed()
         composeTestRule.onNodeWithText("Vertical").assertIsDisplayed()
         composeTestRule.onNodeWithText("Horizontal").assertIsDisplayed().performClick()
 
@@ -52,7 +52,7 @@ class EditContainerComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Item Alignment").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Item alignment").assertIsDisplayed()
         composeTestRule.onNodeWithText("Space Between").assertIsDisplayed().performClick()
 
         composeTestRule.onNodeWithText("Center").assertIsDisplayed().performClick()
@@ -95,7 +95,7 @@ class EditContainerComponentsTest {
 
         headerNode.performClick()
 
-        composeTestRule.onNodeWithText("Container Background").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Container background").assertIsDisplayed()
     }
 
     @Test

@@ -92,9 +92,9 @@ class SettingsAppearanceControlsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Change Border").assertExists()
+        composeTestRule.onNodeWithText("Change border").assertExists()
         composeTestRule.onNodeWithText("16 dp").assertExists()
-        composeTestRule.onNodeWithText("Change Border").performClick()
+        composeTestRule.onNodeWithText("Change border").performClick()
         assertTrue(clicked)
     }
 

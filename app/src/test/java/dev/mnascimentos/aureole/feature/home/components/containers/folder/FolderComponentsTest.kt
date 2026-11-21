@@ -249,7 +249,7 @@ class FolderComponentsTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit folder").assertIsDisplayed()
 
         // Delete sits at the end of the sheet.
         composeTestRule.onNodeWithText("Delete folder").performSemanticsAction(SemanticsActions.OnClick)
@@ -360,7 +360,7 @@ class FolderComponentsTest {
 
         composeTestRule.onNodeWithText("Test App").assertIsDisplayed()
         composeTestRule.onNodeWithText("Add Apps").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Edit Folder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit folder").assertDoesNotExist()
     }
 
     @Test
@@ -381,7 +381,7 @@ class FolderComponentsTest {
         }
 
         composeTestRule.onNodeWithText("Add Apps").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Edit Folder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Edit folder").assertDoesNotExist()
     }
 
     @Test

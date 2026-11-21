@@ -46,9 +46,9 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Widget Group").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Resize Group").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Toggle Position Indicator").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Widget group").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Resize group").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Toggle position indicator").assertIsDisplayed()
         composeTestRule.onNodeWithText("Remove").performScrollTo().assertIsDisplayed()
     }
 
@@ -73,7 +73,7 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Resize Group").performClick()
+        composeTestRule.onNodeWithText("Resize group").performClick()
         advanceAnimation()
         assertTrue(editCalled)
         assertTrue(dismissed)
@@ -100,7 +100,7 @@ class WidgetStackBottomSheetTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Toggle Position Indicator").performClick()
+        composeTestRule.onNodeWithText("Toggle position indicator").performClick()
         advanceAnimation()
         assertEquals("stack_abc", toggledStackId)
         assertTrue(dismissed)

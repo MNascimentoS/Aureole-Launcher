@@ -49,7 +49,7 @@ class ShortcutSelectionBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Select a shortcut").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Aureole settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)
         assertEquals(ShortcutAction.Settings, updatedShortcuts!!.click)
@@ -79,7 +79,7 @@ class ShortcutSelectionBottomSheetTest {
         }
 
         // Assert
-        composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Aureole settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)
         assertEquals(ShortcutAction.Settings, updatedShortcuts!!.press)
@@ -110,7 +110,7 @@ class ShortcutSelectionBottomSheetTest {
 
         // Assert
         composeTestRule.onNodeWithText("Aureole").performClick()
-        composeTestRule.onNodeWithText("Aureole Settings").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Aureole settings").performScrollTo().performClick()
 
         assertNotNull(updatedShortcuts)
         assertEquals(ShortcutAction.Settings, updatedShortcuts!!.swipeUp)

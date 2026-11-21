@@ -29,7 +29,8 @@ private object OptionTileMetrics {
 
 /**
  * Selectable tile with a [sample] of the option on top and its [label] below. Stateless: the tap is reported through
- * [onClick]. The selected tile gets an outline in the high-emphasis color and is exposed as a radio button. A null
+ * [onClick]. With [isCentered] the sample and the label sit in the middle of the tile (the clock Format pills); by
+ * default they start at the left. The selected tile gets an outline in the high-emphasis color and is exposed as a radio button. A null
  * [onClick] leaves the tile disabled: it ignores taps and is exposed as disabled; dimming it is up to the caller.
  */
 @Composable
@@ -38,7 +39,8 @@ fun AureoleOptionTile(
     label: String,
     selected: Boolean,
     onClick: (() -> Unit)?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isCentered: Boolean = false
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
     val borderColor = if (selected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
@@ -55,16 +57,19 @@ fun AureoleOptionTile(
                 onClick = { onClick?.invoke() }
             )
             .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
-        horizontalAlignment = Alignment.Start,
+        horizontalAlignment = if (isCentered) Alignment.CenterHorizontally else Alignment.Start,
         verticalArrangement = Arrangement.Center
     ) {
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) { sample() }
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = if (isCentered) Alignment.Center else Alignment.CenterStart
+        ) { sample() }
         AureoleText(
             text = label,
             color = if (selected) AureoleDS.colors.onSurfaceHigh else AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(
                 style = AureoleDS.typography.labelSmall,
-                textAlign = TextAlign.Start,
+                textAlign = if (isCentered) TextAlign.Center else TextAlign.Start,
                 maxLines = 2
             )
         )

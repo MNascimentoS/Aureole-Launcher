@@ -85,7 +85,7 @@ class AppItemMenusTest {
         }
 
         composeTestRule.onNodeWithText("Test App Header").assertIsDisplayed()
-        composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
+        composeTestRule.onNodeWithText("App info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Uninstall").assertIsDisplayed()
     }
 
@@ -148,7 +148,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Info").performClick()
+        composeTestRule.onNodeWithText("App info").performClick()
         assertTrue(appInfoClicked)
         assertTrue(dismissed)
     }
@@ -171,7 +171,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Info").performClick()
+        composeTestRule.onNodeWithText("App info").performClick()
         assertTrue(dismissed)
     }
 

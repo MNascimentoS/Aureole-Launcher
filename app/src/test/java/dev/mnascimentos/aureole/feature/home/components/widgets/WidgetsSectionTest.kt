@@ -52,8 +52,8 @@ class WidgetsSectionTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Add Widget").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Add Widget").performClick()
+        composeTestRule.onNodeWithText("Add widget").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add widget").performClick()
 
         assertTrue(clicked)
     }
@@ -71,7 +71,7 @@ class WidgetsSectionTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Add Widget").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Add widget").assertIsDisplayed()
     }
 
     @Test
@@ -146,7 +146,7 @@ class WidgetsSectionTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Add Widget").performClick()
+        composeTestRule.onNodeWithText("Add widget").performClick()
 
         assertEquals("stack_1", clickedStackId)
     }

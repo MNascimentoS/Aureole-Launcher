@@ -187,7 +187,7 @@ class CustomizeBottomSheetTest {
 
         composeTestRule.onNodeWithText("Font").performClick()
 
-        composeTestRule.onNodeWithText("Pick Font").assertExists()
+        composeTestRule.onNodeWithText("Pick font").assertExists()
         composeTestRule.onNodeWithText("ADD TO HOME").assertDoesNotExist()
     }
 
