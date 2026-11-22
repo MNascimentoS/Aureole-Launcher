@@ -43,7 +43,7 @@ internal fun EditClockFontPicker(
         options = ThemePickerSheetOptions(
             componentFont = ComponentFontOptions(
                 title = title,
-                subtitle = stringResource(R.string.home_clock_font_subtitle),
+                subtitle = stringResource(R.string.home_clock_picker_subtitle),
                 sectionLabel = title,
                 sample = formatClockSample(pattern, LocalConfiguration.current.locales[0], nowMillis),
                 isBold = font.isBold,

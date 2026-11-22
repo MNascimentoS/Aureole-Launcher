@@ -19,7 +19,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | AureoleConfirmOverlay | composable/sheets/AureoleConfirmOverlay.kt | Confirmação em estilo sheet | — | Confirmação visual de sheet |
 | AureoleOverlayWindow | composable/overlay/AureoleOverlayWindow.kt | Janela de overlay | — | Base de janelas de overlay |
 | SettingsBottomSheet | composable/sheets/SettingsBottomSheet.kt | Sheet de configurações | — | Sheets de ajustes |
-| PickFontBottomSheet / PickPaletteBottomSheet | composable/sheets/ | Escolher fonte / paleta. Fonte com `ThemePickerSheetOptions.componentFont` (`ComponentFontOptions`, `model/FontPickerModels.kt`) vira o seletor de um componente (`ComponentFontSheet`): título/subtítulo próprios, switch Negrito, "Launcher font" (`FONT_KEY_LAUNCHER`) primeiro, amostra própria nos tiles (`FontChipLook`), prévia acima, salva na hora | — | Só esses seletores; fonte de componente sempre por aqui |
+| PickFontBottomSheet / PickPaletteBottomSheet | composable/sheets/ | Escolher fonte / paleta. Fonte com `ThemePickerSheetOptions.componentFont` (`ComponentFontOptions`, `model/FontPickerModels.kt`) vira o seletor de um componente (`ComponentFontSheet`): título/subtítulo próprios, switch Negrito, "Launcher font" (`FONT_KEY_LAUNCHER`) primeiro, amostra própria nos tiles (`FontChipLook`), prévia acima, salva na hora. Paleta em modo cor: overload `PickPaletteBottomSheet(color = ComponentColorOptions)` (`ComponentColorSheet`, `model/ColorPickerSheetModels.kt`: `ComponentColorRole` TEXT/CARD, `componentColorEntries`, `selectedColorEntry`, `toColorRef`): "Theme" primeiro, "Current" para cor fora das paletas, tile com uma faixa só (`PaletteChip(strip=)`), salva `ThemeColorRef.Fixed` na hora e fecha | — | Só esses seletores; fonte de componente sempre por aqui |
 | ReleaseNotesBottomSheet | composable/sheets/ReleaseNotesBottomSheet.kt | Notas da versão | — | Só notas de versão |
 | RenderModalBottomSheetOrInspection | composable/sheets/RenderModalBottomSheetOrInspection.kt | Modal sheet, ou inline no preview | sheetContent | Previews de sheet |
 | AppItemBottomSheet | composable/appitem/AppItemMenus.kt | Menu de ações do app (exemplo de `AureoleMenuListSheet`); sem o logo do Aureole settings no cabeçalho (`showHeaderAction = false`) | — | Menu de app |
@@ -39,7 +39,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 ## Seletores e controles
 | Nome | Arquivo | Para que serve | Quando usar |
 |---|---|---|---|
-| AureoleThemeColorPicker | composable/color/AureoleThemeColorPicker.kt | Cor do tema ou fixa; `selected`, `onSelect`, `defaultOption` | Toda cor do usuário, persistida como `ThemeColorRef` |
+| AureoleThemeColorPicker | composable/color/AureoleThemeColorPicker.kt | Cor do tema ou fixa; `selected`, `onSelect`, `defaultOption` | Seletor inline dos que ainda não migraram (botão rápido, container, pastas); componente novo usa o modo cor do `PickPaletteBottomSheet` |
 | AureoleColorSwatches / Swatch | composable/color/AureoleColorSwatches.kt | Grade de cores | Cor crua |
 | AureoleThemeSwatchRow, AureolePaletteSwatchRow | composable/color/AureolePaletteRows.kt | Amostras de tema e paletas | Peças do picker |
 | AureoleHueSlider | composable/color/AureoleHueSlider.kt | Slider de matiz | Cor livre (evitar, ver regra §8) |
@@ -73,7 +73,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | Nome | Arquivo | Para que serve |
 |---|---|---|
 | ClockHeader | composable/clock/ClockHeader.kt | Relógio do cabeçalho |
-| ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home; aba Style com Layout (`ClockLayoutOption`, miniaturas de barras), Message (`ClockMessageOption`), Alinhamento e "Change font" (`EditClockFontSection` → `EditClockFontPicker`); Format › Date desabilitada sem data. Espaços do cartão: `clockSpacing` / `ClockSpace` (`composable/clock/model/ClockSpacing.kt`) |
+| ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home; aba Style com Layout (`ClockLayoutOption`, miniaturas de barras), Message (`ClockMessageOption`), Alinhamento e "Change font" (`EditClockFontSection` → `EditClockFontPicker`); Format › Date desabilitada sem data. Aba Colors: linhas "Text color"/"Card color" (`EditClockColorsSection` → `EditClockColorPicker`; `clockColorRefFor`, `clockColorTitleRes` em `model/ClockColorRows.kt`) e o switch do cartão. Espaços do cartão: `clockSpacing` / `ClockSpace` (`composable/clock/model/ClockSpacing.kt`) |
 | ClockFontChoice, `resolveClockFont`, `withMigratedFont` | core/data/model/ClockFontMigration.kt | Fonte do relógio (chave do catálogo ou `FONT_KEY_LAUNCHER`) + negrito; lê as chaves antigas (SANS_SERIF, BOLD, SERIF, MONOSPACE, ROUNDED) |
 | ClockLayout, ClockLine, ClockMessage, `resolveClockLayout` | core/data/model/ClockLayout.kt | 7 layouts (linhas de cima para baixo), mensagem saudação/texto e leitura dos estilos antigos (migração) |
 | WidgetPositionIndicatorBar | composable/widgets/WidgetPositionIndicatorBar.kt | Indicador de posição |

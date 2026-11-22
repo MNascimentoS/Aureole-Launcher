@@ -27,8 +27,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.pagerMinHeight
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 /** Pages kept composed beside the visible one, so every tab is measured and the height can follow the tabs. */
 private const val OFFSCREEN_PAGES = 2
@@ -79,7 +77,7 @@ internal fun EditClockPager(
                 when (tab) {
                     ClockTab.STYLE -> EditClockStylePage(params)
                     ClockTab.FORMAT -> EditClockFormatPage(params)
-                    ClockTab.COLORS -> EditClockColorsPage(params.uiState, params.actions)
+                    ClockTab.COLORS -> EditClockColorsPage(params)
                 }
                 // Room under the last control so it is not cut in half at the edge of the scroll; the
                 // expanded sheet does not scroll, so the divider sits right after the content instead.
@@ -127,6 +125,10 @@ private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
 }
 
 @Composable
-private fun ColumnScope.EditClockColorsPage(uiState: MainUiState, actions: HomeScreenActions) {
-    EditClockColorsSection(uiState = uiState, actions = actions)
+private fun ColumnScope.EditClockColorsPage(params: EditClockPagerParams) {
+    EditClockColorsSection(
+        uiState = params.uiState,
+        actions = params.actions,
+        onOpenColorPicker = params.onOpenColorPicker
+    )
 }

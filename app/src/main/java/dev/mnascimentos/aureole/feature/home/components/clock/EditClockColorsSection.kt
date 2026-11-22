@@ -1,77 +1,102 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.clock.model.clockColorRefOf
-import dev.mnascimentos.aureole.composable.color.AureoleThemeColorPicker
-import dev.mnascimentos.aureole.composable.color.model.ThemeDefaultOption
-import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorEntry
+import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
+import dev.mnascimentos.aureole.composable.sheets.model.selectedColorEntry
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.model.clockColorRefFor
+import dev.mnascimentos.aureole.feature.home.components.clock.model.clockColorTitleRes
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-
-private const val TARGET_TEXT = 0
-private const val TARGET_CARD = 1
+import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
 /**
- * Colors tab of the clock: the same theme color picker as the background, folder and quick button sheets, for the
- * "Text | Card" target chosen in the content (RF-D1, D2). "Theme default" is the starting choice (RF-D3). With the
- * card switched off its color cannot be picked, so the picker gives way to the switch (RF-D4).
+ * Colors tab of the clock (RF-F1): "Text color" and "Card color" rows, each with a dot of the current color and
+ * its name, opening the palette picker in color mode over the sheet ([onOpenColorPicker]). The card switch stays
+ * between them; with the card off its color cannot be picked, so its row gives way to the switch.
  */
 @Composable
-internal fun EditClockColorsSection(uiState: MainUiState, actions: HomeScreenActions) {
-    var target by rememberSaveable { mutableIntStateOf(TARGET_TEXT) }
-    val targetLabel = stringResource(R.string.home_clock_color_target_label)
-    val isCard = target == TARGET_CARD
-    Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium)) {
-        AureoleSegmentedControl(
-            options = listOf(
-                stringResource(R.string.home_clock_color_target_text),
-                stringResource(R.string.home_clock_color_target_card)
-            ),
-            selectedIndex = target,
-            onSelect = { target = it },
-            modifier = Modifier.semantics { contentDescription = targetLabel }
+internal fun EditClockColorsSection(
+    uiState: MainUiState,
+    actions: HomeScreenActions,
+    onOpenColorPicker: (ComponentColorRole) -> Unit = {}
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
+        EditClockColorRow(uiState = uiState, role = ComponentColorRole.TEXT, onClick = onOpenColorPicker)
+        EditClockCardSwitch(checked = uiState.isClockBackgroundEnabled, onToggle = actions.onToggleClockBackground)
+        if (uiState.isClockBackgroundEnabled) {
+            EditClockColorRow(uiState = uiState, role = ComponentColorRole.CARD, onClick = onOpenColorPicker)
+        }
+    }
+}
+
+@Composable
+private fun EditClockColorRow(uiState: MainUiState, role: ComponentColorRole, onClick: (ComponentColorRole) -> Unit) {
+    val selected = clockColorRefFor(uiState, role)
+    val color = selected?.resolve(AureoleDS.colors) ?: clockDefaultColor(role)
+    AureoleMenuRow(
+        MenuRowParams(
+            title = stringResource(clockColorTitleRes(role)),
+            subtitle = clockColorName(selectedColorEntry(selected, role, isSystemInDarkTheme())),
+            icon = { m, _ -> ColorDot(color = color, modifier = m) },
+            showChevron = true,
+            onClick = { onClick(role) }
         )
-        if (isCard) {
-            EditClockCardSwitch(checked = uiState.isClockBackgroundEnabled, onToggle = actions.onToggleClockBackground)
-        }
-        if (!isCard || uiState.isClockBackgroundEnabled) {
-            val selected = if (isCard) {
-                clockColorRefOf(uiState.clockBackgroundColor, uiState.clockBackgroundColorRef)
-            } else {
-                clockColorRefOf(uiState.clockTextColor, uiState.clockTextColorRef)
-            }
-            val onPick: (ThemeColorRef?) -> Unit =
-                if (isCard) actions.onUpdateClockBackgroundColor else actions.onUpdateClockTextColor
-            AureoleThemeColorPicker(
-                selected = selected,
-                onSelect = { onPick(it) },
-                defaultOption = ThemeDefaultOption(
-                    color = (if (isCard) AureoleDS.colors.surfaceVariant else AureoleDS.colors.onSurfaceHigh).toArgb(),
-                    isSelected = selected == null,
-                    onSelect = { onPick(null) }
-                )
-            )
-        }
+    )
+}
+
+/** What the clock draws for [role] when it follows the theme. */
+@Composable
+@ReadOnlyComposable
+internal fun clockDefaultColor(role: ComponentColorRole): Color = when (role) {
+    ComponentColorRole.TEXT -> AureoleDS.colors.onSurfaceHigh
+    ComponentColorRole.CARD -> AureoleDS.colors.surfaceVariant
+}
+
+/** Name of the clock's color: "Theme", the palette that has it, or "Current". */
+@Composable
+@ReadOnlyComposable
+private fun clockColorName(entry: ComponentColorEntry): String = when (entry) {
+    ComponentColorEntry.Theme -> stringResource(R.string.theme_color_swatch_default)
+    is ComponentColorEntry.Current -> stringResource(R.string.theme_color_option_current)
+    is ComponentColorEntry.Palette -> entry.name
+}
+
+@Composable
+private fun ColorDot(color: Color, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.padding(AureoleDS.dimens.xxSmall)) {
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clip(CircleShape)
+                .background(color)
+                .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.outline, CircleShape)
+        )
     }
 }
 
@@ -90,3 +115,18 @@ private fun EditClockCardSwitch(checked: Boolean, onToggle: () -> Unit) {
         Switch(checked = checked, onCheckedChange = { onToggle() })
     }
 }
+
+@AureolePreview
+@Composable
+private fun EditClockColorsSectionPreview() {
+    AureoleLauncherTheme {
+        Column(modifier = Modifier.background(AureoleDS.colors.surface).padding(AureoleDS.dimens.medium)) {
+            EditClockColorsSection(
+                uiState = MainUiState(isClockBackgroundEnabled = true, clockTextColor = PREVIEW_OLD_COLOR),
+                actions = createDefaultHomeScreenActions()
+            )
+        }
+    }
+}
+
+private const val PREVIEW_OLD_COLOR = 0xFF90CAF9.toInt()

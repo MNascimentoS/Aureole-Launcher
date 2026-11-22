@@ -45,6 +45,7 @@ private const val SELECTED_FONT_ALPHA = 0.5f
 /**
  * Palette chip: the palette's own background, a strip of its colors and its name written in its own
  * highlight color, outlined when [isSelected]. The colors come from [palette], not from the current theme.
+ * With [strip] (the palette picker in color mode) the strip is that one color instead of all of them.
  */
 @Composable
 internal fun PaletteChip(
@@ -52,7 +53,8 @@ internal fun PaletteChip(
     displayName: String,
     isSelected: Boolean,
     onSelect: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    strip: Color? = null
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
     val description = stringResource(R.string.settings_appearance_palette_chip_description, displayName)
@@ -71,7 +73,15 @@ internal fun PaletteChip(
             .padding(AureoleDS.dimens.xSmall),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
-        PaletteColorStrip(palette)
+        PaletteColorStrip(
+            strip?.let(::listOf) ?: listOf(
+                palette.colors.surface,
+                palette.colors.surfaceVariant,
+                palette.colors.onSurfaceLow,
+                palette.colors.onSurfaceMedium,
+                palette.colors.onSurfaceHigh
+            )
+        )
         AureoleText(
             text = displayName,
             color = palette.colors.onSurfaceHigh,
@@ -85,7 +95,7 @@ internal fun PaletteChip(
 }
 
 @Composable
-private fun PaletteColorStrip(palette: ThemePalette) {
+private fun PaletteColorStrip(colors: List<Color>) {
     val stripShape = RoundedCornerShape(AureoleDS.dimens.radiusMinimal)
     Row(
         modifier = Modifier
@@ -93,13 +103,7 @@ private fun PaletteColorStrip(palette: ThemePalette) {
             .height(AureoleDS.dimens.iconMediumSmall)
             .clip(stripShape)
     ) {
-        listOf(
-            palette.colors.surface,
-            palette.colors.surfaceVariant,
-            palette.colors.onSurfaceLow,
-            palette.colors.onSurfaceMedium,
-            palette.colors.onSurfaceHigh
-        ).forEach { color ->
+        colors.forEach { color ->
             Box(
                 modifier = Modifier
                     .weight(1f)

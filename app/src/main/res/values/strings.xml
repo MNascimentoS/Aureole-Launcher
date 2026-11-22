@@ -179,7 +179,7 @@
     <string name="home_clock_align_center">Center</string>
     <string name="home_clock_align_right">Right</string>
     <string name="home_clock_font_title">Clock font</string>
-    <string name="home_clock_font_subtitle">Only for this clock</string>
+    <string name="home_clock_picker_subtitle">Only for this clock</string>
     <string name="home_clock_font_summary_bold">%1$s · Bold</string>
     <string name="home_clock_time_date_format">Time and Date Format</string>
     <string name="home_clock_time_format">Time</string>
@@ -626,9 +626,9 @@
     <string name="secret_game_sound_off">Sound off</string>
     <string name="secret_game_move_left">Move left</string>
     <string name="secret_game_move_right">Move right</string>
-    <string name="home_clock_color_target_text">Text</string>
-    <string name="home_clock_color_target_card">Card</string>
-    <string name="home_clock_color_target_label">Color target</string>
     <string name="theme_color_section_default">Default</string>
+    <string name="home_clock_color_text_title">Text color</string>
+    <string name="home_clock_color_card_title">Card color</string>
+    <string name="theme_color_option_current">Current</string>
     <string name="theme_color_swatch_default">Theme</string>
 </resources>

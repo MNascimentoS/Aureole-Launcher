@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
@@ -85,11 +86,12 @@ internal fun EditClockOverlay(
     val pagerState = rememberClockPagerState(options.initialTab)
     val effectiveHazeState = if (clockState.isHazeEnabled) options.hazeState else null
     var isFontPickerOpen by remember { mutableStateOf(false) }
+    var colorPickerRole by remember { mutableStateOf<ComponentColorRole?>(null) }
     val preview: @Composable BoxScope.() -> Unit = {
         EditClockPreviewCard(uiState = clockState, tempCustomGreeting = tempCustomGreeting, hazeState = effectiveHazeState)
     }
 
-    // The font picker opens over the editor (RF-B2): both fill the screen, the picker on top.
+    // The font and color pickers open over the editor (RF-B2, F2): both fill the screen, the picker on top.
     Box(modifier = modifier.fillMaxSize()) {
         AureoleEditOverlay(
             onDismissRequest = { isVisible = false },
@@ -120,7 +122,8 @@ internal fun EditClockOverlay(
                                 actions.onUpdateClockCustomGreeting(it)
                             },
                             nowMillis = options.nowMillis,
-                            onOpenFontPicker = { isFontPickerOpen = true }
+                            onOpenFontPicker = { isFontPickerOpen = true },
+                            onOpenColorPicker = { colorPickerRole = it }
                         )
                     )
                 }
@@ -133,6 +136,15 @@ internal fun EditClockOverlay(
                 onDismissRequest = { isFontPickerOpen = false },
                 preview = preview,
                 nowMillis = options.nowMillis
+            )
+        }
+        colorPickerRole?.let { role ->
+            EditClockColorPicker(
+                uiState = clockState,
+                actions = actions,
+                role = role,
+                onDismissRequest = { colorPickerRole = null },
+                preview = preview
             )
         }
     }

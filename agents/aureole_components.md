@@ -36,5 +36,6 @@
 - **Fading edge:** o conteúdo que rola sob a barra fixa some num fading edge onde encontra a barra, em vez de ser cortado seco.
 
 ## 8. Seletor de cor
-- Cor escolhida pelo usuário usa o `AureoleThemeColorPicker` (cores do tema + outras paletas), sem seletor de matiz próprio.
+- Cor escolhida pelo usuário para um componente abre o **seletor de paletas em modo cor**: `PickPaletteBottomSheet(color = ComponentColorOptions(...))` por cima da sheet do componente, com "Tema" primeiro, a cor salva como "Atual" quando nenhuma paleta a tem, e cada paleta num tile com só a cor do papel (`ComponentColorRole`: texto = acento, cartão = variante). Na sheet do componente, a cor é uma linha (bolinha da cor, nome, chevron) no padrão de "Change font" (`seletores-relogio`, hoje só o relógio).
+- Os lugares que ainda usam o `AureoleThemeColorPicker` inline (botão rápido, container, pastas, fundo) seguem assim até migrarem numa spec própria; sem seletor de matiz próprio em nenhum caso.
 - Persistir como `ThemeColorRef` (JSON), não como ARGB solto, para acompanhar a troca de tema. Valor ARGB antigo migra para `Fixed` na leitura (0 ou desconhecido = Padrão do tema); ninguém perde o que já configurou.

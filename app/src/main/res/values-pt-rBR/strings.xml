@@ -179,7 +179,7 @@
     <string name="home_clock_align_center">Centro</string>
     <string name="home_clock_align_right">Direita</string>
     <string name="home_clock_font_title">Fonte do relógio</string>
-    <string name="home_clock_font_subtitle">Só para este relógio</string>
+    <string name="home_clock_picker_subtitle">Só para este relógio</string>
     <string name="home_clock_font_summary_bold">%1$s · Negrito</string>
     <string name="home_clock_time_date_format">Formato de Hora e Data</string>
     <string name="home_clock_time_format">Hora</string>
@@ -632,9 +632,9 @@
     <string name="secret_game_sound_off">Som desligado</string>
     <string name="secret_game_move_left">Mover para a esquerda</string>
     <string name="secret_game_move_right">Mover para a direita</string>
-    <string name="home_clock_color_target_text">Texto</string>
-    <string name="home_clock_color_target_card">Cartão</string>
-    <string name="home_clock_color_target_label">Alvo da cor</string>
     <string name="theme_color_section_default">Padrão</string>
+    <string name="home_clock_color_text_title">Cor do texto</string>
+    <string name="home_clock_color_card_title">Cor do cartão</string>
+    <string name="theme_color_option_current">Atual</string>
     <string name="theme_color_swatch_default">Tema</string>
 </resources>
