@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameState
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticle
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretStreak
+import dev.mnascimentos.aureole.feature.secretgame.model.newSecretStars
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +33,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.random.Random
 
 @RunWith(RobolectricTestRunner::class)
 class SecretGameCanvasTest {
@@ -86,6 +88,7 @@ private fun sampleState(phase: SecretGamePhase, phaseMs: Long, score: Int = 0, r
         phaseMs = phaseMs,
         clockMs = phaseMs,
         faces = SampleFaces,
+        stars = newSecretStars(SAMPLE_ASPECT, Random(1)),
         streaks = listOf(SecretStreak(0.2f, 0.5f, 0.1f), SecretStreak(0.7f, 1.2f, 0.12f)),
         particles = listOf(SecretParticle(0.5f, 1.0f, 0f, 0f, 0.8f, 0.01f, SecretParticleKind.SHIP)),
         score = score,

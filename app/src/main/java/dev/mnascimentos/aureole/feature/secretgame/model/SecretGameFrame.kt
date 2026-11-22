@@ -35,6 +35,8 @@ data class SecretGameFrame(
     val buttons: SecretButtonsFrame? = null,
     val countdown: SecretCountdownFrame? = null,
     val streaks: List<SecretStreak> = emptyList(),
+    val streaksAlpha: Float = 0f,
+    val stars: List<SecretStarSprite> = emptyList(),
     val particles: List<SecretParticle> = emptyList(),
     val hudScore: Int? = null,
     val hudFlash: Float = 0f,
@@ -52,6 +54,8 @@ fun SecretGameState.toFrame(): SecretGameFrame {
         particles = particles,
         rockets = fireworks.rockets,
         sparks = fireworks.sparks,
+        stars = starSprites(),
+        streaksAlpha = streaksAlpha(),
     )
     return when (phase) {
         SecretGamePhase.ENTER -> enterFrame(base)

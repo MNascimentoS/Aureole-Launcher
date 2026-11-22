@@ -28,6 +28,8 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretStarSprite
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretStarsTuning
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 
 /** Painters of the sprites, remembered once per canvas. */
@@ -60,9 +62,10 @@ fun SecretGameCanvas(
 
 private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors, painters: SecretPainters) {
     val u = size.width
+    drawStars(frame.stars, colors.face)
     frame.streaks.forEach {
         drawLine(
-            color = colors.ship.copy(alpha = D.STREAK_ALPHA),
+            color = colors.ship.copy(alpha = D.STREAK_ALPHA * frame.streaksAlpha),
             start = Offset(it.x * u, it.y * u),
             end = Offset(it.x * u, (it.y + it.length) * u),
             strokeWidth = D.STREAK_WIDTH * u
@@ -88,6 +91,17 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
     val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
     drawFireworks(frame.rockets, frame.sparks, fireworkColors)
     frame.buttons?.let { drawButtons(it.draw, it.collapse, colors.ship) }
+}
+
+private fun DrawScope.drawStars(stars: List<SecretStarSprite>, color: Color) {
+    val u = size.width
+    stars.forEach {
+        val center = Offset(it.x * u, it.y * u)
+        if (it.glowAlpha > 0f) {
+            drawCircle(color.copy(alpha = it.glowAlpha), it.radius * SecretStarsTuning.GLOW_SCALE * u, center)
+        }
+        drawCircle(color.copy(alpha = it.alpha), it.radius * u, center)
+    }
 }
 
 private fun DrawScope.drawSprite(painter: Painter, aspect: Float, sprite: SecretSprite, tint: Color) {

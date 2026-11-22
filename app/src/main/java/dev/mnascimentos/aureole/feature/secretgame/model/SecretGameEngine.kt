@@ -9,7 +9,12 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 class SecretGameEngine(private val random: Random = Random.Default) {
 
     fun start(layout: SecretGameLayout, bestScore: Int): SecretGameState =
-        SecretGameState(layout = layout, bestScore = bestScore, streaks = newStreaks(layout.aspect, random))
+        SecretGameState(
+            layout = layout,
+            bestScore = bestScore,
+            streaks = newStreaks(layout.aspect, random),
+            stars = newSecretStars(layout.aspect, random),
+        )
 
     fun step(state: SecretGameState, deltaMs: Long): SecretGameStep {
         if (state.phase == SecretGamePhase.PAUSED || state.phase == SecretGamePhase.DONE) return SecretGameStep(state)

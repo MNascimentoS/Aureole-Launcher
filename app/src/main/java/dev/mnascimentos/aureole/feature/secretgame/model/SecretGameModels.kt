@@ -48,6 +48,7 @@ data class SecretGameState(
     val faces: List<SecretFace> = emptyList(),
     val particles: List<SecretParticle> = emptyList(),
     val streaks: List<SecretStreak> = emptyList(),
+    val stars: List<SecretStar> = emptyList(),
     val score: Int = 0,
     val bestScore: Int = 0,
     val isNewRecord: Boolean = false,
