@@ -30,17 +30,34 @@ Libraries (bundled in the APK; full license text: https://www.apache.org/license
 Fonts (app/src/main/res/font)
 
   SIL Open Font License 1.1, https://openfontlicense.org
+    Abril Fatface - TypeTogether
     Andika - SIL International
     Audiowide - Astigmatic (Brian J. Bonislawsky)
+    Bebas Neue - Ryoichi Tsunekawa
     Chelsea Market - Font Diner, Inc.
+    DM Serif Display - Colophon Foundry
     Istok Web - Andrey V. Panov
+    JetBrains Mono - The JetBrains Mono Project Authors
+    Josefin Sans - The Josefin Sans Project Authors
+    Lexend - The Lexend Project Authors
+    Lora - The Lora Project Authors
+    Manrope - The Manrope Project Authors
+    Michroma - Vernon Adams
     Montserrat - The Montserrat Project Authors
+    Nunito - The Nunito Project Authors
     Orbitron - The Orbitron Project Authors
+    Outfit - The Outfit Project Authors
+    Playfair Display - The Playfair Display Project Authors
+    Poppins - Indian Type Foundry
+    Quicksand - The Quicksand Project Authors
+    Righteous - Astigmatic (Brian J. Bonislawsky)
     Roboto - The Roboto Project Authors
     Roboto Mono - Google LLC
     Rubik - The Rubik Project Authors
+    Share Tech Mono - Carrois Apostrophe
     Space Grotesk - The Space Grotesk Project Authors
     Space Mono - The Space Mono Project Authors
+    VT323 - Peter Hull
   Apache License 2.0
     Special Elite - Astigmatic (Brian J. Bonislawsky)
 

@@ -78,6 +78,33 @@ val OpenSourceEntries: List<OssEntry> = listOf(
         LicenseType.APACHE_2_0,
         "https://github.com/google/material-design-icons"
     ),
+    font("Abril Fatface", "TypeTogether", "$GOOGLE_FONTS_OFL/abrilfatface", "abril_fatface"),
+    font("Bebas Neue", "Ryoichi Tsunekawa", "$GOOGLE_FONTS_OFL/bebasneue", "bebas_neue"),
+    font("DM Serif Display", "Colophon Foundry", "$GOOGLE_FONTS_OFL/dmserifdisplay", "dm_serif_display"),
+    font(
+        "JetBrains Mono",
+        "The JetBrains Mono Project Authors",
+        "$GOOGLE_FONTS_OFL/jetbrainsmono",
+        "jetbrains_mono"
+    ),
+    font("Josefin Sans", "The Josefin Sans Project Authors", "$GOOGLE_FONTS_OFL/josefinsans", "josefin_sans"),
+    font("Lexend", "The Lexend Project Authors", "$GOOGLE_FONTS_OFL/lexend", "lexend"),
+    font("Lora", "The Lora Project Authors", "$GOOGLE_FONTS_OFL/lora", "lora"),
+    font("Manrope", "The Manrope Project Authors", "$GOOGLE_FONTS_OFL/manrope", "manrope"),
+    font("Michroma", "Vernon Adams", "$GOOGLE_FONTS_OFL/michroma", "michroma"),
+    font("Nunito", "The Nunito Project Authors", "$GOOGLE_FONTS_OFL/nunito", "nunito"),
+    font("Outfit", "The Outfit Project Authors", "$GOOGLE_FONTS_OFL/outfit", "outfit"),
+    font(
+        "Playfair Display",
+        "The Playfair Display Project Authors",
+        "$GOOGLE_FONTS_OFL/playfairdisplay",
+        "playfair_display"
+    ),
+    font("Poppins", "Indian Type Foundry", "$GOOGLE_FONTS_OFL/poppins", "poppins"),
+    font("Quicksand", "The Quicksand Project Authors", "$GOOGLE_FONTS_OFL/quicksand", "quicksand"),
+    font("Righteous", "Astigmatic (Brian J. Bonislawsky)", "$GOOGLE_FONTS_OFL/righteous", "righteous"),
+    font("Share Tech Mono", "Carrois Apostrophe", "$GOOGLE_FONTS_OFL/sharetechmono", "share_tech_mono"),
+    font("VT323", "Peter Hull", "$GOOGLE_FONTS_OFL/vt323", "vt323"),
     font("Andika", "SIL International", "https://github.com/silnrsi/font-andika", "andika"),
     font("Audiowide", AUTHOR_ASTIGMATIC, "$GOOGLE_FONTS_OFL/audiowide", "audiowide"),
     font("Chelsea Market", "Font Diner, Inc.", "$GOOGLE_FONTS_OFL/chelseamarket", "chelsea_market"),

@@ -9,8 +9,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
-
-private val RoundedFontFamily: FontFamily by lazy { FontFamily(Typeface.create("sans-serif-rounded", Typeface.NORMAL)) }
+import dev.mnascimentos.aureole.core.designsystem.theme.RoundedFontFamily
 
 /** Compose family of this option; [ClockFontSpec.THEME] is the family of the current theme. */
 @Composable

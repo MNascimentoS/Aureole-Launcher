@@ -461,6 +461,9 @@
     <string name="settings_appearance_palette_chip_description">Paleta %1$s</string>
     <string name="settings_appearance_font_chip_description">Fonte %1$s</string>
     <string name="settings_appearance_font_chip_sample">Aa</string>
+    <string name="settings_appearance_font_serif">Serifada</string>
+    <string name="settings_appearance_font_monospaced">Monoespaçada</string>
+    <string name="settings_appearance_font_rounded">Arredondada</string>
     <string name="settings_appearance_minihome_time">09:41</string>
     <string name="settings_appearance_minihome_date">Terça, 10 de novembro</string>
     <string name="settings_appearance_minihome_phone">Telefone</string>

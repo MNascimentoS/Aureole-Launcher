@@ -21,7 +21,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
-import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
+import dev.mnascimentos.aureole.core.designsystem.theme.model.AureoleFontCatalog
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val FONT_COLUMNS = 2
@@ -97,7 +97,7 @@ internal fun FontPickerGrid(
         ),
         modifier = modifier
     ) {
-        items(items = AvailableFonts.keys.toList(), key = { it }, contentType = { "font_chip" }) { fontName ->
+        items(items = AureoleFontCatalog.map { it.key }, key = { it }, contentType = { "font_chip" }) { fontName ->
             FontChip(
                 fontName = fontName,
                 isSelected = fontName == shownFont,

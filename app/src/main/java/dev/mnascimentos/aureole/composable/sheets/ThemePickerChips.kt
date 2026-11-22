@@ -34,6 +34,7 @@ import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
+import dev.mnascimentos.aureole.core.designsystem.theme.model.fontNameRes
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val FONT_SAMPLE_WIDTH_DP = 30
@@ -122,7 +123,8 @@ internal fun FontChip(
 ) {
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
     val family = AvailableFonts[fontName]
-    val description = stringResource(R.string.settings_appearance_font_chip_description, fontName)
+    val displayName = fontNameRes(fontName)?.let { stringResource(it) } ?: fontName
+    val description = stringResource(R.string.settings_appearance_font_chip_description, displayName)
     val background = AureoleDS.colors.surfaceVariant.copy(
         alpha = if (isSelected) SELECTED_FONT_ALPHA else UNSELECTED_FONT_ALPHA
     )
@@ -143,11 +145,11 @@ internal fun FontChip(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isLeftHanded) {
-            FontChipName(fontName, family, isLeftHanded, Modifier.weight(1f))
+            FontChipName(displayName, family, isLeftHanded, Modifier.weight(1f))
             FontChipSample(family)
         } else {
             FontChipSample(family)
-            FontChipName(fontName, family, isLeftHanded, Modifier.weight(1f))
+            FontChipName(displayName, family, isLeftHanded, Modifier.weight(1f))
         }
     }
 }
