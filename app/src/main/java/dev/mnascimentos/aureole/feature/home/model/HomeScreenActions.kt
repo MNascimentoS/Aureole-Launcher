@@ -100,6 +100,8 @@ data class HomeScreenActions(
     val onUpdateClockMessage: (String) -> Unit = {},
     val onUpdateClockAlignment: (String) -> Unit = {},
     val onUpdateClockFontFamily: (String) -> Unit = {},
+    /** Turns the bold of the clock's time on or off. */
+    val onUpdateClockFontBold: (Boolean) -> Unit = {},
     val onUpdateClockTimeFormat: (String) -> Unit = {},
     val onUpdateClockDateFormat: (String) -> Unit = {},
     val onUpdateClockTextColor: (ThemeColorRef?) -> Unit = {},

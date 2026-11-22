@@ -3,10 +3,13 @@ package dev.mnascimentos.aureole.composable.clock
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
+import dev.mnascimentos.aureole.core.data.model.ClockFontChoice
+import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
+import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_SERIF
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertSame
@@ -74,11 +77,14 @@ class ClockHeaderStyleTest {
     }
 
     @Test
-    fun `fontFamilyFor uses the theme family only for THEME`() {
+    fun `fontFamilyFor uses the theme family when the clock follows the launcher font`() {
         val theme = FontFamily.Cursive
-        assertEquals(theme, ClockFontSpec.THEME.fontFamilyFor(theme))
-        assertEquals(FontFamily.SansSerif, ClockFontSpec.BOLD.fontFamilyFor(theme))
-        assertEquals(FontFamily.Serif, ClockFontSpec.SERIF.fontFamilyFor(theme))
-        assertEquals(FontFamily.Monospace, ClockFontSpec.MONO.fontFamilyFor(theme))
+        assertEquals(theme, ClockFontChoice(FONT_KEY_LAUNCHER, isBold = false).fontFamilyFor(theme))
+    }
+
+    @Test
+    fun `timeWeight is bold only with the bold switch on`() {
+        assertEquals(FontWeight.Bold, ClockFontChoice(FONT_KEY_SERIF, isBold = true).timeWeight)
+        assertEquals(FontWeight.Normal, ClockFontChoice(FONT_KEY_SERIF, isBold = false).timeWeight)
     }
 }

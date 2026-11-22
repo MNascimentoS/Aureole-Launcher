@@ -19,7 +19,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | AureoleConfirmOverlay | composable/sheets/AureoleConfirmOverlay.kt | Confirmação em estilo sheet | — | Confirmação visual de sheet |
 | AureoleOverlayWindow | composable/overlay/AureoleOverlayWindow.kt | Janela de overlay | — | Base de janelas de overlay |
 | SettingsBottomSheet | composable/sheets/SettingsBottomSheet.kt | Sheet de configurações | — | Sheets de ajustes |
-| PickFontBottomSheet / PickPaletteBottomSheet | composable/sheets/ | Escolher fonte / paleta | — | Só esses seletores |
+| PickFontBottomSheet / PickPaletteBottomSheet | composable/sheets/ | Escolher fonte / paleta. Fonte com `ThemePickerSheetOptions.componentFont` (`ComponentFontOptions`, `model/FontPickerModels.kt`) vira o seletor de um componente (`ComponentFontSheet`): título/subtítulo próprios, switch Negrito, "Launcher font" (`FONT_KEY_LAUNCHER`) primeiro, amostra própria nos tiles (`FontChipLook`), prévia acima, salva na hora | — | Só esses seletores; fonte de componente sempre por aqui |
 | ReleaseNotesBottomSheet | composable/sheets/ReleaseNotesBottomSheet.kt | Notas da versão | — | Só notas de versão |
 | RenderModalBottomSheetOrInspection | composable/sheets/RenderModalBottomSheetOrInspection.kt | Modal sheet, ou inline no preview | sheetContent | Previews de sheet |
 | AppItemBottomSheet | composable/appitem/AppItemMenus.kt | Menu de ações do app (exemplo de `AureoleMenuListSheet`); sem o logo do Aureole settings no cabeçalho (`showHeaderAction = false`) | — | Menu de app |
@@ -73,7 +73,8 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | Nome | Arquivo | Para que serve |
 |---|---|---|
 | ClockHeader | composable/clock/ClockHeader.kt | Relógio do cabeçalho |
-| ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home; aba Style com Layout (`ClockLayoutOption`, miniaturas de barras) e Message (`ClockMessageOption`); Format › Date desabilitada sem data |
+| ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home; aba Style com Layout (`ClockLayoutOption`, miniaturas de barras), Message (`ClockMessageOption`), Alinhamento e "Change font" (`EditClockFontSection` → `EditClockFontPicker`); Format › Date desabilitada sem data. Espaços do cartão: `clockSpacing` / `ClockSpace` (`composable/clock/model/ClockSpacing.kt`) |
+| ClockFontChoice, `resolveClockFont`, `withMigratedFont` | core/data/model/ClockFontMigration.kt | Fonte do relógio (chave do catálogo ou `FONT_KEY_LAUNCHER`) + negrito; lê as chaves antigas (SANS_SERIF, BOLD, SERIF, MONOSPACE, ROUNDED) |
 | ClockLayout, ClockLine, ClockMessage, `resolveClockLayout` | core/data/model/ClockLayout.kt | 7 layouts (linhas de cima para baixo), mensagem saudação/texto e leitura dos estilos antigos (migração) |
 | WidgetPositionIndicatorBar | composable/widgets/WidgetPositionIndicatorBar.kt | Indicador de posição |
 | WidgetPickerScreen, WidgetStackBottomSheet, EditWidgetGroupScreen (carrossel: `EditWidgetGroupCarousel`) | feature/home/components/widgets/ | Widgets na home |

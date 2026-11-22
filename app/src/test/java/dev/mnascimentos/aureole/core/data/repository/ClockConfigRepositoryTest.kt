@@ -45,7 +45,7 @@ class ClockConfigRepositoryTest {
 
     @Test
     fun `when saving two clocks, should read each one back on its own`() = runBlocking {
-        val configA = ClockConfig(style = "TIME_ONLY", fontFamily = "SERIF")
+        val configA = ClockConfig(style = "TIME_ONLY", fontFamily = "Serif")
         val configB = ClockConfig(alignment = "END", isBackgroundEnabled = true)
 
         repository.save(CLOCK_A, configA)
@@ -144,6 +144,6 @@ class ClockConfigRepositoryTest {
             .putInt("unrelated_key", 1)
             .commit()
 
-        assertEquals(mapOf(CLOCK_B to ClockConfig(fontFamily = "SERIF")), repository.getAll())
+        assertEquals(mapOf(CLOCK_B to ClockConfig(fontFamily = "Serif")), repository.getAll())
     }
 }

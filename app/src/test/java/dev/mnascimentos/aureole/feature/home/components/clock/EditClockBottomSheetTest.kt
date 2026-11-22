@@ -38,6 +38,7 @@ class EditClockBottomSheetTest {
         var onUpdateClockCustomGreeting: (String) -> Unit = {},
         var onUpdateClockAlignment: (String) -> Unit = {},
         var onUpdateClockFontFamily: (String) -> Unit = {},
+        var onUpdateClockFontBold: (Boolean) -> Unit = {},
         var onUpdateClockTimeFormat: (String) -> Unit = {},
         var onUpdateClockDateFormat: (String) -> Unit = {},
         var onUpdateClockTextColor: (ThemeColorRef?) -> Unit = {},
@@ -53,6 +54,7 @@ class EditClockBottomSheetTest {
             onUpdateClockCustomGreeting = config.onUpdateClockCustomGreeting,
             onUpdateClockAlignment = config.onUpdateClockAlignment,
             onUpdateClockFontFamily = config.onUpdateClockFontFamily,
+            onUpdateClockFontBold = config.onUpdateClockFontBold,
             onUpdateClockTimeFormat = config.onUpdateClockTimeFormat,
             onUpdateClockDateFormat = config.onUpdateClockDateFormat,
             onUpdateClockTextColor = config.onUpdateClockTextColor,
@@ -84,11 +86,12 @@ class EditClockBottomSheetTest {
         composeTestRule.onNodeWithText("Customize clock").assertIsDisplayed()
         composeTestRule.onNodeWithText("LAYOUT").assertIsDisplayed()
         composeTestRule.onNodeWithText("ALIGNMENT").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Change font").performScrollTo().assertIsDisplayed()
 
         composeTestRule.onNodeWithText("Format").performClick()
         advanceAnimation()
         composeTestRule.onNodeWithText("TIME AND DATE FORMAT").assertIsDisplayed()
-        composeTestRule.onNodeWithText("FONT STYLE").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("FONT STYLE").assertDoesNotExist()
 
         composeTestRule.onNodeWithText("Colors").performClick()
         advanceAnimation()
@@ -154,27 +157,63 @@ class EditClockBottomSheetTest {
     }
 
     @Test
-    fun `when selecting font style chips, should invoke onUpdateClockFontFamily`() {
-        // Arrange
-        var selectedFont = ""
-        val actions = createDefaultActions {
-            onUpdateClockFontFamily = { selectedFont = it }
-        }
-
+    fun `the Change font row shows the clock font and its bold, and opens the picker`() {
+        var opened = 0
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 EditClockFontSection(
-                    uiState = MainUiState(clockFontFamily = "SANS_SERIF"),
-                    actions = actions
+                    uiState = MainUiState(clockFontFamily = "Montserrat", clockFontBold = true),
+                    onOpenFontPicker = { opened++ }
                 )
             }
         }
 
-        // Act - click "Negrito"
-        composeTestRule.onNodeWithText("Bold").performClick()
+        composeTestRule.onNodeWithText("Montserrat · Bold").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Change font").performClick()
 
-        // Assert
-        assertEquals("BOLD", selectedFont)
+        assertEquals(1, opened)
+    }
+
+    @Test
+    fun `an old Theme default font reads as the launcher font in the Change font row`() {
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                EditClockFontSection(
+                    uiState = MainUiState(clockFontFamily = "SANS_SERIF", clockFontBold = false),
+                    onOpenFontPicker = {}
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText("Launcher font · Bold").assertIsDisplayed()
+    }
+
+    @Test
+    fun `the clock font picker saves the font and the bold through the clock actions`() {
+        var selectedFont = ""
+        var bold: Boolean? = null
+        val actions = createDefaultActions {
+            onUpdateClockFontFamily = { selectedFont = it }
+            onUpdateClockFontBold = { bold = it }
+        }
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                EditClockFontPicker(
+                    uiState = MainUiState(clockFontFamily = "Montserrat", clockFontBold = true),
+                    actions = actions,
+                    onDismissRequest = {},
+                    nowMillis = PREVIEW_NOW_MILLIS
+                )
+            }
+        }
+        advanceAnimation()
+
+        composeTestRule.onNodeWithText("Clock font").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Bold").performClick()
+        composeTestRule.onNodeWithText("Roboto").performClick()
+
+        assertEquals(false, bold)
+        assertEquals("Roboto", selectedFont)
     }
 
     @Test

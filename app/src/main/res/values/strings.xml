@@ -178,12 +178,9 @@
     <string name="home_clock_align_left">Left</string>
     <string name="home_clock_align_center">Center</string>
     <string name="home_clock_align_right">Right</string>
-    <string name="home_clock_font_style">Font style</string>
-    <string name="home_clock_font_default">Theme default</string>
-    <string name="home_clock_font_bold">Bold</string>
-    <string name="home_clock_font_serif">Serif</string>
-    <string name="home_clock_font_monospaced">Monospaced</string>
-    <string name="home_clock_font_rounded">Rounded</string>
+    <string name="home_clock_font_title">Clock font</string>
+    <string name="home_clock_font_subtitle">Only for this clock</string>
+    <string name="home_clock_font_summary_bold">%1$s · Bold</string>
     <string name="home_clock_time_date_format">Time and Date Format</string>
     <string name="home_clock_time_format">Time</string>
     <string name="home_clock_time_system">System</string>
@@ -461,6 +458,8 @@
     <string name="settings_appearance_font_serif">Serif</string>
     <string name="settings_appearance_font_monospaced">Monospaced</string>
     <string name="settings_appearance_font_rounded">Rounded</string>
+    <string name="settings_appearance_font_launcher">Launcher font</string>
+    <string name="settings_appearance_font_bold">Bold</string>
     <string name="settings_appearance_minihome_time">09:41</string>
     <string name="settings_appearance_minihome_date">Tuesday, November 10</string>
     <string name="settings_appearance_minihome_phone">Phone</string>

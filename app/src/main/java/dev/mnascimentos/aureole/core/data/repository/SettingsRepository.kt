@@ -80,6 +80,10 @@ class SettingsRepository(
         get() = prefs.getString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY) ?: DEFAULT_CLOCK_FONT_FAMILY
         set(value) = prefs.edit { putString(KEY_CLOCK_FONT_FAMILY, value) }
 
+    var clockFontBold: Boolean
+        get() = prefs.getBoolean(KEY_CLOCK_FONT_BOLD, DEFAULT_CLOCK_FONT_BOLD)
+        set(value) = prefs.edit { putBoolean(KEY_CLOCK_FONT_BOLD, value) }
+
     var clockTimeFormat: String
         get() = prefs.getString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT) ?: DEFAULT_CLOCK_TIME_FORMAT
         set(value) = prefs.edit { putString(KEY_CLOCK_TIME_FORMAT, value) }
@@ -113,6 +117,7 @@ class SettingsRepository(
             remove(KEY_CLOCK_MESSAGE)
             putString(KEY_CLOCK_ALIGNMENT, DEFAULT_CLOCK_ALIGNMENT)
             putString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY)
+            putBoolean(KEY_CLOCK_FONT_BOLD, DEFAULT_CLOCK_FONT_BOLD)
             putString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT)
             putString(KEY_CLOCK_DATE_FORMAT, DEFAULT_CLOCK_DATE_FORMAT)
             putInt(KEY_CLOCK_TEXT_COLOR, 0)
@@ -433,6 +438,7 @@ class SettingsRepository(
 
         private const val KEY_CLOCK_ALIGNMENT = "clock_alignment"
         private const val KEY_CLOCK_FONT_FAMILY = "clock_font_family"
+        private const val KEY_CLOCK_FONT_BOLD = "clock_font_bold"
         private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"
         private const val KEY_CLOCK_DATE_FORMAT = "clock_date_format"
         private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
@@ -443,6 +449,7 @@ class SettingsRepository(
         const val DEFAULT_CLOCK_STYLE = ClockConfig.DEFAULT_STYLE
         const val DEFAULT_CLOCK_ALIGNMENT = ClockConfig.DEFAULT_ALIGNMENT
         const val DEFAULT_CLOCK_FONT_FAMILY = ClockConfig.DEFAULT_FONT_FAMILY
+        const val DEFAULT_CLOCK_FONT_BOLD = ClockConfig.DEFAULT_FONT_BOLD
         const val DEFAULT_CLOCK_TIME_FORMAT = ClockConfig.DEFAULT_TIME_FORMAT
         const val DEFAULT_CLOCK_DATE_FORMAT = ClockConfig.DEFAULT_DATE_FORMAT
         private const val KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON = "show_container_add_folder_button"

@@ -137,6 +137,7 @@ class HomeViewModel(
                     clockMessage = settingsRepository.clockMessage,
                     clockAlignment = settingsRepository.clockAlignment,
                     clockFontFamily = settingsRepository.clockFontFamily,
+                    clockFontBold = settingsRepository.clockFontBold,
                     clockTimeFormat = settingsRepository.clockTimeFormat,
                     clockDateFormat = settingsRepository.clockDateFormat,
                     clockTextColor = settingsRepository.clockTextColor,

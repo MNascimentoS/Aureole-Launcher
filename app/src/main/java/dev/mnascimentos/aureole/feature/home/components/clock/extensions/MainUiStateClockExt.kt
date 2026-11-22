@@ -17,7 +17,8 @@ fun MainUiState.defaultClockConfig(): ClockConfig = ClockConfig(
     backgroundColor = clockBackgroundColor,
     textColorRef = clockTextColorRef,
     backgroundColorRef = clockBackgroundColorRef,
-    isBackgroundEnabled = isClockBackgroundEnabled
+    isBackgroundEnabled = isClockBackgroundEnabled,
+    isFontBold = clockFontBold
 )
 
 /** The look of the clock [itemId]: its own config, or the [defaultClockConfig] when it has none (or no id). */
@@ -41,7 +42,8 @@ fun MainUiState.withClockFields(config: ClockConfig): MainUiState = copy(
     clockBackgroundColor = config.backgroundColor,
     clockTextColorRef = config.textColorRef,
     clockBackgroundColorRef = config.backgroundColorRef,
-    isClockBackgroundEnabled = config.isBackgroundEnabled
+    isClockBackgroundEnabled = config.isBackgroundEnabled,
+    clockFontBold = config.isFontBold
 )
 
 /**
@@ -63,5 +65,6 @@ fun ClockConfig.toHeaderConfig(): ClockHeaderConfig = ClockHeaderConfig(
     backgroundColor = backgroundColor,
     textColorRef = textColorRef,
     backgroundColorRef = backgroundColorRef,
-    isBackgroundEnabled = isBackgroundEnabled
+    isBackgroundEnabled = isBackgroundEnabled,
+    isFontBold = isFontBold
 )

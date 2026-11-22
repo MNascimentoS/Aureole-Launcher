@@ -178,12 +178,9 @@
     <string name="home_clock_align_left">Esquerda</string>
     <string name="home_clock_align_center">Centro</string>
     <string name="home_clock_align_right">Direita</string>
-    <string name="home_clock_font_style">Estilo da Fonte</string>
-    <string name="home_clock_font_default">Padrão do tema</string>
-    <string name="home_clock_font_bold">Negrito</string>
-    <string name="home_clock_font_serif">Serifada</string>
-    <string name="home_clock_font_monospaced">Monospaced</string>
-    <string name="home_clock_font_rounded">Arredondada</string>
+    <string name="home_clock_font_title">Fonte do relógio</string>
+    <string name="home_clock_font_subtitle">Só para este relógio</string>
+    <string name="home_clock_font_summary_bold">%1$s · Negrito</string>
     <string name="home_clock_time_date_format">Formato de Hora e Data</string>
     <string name="home_clock_time_format">Hora</string>
     <string name="home_clock_time_system">Sistema</string>
@@ -464,6 +461,8 @@
     <string name="settings_appearance_font_serif">Serifada</string>
     <string name="settings_appearance_font_monospaced">Monoespaçada</string>
     <string name="settings_appearance_font_rounded">Arredondada</string>
+    <string name="settings_appearance_font_launcher">Fonte do launcher</string>
+    <string name="settings_appearance_font_bold">Negrito</string>
     <string name="settings_appearance_minihome_time">09:41</string>
     <string name="settings_appearance_minihome_date">Terça, 10 de novembro</string>
     <string name="settings_appearance_minihome_phone">Telefone</string>

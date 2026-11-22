@@ -13,19 +13,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
+import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.core.data.model.ClockFontChoice
 import dev.mnascimentos.aureole.core.data.model.ClockMessage
+import dev.mnascimentos.aureole.core.data.model.resolveClockFont
 import dev.mnascimentos.aureole.core.data.model.resolveClockLayout
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Info
+import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.model.fontNameRes
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockAlignmentOption
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockMessageOption
@@ -87,18 +94,29 @@ internal fun EditClockAlignmentSection(
     )
 }
 
+/**
+ * Style › "Change font": the same row as the settings, with the clock's font (and its bold) below the title.
+ * [onOpenFontPicker] opens the font picker over the sheet.
+ */
 @Composable
-internal fun EditClockFontSection(
-    uiState: MainUiState,
-    actions: HomeScreenActions,
-    nowMillis: Long = System.currentTimeMillis()
-) {
-    EditClockSectionHeader(title = stringResource(R.string.home_clock_font_style))
-    EditClockFontTiles(
-        selectedKey = uiState.clockFontFamily,
-        nowMillis = nowMillis,
-        onSelect = { actions.onUpdateClockFontFamily(it) }
+internal fun EditClockFontSection(uiState: MainUiState, onOpenFontPicker: () -> Unit) {
+    AureoleMenuRow(
+        MenuRowParams(
+            title = stringResource(R.string.settings_appearance_change_font),
+            subtitle = clockFontSummary(resolveClockFont(uiState.clockFontFamily, uiState.clockFontBold)),
+            icon = { m, c -> AureoleDS.icons.Text(modifier = m, tint = c) },
+            showChevron = true,
+            onClick = onOpenFontPicker
+        )
     )
+}
+
+/** Name of the clock's font ("Launcher font", "Montserrat"), with "· Bold" when the bold switch is on. */
+@Composable
+@ReadOnlyComposable
+private fun clockFontSummary(font: ClockFontChoice): String {
+    val name = fontNameRes(font.fontKey)?.let { stringResource(it) } ?: font.fontKey
+    return if (font.isBold) stringResource(R.string.home_clock_font_summary_bold, name) else name
 }
 
 @Composable

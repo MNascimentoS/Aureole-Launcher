@@ -18,6 +18,7 @@ import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
+import dev.mnascimentos.aureole.composable.clock.model.clockSpacing
 import dev.mnascimentos.aureole.core.data.model.ClockMessage
 import dev.mnascimentos.aureole.core.data.model.resolveClockLayout
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
@@ -54,6 +55,7 @@ fun ClockHeader(
 
     // A style saved by an older version reads as its layout and message, so the look never changes.
     val layoutChoice = resolveClockLayout(resolvedConfig.style, resolvedConfig.message)
+    val spacing = clockSpacing(layoutChoice.layout.lines)
     val greeting = if (layoutChoice.message == ClockMessage.CUSTOM && resolvedConfig.customGreeting.isNotBlank()) {
         resolvedConfig.customGreeting
     } else {
@@ -75,14 +77,13 @@ fun ClockHeader(
             .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
             .background(containerBgColor)
             .clockClickable(onClick, onLongClick)
-            // Inner room (D-11): the top keeps 8 dp; the sides (16 → 24 dp) and the bottom (8 → 16 dp) get 8 dp
-            // more, in every alignment. The editor preview sets `isVerticallyBalanced`: the same room above
-            // and below the lines (RF-D3).
+            // Inner room: 24 dp on the sides; the same room above and below the trimmed lines (clockSpacing,
+            // seletores-relogio D-10), on the home and in the editor preview alike.
             .padding(
                 start = AureoleDS.dimens.large,
                 end = AureoleDS.dimens.large,
-                top = if (resolvedConfig.isVerticallyBalanced) AureoleDS.dimens.small else AureoleDS.dimens.xSmall,
-                bottom = if (resolvedConfig.isVerticallyBalanced) AureoleDS.dimens.small else AureoleDS.dimens.medium
+                top = spacing.above.size(),
+                bottom = spacing.below.size()
             )
     ) {
         ClockHeaderContent(
@@ -95,7 +96,8 @@ fun ClockHeader(
                 alignment = resolvedConfig.alignment,
                 fontFamily = resolvedConfig.fontFamily,
                 timeFormat = resolvedConfig.timeFormat,
-                dateFormat = resolvedConfig.dateFormat
+                dateFormat = resolvedConfig.dateFormat,
+                isFontBold = resolvedConfig.isFontBold
             )
         )
     }

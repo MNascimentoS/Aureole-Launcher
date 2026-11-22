@@ -45,6 +45,7 @@ data class MainUiState(
     val clockMessage: String = ClockConfig.DEFAULT_MESSAGE,
     val clockAlignment: String = SettingsRepository.DEFAULT_CLOCK_ALIGNMENT,
     val clockFontFamily: String = SettingsRepository.DEFAULT_CLOCK_FONT_FAMILY,
+    val clockFontBold: Boolean = SettingsRepository.DEFAULT_CLOCK_FONT_BOLD,
     val clockTimeFormat: String = SettingsRepository.DEFAULT_CLOCK_TIME_FORMAT,
     val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
     val clockTextColor: Int = 0,

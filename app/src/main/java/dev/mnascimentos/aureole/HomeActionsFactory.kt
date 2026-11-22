@@ -19,6 +19,7 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateC
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockBackgroundColor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockCustomGreeting
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockDateFormat
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockFontBold
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockFontFamily
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockMessage
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockStyle
@@ -237,6 +238,7 @@ class HomeActionsFactory(
             onUpdateClockMessage = { message -> viewModel.updateClockMessage(message) },
             onUpdateClockAlignment = { alignment -> viewModel.updateClockAlignment(alignment) },
             onUpdateClockFontFamily = { fontFamily -> viewModel.updateClockFontFamily(fontFamily) },
+            onUpdateClockFontBold = { isBold -> viewModel.updateClockFontBold(isBold) },
             onUpdateClockTimeFormat = { format -> viewModel.updateClockTimeFormat(format) },
             onUpdateClockDateFormat = { format -> viewModel.updateClockDateFormat(format) },
             onUpdateClockTextColor = { color -> viewModel.updateClockTextColor(color) },

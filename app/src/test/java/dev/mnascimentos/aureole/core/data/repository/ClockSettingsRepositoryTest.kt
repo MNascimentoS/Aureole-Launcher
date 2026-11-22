@@ -30,6 +30,7 @@ class ClockSettingsRepositoryTest {
         assertEquals("", repository.clockCustomGreeting)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_ALIGNMENT, repository.clockAlignment)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_FONT_FAMILY, repository.clockFontFamily)
+        assertTrue(repository.clockFontBold)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_TIME_FORMAT, repository.clockTimeFormat)
         assertEquals(SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT, repository.clockDateFormat)
         assertEquals(0, repository.clockTextColor)
@@ -43,6 +44,7 @@ class ClockSettingsRepositoryTest {
         repository.clockCustomGreeting = "Boa tarde"
         repository.clockAlignment = "START"
         repository.clockFontFamily = "SERIF"
+        repository.clockFontBold = false
         repository.clockTimeFormat = "24H"
         repository.clockDateFormat = "SHORT"
         repository.clockTextColor = 0xFF90CAF9.toInt()
@@ -53,6 +55,7 @@ class ClockSettingsRepositoryTest {
         assertEquals("Boa tarde", repository.clockCustomGreeting)
         assertEquals("START", repository.clockAlignment)
         assertEquals("SERIF", repository.clockFontFamily)
+        assertFalse(repository.clockFontBold)
         assertEquals("24H", repository.clockTimeFormat)
         assertEquals("SHORT", repository.clockDateFormat)
         assertEquals(0xFF90CAF9.toInt(), repository.clockTextColor)

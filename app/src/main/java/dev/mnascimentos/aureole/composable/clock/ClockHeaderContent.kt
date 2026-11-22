@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextClock
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -21,20 +22,24 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
+import dev.mnascimentos.aureole.composable.clock.model.DATE_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.DATE_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_TOP
+import dev.mnascimentos.aureole.composable.clock.model.clockSpacing
 import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
 import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.data.model.ClockLine
+import dev.mnascimentos.aureole.core.data.model.resolveClockFont
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
+import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val COMPACT_CONTAINER_HEIGHT_DP = 90
@@ -61,47 +66,46 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
     val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
 
-    val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
-    val typeface = fontSpec.timeTypeface()
-    val dateTypeface = fontSpec.dateTypeface()
+    val font = resolveClockFont(params.fontFamily, params.isFontBold)
+    val fontFamily = font.fontFamily()
+    val dateTypeface = font.dateTypeface()
     val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(params.timeFormat)
+    val timeParams = ClockTimeDisplayParams(
+        colorPrimary = params.colorPrimary,
+        textSizePx = sizing.textSizePx,
+        format12 = format12,
+        format24 = format24,
+        typeface = font.timeTypeface(),
+        alignment = params.alignment
+    )
     val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat, LocalConfiguration.current.locales[0])
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = horizontalAlignment
-    ) {
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = horizontalAlignment) {
         // The lines follow the layout, top to bottom; the message only shows when it fits (resolveClockSizing).
-        params.layout.lines.forEach { line ->
+        val lines = params.layout.lines.filter { it != ClockLine.MESSAGE || sizing.showGreeting }
+        val gaps = clockSpacing(lines).between
+        lines.forEachIndexed { index, line ->
             // Keyed by line, so a layout change moves the TextClocks instead of rebuilding them.
             key(line) {
-                when (line) {
-                    ClockLine.MESSAGE -> if (sizing.showGreeting) {
-                        ClockGreetingDisplay(
+                // The space above each line comes only from the tokens (clockSpacing): the lines are trimmed.
+                Box(modifier = Modifier.lineGap(gaps.getOrNull(index - 1)?.size() ?: AureoleDS.dimens.zero)) {
+                    when (line) {
+                        ClockLine.MESSAGE -> ClockGreetingDisplay(
                             greeting = params.greeting,
                             greetingSizeSp = greetingSize,
-                            fontFamily = fontSpec.fontFamily(),
+                            fontFamily = fontFamily,
+                            textColor = params.composeTextColor,
+                            textAlign = textAlign
+                        )
+                        ClockLine.TIME -> ClockTimeDisplay(params = timeParams)
+                        ClockLine.DATE -> ClockDateDisplay(
+                            datePattern = datePattern,
+                            dateSizeSp = dateSize,
+                            dateTypeface = dateTypeface,
                             textColor = params.composeTextColor,
                             textAlign = textAlign
                         )
                     }
-                    ClockLine.TIME -> ClockTimeDisplay(
-                        params = ClockTimeDisplayParams(
-                            colorPrimary = params.colorPrimary,
-                            textSizePx = sizing.textSizePx,
-                            format12 = format12,
-                            format24 = format24,
-                            typeface = typeface,
-                            alignment = params.alignment
-                        )
-                    )
-                    ClockLine.DATE -> ClockDateDisplay(
-                        datePattern = datePattern,
-                        dateSizeSp = dateSize,
-                        dateTypeface = dateTypeface,
-                        textColor = params.composeTextColor,
-                        textAlign = textAlign
-                    )
                 }
             }
         }
@@ -146,7 +150,7 @@ private fun ClockDateDisplay(
     textAlign: TextAlign
 ) {
     AndroidView(
-        modifier = Modifier.trimVerticalBands(DATE_TRIM_TOP, 0f),
+        modifier = Modifier.trimVerticalBands(DATE_TRIM_TOP, DATE_TRIM_BOTTOM),
         factory = { ctx ->
             TextClock(ctx).apply {
                 format12Hour = datePattern
@@ -219,7 +223,7 @@ private fun ClockHeaderContentPreview() {
                 greeting = "Boa tarde",
                 layout = ClockLayout.MSG_TIME_DATE,
                 alignment = "CENTER",
-                fontFamily = "DEFAULT",
+                fontFamily = FONT_KEY_LAUNCHER,
                 timeFormat = "12H",
                 dateFormat = "DEFAULT"
             )
@@ -239,7 +243,7 @@ private fun ClockHeaderContentDateOnTopPreview() {
                 greeting = "Bom dia",
                 layout = ClockLayout.DATE_ON_TOP,
                 alignment = "START",
-                fontFamily = "DEFAULT",
+                fontFamily = FONT_KEY_LAUNCHER,
                 timeFormat = "24H",
                 dateFormat = "DEFAULT"
             )

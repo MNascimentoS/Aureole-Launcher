@@ -16,6 +16,12 @@ const val FONT_KEY_SERIF = "Serif"
 const val FONT_KEY_MONOSPACED = "Monospaced"
 const val FONT_KEY_ROUNDED = "Rounded"
 
+/**
+ * Not a font of the catalog: what a component with its own font (the clock) saves to follow the launcher font.
+ * Only the picker opened by such a component offers it, first.
+ */
+const val FONT_KEY_LAUNCHER = "Launcher"
+
 /** Every font the user can pick, in picker order. */
 val AureoleFontCatalog: List<AureoleFontEntry> = listOf(
     AureoleFontEntry("Istok Web"),
@@ -53,4 +59,9 @@ val AureoleFontCatalog: List<AureoleFontEntry> = listOf(
 )
 
 /** String resource of the display name of [key], or null when the key itself is the (proper) name. */
-fun fontNameRes(key: String): Int? = AureoleFontCatalog.firstOrNull { it.key == key }?.nameRes
+fun fontNameRes(key: String): Int? =
+    if (key == FONT_KEY_LAUNCHER) {
+        R.string.settings_appearance_font_launcher
+    } else {
+        AureoleFontCatalog.firstOrNull { it.key == key }?.nameRes
+    }

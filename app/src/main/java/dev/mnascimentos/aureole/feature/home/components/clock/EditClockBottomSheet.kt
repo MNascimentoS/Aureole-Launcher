@@ -1,7 +1,9 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
@@ -9,6 +11,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,63 +78,77 @@ internal fun EditClockOverlay(
 ) {
     // The editor shows and changes the clock being edited: its clock fields hold that clock's look.
     val clockState = remember(uiState) { uiState.forClockEditor() }
-    var isVisible by remember { mutableStateOf(true) }
-
-    LaunchedEffect(isVisible) {
-        if (!isVisible) {
-            delay(DISMISS_DELAY_MS)
-            onDismissRequest()
-        }
-    }
+    var isVisible by rememberEditorVisibility(onDismissRequest)
 
     val savedGreeting = clockState.clockCustomGreeting
     var tempCustomGreeting by remember(savedGreeting) { mutableStateOf(savedGreeting) }
     val pagerState = rememberClockPagerState(options.initialTab)
     val effectiveHazeState = if (clockState.isHazeEnabled) options.hazeState else null
+    var isFontPickerOpen by remember { mutableStateOf(false) }
+    val preview: @Composable BoxScope.() -> Unit = {
+        EditClockPreviewCard(uiState = clockState, tempCustomGreeting = tempCustomGreeting, hazeState = effectiveHazeState)
+    }
 
-    AureoleEditOverlay(
-        onDismissRequest = { isVisible = false },
-        modifier = modifier,
-        state = options.overlayState,
-        params = AureoleEditOverlayParams(
-            config = AureoleEditOverlayConfig(
-                title = stringResource(R.string.home_clock_customize_title),
-                onSettingsClick = { actions.onSettingsClick() },
-                showHeaderAction = showsHomeSheetLogo(),
-                hazeState = effectiveHazeState,
-                isVisible = isVisible,
-                isLeftHanded = clockState.isLeftHandedMode,
-                edgeToEdgeContent = true,
-                hasTabBottomBar = true
-            ),
-            previewContent = {
-                EditClockPreviewCard(
-                    uiState = clockState,
-                    tempCustomGreeting = tempCustomGreeting,
-                    hazeState = effectiveHazeState
-                )
-            },
-            bottomBarContent = {
-                EditClockFooter(pagerState = pagerState)
-            },
-            sheetContent = {
-                EditClockPager(
-                    pagerState = pagerState,
-                    params = EditClockPagerParams(
-                        uiState = clockState,
-                        actions = actions,
-                        isExpanded = options.overlayState.isExpanded,
-                        tempCustomGreeting = tempCustomGreeting,
-                        onGreetingChange = {
-                            tempCustomGreeting = it
-                            actions.onUpdateClockCustomGreeting(it)
-                        },
-                        nowMillis = options.nowMillis
+    // The font picker opens over the editor (RF-B2): both fill the screen, the picker on top.
+    Box(modifier = modifier.fillMaxSize()) {
+        AureoleEditOverlay(
+            onDismissRequest = { isVisible = false },
+            state = options.overlayState,
+            params = AureoleEditOverlayParams(
+                config = AureoleEditOverlayConfig(
+                    title = stringResource(R.string.home_clock_customize_title),
+                    onSettingsClick = { actions.onSettingsClick() },
+                    showHeaderAction = showsHomeSheetLogo(),
+                    hazeState = effectiveHazeState,
+                    isVisible = isVisible,
+                    isLeftHanded = clockState.isLeftHandedMode,
+                    edgeToEdgeContent = true,
+                    hasTabBottomBar = true
+                ),
+                previewContent = preview,
+                bottomBarContent = { EditClockFooter(pagerState = pagerState) },
+                sheetContent = {
+                    EditClockPager(
+                        pagerState = pagerState,
+                        params = EditClockPagerParams(
+                            uiState = clockState,
+                            actions = actions,
+                            isExpanded = options.overlayState.isExpanded,
+                            tempCustomGreeting = tempCustomGreeting,
+                            onGreetingChange = {
+                                tempCustomGreeting = it
+                                actions.onUpdateClockCustomGreeting(it)
+                            },
+                            nowMillis = options.nowMillis,
+                            onOpenFontPicker = { isFontPickerOpen = true }
+                        )
                     )
-                )
-            }
+                }
+            )
         )
-    )
+        if (isFontPickerOpen) {
+            EditClockFontPicker(
+                uiState = clockState,
+                actions = actions,
+                onDismissRequest = { isFontPickerOpen = false },
+                preview = preview,
+                nowMillis = options.nowMillis
+            )
+        }
+    }
+}
+
+/** Whether the editor shows: setting it to false slides it out, then [onDismissRequest] runs. */
+@Composable
+private fun rememberEditorVisibility(onDismissRequest: () -> Unit): MutableState<Boolean> {
+    val isVisible = remember { mutableStateOf(true) }
+    LaunchedEffect(isVisible.value) {
+        if (!isVisible.value) {
+            delay(DISMISS_DELAY_MS)
+            onDismissRequest()
+        }
+    }
+    return isVisible
 }
 
 /** Pager state for the tabs; ticks the haptics every time the page changes. */
@@ -182,10 +199,7 @@ private fun EditClockPreviewCard(
                 isBackgroundEnabled = uiState.isClockBackgroundEnabled
             ),
             // The clock fields of uiState hold the edited clock (forClockEditor); all of them, the background too.
-            config = uiState.defaultClockConfig().toHeaderConfig().copy(
-                customGreeting = tempCustomGreeting,
-                isVerticallyBalanced = true
-            )
+            config = uiState.defaultClockConfig().toHeaderConfig().copy(customGreeting = tempCustomGreeting)
         )
     }
 }

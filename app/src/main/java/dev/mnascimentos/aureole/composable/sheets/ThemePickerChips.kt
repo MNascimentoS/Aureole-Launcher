@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.model.FontChipLook
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
@@ -110,8 +111,9 @@ private fun PaletteColorStrip(palette: ThemePalette) {
 }
 
 /**
- * Font chip: "Aa" and the font name, both written in the font itself, outlined when [isSelected].
- * With [isLeftHanded] the chip is mirrored: the name on the left and the sample on the right.
+ * Font chip: a sample ("Aa", or the text of [look]) and the font name, both written in the font itself, outlined
+ * when [isSelected]. Left-handed ([FontChipLook.isLeftHanded]) the chip is mirrored: the name on the left and the
+ * sample on the right. A key with no family of its own (the launcher font) is written in the theme font.
  */
 @Composable
 internal fun FontChip(
@@ -119,8 +121,9 @@ internal fun FontChip(
     isSelected: Boolean,
     onSelect: () -> Unit,
     modifier: Modifier = Modifier,
-    isLeftHanded: Boolean = false
+    look: FontChipLook = FontChipLook()
 ) {
+    val isLeftHanded = look.isLeftHanded
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
     val family = AvailableFonts[fontName]
     val displayName = fontNameRes(fontName)?.let { stringResource(it) } ?: fontName
@@ -146,21 +149,27 @@ internal fun FontChip(
     ) {
         if (isLeftHanded) {
             FontChipName(displayName, family, isLeftHanded, Modifier.weight(1f))
-            FontChipSample(family)
+            FontChipSample(family, look)
         } else {
-            FontChipSample(family)
+            FontChipSample(family, look)
             FontChipName(displayName, family, isLeftHanded, Modifier.weight(1f))
         }
     }
 }
 
+/** "Aa" in a fixed width, or the text of [look] (the time) at its own width, bold when [look] asks. */
 @Composable
-private fun FontChipSample(family: FontFamily?) {
+private fun FontChipSample(family: FontFamily?, look: FontChipLook) {
     AureoleText(
-        text = stringResource(R.string.settings_appearance_font_chip_sample),
+        text = look.text ?: stringResource(R.string.settings_appearance_font_chip_sample),
         color = AureoleDS.colors.onSurfaceHigh,
-        modifier = Modifier.width(FONT_SAMPLE_WIDTH_DP.dp),
-        format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontFamily = family)
+        modifier = if (look.text == null) Modifier.width(FONT_SAMPLE_WIDTH_DP.dp) else Modifier,
+        format = AureoleTextFormatParams(
+            style = AureoleDS.typography.titleMedium,
+            fontFamily = family,
+            fontWeight = if (look.isBold) FontWeight.Bold else FontWeight.Normal,
+            maxLines = 1
+        )
     )
 }
 
@@ -191,7 +200,8 @@ private fun ThemePickerChipsPreview() {
             val palette = ThemePalette(name = "Preview", colors = AureoleDS.colors)
             PaletteChip(palette = palette, displayName = palette.name, isSelected = true, onSelect = {})
             FontChip(fontName = "Istok Web", isSelected = false, onSelect = {})
-            FontChip(fontName = "Istok Web", isSelected = true, onSelect = {}, isLeftHanded = true)
+            FontChip(fontName = "Istok Web", isSelected = true, onSelect = {}, look = FontChipLook(isLeftHanded = true))
+            FontChip(fontName = "Serif", isSelected = false, onSelect = {}, look = FontChipLook("16:16", isBold = true))
         }
     }
 }

@@ -31,6 +31,7 @@ private fun HomeViewModel.saveDefaultClockConfig(config: ClockConfig) {
         clockMessage = config.message
         clockAlignment = config.alignment
         clockFontFamily = config.fontFamily
+        clockFontBold = config.isFontBold
         clockTimeFormat = config.timeFormat
         clockDateFormat = config.dateFormat
         clockTextColor = config.textColor

@@ -15,6 +15,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
+import dev.mnascimentos.aureole.composable.sheets.model.FontChipLook
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -113,14 +114,14 @@ private fun ChipsCase(isLeftHanded: Boolean = false) {
                 isSelected = false,
                 onSelect = {},
                 modifier = Modifier.fillMaxWidth(),
-                isLeftHanded = isLeftHanded
+                look = FontChipLook(isLeftHanded = isLeftHanded)
             )
             FontChip(
                 fontName = "Istok Web",
                 isSelected = true,
                 onSelect = {},
                 modifier = Modifier.fillMaxWidth(),
-                isLeftHanded = isLeftHanded
+                look = FontChipLook(isLeftHanded = isLeftHanded)
             )
         }
     }

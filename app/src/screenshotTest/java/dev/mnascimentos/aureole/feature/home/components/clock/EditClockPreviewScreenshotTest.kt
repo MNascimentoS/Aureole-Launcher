@@ -77,7 +77,7 @@ class EditClockPreviewScreenshotTest {
                         modifier = Modifier
                             .padding(AureoleDS.dimens.medium)
                             .alpha(previewAlpha(HALF_EXPANDED)),
-                        config = ClockHeaderConfig(isVerticallyBalanced = true)
+                        config = ClockHeaderConfig()
                     )
                 }
             }
