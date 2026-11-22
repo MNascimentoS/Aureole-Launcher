@@ -16,6 +16,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.sheets.model.FontChipLook
+import dev.mnascimentos.aureole.composable.sheets.model.PaletteChipLabel
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -84,7 +85,7 @@ private fun PickerGridCase() {
                 items(items = allPalettes, key = { it.name }) { palette ->
                     PaletteChip(
                         palette = palette,
-                        displayName = palette.name,
+                        label = PaletteChipLabel(palette.name),
                         isSelected = palette == allPalettes.first(),
                         onSelect = {},
                         modifier = Modifier.fillMaxWidth()
@@ -104,7 +105,7 @@ private fun ChipsCase(isLeftHanded: Boolean = false) {
         ) {
             PaletteChip(
                 palette = allPalettes.first(),
-                displayName = allPalettes.first().name,
+                label = PaletteChipLabel(allPalettes.first().name),
                 isSelected = true,
                 onSelect = {},
                 modifier = Modifier.fillMaxWidth()

@@ -13,6 +13,7 @@ import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorEntry
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
+import dev.mnascimentos.aureole.composable.sheets.model.PaletteChipLabel
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.composable.sheets.model.colorIn
 import dev.mnascimentos.aureole.composable.sheets.model.componentColorEntries
@@ -82,24 +83,24 @@ private fun ColorPickerGrid(options: ComponentColorOptions, onSelect: (Component
             when (entry) {
                 ComponentColorEntry.Theme -> PaletteChip(
                     palette = theme,
-                    displayName = stringResource(R.string.theme_color_swatch_default),
+                    label = PaletteChipLabel(stringResource(R.string.theme_color_swatch_default), options.themeColor),
                     isSelected = entry.key == marked,
-                    onSelect = { onSelect(entry) },
-                    strip = options.themeColor
+                    onSelect = { onSelect(entry) }
                 )
                 is ComponentColorEntry.Current -> PaletteChip(
                     palette = theme,
-                    displayName = stringResource(R.string.theme_color_option_current),
+                    label = PaletteChipLabel(
+                        stringResource(R.string.theme_color_option_current),
+                        entry.ref.resolve(AureoleDS.colors)
+                    ),
                     isSelected = entry.key == marked,
-                    onSelect = { onSelect(entry) },
-                    strip = entry.ref.resolve(AureoleDS.colors)
+                    onSelect = { onSelect(entry) }
                 )
                 is ComponentColorEntry.Palette -> PaletteChip(
                     palette = entry.palette,
-                    displayName = entry.name,
+                    label = PaletteChipLabel(entry.name, options.role.colorIn(entry.palette)),
                     isSelected = entry.key == marked,
-                    onSelect = { onSelect(entry) },
-                    strip = options.role.colorIn(entry.palette)
+                    onSelect = { onSelect(entry) }
                 )
             }
         }

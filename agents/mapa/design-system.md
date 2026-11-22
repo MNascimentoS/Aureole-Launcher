@@ -28,7 +28,7 @@ Base: `app/src/main/java/dev/mnascimentos/aureole/core/designsystem/`. Acesso: `
 - Paleta padrão: Frostbite (`frostbiteColors`, fundo 0xFF12181D). Os 7 primeiros não têm default; `error`...`info` têm.
 - Só existe `AureoleDS.colors`; `AureoleTheme` é acessor antigo duplicado.
 
-## typography (`theme/AureoleTypography.kt`; fonte padrão Istok Web, troca via `AvailableFonts` em `Type.kt`; catálogo único de 32 fontes em `theme/model/AureoleFontCatalog.kt` (chave persistida = nome em inglês; Serif/Monospaced/Rounded têm `nameRes`), `RoundedFontFamily` público em `Type.kt`; `FONT_KEY_LAUNCHER` = "acompanhar a fonte do launcher", fora do catálogo, só no seletor de componente)
+## typography (`theme/AureoleTypography.kt`; fonte padrão Istok Web, troca via `AvailableFonts` em `Type.kt`; catálogo único de 32 fontes em `theme/model/AureoleFontEntry.kt (contém `AureoleFontCatalog`)` (chave persistida = nome em inglês; Serif/Monospaced/Rounded têm `nameRes`), `RoundedFontFamily` público em `Type.kt`; `FONT_KEY_LAUNCHER` = "acompanhar a fonte do launcher", fora do catálogo, só no seletor de componente)
 | Estilo | sp (linha) / peso | Uso |
 |---|---|---|
 | hugeTitle | 20 (28) Bold | Títulos grandes |

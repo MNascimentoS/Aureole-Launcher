@@ -39,8 +39,11 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.default
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.forClockEditor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toHeaderConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
+import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockGreeting
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
+import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPickerOpeners
+import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPickersParams
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -88,7 +91,11 @@ internal fun EditClockOverlay(
     var isFontPickerOpen by remember { mutableStateOf(false) }
     var colorPickerRole by remember { mutableStateOf<ComponentColorRole?>(null) }
     val preview: @Composable BoxScope.() -> Unit = {
-        EditClockPreviewCard(uiState = clockState, tempCustomGreeting = tempCustomGreeting, hazeState = effectiveHazeState)
+        EditClockPreviewCard(
+            uiState = clockState,
+            tempCustomGreeting = tempCustomGreeting,
+            hazeState = effectiveHazeState
+        )
     }
 
     // The font and color pickers open over the editor (RF-B2, F2): both fill the screen, the picker on top.
@@ -97,16 +104,7 @@ internal fun EditClockOverlay(
             onDismissRequest = { isVisible = false },
             state = options.overlayState,
             params = AureoleEditOverlayParams(
-                config = AureoleEditOverlayConfig(
-                    title = stringResource(R.string.home_clock_customize_title),
-                    onSettingsClick = { actions.onSettingsClick() },
-                    showHeaderAction = showsHomeSheetLogo(),
-                    hazeState = effectiveHazeState,
-                    isVisible = isVisible,
-                    isLeftHanded = clockState.isLeftHandedMode,
-                    edgeToEdgeContent = true,
-                    hasTabBottomBar = true
-                ),
+                config = clockOverlayConfig(clockState, actions, effectiveHazeState, isVisible),
                 previewContent = preview,
                 bottomBarContent = { EditClockFooter(pagerState = pagerState) },
                 sheetContent = {
@@ -116,37 +114,73 @@ internal fun EditClockOverlay(
                             uiState = clockState,
                             actions = actions,
                             isExpanded = options.overlayState.isExpanded,
-                            tempCustomGreeting = tempCustomGreeting,
-                            onGreetingChange = {
+                            greeting = EditClockGreeting(tempCustomGreeting) {
                                 tempCustomGreeting = it
                                 actions.onUpdateClockCustomGreeting(it)
                             },
                             nowMillis = options.nowMillis,
-                            onOpenFontPicker = { isFontPickerOpen = true },
-                            onOpenColorPicker = { colorPickerRole = it }
+                            pickers = EditClockPickerOpeners(
+                                onFont = { isFontPickerOpen = true },
+                                onColor = { colorPickerRole = it }
+                            )
                         )
                     )
                 }
             )
         )
-        if (isFontPickerOpen) {
-            EditClockFontPicker(
-                uiState = clockState,
-                actions = actions,
-                onDismissRequest = { isFontPickerOpen = false },
-                preview = preview,
-                nowMillis = options.nowMillis
-            )
-        }
-        colorPickerRole?.let { role ->
-            EditClockColorPicker(
-                uiState = clockState,
-                actions = actions,
-                role = role,
-                onDismissRequest = { colorPickerRole = null },
-                preview = preview
-            )
-        }
+        EditClockPickers(
+            params = EditClockPickersParams(clockState, actions, options.nowMillis, preview),
+            isFontOpen = isFontPickerOpen,
+            colorRole = colorPickerRole,
+            onFontDismiss = { isFontPickerOpen = false },
+            onColorDismiss = { colorPickerRole = null }
+        )
+    }
+}
+
+@Composable
+private fun clockOverlayConfig(
+    clockState: MainUiState,
+    actions: HomeScreenActions,
+    hazeState: HazeState?,
+    isVisible: Boolean
+) = AureoleEditOverlayConfig(
+    title = stringResource(R.string.home_clock_customize_title),
+    onSettingsClick = { actions.onSettingsClick() },
+    showHeaderAction = showsHomeSheetLogo(),
+    hazeState = hazeState,
+    isVisible = isVisible,
+    isLeftHanded = clockState.isLeftHandedMode,
+    edgeToEdgeContent = true,
+    hasTabBottomBar = true
+)
+
+/** The font picker and the color picker, each shown over the editor while open (RF-B2, F2). */
+@Composable
+private fun EditClockPickers(
+    params: EditClockPickersParams,
+    isFontOpen: Boolean,
+    colorRole: ComponentColorRole?,
+    onFontDismiss: () -> Unit,
+    onColorDismiss: () -> Unit
+) {
+    if (isFontOpen) {
+        EditClockFontPicker(
+            uiState = params.uiState,
+            actions = params.actions,
+            onDismissRequest = onFontDismiss,
+            preview = params.preview,
+            nowMillis = params.nowMillis
+        )
+    }
+    colorRole?.let { role ->
+        EditClockColorPicker(
+            uiState = params.uiState,
+            actions = params.actions,
+            role = role,
+            onDismissRequest = onColorDismiss,
+            preview = params.preview
+        )
     }
 }
 

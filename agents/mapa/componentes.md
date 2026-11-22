@@ -74,7 +74,9 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 |---|---|---|
 | ClockHeader | composable/clock/ClockHeader.kt | Relógio do cabeçalho |
 | ClockContainer, HomeClockHeader, EditClockBottomSheet | feature/home/components/clock/ | Relógio e edição na home; aba Style com Layout (`ClockLayoutOption`, miniaturas de barras), Message (`ClockMessageOption`), Alinhamento e "Change font" (`EditClockFontSection` → `EditClockFontPicker`); Format › Date desabilitada sem data. Aba Colors: linhas "Text color"/"Card color" (`EditClockColorsSection` → `EditClockColorPicker`; `clockColorRefFor`, `clockColorTitleRes` em `model/ClockColorRows.kt`) e o switch do cartão. Espaços do cartão: `clockSpacing` / `ClockSpace` (`composable/clock/model/ClockSpacing.kt`) |
-| ClockFontChoice, `resolveClockFont`, `withMigratedFont` | core/data/model/ClockFontMigration.kt | Fonte do relógio (chave do catálogo ou `FONT_KEY_LAUNCHER`) + negrito; lê as chaves antigas (SANS_SERIF, BOLD, SERIF, MONOSPACE, ROUNDED) |
+| PaletteChipLabel | composable/sheets/model/PaletteChipLabel.kt | Nome e faixa única de um `PaletteChip` (modo cor do seletor de paletas) |
+| EditClockPickerOpeners, EditClockGreeting, EditClockPickersParams | feature/home/components/clock/model/EditClockPagerParams.kt | Agrupam abridores dos seletores, texto digitado e dados dos seletores do editor do relógio |
+| ClockFontChoice, `resolveClockFont`, `withMigratedFont` | core/data/model/ClockFontChoice.kt | Fonte do relógio (chave do catálogo ou `FONT_KEY_LAUNCHER`) + negrito; lê as chaves antigas (SANS_SERIF, BOLD, SERIF, MONOSPACE, ROUNDED) |
 | ClockLayout, ClockLine, ClockMessage, `resolveClockLayout` | core/data/model/ClockLayout.kt | 7 layouts (linhas de cima para baixo), mensagem saudação/texto e leitura dos estilos antigos (migração) |
 | WidgetPositionIndicatorBar | composable/widgets/WidgetPositionIndicatorBar.kt | Indicador de posição |
 | WidgetPickerScreen, WidgetStackBottomSheet, EditWidgetGroupScreen (carrossel: `EditWidgetGroupCarousel`) | feature/home/components/widgets/ | Widgets na home |

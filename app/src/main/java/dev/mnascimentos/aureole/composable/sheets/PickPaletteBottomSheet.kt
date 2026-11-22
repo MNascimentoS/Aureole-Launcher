@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorOptions
+import dev.mnascimentos.aureole.composable.sheets.model.PaletteChipLabel
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
@@ -125,7 +126,7 @@ internal fun PalettePickerGrid(
             val active = if (isDarkTheme) basePalette else basePalette.toLight()
             PaletteChip(
                 palette = active,
-                displayName = basePalette.name,
+                label = PaletteChipLabel(basePalette.name),
                 isSelected = basePalette.name.equals(shownBase, ignoreCase = true),
                 onSelect = { onSelect(active) }
             )

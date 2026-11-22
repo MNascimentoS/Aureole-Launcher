@@ -22,3 +22,7 @@
 ## 4. Vetores e PNG
 - Preferir vector drawables. Se o `lintDebug` acusar `VectorPath` ou o vetor não carregar no Robolectric (o parser do Compose acusa "Unknown command", por exemplo com números em notação científica como `6.59706e-05`), trocar por PNG em `res/drawable-nodpi/`.
 - Nunca resolver com `tools:ignore`.
+
+## 5. Fontes e cores de componente vêm do launcher
+- **Princípio:** fonte e cor de um componente (relógio, e os que migrarem) podem diferir das do launcher, mas sempre saem do mesmo catálogo de fontes (`AureoleFontCatalog`) e das mesmas paletas, escolhidas pelos mesmos seletores (`PickFontBottomSheet`, `PickPaletteBottomSheet`). Sem lista de fontes ou seletor de cor próprios.
+- **Fonte nova entra pelo catálogo:** TTF no peso Regular em `res/font/<nome>_regular.ttf` (estático; variável só se o google/fonts não tiver estático, fixada em wght 400 com `variableFamily`), licença OFL, nome em `OpenSourceLicenses.kt` e `NOTICE`, chave em `AureoleFontCatalog` e família em `AvailableFonts`. A chave é persistida: nunca renomear.

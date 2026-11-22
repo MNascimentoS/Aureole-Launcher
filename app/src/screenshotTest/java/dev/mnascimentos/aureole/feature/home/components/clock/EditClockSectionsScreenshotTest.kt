@@ -73,4 +73,14 @@ class EditClockSectionsScreenshotTest {
             nowMillis = NOW_MILLIS
         )
     }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockColorsTwoRows() = Page {
+        EditClockColorsSection(
+            uiState = MainUiState(isClockBackgroundEnabled = true, clockTextColor = 0xFF90CAF9.toInt()),
+            actions = createDefaultHomeScreenActions()
+        )
+    }
 }

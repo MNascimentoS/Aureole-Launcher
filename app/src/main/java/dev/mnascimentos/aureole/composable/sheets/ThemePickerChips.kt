@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.model.FontChipLook
+import dev.mnascimentos.aureole.composable.sheets.model.PaletteChipLabel
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
@@ -50,12 +51,13 @@ private const val SELECTED_FONT_ALPHA = 0.5f
 @Composable
 internal fun PaletteChip(
     palette: ThemePalette,
-    displayName: String,
+    label: PaletteChipLabel,
     isSelected: Boolean,
     onSelect: () -> Unit,
-    modifier: Modifier = Modifier,
-    strip: Color? = null
+    modifier: Modifier = Modifier
 ) {
+    val displayName = label.name
+    val strip = label.strip
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusSmall)
     val description = stringResource(R.string.settings_appearance_palette_chip_description, displayName)
     Column(
@@ -202,7 +204,7 @@ private fun ThemePickerChipsPreview() {
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
         ) {
             val palette = ThemePalette(name = "Preview", colors = AureoleDS.colors)
-            PaletteChip(palette = palette, displayName = palette.name, isSelected = true, onSelect = {})
+            PaletteChip(palette = palette, label = PaletteChipLabel(palette.name), isSelected = true, onSelect = {})
             FontChip(fontName = "Istok Web", isSelected = false, onSelect = {})
             FontChip(fontName = "Istok Web", isSelected = true, onSelect = {}, look = FontChipLook(isLeftHanded = true))
             FontChip(fontName = "Serif", isSelected = false, onSelect = {}, look = FontChipLook("16:16", isBold = true))

@@ -110,13 +110,13 @@ private fun ColumnScope.EditClockStylePage(params: EditClockPagerParams) {
     EditClockStyleSection(
         uiState = params.uiState,
         actions = params.actions,
-        tempCustomGreeting = params.tempCustomGreeting,
-        onGreetingChange = params.onGreetingChange
+        tempCustomGreeting = params.greeting.text,
+        onGreetingChange = params.greeting.onChange
     )
     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
     EditClockAlignmentSection(uiState = params.uiState, actions = params.actions)
     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockFontSection(uiState = params.uiState, onOpenFontPicker = params.onOpenFontPicker)
+    EditClockFontSection(uiState = params.uiState, onOpenFontPicker = params.pickers.onFont)
 }
 
 @Composable
@@ -129,6 +129,6 @@ private fun ColumnScope.EditClockColorsPage(params: EditClockPagerParams) {
     EditClockColorsSection(
         uiState = params.uiState,
         actions = params.actions,
-        onOpenColorPicker = params.onOpenColorPicker
+        onOpenColorPicker = params.pickers.onColor
     )
 }
