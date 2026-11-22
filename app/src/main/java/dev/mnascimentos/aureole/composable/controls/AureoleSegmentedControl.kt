@@ -17,6 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -107,14 +109,21 @@ private fun RowScope.SegmentItem(
         contentAlignment = Alignment.Center
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall, Alignment.CenterHorizontally)
         ) {
             icon?.invoke(content)
             AureoleText(
                 text = label,
+                modifier = Modifier.weight(1f, fill = false),
                 color = content,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
             )
         }
     }
