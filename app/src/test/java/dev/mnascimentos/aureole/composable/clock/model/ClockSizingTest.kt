@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.clock.model
 
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -7,79 +8,111 @@ import org.junit.Test
 
 class ClockSizingTest {
 
-    @Test
-    fun `when the container is the onboarding 10x4, should use the normal size with the date and no greeting`() {
-        val sizing = resolveClockSizing(maxHeightDp = 60f, fontScale = 1f, greetingAllowed = true)
-
-        assertEquals(56f, sizing.textSizePx)
-        assertFalse(sizing.showGreeting)
-    }
+    private val full = ClockLayout.MSG_TIME_DATE.lines
+    private val wide = 300f
 
     @Test
-    fun `when the container is tall, should use the large size with the greeting`() {
-        val sizing = resolveClockSizing(maxHeightDp = 160f, fontScale = 1f, greetingAllowed = true)
+    fun `when the card is tall and wide, should use the large size with the greeting`() {
+        val sizing = resolveClockSizing(full, maxTextWidthDp = wide, maxHeightDp = 200f)
 
-        assertEquals(68f, sizing.textSizePx)
+        assertEquals(CLOCK_MAX_TIME_SP, sizing.textSizePx)
         assertTrue(sizing.showGreeting)
     }
 
     @Test
-    fun `when the smallest fixed size fits, should use it`() {
-        val sizing = resolveClockSizing(maxHeightDp = 50f, fontScale = 1f, greetingAllowed = true)
+    fun `when the room is unbounded in height, should use the large size`() {
+        val sizing = resolveClockSizing(full, maxTextWidthDp = wide, maxHeightDp = Float.POSITIVE_INFINITY)
 
-        assertEquals(42f, sizing.textSizePx)
-        assertFalse(sizing.showGreeting)
+        assertEquals(CLOCK_MAX_TIME_SP, sizing.textSizePx)
+        assertTrue(sizing.showGreeting)
     }
 
     @Test
-    fun `when the container is a short landscape cell, should size the time by the height left by the date`() {
-        val sizing = resolveClockSizing(maxHeightDp = 40f, fontScale = 1f, greetingAllowed = true)
+    fun `when the card is narrow, should size the time by the width`() {
+        val narrow = resolveClockSizing(full, maxTextWidthDp = 110f, maxHeightDp = 200f)
 
-        assertTrue(sizing.textSizePx < 42f)
-        assertFalse(sizing.showGreeting)
-        assertTrue(sizing.blockHeightDp <= 40f)
+        assertTrue(narrow.textSizePx < CLOCK_MAX_TIME_SP)
+        assertTrue(narrow.textSizePx > CLOCK_MIN_TIME_SP)
+        assertTrue("same layout as the wide card", narrow.showGreeting)
     }
 
     @Test
-    fun `when in landscape heights, should keep the lines inside the height with no negative room`() {
-        listOf(36f, 40f, 44f, 48f, 56f, 64f, 72f).forEach { height ->
-            listOf(1f, 1.15f, 1.3f).forEach { fontScale ->
-                listOf(true, false).forEach { hasDate ->
-                    val sizing = resolveClockSizing(height, fontScale, greetingAllowed = true, hasDate = hasDate)
+    fun `when the height grows, should grow the time continuously, not in steps`() {
+        val sizes = (60..140 step 4).map { resolveClockSizing(full, wide, it.toFloat()).textSizePx }
 
-                    assertTrue("h=$height scale=$fontScale date=$hasDate", sizing.blockHeightDp <= height)
-                    assertTrue(height - sizing.blockHeightDp >= 0f)
-                    assertTrue(sizing.textSizePx > 0f)
+        sizes.zipWithNext { lower, higher -> assertTrue("$lower > $higher", higher >= lower) }
+        assertTrue("continuous sizes", sizes.distinct().size > 8)
+    }
+
+    @Test
+    fun `in small, medium and large cells, should keep the card inside the room in every layout`() {
+        listOf(48f, 64f, 80f, 96f, 120f, 160f).forEach { height ->
+            listOf(110f, 200f, wide).forEach { width ->
+                listOf(1f, 1.15f, 1.3f).forEach { fontScale ->
+                    ClockLayout.entries.forEach { layout ->
+                        val sizing = resolveClockSizing(layout.lines, width, height, fontScale)
+                        val tag = "h=$height w=$width scale=$fontScale ${layout.name}"
+
+                        assertTrue(tag, sizing.blockHeightDp <= height + 1f)
+                        assertTrue(tag, sizing.textSizePx >= CLOCK_MIN_TIME_SP)
+                    }
                 }
             }
         }
     }
 
     @Test
-    fun `when the greeting is shown, should count it in the lines height`() {
-        val sizing = resolveClockSizing(maxHeightDp = 160f, fontScale = 1f, greetingAllowed = true)
-        val withoutGreeting = resolveClockSizing(maxHeightDp = 160f, fontScale = 1f, greetingAllowed = false)
+    fun `when the card is drawn in the height it was measured at, should give the same sizes`() {
+        listOf(110f, 200f, wide).forEach { width ->
+            ClockLayout.entries.forEach { layout ->
+                val home = resolveClockSizing(layout.lines, width, Float.POSITIVE_INFINITY)
+                val preview = resolveClockSizing(layout.lines, width, home.blockHeightDp)
 
-        assertTrue(sizing.blockHeightDp > withoutGreeting.blockHeightDp)
-        assertTrue(sizing.blockHeightDp <= 160f)
+                assertEquals(layout.name, home.textSizePx, preview.textSizePx, 0.5f)
+                assertEquals(layout.name, home.showGreeting, preview.showGreeting)
+            }
+        }
     }
 
     @Test
-    fun `when the style does not allow a greeting, should never show it`() {
-        assertFalse(resolveClockSizing(200f, 1f, greetingAllowed = false).showGreeting)
+    fun `when the room is too short for a greeting, should drop it and keep the time`() {
+        val sizing = resolveClockSizing(full, maxTextWidthDp = wide, maxHeightDp = 80f)
+
+        assertFalse(sizing.showGreeting)
+        assertTrue(sizing.textSizePx > CLOCK_MIN_TIME_SP)
     }
 
     @Test
-    fun `when the font scale grows, should step the size down or drop the greeting`() {
-        val normal = resolveClockSizing(maxHeightDp = 100f, fontScale = 1f, greetingAllowed = true)
-        val scaled = resolveClockSizing(maxHeightDp = 100f, fontScale = 1.3f, greetingAllowed = true)
+    fun `when the layout has no greeting, should never show it`() {
+        assertFalse(resolveClockSizing(ClockLayout.TIME_ONLY.lines, wide, 400f).showGreeting)
+        assertFalse(resolveClockSizing(ClockLayout.TIME_ON_TOP.lines, wide, 400f).showGreeting)
+    }
+
+    @Test
+    fun `when there is no date, should give the time the room of the date`() {
+        val withDate = resolveClockSizing(ClockLayout.TIME_ON_TOP.lines, wide, 70f)
+        val timeOnly = resolveClockSizing(ClockLayout.TIME_ONLY.lines, wide, 70f)
+
+        assertTrue(timeOnly.textSizePx > withDate.textSizePx)
+    }
+
+    @Test
+    fun `when the font scale grows, should shrink the time or drop the greeting`() {
+        val normal = resolveClockSizing(full, wide, 120f, fontScale = 1f)
+        val scaled = resolveClockSizing(full, wide, 120f, fontScale = 1.3f)
 
         assertTrue(normal.textSizePx > scaled.textSizePx || normal.showGreeting && !scaled.showGreeting)
     }
 
     @Test
-    fun `when there is no date, should not reserve room for it`() {
-        assertEquals(68f, resolveClockSizing(50f, 1f, greetingAllowed = false, hasDate = false).textSizePx)
-        assertEquals(42f, resolveClockSizing(50f, 1f, greetingAllowed = false, hasDate = true).textSizePx)
+    fun `when the greeting is shown, should count it in the card height`() {
+        val time = resolveClockSizing(full, wide, 200f).textSizePx
+
+        assertTrue(clockCardHeightDp(full, time) > clockCardHeightDp(ClockLayout.TIME_ON_TOP.lines, time))
+    }
+
+    @Test
+    fun `when the card is smaller than the floor, should stop at the floor`() {
+        assertEquals(CLOCK_MIN_TIME_SP, resolveClockSizing(full, 20f, 10f).textSizePx)
     }
 }

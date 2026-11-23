@@ -2,13 +2,17 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import android.graphics.Color
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
@@ -19,6 +23,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -30,6 +36,8 @@ class ClockHeaderTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    private fun hasLongClickAction() = SemanticsMatcher.keyIsDefined(SemanticsActions.OnLongClick)
 
     @Test
     fun `when rendering clock header with default config, should render successfully`() {
@@ -63,22 +71,50 @@ class ClockHeaderTest {
     }
 
     @Test
-    fun `when clock header is clicked, should invoke onClick callback`() {
-        // Arrange
-        var clicked = false
+    fun `when clock header has a long press, should offer only it, with no button role or tap action`() {
+        // Arrange & Act
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                HomeClockHeader(
-                    onClick = { clicked = true }
-                )
+                HomeClockHeader(onLongClick = {})
+            }
+        }
+
+        // Assert
+        val node = composeTestRule.onNode(hasLongClickAction()).fetchSemanticsNode()
+        assertEquals("Customize clock", node.config[SemanticsActions.OnLongClick].label)
+        assertFalse(node.config.contains(SemanticsProperties.Role))
+        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(0)
+    }
+
+    @Test
+    fun `when clock header has no long press, should have no gesture at all`() {
+        // Arrange & Act
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                HomeClockHeader()
+            }
+        }
+
+        // Assert
+        composeTestRule.onAllNodes(hasLongClickAction()).assertCountEquals(0)
+        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(0)
+    }
+
+    @Test
+    fun `when clock header long press action runs from accessibility, should invoke onLongClick callback`() {
+        // Arrange
+        var longClicked = false
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                HomeClockHeader(onLongClick = { longClicked = true })
             }
         }
 
         // Act
-        composeTestRule.onNode(hasClickAction()).performClick()
+        composeTestRule.onNode(hasLongClickAction()).performSemanticsAction(SemanticsActions.OnLongClick)
 
         // Assert
-        assertTrue(clicked)
+        assertTrue(longClicked)
     }
 
     @Test
@@ -94,7 +130,7 @@ class ClockHeaderTest {
         }
 
         // Act
-        composeTestRule.onNode(hasClickAction()).performTouchInput {
+        composeTestRule.onNode(hasLongClickAction()).performTouchInput {
             longClick()
         }
 
@@ -151,7 +187,7 @@ class ClockHeaderTest {
         }
 
         // Act
-        composeTestRule.onNode(hasClickAction()).performTouchInput {
+        composeTestRule.onNode(hasLongClickAction()).performTouchInput {
             longClick()
         }
 

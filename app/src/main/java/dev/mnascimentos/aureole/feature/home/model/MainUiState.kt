@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -130,6 +131,11 @@ data class MainUiState(
     val showEditClockBottomSheet: Boolean = false,
     /** The grid item id of the clock the clock editor changes; null edits the clock fields above (the default). */
     val editingClockId: String? = null,
+    /**
+     * Size each clock has on the home, by `clockSizeKey` (grid item id, or the list header), measured and kept in
+     * memory only: the editor preview draws the clock at that size (relogio-home-sheet RF-B5).
+     */
+    val clockSizes: Map<String, DpSize> = emptyMap(),
     val showQuickButtonSettingsBottomSheet: Boolean = false,
     val showQuickButtonAppearanceBottomSheet: Boolean = false,
     val showShortcutSelectionBottomSheet: Boolean = false,

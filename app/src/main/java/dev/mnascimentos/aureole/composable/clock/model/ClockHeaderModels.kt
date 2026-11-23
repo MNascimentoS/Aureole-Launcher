@@ -2,7 +2,6 @@ package dev.mnascimentos.aureole.composable.clock.model
 
 import android.graphics.Typeface
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.ClockLayout
@@ -31,7 +30,8 @@ data class ClockHeaderConfig(
 )
 
 internal data class ClockHeaderContentParams(
-    val maxHeight: Dp,
+    /** Sizes of the card, from its room (`resolveClockSizing`); the lines it draws follow [layout]. */
+    val sizing: ClockSizing,
     val colorPrimary: Int,
     val composeTextColor: Color,
     val greeting: String,

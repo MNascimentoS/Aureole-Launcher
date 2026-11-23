@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.clock.extensions
 
+import androidx.compose.ui.unit.DpSize
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 
@@ -37,4 +38,10 @@ fun HomeViewModel.resetClockSettings() {
             clockBackgroundColorRef = settingsRepository.clockBackgroundColorRef
         )
     }
+}
+
+/** Keeps in memory the size the clock [clockId] has on the home (null: the list header), for the editor preview. */
+fun HomeViewModel.recordClockSize(clockId: String?, size: DpSize) {
+    if (uiState.value.clockSizeOf(clockId) == size) return
+    updateUiState { it.withClockSize(clockId, size) }
 }

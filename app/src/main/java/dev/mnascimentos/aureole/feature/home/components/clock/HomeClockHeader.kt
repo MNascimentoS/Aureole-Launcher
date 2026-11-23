@@ -19,7 +19,6 @@ fun HomeClockHeader(
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     config: ClockHeaderConfig = ClockHeaderConfig(),
-    onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null
 ) {
     val uiState = LocalHomeUiState.current
@@ -27,7 +26,6 @@ fun HomeClockHeader(
         resolvedConfig = resolveClockConfig(config, uiState, AureoleDS.colors),
         modifier = modifier,
         hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
-        onClick = onClick,
         onLongClick = onLongClick
     )
 }

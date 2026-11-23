@@ -4,9 +4,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderContent
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
 import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
@@ -27,7 +27,10 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Boa tarde Teste",
@@ -52,7 +55,10 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.DATE_ON_TOP.lines,
+                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Bom dia Teste",
@@ -74,7 +80,10 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.TIME_ONLY.lines,
+                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Minha Saudacao Oculta",
@@ -99,7 +108,10 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Bem-vindo de volta!",
@@ -124,7 +136,10 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 80.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f, maxHeightDp = 80f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Saudacao Compacta",
@@ -149,7 +164,10 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 160.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f, maxHeightDp = 192f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Saudacao Direita",

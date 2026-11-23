@@ -1,12 +1,12 @@
 package dev.mnascimentos.aureole.composable.clock
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
-import dev.mnascimentos.aureole.composable.clock.model.ClockSpace
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import androidx.compose.ui.unit.constrainHeight
+import androidx.compose.ui.unit.constrainWidth
 import kotlin.math.roundToInt
 
 /**
@@ -30,12 +30,19 @@ fun Modifier.lineGap(gap: Dp): Modifier = layout { measurable, constraints ->
     layout(placeable.width, (placeable.height + gapPx).coerceAtLeast(0)) { placeable.place(0, gapPx) }
 }
 
-/** Size of this space of the clock card, from the design tokens (D-10). */
-@Composable
-@ReadOnlyComposable
-internal fun ClockSpace.size(): Dp = when (this) {
-    ClockSpace.EDGE -> AureoleDS.dimens.medium
-    ClockSpace.NONE -> AureoleDS.dimens.zero
-    ClockSpace.WIDER -> AureoleDS.dimens.xxSmall
-    ClockSpace.TIGHTER -> -AureoleDS.dimens.xxSmall
+/**
+ * Draws the content at its own size, free of the incoming constraints, shrunk by [scale] from the top start: the
+ * layout takes the scaled size. The clock preview uses it to show the clock at the size it has on the home.
+ */
+fun Modifier.scaledLayout(scale: Float): Modifier = layout { measurable, constraints ->
+    val placeable = measurable.measure(Constraints())
+    val width = constraints.constrainWidth((placeable.width * scale).roundToInt())
+    val height = constraints.constrainHeight((placeable.height * scale).roundToInt())
+    layout(width, height) {
+        placeable.placeWithLayer(0, 0) {
+            scaleX = scale
+            scaleY = scale
+            transformOrigin = TransformOrigin(0f, 0f)
+        }
+    }
 }

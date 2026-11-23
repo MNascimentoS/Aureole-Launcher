@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,23 +30,16 @@ import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.clockSpacing
+import dev.mnascimentos.aureole.composable.clock.model.gapDp
 import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
 import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.data.model.ClockLine
 import dev.mnascimentos.aureole.core.data.model.resolveClockFont
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-
-private const val COMPACT_CONTAINER_HEIGHT_DP = 90
-
-private const val GREETING_SIZE_COMPACT = 13f
-private const val GREETING_SIZE_NORMAL = 15f
-private const val DATE_SIZE_COMPACT = 12f
-private const val DATE_SIZE_NORMAL = 14f
 
 private const val GREETING_CROSSFADE_DURATION_MS = 500
 
@@ -55,16 +47,10 @@ private const val GREETING_CROSSFADE_DURATION_MS = 500
 internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val (horizontalAlignment, textAlign) = ClockHeaderUtils.resolveClockAlignments(params.alignment)
 
-    val sizing = resolveClockSizing(
-        maxHeightDp = params.maxHeight.value,
-        fontScale = LocalDensity.current.fontScale,
-        greetingAllowed = params.layout.showsMessage,
-        hasDate = params.layout.showsDate
-    )
-
-    val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
-    val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
-    val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
+    // Every size is a share of the time (D-08), so the card looks the same at any size on the grid.
+    val sizing = params.sizing
+    val greetingSize = sizing.metrics.greetingSp
+    val dateSize = sizing.metrics.dateSp
 
     val font = resolveClockFont(params.fontFamily, params.isFontBold)
     val fontFamily = font.fontFamily()
@@ -87,8 +73,9 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
         lines.forEachIndexed { index, line ->
             // Keyed by line, so a layout change moves the TextClocks instead of rebuilding them.
             key(line) {
-                // The space above each line comes only from the tokens (clockSpacing): the lines are trimmed.
-                Box(modifier = Modifier.lineGap(gaps.getOrNull(index - 1)?.size() ?: AureoleDS.dimens.zero)) {
+                // The space above each line comes only from clockSpacing, a share of the time: the lines are trimmed.
+                val gap = gaps.getOrNull(index - 1)?.let { sizing.metrics.gapDp(it) } ?: 0f
+                Box(modifier = Modifier.lineGap(gap.dp)) {
                     when (line) {
                         ClockLine.MESSAGE -> ClockGreetingDisplay(
                             greeting = params.greeting,
@@ -217,7 +204,10 @@ private fun ClockHeaderContentPreview() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.MSG_TIME_DATE.lines,
+                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Boa tarde",
@@ -237,7 +227,10 @@ private fun ClockHeaderContentDateOnTopPreview() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.DATE_ON_TOP.lines,
+                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Bom dia",

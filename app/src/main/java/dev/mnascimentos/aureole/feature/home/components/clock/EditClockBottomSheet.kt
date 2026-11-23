@@ -2,10 +2,13 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
+import dev.mnascimentos.aureole.composable.clock.scaledLayout
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
@@ -36,9 +40,11 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.defaultClockConfig
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.editingClockSize
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.forClockEditor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toHeaderConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
+import dev.mnascimentos.aureole.feature.home.components.clock.model.clockPreviewScale
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockGreeting
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
@@ -226,22 +232,36 @@ private fun ColumnScope.EditClockFooter(
     )
 }
 
+/**
+ * The clock being edited, drawn as on the home (RF-B5): at the size it has there, shrunk if it does not fit above
+ * the sheet, with the real glass opacity (RF-B6). Never measured yet: it fills the width, as before.
+ */
 @Composable
 private fun EditClockPreviewCard(
     uiState: MainUiState,
     tempCustomGreeting: String,
     hazeState: HazeState? = null
 ) {
-    Box(
+    val homeSize = uiState.editingClockSize
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
             .padding(AureoleDS.dimens.medium),
         contentAlignment = Alignment.Center
     ) {
+        val clockModifier = homeSize?.let { size ->
+            val scale = clockPreviewScale(size.width.value, size.height.value, maxWidth.value, maxHeight.value)
+            Modifier
+                .scaledLayout(scale)
+                .width(size.width)
+                .heightIn(max = size.height)
+        } ?: Modifier
         HomeClockHeader(
+            modifier = clockModifier,
             hazeConfig = ClockHazeConfig(
                 isHazeEnabled = uiState.isHazeEnabled,
                 hazeState = hazeState,
+                hazeOpacity = uiState.hazeOpacity,
                 isBackgroundEnabled = uiState.isClockBackgroundEnabled
             ),
             // The clock fields of uiState hold the edited clock (forClockEditor); all of them, the background too.

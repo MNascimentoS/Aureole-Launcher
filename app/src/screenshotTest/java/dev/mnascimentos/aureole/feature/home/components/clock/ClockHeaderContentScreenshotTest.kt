@@ -2,10 +2,10 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderContent
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
 import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
@@ -18,7 +18,10 @@ private fun ClockHeaderStandardCenterScreenshotTest() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.MSG_TIME_DATE.lines,
+                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Boa tarde",
@@ -39,7 +42,10 @@ private fun ClockHeaderDateOnTopStartScreenshotTest() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.DATE_ON_TOP.lines,
+                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Bom dia",
@@ -60,7 +66,10 @@ private fun ClockHeaderTimeOnlyEndScreenshotTest() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.TIME_ONLY.lines,
+                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "",
@@ -81,7 +90,10 @@ private fun ClockHeaderThemeFontScreenshotTest() {
     AureoleLauncherTheme(config = AureoleThemeConfig(darkTheme = true, aureoleFontName = "Space Mono")) {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.MSG_TIME_DATE.lines,
+                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Boa tarde",

@@ -22,7 +22,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.toSize
 import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -119,7 +122,12 @@ private fun ScrollableAppsList(params: ScrollableAppsListParams) {
     ) {
         if (params.showHeadersAndWidgets) {
             item(key = "clock_header") {
+                val density = LocalDensity.current
                 HomeClockHeader(
+                    // The editor preview draws the header clock at the size it has here (RF-B5).
+                    modifier = Modifier.onSizeChanged { size ->
+                        actions.onClockMeasured(null, with(density) { size.toSize().toDpSize() })
+                    },
                     hazeConfig = ClockHazeConfig(
                         hazeState = config.hazeState,
                         isHazeEnabled = uiState.isHazeEnabled,
