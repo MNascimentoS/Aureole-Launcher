@@ -14,11 +14,12 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockLayoutO
 class EditClockStyleCardsScreenshotTest {
 
     @Composable
-    private fun StyleCards(selected: ClockLayoutOption) {
+    private fun StyleCards(selected: ClockLayoutOption, alignment: String = "CENTER") {
         AureoleLauncherTheme {
             EditClockStyleCards(
                 selectedKey = selected.key,
                 onSelect = {},
+                alignment = alignment,
                 modifier = Modifier.background(AureoleDS.colors.surface).padding(AureoleDS.dimens.medium)
             )
         }
@@ -36,5 +37,26 @@ class EditClockStyleCardsScreenshotTest {
     @Composable
     private fun EditClockStyleCardsGreetingAndDate() {
         StyleCards(ClockLayoutOption.MSG_TIME_DATE)
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockStyleCardsAlignedStart() {
+        StyleCards(ClockLayoutOption.MSG_TIME_DATE, alignment = "START")
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockStyleCardsAlignedCenter() {
+        StyleCards(ClockLayoutOption.MSG_TIME_DATE, alignment = "CENTER")
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockStyleCardsAlignedEnd() {
+        StyleCards(ClockLayoutOption.MSG_TIME_DATE, alignment = "END")
     }
 }

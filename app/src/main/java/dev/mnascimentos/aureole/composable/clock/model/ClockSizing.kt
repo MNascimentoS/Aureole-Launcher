@@ -10,8 +10,12 @@ const val DATE_TRIM_BOTTOM = 0.10f
 const val GREETING_TRIM_TOP = 0.15f
 const val GREETING_TRIM_BOTTOM = 0.10f
 
-/** Height of each line before the trim, in ems of its own text size. */
-private const val TIME_LINE_EM = 0.95f * (1f - TIME_TRIM_TOP - TIME_TRIM_BOTTOM)
+/**
+ * Height of each line before the trim, in ems of its own text size. The time is a `TextClock` with the font
+ * padding: 1.41 em, measured on the screenshot of a 4×2 clock (a 68 sp time drew a 137 dp card, 0.95 em gave
+ * 113 dp and let a low cell squeeze the date onto the digits, relogio-home-sheet RF-B4).
+ */
+private const val TIME_LINE_EM = 1.41f * (1f - TIME_TRIM_TOP - TIME_TRIM_BOTTOM)
 private const val DATE_LINE_EM = 1.5f * (1f - DATE_TRIM_TOP - DATE_TRIM_BOTTOM)
 private const val GREETING_LINE_EM = 23f / 15f * (1f - GREETING_TRIM_TOP - GREETING_TRIM_BOTTOM)
 

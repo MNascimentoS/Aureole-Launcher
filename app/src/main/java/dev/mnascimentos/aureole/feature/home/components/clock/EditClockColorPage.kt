@@ -81,7 +81,10 @@ internal fun EditClockColorPage(
             ClockColorTileChip(
                 name = clockColorTileName(tile),
                 look = when (role) {
-                    ComponentColorRole.CARD -> ClockTileLook(candidate, textColor.takeIf { tile != ClockColorTile.None })
+                    ComponentColorRole.CARD -> ClockTileLook(
+                        candidate,
+                        textColor.takeIf { tile != ClockColorTile.None }
+                    )
                     ComponentColorRole.TEXT -> ClockTileLook(background = cardColor, strip = candidate)
                 },
                 isSelected = tile.key == marked,

@@ -48,12 +48,6 @@ internal class OverlaySheetMotion {
 
     fun canExpand(bounds: SheetBounds): Boolean = expandedHeight(bounds) != null
 
-    /** Whether the sheet is held (or settling) low enough that a release without a fling closes it. */
-    fun isDismissArmed(bounds: SheetBounds): Boolean {
-        val pinned = pinnedHeight ?: return false
-        return isBelowDismiss(pinned, restOrFallback(bounds))
-    }
-
     fun currentHeight(isExpanded: Boolean, bounds: SheetBounds): Float {
         return pinnedHeight ?: settledHeight(isExpanded, bounds)
     }

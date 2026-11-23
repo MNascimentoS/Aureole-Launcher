@@ -100,37 +100,50 @@ internal fun OverlaySheetGestureZone(
                 .fillMaxWidth()
                 .height(AureoleDS.dimens.smallCompact)
                 .touchTargetBelow(AureoleDS.dimens.minTouchTarget)
-                .semantics {
-                    contentDescription = description
-                    customActions = actions
-                    if (onDismiss != null) {
-                        onClick(label = description) {
-                            onDismiss()
-                            true
-                        }
-                        dismiss(label = description) {
-                            onDismiss()
-                            true
-                        }
-                    }
-                }
+                .handleSemantics(description, actions, onDismiss)
                 .gestureZoneTaps(onDoubleTap = { currentToggle() }, onLongPress = onHold),
             contentAlignment = Alignment.TopCenter
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(AureoleDS.dimens.smallCompact),
-                contentAlignment = Alignment.Center
-            ) {
-                val colors = AureoleDS.colors
-                val barColor = if (state.isDismissArmed) colors.onSurfaceHigh else colors.onSurfaceLow
-                Box(
-                    modifier = Modifier
-                        .size(width = AureoleDS.dimens.xxLarge, height = SheetHandleBarHeight)
-                        .background(barColor, RoundedCornerShape(AureoleDS.dimens.radiusFull))
-                )
-            }
+            HandleBar(isDismissArmed = state.isDismissArmed)
+        }
+    }
+}
+
+/** The visible bar, centered in the thin strip; brighter while a release would close the sheet (RF-D8). */
+@Composable
+private fun HandleBar(isDismissArmed: Boolean) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(AureoleDS.dimens.smallCompact),
+        contentAlignment = Alignment.Center
+    ) {
+        val colors = AureoleDS.colors
+        val barColor = if (isDismissArmed) colors.onSurfaceHigh else colors.onSurfaceLow
+        Box(
+            modifier = Modifier
+                .size(width = AureoleDS.dimens.xxLarge, height = SheetHandleBarHeight)
+                .background(barColor, RoundedCornerShape(AureoleDS.dimens.radiusFull))
+        )
+    }
+}
+
+/** TalkBack: "Close" ([description]) with the custom [actions]; activating it runs [onDismiss] when there is one. */
+private fun Modifier.handleSemantics(
+    description: String,
+    actions: List<CustomAccessibilityAction>,
+    onDismiss: (() -> Unit)?
+): Modifier = semantics {
+    contentDescription = description
+    customActions = actions
+    if (onDismiss != null) {
+        onClick(label = description) {
+            onDismiss()
+            true
+        }
+        dismiss(label = description) {
+            onDismiss()
+            true
         }
     }
 }

@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
@@ -16,6 +18,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.previewAlpha
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.withClockSize
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 
@@ -26,9 +29,10 @@ import dev.mnascimentos.aureole.feature.home.createSampleHomeData
 class EditClockPreviewScreenshotTest {
 
     @Composable
-    private fun ClockSheetWithLayout(layout: ClockLayout) {
+    private fun ClockSheetWithLayout(layout: ClockLayout, homeSize: DpSize? = null) {
         val sampleData = createSampleHomeData()
-        val uiState = sampleData.uiState.copy(clockStyle = layout.key)
+        val styled = sampleData.uiState.copy(clockStyle = layout.key)
+        val uiState = homeSize?.let { styled.withClockSize(styled.editingClockId, it) } ?: styled
         AureoleLauncherTheme {
             ProvideHomeUiState(uiState) {
                 EditClockOverlay(
@@ -65,6 +69,14 @@ class EditClockPreviewScreenshotTest {
         ClockSheetWithLayout(ClockLayout.MSG_TIME_DATE)
     }
 
+    /** RF-B5: the preview draws the clock at the size it has on the home (here a 4×1 cell), as on the grid. */
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockPreviewAtHomeSize() {
+        ClockSheetWithLayout(ClockLayout.MSG_TIME_DATE, homeSize = HOME_4X1_SIZE)
+    }
+
     @PreviewTest
     @AureolePreview
     @Composable
@@ -86,6 +98,9 @@ class EditClockPreviewScreenshotTest {
 }
 
 private const val HALF_EXPANDED = 0.5f
+
+/** A 4×1 clock on a 411 dp wide home, the same room as `ClockGrid4x1ScreenshotTest`. */
+private val HOME_4X1_SIZE = DpSize(368.dp, 88.dp)
 
 /** 2026-11-11 17:29 UTC, so the format tiles render the same on every run. */
 private const val FIXED_NOW_MILLIS = 1_794_418_140_000L

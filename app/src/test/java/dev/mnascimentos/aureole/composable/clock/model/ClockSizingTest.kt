@@ -53,7 +53,10 @@ class ClockSizingTest {
                         val sizing = resolveClockSizing(layout.lines, width, height, fontScale)
                         val tag = "h=$height w=$width scale=$fontScale ${layout.name}"
 
-                        assertTrue(tag, sizing.blockHeightDp <= height + 1f)
+                        // At the floor (a 48 dp cell with a large font) not even the smallest card fits: the time
+                        // stays at the floor and the card clips what is left (`resolveClockSizing`).
+                        val isAtFloor = sizing.textSizePx <= CLOCK_MIN_TIME_SP + 0.01f
+                        assertTrue(tag, isAtFloor || sizing.blockHeightDp <= height + 1f)
                         assertTrue(tag, sizing.textSizePx >= CLOCK_MIN_TIME_SP)
                     }
                 }

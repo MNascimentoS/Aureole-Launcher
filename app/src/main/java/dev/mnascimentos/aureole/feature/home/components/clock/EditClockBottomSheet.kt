@@ -3,7 +3,6 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -18,7 +17,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -30,13 +28,11 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.scaledLayout
-import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.rememberAureoleEditOverlayState
-import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -46,18 +42,15 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.forCloc
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.isClockBackgroundEnabled
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toHeaderConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
-import dev.mnascimentos.aureole.feature.home.components.clock.model.clockPreviewScale
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockGreeting
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPickerOpeners
-import dev.mnascimentos.aureole.feature.home.components.clock.model.clockColorTitleRes
-import dev.mnascimentos.aureole.feature.home.components.clock.model.showsClockSaveHint
+import dev.mnascimentos.aureole.feature.home.components.clock.model.clockPreviewScale
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.launch
 
 private const val DISMISS_DELAY_MS = 300L
 
@@ -98,7 +91,7 @@ internal fun EditClockOverlay(
     val pagerState = rememberClockPagerState(options.initialTab)
     val effectiveHazeState = if (clockState.isHazeEnabled) options.hazeState else null
     var isFontPickerOpen by remember { mutableStateOf(false) }
-    var colorPickerRole by remember { mutableStateOf<ComponentColorRole?>(null) }
+    var colorPickerRole by remember { mutableStateOf(options.initialColorRole) }
     val preview = clockPreview(clockState, tempCustomGreeting, effectiveHazeState)
     val greeting = EditClockGreeting(tempCustomGreeting) {
         tempCustomGreeting = it
@@ -165,33 +158,6 @@ private fun clockOverlayConfig(
     showsDismissFeedback = true
 )
 
-/**
- * The header of the color page (RF-E4): back arrow, "Text color" / "Card color" and "Only for this clock". Back
- * ([onBack]) returns to the Colors tab; dragging down or tapping outside still closes the editor ([onClose]).
- */
-@Composable
-private fun AureoleEditOverlayConfig.withColorPage(
-    role: ComponentColorRole?,
-    onBack: () -> Unit,
-    onClose: () -> Unit
-): AureoleEditOverlayConfig {
-    if (role == null) return this
-    return copy(
-        title = stringResource(clockColorTitleRes(role)),
-        subtitle = stringResource(R.string.home_clock_picker_subtitle),
-        onBackPress = onBack,
-        onDismiss = onClose,
-        headerLeadingAction = { EditClockColorPageBack(onBack = onBack) },
-        hasTabBottomBar = false
-    )
-}
-
-/** What saves the color of [role]: the text or the card color action. */
-private fun clockColorUpdate(actions: HomeScreenActions, role: ComponentColorRole) = when (role) {
-    ComponentColorRole.TEXT -> actions.onUpdateClockTextColor
-    ComponentColorRole.CARD -> actions.onUpdateClockBackgroundColor
-}
-
 /** The clock being edited above the sheet, with the message being typed. */
 private fun clockPreview(
     clockState: MainUiState,
@@ -215,49 +181,6 @@ private fun EditClockOverlayOptions.pagerParams(
     nowMillis = nowMillis,
     pickers = pickers
 )
-
-/** The bottom bar under the tabs; none on the color page, which hides the tab bar (RF-E5). */
-private fun clockBottomBar(
-    colorRole: ComponentColorRole?,
-    clockState: MainUiState,
-    actions: HomeScreenActions,
-    pagerState: PagerState
-): (@Composable ColumnScope.() -> Unit)? = if (colorRole == null) {
-    { EditClockBottomBar(clockState, actions, pagerState) }
-} else {
-    null
-}
-
-/** The sheet content: the color page of [colorRole] while one is open (RF-E4), else the tabs. */
-@Composable
-private fun EditClockSheetBody(
-    colorRole: ComponentColorRole?,
-    pagerState: PagerState,
-    params: EditClockPagerParams,
-    onColorPicked: (ComponentColorRole, ThemeColorRef?) -> Unit
-) {
-    if (colorRole != null) {
-        EditClockColorPage(uiState = params.uiState, role = colorRole) { onColorPicked(colorRole, it) }
-    } else {
-        EditClockPager(pagerState = pagerState, params = params)
-    }
-}
-
-/** Below the tabs' content: the onboarding notice (RF-D2) and the tab bar. */
-@Composable
-private fun ColumnScope.EditClockBottomBar(
-    clockState: MainUiState,
-    actions: HomeScreenActions,
-    pagerState: PagerState
-) {
-    if (showsClockSaveHint(clockState.onboarding.stage, clockState.isClockSaveHintDismissed)) {
-        EditClockSaveHint(
-            onDismiss = actions.onDismissClockSaveHint,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
-        )
-    }
-    EditClockFooter(pagerState = pagerState)
-}
 
 /** Whether the editor shows: setting it to false slides it out, then [onDismissRequest] runs. */
 @Composable
@@ -283,22 +206,6 @@ private fun rememberClockPagerState(initialTab: ClockTab): PagerState {
         }
     }
     return pagerState
-}
-
-/** Footer: tabs fixed below the preview; the margin around the bar comes from `hasTabBottomBar`. */
-@Composable
-private fun ColumnScope.EditClockFooter(
-    pagerState: PagerState
-) {
-    val scope = rememberCoroutineScope()
-    EditClockTabBar(
-        selected = ClockTab.resolve(
-            currentPage = pagerState.currentPage,
-            targetPage = pagerState.targetPage,
-            isScrolling = pagerState.isScrollInProgress
-        ),
-        onTabSelected = { tab -> scope.launch { pagerState.animateScrollToPage(tab.index) } }
-    )
 }
 
 /**

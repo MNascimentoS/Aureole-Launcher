@@ -58,6 +58,9 @@ class SheetDismissFeedbackTest {
     fun `when released under the close height, should close`() {
         assertTrue(isBelowDismiss(height = 270f, rest = 400f))
         assertFalse(isBelowDismiss(height = 290f, rest = 400f))
-        assertEquals(SheetDetentTarget.Dismiss, resolveDetent(height = 270f, rest = 400f, expanded = 900f, velocity = 0f))
+        assertEquals(
+            SheetDetentTarget.Dismiss,
+            resolveDetent(height = 270f, rest = 400f, expanded = 900f, velocity = 0f)
+        )
     }
 }

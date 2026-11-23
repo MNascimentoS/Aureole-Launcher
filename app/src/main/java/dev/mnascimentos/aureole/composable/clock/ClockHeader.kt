@@ -65,19 +65,11 @@ fun ClockHeader(
     val hazeBlurRadius = glassBlurRadius(AureoleDS.dimens.large)
     val sidePadding = AureoleDS.dimens.large
     val hourGreeting = stringResource(greetingRes(hourOfDay()))
-    val longClickLabel = stringResource(R.string.home_clock_customize_title)
-    val haptics = LocalHapticFeedback.current
-    // The gesture reads the latest callback, so a recomposition never restarts a press in progress.
-    val currentOnLongClick by rememberUpdatedState(onLongClick)
     val fontScale = LocalDensity.current.fontScale
 
     // A style saved by an older version reads as its layout and message, so the look never changes.
     val layoutChoice = resolveClockLayout(resolvedConfig.style, resolvedConfig.message)
-    val greeting = if (layoutChoice.message == ClockMessage.CUSTOM && resolvedConfig.customGreeting.isNotBlank()) {
-        resolvedConfig.customGreeting
-    } else {
-        hourGreeting
-    }
+    val greeting = clockGreeting(layoutChoice.message, resolvedConfig.customGreeting, hourGreeting)
 
     val containerBgColor = resolveClockBgColor(
         isBgEnabled = isBgEnabled,
@@ -101,10 +93,7 @@ fun ClockHeader(
                 .clip(RoundedCornerShape(sizing.metrics.radiusDp.dp))
                 .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
                 .background(containerBgColor)
-                .clockLongPress(isEnabled = onLongClick != null, label = longClickLabel) {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    currentOnLongClick?.invoke()
-                }
+                .clockLongPressOf(onLongClick)
                 // Inner room: 24 dp on the sides; above and below the trimmed lines, the edge share of the time.
                 .padding(start = sidePadding, end = sidePadding, top = edge, bottom = edge)
         ) {
@@ -123,6 +112,25 @@ fun ClockHeader(
                 )
             )
         }
+    }
+}
+
+/** The custom message when the layout asks for it and it is not blank; the greeting of the hour otherwise. */
+private fun clockGreeting(message: ClockMessage, customGreeting: String, hourGreeting: String): String =
+    if (message == ClockMessage.CUSTOM && customGreeting.isNotBlank()) customGreeting else hourGreeting
+
+/**
+ * The long press of the clock: a `LongPress` haptic, then [onLongClick]; no modifier at all without it. The gesture
+ * reads the latest callback, so a recomposition never restarts a press in progress.
+ */
+@Composable
+private fun Modifier.clockLongPressOf(onLongClick: (() -> Unit)?): Modifier {
+    val label = stringResource(R.string.home_clock_customize_title)
+    val haptics = LocalHapticFeedback.current
+    val currentOnLongClick by rememberUpdatedState(onLongClick)
+    return clockLongPress(isEnabled = onLongClick != null, label = label) {
+        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+        currentOnLongClick?.invoke()
     }
 }
 

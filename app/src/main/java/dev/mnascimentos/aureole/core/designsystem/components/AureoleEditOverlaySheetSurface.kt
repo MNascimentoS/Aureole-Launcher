@@ -45,6 +45,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetEvents
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
+import dev.mnascimentos.aureole.core.designsystem.model.isDismissArmed
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -109,30 +110,33 @@ internal fun SheetSurface(
             onSettingsClick = config.onSettingsClick,
             bottomBarContent = params.bottomBarContent,
             sheetContent = params.sheetContent,
-            decorations = OverlaySheetDecorations(
-                edgeToEdgeContent = config.edgeToEdgeContent,
-                showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
-                isLeftHanded = config.isLeftHanded,
-                hasTabBottomBar = config.hasTabBottomBar,
-                headerSlots = OverlayHeaderSlots(
-                    headerIcon = config.headerIcon,
-                    titleIcon = config.titleIcon,
-                    subtitle = config.subtitle,
-                    accessory = config.headerAccessory,
-                    leadingAction = config.headerLeadingAction
-                ),
-                gestureZone = {
-                    OverlaySheetGestureZone(
-                        state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds), showsArmed),
-                        onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
-                        onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked },
-                        onDismiss = stateData.triggerDismiss.takeUnless { config.isLocked }
-                    )
-                }
-            )
+            decorations = config.sheetDecorations {
+                OverlaySheetGestureZone(
+                    state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds), showsArmed),
+                    onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
+                    onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked },
+                    onDismiss = stateData.triggerDismiss.takeUnless { config.isLocked }
+                )
+            }
         )
     }
 }
+
+/** Header, margins and handle of the sheet body, from [this] config; [gestureZone] draws the handle. */
+private fun AureoleEditOverlayConfig.sheetDecorations(gestureZone: @Composable () -> Unit) = OverlaySheetDecorations(
+    edgeToEdgeContent = edgeToEdgeContent,
+    showHeaderAction = showHeaderAction && host.showHeaderAction,
+    isLeftHanded = isLeftHanded,
+    hasTabBottomBar = hasTabBottomBar,
+    headerSlots = OverlayHeaderSlots(
+        headerIcon = headerIcon,
+        titleIcon = titleIcon,
+        subtitle = subtitle,
+        accessory = headerAccessory,
+        leadingAction = headerLeadingAction
+    ),
+    gestureZone = gestureZone
+)
 
 @Composable
 private fun rememberSheetController(

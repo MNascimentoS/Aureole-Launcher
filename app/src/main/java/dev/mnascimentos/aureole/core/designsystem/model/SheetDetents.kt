@@ -42,6 +42,12 @@ internal fun resolveDetent(
 /** Whether a sheet [height] tall, released without a fling, closes: under the dismiss share of [rest]. */
 internal fun isBelowDismiss(height: Float, rest: Float): Boolean = height < rest * DISMISS_FRACTION_OF_REST
 
+/** Whether the sheet is held (or settling) low enough that a release without a fling closes it. */
+internal fun OverlaySheetMotion.isDismissArmed(bounds: SheetBounds): Boolean {
+    val pinned = pinnedHeight ?: return false
+    return isBelowDismiss(pinned, restOrFallback(bounds))
+}
+
 /** Whether a release at [velocity] dp per second (positive = down) is a fling up. */
 internal fun isFlingUp(velocity: Float): Boolean = velocity <= -FLING_VELOCITY_DP_PER_SECOND
 

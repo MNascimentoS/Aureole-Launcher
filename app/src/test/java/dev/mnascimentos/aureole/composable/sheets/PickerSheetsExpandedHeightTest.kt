@@ -110,7 +110,13 @@ class PickerSheetsExpandedHeightTest {
         val fraction = expandAndMeasure(
             expand = {
                 composeTestRule.onNodeWithText("Roboto")
-                    .performTouchInput { swipeUp(startY = centerY, endY = centerY - SWIPE_PX, durationMillis = SWIPE_MS) }
+                    .performTouchInput {
+                        swipeUp(
+                            startY = centerY,
+                            endY = centerY - SWIPE_PX,
+                            durationMillis = SWIPE_MS
+                        )
+                    }
             }
         ) { ClockFontSheet() }
 

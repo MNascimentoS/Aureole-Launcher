@@ -29,7 +29,8 @@ class ClockHeaderContentTest {
                     params = ClockHeaderContentParams(
                         sizing = resolveClockSizing(
                             ClockLayout.MSG_TIME_DATE.lines,
-                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
                         ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
@@ -57,7 +58,8 @@ class ClockHeaderContentTest {
                     params = ClockHeaderContentParams(
                         sizing = resolveClockSizing(
                             ClockLayout.DATE_ON_TOP.lines,
-                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
                         ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
@@ -82,7 +84,8 @@ class ClockHeaderContentTest {
                     params = ClockHeaderContentParams(
                         sizing = resolveClockSizing(
                             ClockLayout.TIME_ONLY.lines,
-                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
                         ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
@@ -110,7 +113,8 @@ class ClockHeaderContentTest {
                     params = ClockHeaderContentParams(
                         sizing = resolveClockSizing(
                             ClockLayout.MSG_TIME_DATE.lines,
-                            maxTextWidthDp = 300f, maxHeightDp = 152f
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
                         ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
@@ -138,7 +142,8 @@ class ClockHeaderContentTest {
                     params = ClockHeaderContentParams(
                         sizing = resolveClockSizing(
                             ClockLayout.MSG_TIME_DATE.lines,
-                            maxTextWidthDp = 300f, maxHeightDp = 80f
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 80f
                         ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
@@ -166,7 +171,8 @@ class ClockHeaderContentTest {
                     params = ClockHeaderContentParams(
                         sizing = resolveClockSizing(
                             ClockLayout.MSG_TIME_DATE.lines,
-                            maxTextWidthDp = 300f, maxHeightDp = 192f
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 192f
                         ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,

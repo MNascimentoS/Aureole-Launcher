@@ -12,12 +12,16 @@ import kotlin.math.roundToInt
 /**
  * Trims the empty band the font reserves above and below the glyphs: the layout gets shorter by the given
  * ratios of the text height, and the content is drawn where it was, so no glyph is clipped.
+ * The text is measured at its own height, free of the height left in the card: a squeezed text would trim its
+ * ratios from the wrong height and the next line would land on its glyphs (relogio-home-sheet RF-B4).
  */
 fun Modifier.trimVerticalBands(topRatio: Float, bottomRatio: Float): Modifier = layout { measurable, constraints ->
-    val placeable = measurable.measure(constraints)
+    val placeable = measurable.measure(constraints.copy(minHeight = 0, maxHeight = Constraints.Infinity))
     val top = (placeable.height * topRatio).roundToInt()
     val bottom = (placeable.height * bottomRatio).roundToInt()
-    layout(placeable.width, placeable.height - top - bottom) { placeable.place(0, -top) }
+    layout(placeable.width, constraints.constrainHeight(placeable.height - top - bottom)) {
+        placeable.place(0, -top)
+    }
 }
 
 /**

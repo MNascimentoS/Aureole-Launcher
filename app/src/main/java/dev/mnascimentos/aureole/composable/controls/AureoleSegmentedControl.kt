@@ -20,6 +20,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.composable.controls.model.SegmentStyle
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -40,8 +41,7 @@ class SegmentedOption(val label: String, val icon: (@Composable (Color) -> Unit)
  * @param selectedIndex Index of the selected segment, or -1 when none matches.
  * @param onSelect Called with the index of the tapped segment.
  * @param modifier Modifier applied to the bar.
- * @param itemHeight Height of each segment.
- * @param segmentRole What TalkBack calls each segment: a tab by default; [Role.RadioButton] for a choice of values.
+ * @param style Height and TalkBack role of the segments (see [SegmentStyle]).
  */
 @Composable
 fun AureoleSegmentedControl(
@@ -49,16 +49,14 @@ fun AureoleSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget,
-    segmentRole: Role = Role.Tab
+    style: SegmentStyle = SegmentStyle()
 ) {
     AureoleIconSegmentedControl(
         options = options.map { SegmentedOption(it) },
         selectedIndex = selectedIndex,
         onSelect = onSelect,
         modifier = modifier,
-        itemHeight = itemHeight,
-        segmentRole = segmentRole
+        style = style
     )
 }
 
@@ -69,8 +67,7 @@ fun AureoleIconSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget,
-    segmentRole: Role = Role.Tab
+    style: SegmentStyle = SegmentStyle()
 ) {
     Row(
         modifier = modifier
@@ -81,13 +78,13 @@ fun AureoleIconSegmentedControl(
             .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
+        val height = style.itemHeight ?: AureoleDS.dimens.minTouchTarget
         options.forEachIndexed { index, option ->
             SegmentItem(
-                label = option.label,
+                option = option,
                 isSelected = index == selectedIndex,
-                height = itemHeight,
-                icon = option.icon,
-                role = segmentRole,
+                height = height,
+                role = style.role,
                 onClick = { onSelect(index) }
             )
         }
@@ -96,10 +93,9 @@ fun AureoleIconSegmentedControl(
 
 @Composable
 private fun RowScope.SegmentItem(
-    label: String,
+    option: SegmentedOption,
     isSelected: Boolean,
     height: Dp,
-    icon: (@Composable (Color) -> Unit)?,
     role: Role,
     onClick: () -> Unit
 ) {
@@ -119,9 +115,9 @@ private fun RowScope.SegmentItem(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall, Alignment.CenterHorizontally)
         ) {
-            icon?.invoke(content)
+            option.icon?.invoke(content)
             AureoleText(
-                text = label,
+                text = option.label,
                 modifier = Modifier.weight(1f, fill = false),
                 color = content,
                 format = AureoleTextFormatParams(

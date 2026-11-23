@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
  * @property isBold Whether the bold switch is on; the samples follow it.
  * @property onBoldChange Called when the bold switch is flipped.
  * @property preview The component drawn above the sheet, so every choice shows on it at once.
+ * @property startsExpanded Whether the sheet opens expanded; screenshots check the expanded height.
  */
 data class ComponentFontOptions(
     val title: String,
@@ -25,7 +26,8 @@ data class ComponentFontOptions(
     val sample: String,
     val isBold: Boolean,
     val onBoldChange: (Boolean) -> Unit,
-    val preview: (@Composable BoxScope.() -> Unit)? = null
+    val preview: (@Composable BoxScope.() -> Unit)? = null,
+    val startsExpanded: Boolean = false
 )
 
 /**

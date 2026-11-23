@@ -35,7 +35,7 @@ internal fun ComponentFontSheet(
     options: ComponentFontOptions,
     modifier: Modifier = Modifier
 ) {
-    val overlayState = rememberAureoleEditOverlayState()
+    val overlayState = rememberAureoleEditOverlayState(initialExpanded = options.startsExpanded)
     AureoleEditOverlay(
         modifier = modifier,
         state = overlayState,

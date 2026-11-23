@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
@@ -66,7 +67,12 @@ internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     )
     val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat, LocalConfiguration.current.locales[0])
 
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = horizontalAlignment) {
+    // Each line keeps its own height, even when the card is shorter than the estimate: a line is never squeezed
+    // into the next one (RF-B4); what does not fit is clipped by the card, centered.
+    Column(
+        modifier = Modifier.fillMaxWidth().wrapContentHeight(unbounded = true),
+        horizontalAlignment = horizontalAlignment
+    ) {
         // The lines follow the layout, top to bottom; the message only shows when it fits (resolveClockSizing).
         val lines = params.layout.lines.filter { it != ClockLine.MESSAGE || sizing.showGreeting }
         val gaps = clockSpacing(lines).between
@@ -206,7 +212,8 @@ private fun ClockHeaderContentPreview() {
             params = ClockHeaderContentParams(
                 sizing = resolveClockSizing(
                     ClockLayout.MSG_TIME_DATE.lines,
-                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                    maxTextWidthDp = 300f,
+                    maxHeightDp = 152f
                 ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
@@ -229,7 +236,8 @@ private fun ClockHeaderContentDateOnTopPreview() {
             params = ClockHeaderContentParams(
                 sizing = resolveClockSizing(
                     ClockLayout.DATE_ON_TOP.lines,
-                    maxTextWidthDp = 300f, maxHeightDp = 152f
+                    maxTextWidthDp = 300f,
+                    maxHeightDp = 152f
                 ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,

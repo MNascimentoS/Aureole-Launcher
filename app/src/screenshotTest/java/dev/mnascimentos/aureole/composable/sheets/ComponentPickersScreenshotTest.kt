@@ -14,7 +14,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 private const val OLD_COLOR = 0xFF90CAF9.toInt()
 
 @Composable
-private fun FontCase(isBold: Boolean) {
+private fun FontCase(isBold: Boolean, isExpanded: Boolean = false) {
     AureoleLauncherTheme {
         ComponentFontSheet(
             selectedFontName = FONT_KEY_LAUNCHER,
@@ -26,7 +26,8 @@ private fun FontCase(isBold: Boolean) {
                 sectionLabel = "Clock font",
                 sample = "16:16",
                 isBold = isBold,
-                onBoldChange = {}
+                onBoldChange = {},
+                startsExpanded = isExpanded
             )
         )
     }
@@ -68,3 +69,9 @@ private fun ClockTextColorPickerScreenshotTest() = ColorCase(ComponentColorRole.
 @AureolePreview
 @Composable
 private fun ClockCardColorPickerScreenshotTest() = ColorCase(ComponentColorRole.CARD, null)
+
+/** RF-F2: the expanded font picker reaches the 0.9 ceiling of the screen. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun ClockFontPickerExpandedScreenshotTest() = FontCase(isBold = false, isExpanded = true)
