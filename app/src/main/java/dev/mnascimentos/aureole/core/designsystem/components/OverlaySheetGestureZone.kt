@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -109,7 +110,10 @@ internal fun OverlaySheetGestureZone(
     }
 }
 
-/** The visible bar, centered in the thin strip; brighter while a release would close the sheet (RF-D8). */
+/**
+ * The visible bar, in the thin strip and drawn `xxSmall` lower, a light margin from the top edge of the sheet (the
+ * offset does not change the layout, so no sheet grows); brighter while a release would close the sheet (RF-D8).
+ */
 @Composable
 private fun HandleBar(isDismissArmed: Boolean) {
     Box(
@@ -122,6 +126,7 @@ private fun HandleBar(isDismissArmed: Boolean) {
         val barColor = if (isDismissArmed) colors.onSurfaceHigh else colors.onSurfaceLow
         Box(
             modifier = Modifier
+                .offset(y = AureoleDS.dimens.xxSmall)
                 .size(width = AureoleDS.dimens.xxLarge, height = SheetHandleBarHeight)
                 .background(barColor, RoundedCornerShape(AureoleDS.dimens.radiusFull))
         )
