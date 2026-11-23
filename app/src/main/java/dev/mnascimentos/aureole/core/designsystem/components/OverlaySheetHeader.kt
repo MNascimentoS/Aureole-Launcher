@@ -55,6 +55,8 @@ import dev.mnascimentos.aureole.core.designsystem.utils.rememberSystemAnimations
  * and mirrors with it. Without any action the title takes the whole width.
  * With a [titleIcon] (the app or the folder the sheet is about) icon and title sit at the start of the line, with
  * no empty slot before them, and the logo stays at the end; a long title is cut before the logo.
+ * A subtitle sits under the title, one step smaller (`bodySmall`), with the same alignment: centered on the title
+ * without an icon, at the start with one (RF-C3, RF-C4).
  */
 @Composable
 internal fun OverlaySheetHeader(
@@ -115,21 +117,28 @@ private fun HeaderTitle(title: OverlayHeaderTitle) {
             }
             Spacer(modifier = Modifier.width(AureoleDS.dimens.small))
         }
-        Column(modifier = Modifier.weight(1f, fill = false)) {
+        // Without an icon, title and subtitle center on each other, not only on the sheet (RF-C3).
+        val isCentered = titleIcon == null
+        val textAlign = if (isCentered) TextAlign.Center else TextAlign.Start
+        Column(
+            modifier = Modifier.weight(1f, fill = false),
+            horizontalAlignment = if (isCentered) Alignment.CenterHorizontally else Alignment.Start
+        ) {
             Text(
                 text = title.text,
                 style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = AureoleDS.colors.onSurfaceHigh,
-                textAlign = if (titleIcon != null) TextAlign.Start else TextAlign.Center,
+                textAlign = textAlign,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
-                    style = AureoleDS.typography.bodyMedium,
+                    style = AureoleDS.typography.bodySmall,
                     color = AureoleDS.colors.onSurfaceMedium,
+                    textAlign = textAlign,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -228,6 +237,17 @@ private fun OverlaySheetHeaderWithIconPreview() {
                 text = "A folder with a long name that is cut before the logo",
                 icon = { m -> Box(modifier = m) }
             ),
+            action = { OverlaySheetHeaderLogo(onClick = {}) }
+        )
+    }
+}
+
+@AureolePreview
+@Composable
+private fun OverlaySheetHeaderWithSubtitlePreview() {
+    AureoleLauncherTheme {
+        OverlaySheetHeader(
+            title = OverlayHeaderTitle(text = "Text color", subtitle = "Only for this clock"),
             action = { OverlaySheetHeaderLogo(onClick = {}) }
         )
     }

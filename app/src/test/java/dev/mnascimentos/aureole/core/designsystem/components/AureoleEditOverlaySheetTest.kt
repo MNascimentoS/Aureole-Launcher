@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderSlots
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
@@ -64,13 +65,14 @@ class AureoleEditOverlaySheetTest {
 
     private fun renderHeader(
         onSettingsClick: (() -> Unit)?,
-        decorations: OverlaySheetDecorations = OverlaySheetDecorations()
+        decorations: OverlaySheetDecorations = OverlaySheetDecorations(),
+        title: String = "Customize"
     ) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 Box(modifier = Modifier.width(SHEET_WIDTH)) {
                     OverlaySheetBody(
-                        title = "Customize",
+                        title = title,
                         onSettingsClick = onSettingsClick,
                         bottomBarContent = null,
                         sheetContent = null,
@@ -123,6 +125,22 @@ class AureoleEditOverlaySheetTest {
         renderHeader(onSettingsClick = {}, decorations = OverlaySheetDecorations(showHeaderAction = false))
 
         composeTestRule.onNodeWithContentDescription("Aureole settings").assertDoesNotExist()
+    }
+
+    @Test
+    fun `when there is a subtitle and no title icon, title and subtitle should share the same center`() {
+        renderHeader(
+            onSettingsClick = {},
+            decorations = OverlaySheetDecorations(headerSlots = OverlayHeaderSlots(subtitle = "Only for this clock")),
+            title = "Text color"
+        )
+
+        val title = composeTestRule.onNodeWithText("Text color").getUnclippedBoundsInRoot()
+        val subtitle = composeTestRule.onNodeWithText("Only for this clock").getUnclippedBoundsInRoot()
+        // RF-C3: the shorter title centers on the subtitle instead of leaning to its start.
+        assertEquals(((title.left + title.right) / 2).value, ((subtitle.left + subtitle.right) / 2).value, 0.5f)
+        assertTrue(abs(((title.left + title.right) / 2).value - SHEET_WIDTH.value / 2) <= 0.5f)
+        assertTrue(subtitle.top >= title.bottom)
     }
 
     private companion object {

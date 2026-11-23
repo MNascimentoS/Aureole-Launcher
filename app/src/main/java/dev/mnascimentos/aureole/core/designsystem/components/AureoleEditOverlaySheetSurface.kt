@@ -120,7 +120,8 @@ internal fun SheetSurface(
                     OverlaySheetGestureZone(
                         state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),
                         onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
-                        onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked }
+                        onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked },
+                        onDismiss = stateData.triggerDismiss.takeUnless { config.isLocked }
                     )
                 }
             )

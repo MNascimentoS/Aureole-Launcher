@@ -13,7 +13,7 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | AureoleRadioSheet / AureoleRadioRow | composable/menu/AureoleRadioSheet.kt, AureoleRadioRow.kt | Sheet e linha de escolha única | RadioSheetModels (menu/model) | Escolha única em lista |
 | AureoleSwitchRow | composable/menu/AureoleSwitchRow.kt | Linha com switch | SwitchRowParams | Toggle dentro de menu/sheet |
 | OverlaySheetHeader (+Logo) | core/designsystem/components/OverlaySheetHeader.kt | Cabeçalho de toda sheet; `internal`, token `sheetHeaderGap` | título, modifier, ação opcional | Sempre; ajuste aqui, nunca numa sheet só |
-| AureoleEditOverlay | core/designsystem/components/AureoleEditOverlay.kt | Overlay base de edição | AureoleEditOverlayParams | Sheet fora do padrão de menu |
+| AureoleEditOverlay | core/designsystem/components/AureoleEditOverlay.kt | Overlay base de edição; alça visível no topo (`OverlaySheetGestureZone`, `internal`: barra `SheetHandleBarHeight`, alvo 48 dp, TalkBack "Fechar") | AureoleEditOverlayParams | Sheet fora do padrão de menu |
 | AureoleOverlayBackdrop | core/designsystem/components/AureoleOverlayBackdrop.kt | Fundo com haze do overlay | hazeState | Backdrop de overlay |
 | AureoleAutoSaveOverlay | composable/sheets/AureoleAutoSaveOverlay.kt | Overlay que salva sozinho | AutoSaveOverlayParams | Edição sem botão Salvar |
 | AureoleConfirmOverlay | composable/sheets/AureoleConfirmOverlay.kt | Confirmação em estilo sheet | — | Confirmação visual de sheet |
