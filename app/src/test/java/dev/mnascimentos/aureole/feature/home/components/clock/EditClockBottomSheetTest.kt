@@ -2,9 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 
 import android.content.Context
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasSetTextAction
-import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -12,17 +10,12 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
-import dev.mnascimentos.aureole.composable.sheets.model.paletteNameOf
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
-import dev.mnascimentos.aureole.core.designsystem.palette.frostbitePalette
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,8 +37,7 @@ class EditClockBottomSheetTest {
         var onUpdateClockTimeFormat: (String) -> Unit = {},
         var onUpdateClockDateFormat: (String) -> Unit = {},
         var onUpdateClockTextColor: (ThemeColorRef?) -> Unit = {},
-        var onUpdateClockBackgroundColor: (ThemeColorRef?) -> Unit = {},
-        var onToggleClockBackground: () -> Unit = {}
+        var onUpdateClockBackgroundColor: (ThemeColorRef?) -> Unit = {}
     )
 
     private fun createDefaultActions(configure: ClockActionsConfig.() -> Unit = {}): HomeScreenActions {
@@ -60,8 +52,7 @@ class EditClockBottomSheetTest {
             onUpdateClockTimeFormat = config.onUpdateClockTimeFormat,
             onUpdateClockDateFormat = config.onUpdateClockDateFormat,
             onUpdateClockTextColor = config.onUpdateClockTextColor,
-            onUpdateClockBackgroundColor = config.onUpdateClockBackgroundColor,
-            onToggleClockBackground = config.onToggleClockBackground
+            onUpdateClockBackgroundColor = config.onUpdateClockBackgroundColor
         )
     }
 
@@ -99,7 +90,7 @@ class EditClockBottomSheetTest {
         advanceAnimation()
         composeTestRule.onNodeWithText("Text color").assertIsDisplayed()
         composeTestRule.onNodeWithText("Theme").assertIsDisplayed()
-        composeTestRule.onNodeWithText(string(R.string.home_clock_show_background)).assertIsDisplayed()
+        composeTestRule.onNodeWithText(string(R.string.home_clock_color_card_title)).assertIsDisplayed()
     }
 
     @Test
@@ -242,84 +233,6 @@ class EditClockBottomSheetTest {
         assertEquals("24H", selectedTimeFormat)
     }
 
-    @Test
-    fun `the Colors rows name the saved color and open the picker for their role`() {
-        val opened = mutableListOf<ComponentColorRole>()
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockColorsSection(
-                    uiState = MainUiState(isClockBackgroundEnabled = true, clockTextColor = OLD_ARGB),
-                    actions = createDefaultActions(),
-                    onOpenColorPicker = { opened += it }
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText(string(R.string.theme_color_option_current)).assertIsDisplayed()
-        composeTestRule.onNodeWithText(string(R.string.theme_color_swatch_default)).assertIsDisplayed()
-        composeTestRule.onNodeWithText(string(R.string.home_clock_color_text_title)).performClick()
-        composeTestRule.onNodeWithText(string(R.string.home_clock_color_card_title)).performClick()
-
-        assertEquals(listOf(ComponentColorRole.TEXT, ComponentColorRole.CARD), opened)
-    }
-
-    @Test
-    fun `when the card is off, should hide its color row and offer the switch`() {
-        var toggled = false
-        val actions = createDefaultActions { onToggleClockBackground = { toggled = true } }
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockColorsSection(uiState = MainUiState(isClockBackgroundEnabled = false), actions = actions)
-            }
-        }
-
-        composeTestRule.onNodeWithText(string(R.string.home_clock_color_card_title)).assertDoesNotExist()
-        composeTestRule.onNode(isToggleable()).performClick()
-
-        assertTrue(toggled)
-    }
-
-    @Test
-    fun `the text color picker saves Theme as null through onUpdateClockTextColor`() {
-        var picked: ThemeColorRef? = ThemeColorRef.Fixed(1)
-        val actions = createDefaultActions { onUpdateClockTextColor = { picked = it } }
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockColorPicker(
-                    uiState = MainUiState(clockTextColor = OLD_ARGB),
-                    actions = actions,
-                    role = ComponentColorRole.TEXT,
-                    onDismissRequest = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText(string(R.string.theme_color_option_current)).assertIsSelected()
-        composeTestRule.onNodeWithText(string(R.string.theme_color_swatch_default)).performClick()
-
-        assertNull(picked)
-    }
-
-    @Test
-    fun `the card color picker saves a palette tone through onUpdateClockBackgroundColor`() {
-        var picked: ThemeColorRef? = null
-        val actions = createDefaultActions { onUpdateClockBackgroundColor = { picked = it } }
-        composeTestRule.setContent {
-            AureoleLauncherTheme {
-                EditClockColorPicker(
-                    uiState = MainUiState(),
-                    actions = actions,
-                    role = ComponentColorRole.CARD,
-                    onDismissRequest = {}
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText(frostbitePalette.name).performClick()
-
-        assertEquals(frostbitePalette.name, paletteNameOf(picked, ComponentColorRole.CARD))
-    }
-
     private fun string(id: Int): String = ApplicationProvider.getApplicationContext<Context>().getString(id)
 
     @Test
@@ -347,9 +260,5 @@ class EditClockBottomSheetTest {
             tempCustomGreeting = "",
             onGreetingChange = {}
         )
-    }
-
-    private companion object {
-        const val OLD_ARGB = 0xFF123457.toInt()
     }
 }

@@ -111,7 +111,6 @@ data class HomeScreenActions(
     val onUpdateClockDateFormat: (String) -> Unit = {},
     val onUpdateClockTextColor: (ThemeColorRef?) -> Unit = {},
     val onUpdateClockBackgroundColor: (ThemeColorRef?) -> Unit = {},
-    val onToggleClockBackground: () -> Unit = {},
     val onResetClockSettings: () -> Unit = {},
 
     // Quick Button Customization Actions

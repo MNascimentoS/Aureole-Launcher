@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.data.model.ClockMessage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -79,8 +80,17 @@ class EditClockSectionsScreenshotTest {
     @Composable
     private fun EditClockColorsTwoRows() = Page {
         EditClockColorsSection(
-            uiState = MainUiState(isClockBackgroundEnabled = true, clockTextColor = 0xFF90CAF9.toInt()),
-            actions = createDefaultHomeScreenActions()
+            uiState = MainUiState(
+                clockBackgroundColorRef = CLOCK_CARD_THEME_REF.toJson(),
+                clockTextColor = 0xFF90CAF9.toInt()
+            )
         )
+    }
+
+    @PreviewTest
+    @AureolePreview
+    @Composable
+    private fun EditClockColorsNoCard() = Page {
+        EditClockColorsSection(uiState = MainUiState())
     }
 }

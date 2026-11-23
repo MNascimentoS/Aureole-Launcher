@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.isClockBackgroundEnabled
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable

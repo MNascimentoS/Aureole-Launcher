@@ -47,7 +47,6 @@ fun HomeViewModel.resetClockSettings() {
     settingsRepository.resetClockSettings()
     updateUiState {
         it.copy(
-            isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled,
             clockStyle = settingsRepository.clockStyle,
             clockCustomGreeting = settingsRepository.clockCustomGreeting,
             clockMessage = settingsRepository.clockMessage,

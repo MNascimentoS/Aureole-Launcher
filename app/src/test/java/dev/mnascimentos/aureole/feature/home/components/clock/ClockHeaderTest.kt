@@ -18,6 +18,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
+import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
 import dev.mnascimentos.aureole.core.designsystem.model.LocalLeftHanded
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
@@ -141,7 +142,7 @@ class ClockHeaderTest {
     @Test
     fun `when clock container is rendered with haze config, should display without error`() {
         // Arrange
-        val uiState = MainUiState(isClockBackgroundEnabled = true, isHazeEnabled = false)
+        val uiState = MainUiState(clockBackgroundColorRef = CLOCK_CARD_THEME_REF.toJson(), isHazeEnabled = false)
 
         // Act
         composeTestRule.setContent {

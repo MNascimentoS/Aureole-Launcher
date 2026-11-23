@@ -45,7 +45,6 @@ private fun HomeViewModel.saveDefaultClockConfig(config: ClockConfig) {
         clockBackgroundColor = config.backgroundColor
         clockTextColorRef = config.textColorRef
         clockBackgroundColorRef = config.backgroundColorRef
-        isClockBackgroundEnabled = config.isBackgroundEnabled
     }
     updateUiState { it.withClockFields(config) }
 }

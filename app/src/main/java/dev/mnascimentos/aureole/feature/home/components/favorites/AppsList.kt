@@ -44,6 +44,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.appitem.HomeAppItemRow
 import dev.mnascimentos.aureole.feature.home.components.clock.HomeClockHeader
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.isClockBackgroundEnabled
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.shouldShowLabels
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.AppsListParams
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig

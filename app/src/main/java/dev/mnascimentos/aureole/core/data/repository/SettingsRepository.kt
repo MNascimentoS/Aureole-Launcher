@@ -54,9 +54,10 @@ class SettingsRepository(
         get() = prefs.getBoolean(KEY_CONTAINER_EXPAND_CELL, false)
         set(value) = prefs.edit { putBoolean(KEY_CONTAINER_EXPAND_CELL, value) }
 
+    /** Whether the settings clock look has a card: a card color is saved (null is "None", RF-E2). */
     var isClockBackgroundEnabled: Boolean
-        get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
-        set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
+        get() = clockBackgroundColorRef != null || clockBackgroundColor != 0
+        set(value) = setClockCard(value)
 
     /** The clock layout key; an old style saved by 0.9.59 or older reads as its layout ([resolveClockLayout]). */
     var clockStyle: String
@@ -97,7 +98,7 @@ class SettingsRepository(
         set(value) = prefs.edit { putInt(KEY_CLOCK_TEXT_COLOR, value) }
 
     var clockBackgroundColor: Int
-        get() = prefs.getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
+        get() = clockCardPrefs().getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
         set(value) = prefs.edit { putInt(KEY_CLOCK_BACKGROUND_COLOR, value) }
 
     /** ThemeColorRef JSON of the clock text color; null until one is picked (then [clockTextColor] rules). */
@@ -106,12 +107,12 @@ class SettingsRepository(
         set(value) = prefs.edit { putString(KEY_CLOCK_TEXT_COLOR_REF, value) }
 
     var clockBackgroundColorRef: String?
-        get() = prefs.getString(KEY_CLOCK_BACKGROUND_COLOR_REF, null)
+        get() = clockCardPrefs().getString(KEY_CLOCK_BACKGROUND_COLOR_REF, null)
         set(value) = prefs.edit { putString(KEY_CLOCK_BACKGROUND_COLOR_REF, value) }
 
     fun resetClockSettings() {
         prefs.edit {
-            putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
+            remove(KEY_CLOCK_BACKGROUND_ENABLED)
             putString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE)
             putString(KEY_CLOCK_CUSTOM_GREETING, "")
             remove(KEY_CLOCK_MESSAGE)

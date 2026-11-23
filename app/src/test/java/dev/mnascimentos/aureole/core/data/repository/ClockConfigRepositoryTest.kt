@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
+import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +47,7 @@ class ClockConfigRepositoryTest {
     @Test
     fun `when saving two clocks, should read each one back on its own`() = runBlocking {
         val configA = ClockConfig(style = "TIME_ONLY", fontFamily = "Serif")
-        val configB = ClockConfig(alignment = "END", isBackgroundEnabled = true)
+        val configB = ClockConfig(alignment = "END", backgroundColorRef = CLOCK_CARD_THEME_REF.toJson())
 
         repository.save(CLOCK_A, configA)
         repository.save(CLOCK_B, configB)
@@ -123,7 +124,7 @@ class ClockConfigRepositoryTest {
 
         val config = repository.getOrDefault(CLOCK_A)
 
-        assertEquals(ClockConfig(style = "TIME_ONLY", isBackgroundEnabled = true), config)
+        assertEquals(ClockConfig(style = "TIME_ONLY", backgroundColorRef = CLOCK_CARD_THEME_REF.toJson()), config)
         assertEquals(config, repository.defaultConfig())
     }
 

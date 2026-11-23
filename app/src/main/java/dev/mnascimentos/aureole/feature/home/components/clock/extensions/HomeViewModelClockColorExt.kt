@@ -7,7 +7,6 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 fun HomeViewModel.updateClockTextColor(color: ThemeColorRef?) =
     editClock { it.copy(textColor = 0, textColorRef = color?.toJson()) }
 
+/** Picks the card color; null is "None", no card (RF-E2). The legacy ARGB is cleared so the ref is the only source. */
 fun HomeViewModel.updateClockBackgroundColor(color: ThemeColorRef?) =
     editClock { it.copy(backgroundColor = 0, backgroundColorRef = color?.toJson()) }
-
-fun HomeViewModel.toggleClockBackground() = editClock { it.copy(isBackgroundEnabled = !it.isBackgroundEnabled) }

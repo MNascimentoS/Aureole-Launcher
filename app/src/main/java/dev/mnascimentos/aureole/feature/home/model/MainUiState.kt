@@ -40,7 +40,6 @@ data class MainUiState(
     val isContainerEnabled: Boolean = true,
     val isContainerBackgroundEnabled: Boolean = true,
     val isContainerExpandCell: Boolean = false,
-    val isClockBackgroundEnabled: Boolean = false,
     val clockStyle: String = SettingsRepository.DEFAULT_CLOCK_STYLE,
     val clockCustomGreeting: String = "",
     val clockMessage: String = ClockConfig.DEFAULT_MESSAGE,

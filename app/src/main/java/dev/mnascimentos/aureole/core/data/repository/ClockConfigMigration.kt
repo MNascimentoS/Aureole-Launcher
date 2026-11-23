@@ -22,7 +22,6 @@ fun SettingsRepository.globalClockConfig(): ClockConfig = ClockConfig(
     backgroundColor = clockBackgroundColor,
     textColorRef = clockTextColorRef,
     backgroundColorRef = clockBackgroundColorRef,
-    isBackgroundEnabled = isClockBackgroundEnabled,
     isFontBold = clockFontBold
 ).withMigratedFont()
 

@@ -190,7 +190,6 @@
     <string name="home_clock_time_system">System</string>
     <string name="home_clock_time_12h">12 Hours</string>
     <string name="home_clock_time_24h">24 Hours</string>
-    <string name="home_clock_show_background">Show background card</string>
     <string name="home_clock_greeting_morning">Good morning</string>
     <string name="home_clock_greeting_afternoon">Good afternoon</string>
     <string name="home_clock_greeting_evening">Good evening</string>
@@ -633,6 +632,8 @@
     <string name="theme_color_section_default">Default</string>
     <string name="home_clock_color_text_title">Text color</string>
     <string name="home_clock_color_card_title">Card color</string>
+    <string name="home_clock_color_none">None</string>
+    <string name="home_clock_color_back">Back</string>
     <string name="theme_color_option_current">Current</string>
     <string name="theme_color_swatch_default">Theme</string>
 </resources>

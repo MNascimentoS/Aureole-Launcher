@@ -16,7 +16,6 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.dismiss
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.recordClockSize
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.resetClockSettings
-import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toggleClockBackground
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockAlignment
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockBackgroundColor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockCustomGreeting
@@ -247,7 +246,6 @@ class HomeActionsFactory(
             onUpdateClockDateFormat = { format -> viewModel.updateClockDateFormat(format) },
             onUpdateClockTextColor = { color -> viewModel.updateClockTextColor(color) },
             onUpdateClockBackgroundColor = { color -> viewModel.updateClockBackgroundColor(color) },
-            onToggleClockBackground = { viewModel.toggleClockBackground() },
             onResetClockSettings = { viewModel.resetClockSettings() },
             onOpenQuickButtonSettings = { id -> viewModel.onOpenQuickButtonSettings(id) },
             onCloseQuickButtonSettings = { viewModel.onCloseQuickButtonSettings() },

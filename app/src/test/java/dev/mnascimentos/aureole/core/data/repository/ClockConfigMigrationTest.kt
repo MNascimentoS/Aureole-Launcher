@@ -38,7 +38,6 @@ class ClockConfigMigrationTest {
         dateFormat = "SHORT",
         textColor = TEXT_COLOR,
         backgroundColor = BACKGROUND_COLOR,
-        isBackgroundEnabled = true,
         isFontBold = false
     )
 
@@ -64,7 +63,6 @@ class ClockConfigMigrationTest {
         settingsRepository.clockDateFormat = config.dateFormat
         settingsRepository.clockTextColor = config.textColor
         settingsRepository.clockBackgroundColor = config.backgroundColor
-        settingsRepository.isClockBackgroundEnabled = config.isBackgroundEnabled
     }
 
     private fun clock(id: String, col: Int = 0) =

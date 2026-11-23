@@ -127,9 +127,5 @@ private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
 
 @Composable
 private fun ColumnScope.EditClockColorsPage(params: EditClockPagerParams) {
-    EditClockColorsSection(
-        uiState = params.uiState,
-        actions = params.actions,
-        onOpenColorPicker = params.pickers.onColor
-    )
+    EditClockColorsSection(uiState = params.uiState, onOpenColorPicker = params.pickers.onColor)
 }

@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.clock.extensions
 
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderConfig
+import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.resolveClockConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.resolveClockHazeConfig
@@ -23,8 +24,7 @@ class MainUiStateClockExtTest {
         timeFormat = "24H",
         dateFormat = "SHORT",
         textColor = 1,
-        backgroundColor = 2,
-        isBackgroundEnabled = true
+        backgroundColor = 2
     )
     private val state = MainUiState(clockFontFamily = "MONOSPACE", clockConfigs = mapOf(CLOCK_A to configA))
 
@@ -70,8 +70,8 @@ class MainUiStateClockExtTest {
     @Test
     fun `when the header has its own background switch, should not use the one of the state`() {
         val haze = ClockHazeConfig(isBackgroundEnabled = true)
-        val noBackgroundHome = MainUiState(isClockBackgroundEnabled = false)
-        val backgroundHome = MainUiState(isClockBackgroundEnabled = true)
+        val noBackgroundHome = MainUiState()
+        val backgroundHome = MainUiState(clockBackgroundColorRef = CLOCK_CARD_THEME_REF.toJson())
 
         assertTrue(resolveClockHazeConfig(haze, noBackgroundHome, configA.toHeaderConfig()).isBackgroundEnabled)
         assertFalse(resolveClockHazeConfig(haze, backgroundHome, ClockConfig().toHeaderConfig()).isBackgroundEnabled)

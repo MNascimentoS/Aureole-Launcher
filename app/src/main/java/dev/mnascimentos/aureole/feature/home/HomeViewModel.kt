@@ -132,7 +132,6 @@ class HomeViewModel(
                     isContainerEnabled = settingsRepository.isContainerEnabled,
                     isContainerBackgroundEnabled = settingsRepository.isContainerBackgroundEnabled,
                     isContainerExpandCell = settingsRepository.isContainerExpandCell,
-                    isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled,
                     showContainerAddFolderButton = settingsRepository.showContainerAddFolderButton,
                     containerPosition = settingsRepository.containerPosition,
                     showFolderLabels = settingsRepository.showFolderLabels,

@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
+import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -25,7 +26,7 @@ class EditClockBottomSheetOneHandScreenshotTest {
         val sampleData = createSampleHomeData()
         val uiState = sampleData.uiState.copy(
             isLeftHandedMode = isLeftHanded,
-            isClockBackgroundEnabled = hasBackgroundCard
+            clockBackgroundColorRef = CLOCK_CARD_THEME_REF.toJson().takeIf { hasBackgroundCard }
         )
         AureoleLauncherTheme {
             ProvideHomeUiState(uiState) {

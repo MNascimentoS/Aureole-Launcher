@@ -17,9 +17,12 @@ fun MainUiState.defaultClockConfig(): ClockConfig = ClockConfig(
     backgroundColor = clockBackgroundColor,
     textColorRef = clockTextColorRef,
     backgroundColorRef = clockBackgroundColorRef,
-    isBackgroundEnabled = isClockBackgroundEnabled,
     isFontBold = clockFontBold
 )
+
+/** Whether the clock look of the state has a card: it has a card color (null is "None", RF-E2). */
+val MainUiState.isClockBackgroundEnabled: Boolean
+    get() = clockBackgroundColorRef != null || clockBackgroundColor != 0
 
 /** The look of the clock [itemId]: its own config, or the [defaultClockConfig] when it has none (or no id). */
 fun MainUiState.clockConfigOf(itemId: String?): ClockConfig =
@@ -42,7 +45,6 @@ fun MainUiState.withClockFields(config: ClockConfig): MainUiState = copy(
     clockBackgroundColor = config.backgroundColor,
     clockTextColorRef = config.textColorRef,
     clockBackgroundColorRef = config.backgroundColorRef,
-    isClockBackgroundEnabled = config.isBackgroundEnabled,
     clockFontBold = config.isFontBold
 )
 
