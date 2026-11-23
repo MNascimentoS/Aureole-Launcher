@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.app.role.RoleManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -14,13 +15,17 @@ import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.image.decodeWallpaperBitmap
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
+import dev.mnascimentos.aureole.core.data.model.resolveClockLayout
 import dev.mnascimentos.aureole.core.designsystem.utils.HazeUtils
 import dev.mnascimentos.aureole.core.image.BlurredWallpaperCache
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 
-class SettingsRepository(private val context: Context) {
+class SettingsRepository(
+    private val context: Context,
+    private val database: () -> AppDatabase = { AppDatabase.getInstance(context) }
+) {
 
     /**
      * Ends the app process after a factory reset. Unit tests replace it so the reset
@@ -49,13 +54,20 @@ class SettingsRepository(private val context: Context) {
         get() = prefs.getBoolean(KEY_CONTAINER_EXPAND_CELL, false)
         set(value) = prefs.edit { putBoolean(KEY_CONTAINER_EXPAND_CELL, value) }
 
+    /** Whether the settings clock look has a card: a card color is saved (null is "None", RF-E2). */
     var isClockBackgroundEnabled: Boolean
-        get() = prefs.getBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
-        set(value) = prefs.edit { putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, value) }
+        get() = clockBackgroundColorRef != null || clockBackgroundColor != 0
+        set(value) = setClockCard(value)
 
+    /** The clock layout key; an old style saved by 0.9.59 or older reads as its layout ([resolveClockLayout]). */
     var clockStyle: String
-        get() = prefs.getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE) ?: DEFAULT_CLOCK_STYLE
+        get() = prefs.savedClockLayout().layout.key
         set(value) = prefs.edit { putString(KEY_CLOCK_STYLE, value) }
+
+    /** What the message line shows; an old style with a greeting reads as its message ([resolveClockLayout]). */
+    var clockMessage: String
+        get() = prefs.savedClockLayout().message.key
+        set(value) = prefs.edit { putString(KEY_CLOCK_MESSAGE, value) }
 
     var clockCustomGreeting: String
         get() = prefs.getString(KEY_CLOCK_CUSTOM_GREETING, "") ?: ""
@@ -68,6 +80,10 @@ class SettingsRepository(private val context: Context) {
     var clockFontFamily: String
         get() = prefs.getString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY) ?: DEFAULT_CLOCK_FONT_FAMILY
         set(value) = prefs.edit { putString(KEY_CLOCK_FONT_FAMILY, value) }
+
+    var clockFontBold: Boolean
+        get() = prefs.getBoolean(KEY_CLOCK_FONT_BOLD, DEFAULT_CLOCK_FONT_BOLD)
+        set(value) = prefs.edit { putBoolean(KEY_CLOCK_FONT_BOLD, value) }
 
     var clockTimeFormat: String
         get() = prefs.getString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT) ?: DEFAULT_CLOCK_TIME_FORMAT
@@ -82,7 +98,7 @@ class SettingsRepository(private val context: Context) {
         set(value) = prefs.edit { putInt(KEY_CLOCK_TEXT_COLOR, value) }
 
     var clockBackgroundColor: Int
-        get() = prefs.getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
+        get() = clockCardPrefs().getInt(KEY_CLOCK_BACKGROUND_COLOR, 0)
         set(value) = prefs.edit { putInt(KEY_CLOCK_BACKGROUND_COLOR, value) }
 
     /** ThemeColorRef JSON of the clock text color; null until one is picked (then [clockTextColor] rules). */
@@ -91,16 +107,18 @@ class SettingsRepository(private val context: Context) {
         set(value) = prefs.edit { putString(KEY_CLOCK_TEXT_COLOR_REF, value) }
 
     var clockBackgroundColorRef: String?
-        get() = prefs.getString(KEY_CLOCK_BACKGROUND_COLOR_REF, null)
+        get() = clockCardPrefs().getString(KEY_CLOCK_BACKGROUND_COLOR_REF, null)
         set(value) = prefs.edit { putString(KEY_CLOCK_BACKGROUND_COLOR_REF, value) }
 
     fun resetClockSettings() {
         prefs.edit {
-            putBoolean(KEY_CLOCK_BACKGROUND_ENABLED, false)
+            remove(KEY_CLOCK_BACKGROUND_ENABLED)
             putString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE)
             putString(KEY_CLOCK_CUSTOM_GREETING, "")
+            remove(KEY_CLOCK_MESSAGE)
             putString(KEY_CLOCK_ALIGNMENT, DEFAULT_CLOCK_ALIGNMENT)
             putString(KEY_CLOCK_FONT_FAMILY, DEFAULT_CLOCK_FONT_FAMILY)
+            putBoolean(KEY_CLOCK_FONT_BOLD, DEFAULT_CLOCK_FONT_BOLD)
             putString(KEY_CLOCK_TIME_FORMAT, DEFAULT_CLOCK_TIME_FORMAT)
             putString(KEY_CLOCK_DATE_FORMAT, DEFAULT_CLOCK_DATE_FORMAT)
             putInt(KEY_CLOCK_TEXT_COLOR, 0)
@@ -159,6 +177,16 @@ class SettingsRepository(private val context: Context) {
     var isAlphabetScrubberDisabled: Boolean
         get() = prefs.getBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, false)
         set(value) = prefs.edit { putBoolean(KEY_DISABLE_ALPHABET_SCRUBBER, value) }
+
+    /** Swiping down on the home opens the notification shade; on by default, also for updates (D-02). */
+    var isSwipeDownNotificationsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SWIPE_DOWN_NOTIFICATIONS, DEFAULT_SWIPE_DOWN_NOTIFICATIONS)
+        set(value) = prefs.edit { putBoolean(KEY_SWIPE_DOWN_NOTIFICATIONS, value) }
+
+    /** Swiping up on the home opens the all apps drawer; on by default, also for updates. */
+    var isSwipeUpAllAppsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_SWIPE_UP_ALL_APPS, DEFAULT_SWIPE_UP_ALL_APPS)
+        set(value) = prefs.edit { putBoolean(KEY_SWIPE_UP_ALL_APPS, value) }
 
     var showSettingsButtonInAllApps: Boolean
         get() = prefs.getBoolean(KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS, true)
@@ -344,7 +372,7 @@ class SettingsRepository(private val context: Context) {
     }
 
     private fun wipeLocalData() {
-        runCatching { AppDatabase.getInstance(context).clearAllTables() }
+        runCatching { database().clearAllTables() }
             .onFailure { Timber.tag(TAG).w(it, "Error clearing Room database") }
         context.deleteDatabase("aureole_app_database.db")
         context.deleteDatabase("aureole_folders.db")
@@ -378,11 +406,23 @@ class SettingsRepository(private val context: Context) {
         return true
     }
 
+    /** Whether the hidden game was ever opened; anyone with a saved best score counts as having played. */
+    var secretGamePlayed: Boolean
+        get() = prefs.getBoolean(KEY_SECRET_GAME_PLAYED, secretBestScore > 0)
+        set(value) = prefs.edit { putBoolean(KEY_SECRET_GAME_PLAYED, value) }
+
+    /** Sound effects of the hidden game (on by default). */
+    var secretSoundOn: Boolean
+        get() = prefs.getBoolean(KEY_SECRET_SOUND_ON, true)
+        set(value) = prefs.edit { putBoolean(KEY_SECRET_SOUND_ON, value) }
+
     companion object {
         private const val TAG = "SettingsRepository"
         private const val JPEG_QUALITY = 90
         private const val PREFS_NAME = "aureole_settings_prefs"
         private const val KEY_SECRET_BEST_SCORE = "secret_game_best_score"
+        private const val KEY_SECRET_GAME_PLAYED = "secret_game_played"
+        private const val KEY_SECRET_SOUND_ON = "secret_game_sound_on"
         private const val KEY_LEFT_HANDED_MODE = "left_handed_mode"
         private const val KEY_CONTAINER_ENABLED = "container_enabled"
         private const val KEY_CONTAINER_BACKGROUND_ENABLED = "container_background_enabled"
@@ -390,8 +430,16 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CLOCK_BACKGROUND_ENABLED = "clock_background_enabled"
         private const val KEY_CLOCK_STYLE = "clock_style"
         private const val KEY_CLOCK_CUSTOM_GREETING = "clock_custom_greeting"
+        private const val KEY_CLOCK_MESSAGE = "clock_message"
+
+        private fun SharedPreferences.savedClockLayout() = resolveClockLayout(
+            style = getString(KEY_CLOCK_STYLE, DEFAULT_CLOCK_STYLE),
+            message = getString(KEY_CLOCK_MESSAGE, null)
+        )
+
         private const val KEY_CLOCK_ALIGNMENT = "clock_alignment"
         private const val KEY_CLOCK_FONT_FAMILY = "clock_font_family"
+        private const val KEY_CLOCK_FONT_BOLD = "clock_font_bold"
         private const val KEY_CLOCK_TIME_FORMAT = "clock_time_format"
         private const val KEY_CLOCK_DATE_FORMAT = "clock_date_format"
         private const val KEY_CLOCK_TEXT_COLOR = "clock_text_color"
@@ -402,6 +450,7 @@ class SettingsRepository(private val context: Context) {
         const val DEFAULT_CLOCK_STYLE = ClockConfig.DEFAULT_STYLE
         const val DEFAULT_CLOCK_ALIGNMENT = ClockConfig.DEFAULT_ALIGNMENT
         const val DEFAULT_CLOCK_FONT_FAMILY = ClockConfig.DEFAULT_FONT_FAMILY
+        const val DEFAULT_CLOCK_FONT_BOLD = ClockConfig.DEFAULT_FONT_BOLD
         const val DEFAULT_CLOCK_TIME_FORMAT = ClockConfig.DEFAULT_TIME_FORMAT
         const val DEFAULT_CLOCK_DATE_FORMAT = ClockConfig.DEFAULT_DATE_FORMAT
         private const val KEY_SHOW_CONTAINER_ADD_FOLDER_BUTTON = "show_container_add_folder_button"
@@ -426,6 +475,10 @@ class SettingsRepository(private val context: Context) {
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
+        private const val KEY_SWIPE_DOWN_NOTIFICATIONS = "swipe_down_notifications"
+        const val DEFAULT_SWIPE_DOWN_NOTIFICATIONS = true
+        private const val KEY_SWIPE_UP_ALL_APPS = "swipe_up_all_apps"
+        const val DEFAULT_SWIPE_UP_ALL_APPS = true
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
         private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"
         private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"

@@ -24,7 +24,7 @@ data class AureoleDimens(
     val xxLarge: Dp = 40.dp,
     val minTouchTarget: Dp = 48.dp,
     val sheetHeaderGap: Dp = 12.dp,
-    val fadingEdge: Dp = 24.dp,
+    val fadingEdge: Dp = 16.dp,
     val swatchLabelWidth: Dp = 64.dp,
     val homeTopGrabZone: Dp = 40.dp,
 

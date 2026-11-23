@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import dev.mnascimentos.aureole.core.data.cache.IconCache
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.AppInfoDao
 import dev.mnascimentos.aureole.core.data.db.AppInfoEntity
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import kotlinx.coroutines.Dispatchers
@@ -13,11 +14,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
-class AppRepository(private val context: Context) {
-
-    private val db = AppDatabase.getInstance(context)
-    private val dao = db.appInfoDao()
-    private val iconCache = IconCache(context)
+class AppRepository(
+    private val context: Context,
+    private val dao: AppInfoDao = AppDatabase.getInstance(context).appInfoDao(),
+    private val iconCache: IconCache = IconCache(context)
+) {
 
     val appsFlow: Flow<List<AppInfo>> = dao.getAppsFlow().map { entities ->
         entities.map { entity ->

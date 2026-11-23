@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import dev.mnascimentos.aureole.composable.controls.model.SegmentStyle
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -26,7 +27,7 @@ fun AureoleSheetTabBar(
         selectedIndex = selectedIndex,
         onSelect = onSelect,
         modifier = modifier.semantics { contentDescription = description },
-        itemHeight = AureoleDS.dimens.controlHeight
+        style = SegmentStyle(itemHeight = AureoleDS.dimens.controlHeight)
     )
 }
 

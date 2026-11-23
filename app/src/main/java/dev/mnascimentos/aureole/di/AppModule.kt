@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.di
 
+import dev.mnascimentos.aureole.core.data.cache.IconCache
 import dev.mnascimentos.aureole.core.data.db.AppDatabase
+import dev.mnascimentos.aureole.core.data.db.AppInfoDao
 import dev.mnascimentos.aureole.core.data.db.ContainerDao
 import dev.mnascimentos.aureole.core.data.db.FavoriteContainerDao
 import dev.mnascimentos.aureole.core.data.db.FolderDao
@@ -36,9 +38,10 @@ val appModule = module {
     single { get<AppDatabase>().favoriteContainerDao() }
     single { get<AppDatabase>().folderDao() }
 
-    singleOf(::AppRepository)
+    single { IconCache(androidContext()) }
+    single { AppRepository(androidContext(), get<AppInfoDao>(), get<IconCache>()) }
     singleOf(::WidgetRepository)
-    singleOf(::SettingsRepository)
+    single { SettingsRepository(androidContext()) { get<AppDatabase>() } }
     single<FolderRepository> { FolderRepository(get(), androidContext()) }
     single<FavoriteContainerRepository> {
         FavoriteContainerRepository(

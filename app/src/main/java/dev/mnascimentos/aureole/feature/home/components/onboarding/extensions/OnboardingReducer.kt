@@ -32,7 +32,11 @@ internal object OnboardingReducer {
             closedSurface && onboarding.succeededStep != null -> onboarding.copy(succeededStep = null)
             else -> onboarding
         }
-        val visibleSteps = visibleGestureSteps(next.isAlphabetScrubberDisabled, next.isLandscape)
+        val visibleSteps = visibleGestureSteps(
+            next.isAlphabetScrubberDisabled,
+            next.isLandscape,
+            next.isSwipeDownNotificationsEnabled
+        )
         val isFinished = updated.succeededStep == null && updated.completedSteps.containsAll(visibleSteps)
         // Finishing can also come from the step list shrinking, as when the screen turns to landscape.
         return when {
@@ -80,6 +84,7 @@ internal object OnboardingReducer {
         val onboarding = state.onboarding
         val updated = when (signal) {
             OnboardingSignal.ALPHABET_SCRUBBED -> onboarding.onAlphabetScrubbed()
+            OnboardingSignal.NOTIFICATIONS_OPENED -> onboarding.onNotificationsOpened()
             OnboardingSignal.PICKER_CONFIRMED -> onboarding.onPickerConfirmed()
             OnboardingSignal.SETTINGS_OPENED -> onboarding.onSettingsOpened()
             OnboardingSignal.DEFAULT_HOME_RESULT -> onboarding.onDefaultHomeResult()

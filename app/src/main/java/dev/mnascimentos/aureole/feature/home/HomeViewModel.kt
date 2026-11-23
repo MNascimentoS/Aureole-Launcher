@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.glassLevelOf
 import dev.mnascimentos.aureole.core.undo.UndoController
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.updateAppsState
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.observeClockConfigs
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.withClockSettings
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
@@ -126,22 +127,11 @@ class HomeViewModel(
             val containerFavsMap = favoriteContainerRepository.getAllContainerFavorites()
             val savedFolders = folderRepository.getFolders()
             _uiState.update {
-                it.copy(
+                it.withClockSettings(settingsRepository).copy(
                     isLeftHandedMode = settingsRepository.isLeftHandedMode,
                     isContainerEnabled = settingsRepository.isContainerEnabled,
                     isContainerBackgroundEnabled = settingsRepository.isContainerBackgroundEnabled,
                     isContainerExpandCell = settingsRepository.isContainerExpandCell,
-                    isClockBackgroundEnabled = settingsRepository.isClockBackgroundEnabled,
-                    clockStyle = settingsRepository.clockStyle,
-                    clockCustomGreeting = settingsRepository.clockCustomGreeting,
-                    clockAlignment = settingsRepository.clockAlignment,
-                    clockFontFamily = settingsRepository.clockFontFamily,
-                    clockTimeFormat = settingsRepository.clockTimeFormat,
-                    clockDateFormat = settingsRepository.clockDateFormat,
-                    clockTextColor = settingsRepository.clockTextColor,
-                    clockBackgroundColor = settingsRepository.clockBackgroundColor,
-                    clockTextColorRef = settingsRepository.clockTextColorRef,
-                    clockBackgroundColorRef = settingsRepository.clockBackgroundColorRef,
                     showContainerAddFolderButton = settingsRepository.showContainerAddFolderButton,
                     containerPosition = settingsRepository.containerPosition,
                     showFolderLabels = settingsRepository.showFolderLabels,
@@ -165,6 +155,8 @@ class HomeViewModel(
                     isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                     isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
                     isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
+                    isSwipeDownNotificationsEnabled = settingsRepository.isSwipeDownNotificationsEnabled,
+                    isSwipeUpAllAppsEnabled = settingsRepository.isSwipeUpAllAppsEnabled,
                     showSettingsButtonInAllApps = settingsRepository.showSettingsButtonInAllApps,
                     settingsButtonPosition = settingsRepository.settingsButtonPosition,
                     showSearchBarInAllApps = settingsRepository.showSearchBarInAllApps,

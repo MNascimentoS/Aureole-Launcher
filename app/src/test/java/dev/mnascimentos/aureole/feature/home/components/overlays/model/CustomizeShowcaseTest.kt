@@ -19,7 +19,11 @@ class CustomizeShowcaseTest {
     private val coaching = MainUiState(
         onboarding = OnboardingUiState(
             stage = OnboardingStage.GESTURES,
-            completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB)
+            completedSteps = setOf(
+                GestureCoachStep.OPEN_APPS,
+                GestureCoachStep.ALPHABET_SCRUB,
+                GestureCoachStep.NOTIFICATIONS
+            )
         )
     )
 

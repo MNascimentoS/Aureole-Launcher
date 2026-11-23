@@ -74,7 +74,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("New folder").assertIsDisplayed()
         composeTestRule.closeOverlayWithBack()
         assertTrue(createClosed)
     }
@@ -91,7 +91,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("New Folder").assertDoesNotExist()
+        composeTestRule.onNodeWithText("New folder").assertDoesNotExist()
     }
 
     @Config(qualifiers = TALL_WINDOW)
@@ -144,7 +144,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit folder").assertIsDisplayed()
         composeTestRule.closeOverlayWithBack()
         assertTrue(renameClosed)
     }
@@ -294,7 +294,7 @@ class HomeScreenFolderOverlaysTest {
             }
         }
 
-        composeTestRule.onNodeWithText("App Info").assertIsDisplayed()
+        composeTestRule.onNodeWithText("App info").assertIsDisplayed()
         composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
     }
 }

@@ -49,7 +49,7 @@ class EditWidgetGroupScreenTest {
         composeTestRule.mainClock.advanceTimeBy(1000L)
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("Widget Stack").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Widget stack").assertIsDisplayed()
         composeTestRule.onNodeWithText("Show widget indicator").assertIsDisplayed()
     }
 
@@ -73,7 +73,7 @@ class EditWidgetGroupScreenTest {
         }
         advanceAnimation()
 
-        composeTestRule.onNodeWithText("Widget Stack").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Widget stack").assertIsDisplayed()
     }
 
     private fun setScreen(isIndicatorEnabled: Boolean, onToggle: () -> Unit, onAdd: () -> Unit) {

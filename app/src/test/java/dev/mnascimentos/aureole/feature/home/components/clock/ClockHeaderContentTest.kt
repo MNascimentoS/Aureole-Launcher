@@ -4,9 +4,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderContent
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
+import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Rule
 import org.junit.Test
@@ -26,11 +27,15 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Boa tarde Teste",
-                        clockStyle = "GREETING_AND_DATE",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -51,11 +56,15 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.DATE_ON_TOP.lines,
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Bom dia Teste",
-                        clockStyle = "DATE_ON_TOP",
+                        layout = ClockLayout.DATE_ON_TOP,
                         alignment = "START",
                         fontFamily = "DEFAULT",
                         timeFormat = "24H",
@@ -73,11 +82,15 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.TIME_ONLY.lines,
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Minha Saudacao Oculta",
-                        clockStyle = "TIME_ONLY",
+                        layout = ClockLayout.TIME_ONLY,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -98,11 +111,15 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 120.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 152f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Bem-vindo de volta!",
-                        clockStyle = "CUSTOM_GREETING",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -123,11 +140,15 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 80.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 80f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Saudacao Compacta",
-                        clockStyle = "GREETING_AND_DATE",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "CENTER",
                         fontFamily = "DEFAULT",
                         timeFormat = "12H",
@@ -148,11 +169,15 @@ class ClockHeaderContentTest {
             AureoleLauncherTheme {
                 ClockHeaderContent(
                     params = ClockHeaderContentParams(
-                        maxHeight = 160.dp,
+                        sizing = resolveClockSizing(
+                            ClockLayout.MSG_TIME_DATE.lines,
+                            maxTextWidthDp = 300f,
+                            maxHeightDp = 192f
+                        ),
                         colorPrimary = android.graphics.Color.WHITE,
                         composeTextColor = Color.White,
                         greeting = "Saudacao Direita",
-                        clockStyle = "GREETING_AND_DATE",
+                        layout = ClockLayout.MSG_TIME_DATE,
                         alignment = "END",
                         fontFamily = "BOLD",
                         timeFormat = "24H",

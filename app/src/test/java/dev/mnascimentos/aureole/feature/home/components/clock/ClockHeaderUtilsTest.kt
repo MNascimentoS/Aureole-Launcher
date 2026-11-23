@@ -5,7 +5,6 @@ import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -142,22 +141,5 @@ class ClockHeaderUtilsTest {
         assertEquals(TextAlign.Start, textStart)
         assertEquals(Alignment.Start, horizontalUnknown)
         assertEquals(TextAlign.Start, textUnknown)
-    }
-
-    @Test
-    fun `when font family is BOLD, SERIF, MONOSPACE, or ROUNDED, should return corresponding typeface`() {
-        // Arrange & Act
-        val boldTypeface = ClockHeaderUtils.resolveClockTypeface("BOLD")
-        val serifTypeface = ClockHeaderUtils.resolveClockTypeface("SERIF")
-        val monoTypeface = ClockHeaderUtils.resolveClockTypeface("MONOSPACE")
-        val roundedTypeface = ClockHeaderUtils.resolveClockTypeface("ROUNDED")
-        val defaultTypeface = ClockHeaderUtils.resolveClockTypeface("SANS_SERIF")
-
-        // Assert
-        assertNotNull(boldTypeface)
-        assertNotNull(serifTypeface)
-        assertNotNull(monoTypeface)
-        assertNotNull(roundedTypeface)
-        assertNotNull(defaultTypeface)
     }
 }

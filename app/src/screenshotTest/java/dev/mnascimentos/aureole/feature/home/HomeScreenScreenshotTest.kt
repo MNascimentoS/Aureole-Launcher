@@ -214,8 +214,7 @@ private fun HomeScreenTwoClocksScreenshotTest() {
                 alignment = "END",
                 fontFamily = "SERIF",
                 textColor = 0xFFFFD54F.toInt(),
-                backgroundColor = 0xFF1A237E.toInt(),
-                isBackgroundEnabled = true
+                backgroundColor = 0xFF1A237E.toInt()
             )
         )
     )

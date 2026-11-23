@@ -150,7 +150,7 @@ class EditContainerScreenTest {
         composeTestRule.onNodeWithText("Behavior").assertIsDisplayed().performClick()
         assertEquals(EditContainerScreenMode.BEHAVIOR, opened.last())
 
-        composeTestRule.onNodeWithText("Manage Items").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("Manage items").assertIsDisplayed().performClick()
         assertEquals(EditContainerScreenMode.MANAGE_ITEMS, opened.last())
 
         composeTestRule.onNodeWithText("OPTIONS").assertIsDisplayed()

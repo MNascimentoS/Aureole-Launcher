@@ -5,14 +5,16 @@ import android.view.View
 import android.widget.TextClock
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,26 +22,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeDisplayParams
+import dev.mnascimentos.aureole.composable.clock.model.DATE_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.DATE_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.GREETING_TRIM_TOP
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_BOTTOM
 import dev.mnascimentos.aureole.composable.clock.model.TIME_TRIM_TOP
+import dev.mnascimentos.aureole.composable.clock.model.clockSpacing
+import dev.mnascimentos.aureole.composable.clock.model.gapDp
 import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
+import dev.mnascimentos.aureole.core.data.model.ClockLayout
+import dev.mnascimentos.aureole.core.data.model.ClockLine
+import dev.mnascimentos.aureole.core.data.model.resolveClockFont
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-
-private const val COMPACT_CONTAINER_HEIGHT_DP = 90
-
-private const val GREETING_SIZE_COMPACT = 13f
-private const val GREETING_SIZE_NORMAL = 15f
-private const val DATE_SIZE_COMPACT = 12f
-private const val DATE_SIZE_NORMAL = 14f
 
 private const val GREETING_CROSSFADE_DURATION_MS = 500
 
@@ -47,66 +48,59 @@ private const val GREETING_CROSSFADE_DURATION_MS = 500
 internal fun ClockHeaderContent(params: ClockHeaderContentParams) {
     val (horizontalAlignment, textAlign) = ClockHeaderUtils.resolveClockAlignments(params.alignment)
 
-    val sizing = resolveClockSizing(
-        maxHeightDp = params.maxHeight.value,
-        fontScale = LocalDensity.current.fontScale,
-        greetingAllowed = params.clockStyle != "TIME_ONLY" && params.clockStyle != "DATE_ON_TOP",
-        hasDate = params.clockStyle != "TIME_ONLY"
-    )
+    // Every size is a share of the time (D-08), so the card looks the same at any size on the grid.
+    val sizing = params.sizing
+    val greetingSize = sizing.metrics.greetingSp
+    val dateSize = sizing.metrics.dateSp
 
-    val isCompact = params.maxHeight < COMPACT_CONTAINER_HEIGHT_DP.dp
-    val greetingSize = if (isCompact) GREETING_SIZE_COMPACT else GREETING_SIZE_NORMAL
-    val dateSize = if (isCompact) DATE_SIZE_COMPACT else DATE_SIZE_NORMAL
-
-    val fontSpec = ClockFontSpec.fromKey(params.fontFamily)
-    val typeface = fontSpec.timeTypeface()
-    val dateTypeface = fontSpec.dateTypeface()
+    val font = resolveClockFont(params.fontFamily, params.isFontBold)
+    val fontFamily = font.fontFamily()
+    val dateTypeface = font.dateTypeface()
     val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(params.timeFormat)
+    val timeParams = ClockTimeDisplayParams(
+        colorPrimary = params.colorPrimary,
+        textSizePx = sizing.textSizePx,
+        format12 = format12,
+        format24 = format24,
+        typeface = font.timeTypeface(),
+        alignment = params.alignment
+    )
     val datePattern = ClockHeaderUtils.resolveClockDatePattern(params.dateFormat, LocalConfiguration.current.locales[0])
 
+    // Each line keeps its own height, even when the card is shorter than the estimate: a line is never squeezed
+    // into the next one (RF-B4); what does not fit is clipped by the card, centered.
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().wrapContentHeight(unbounded = true),
         horizontalAlignment = horizontalAlignment
     ) {
-        if (params.clockStyle == "DATE_ON_TOP") {
-            ClockDateDisplay(
-                datePattern = datePattern,
-                dateSizeSp = dateSize,
-                dateTypeface = dateTypeface,
-                textColor = params.composeTextColor,
-                textAlign = textAlign
-            )
-        }
-
-        if (sizing.showGreeting) {
-            ClockGreetingDisplay(
-                greeting = params.greeting,
-                greetingSizeSp = greetingSize,
-                fontFamily = fontSpec.fontFamily(),
-                textColor = params.composeTextColor,
-                textAlign = textAlign
-            )
-        }
-
-        ClockTimeDisplay(
-            params = ClockTimeDisplayParams(
-                colorPrimary = params.colorPrimary,
-                textSizePx = sizing.textSizePx,
-                format12 = format12,
-                format24 = format24,
-                typeface = typeface,
-                alignment = params.alignment
-            )
-        )
-
-        if (params.clockStyle != "TIME_ONLY" && params.clockStyle != "DATE_ON_TOP") {
-            ClockDateDisplay(
-                datePattern = datePattern,
-                dateSizeSp = dateSize,
-                dateTypeface = dateTypeface,
-                textColor = params.composeTextColor,
-                textAlign = textAlign
-            )
+        // The lines follow the layout, top to bottom; the message only shows when it fits (resolveClockSizing).
+        val lines = params.layout.lines.filter { it != ClockLine.MESSAGE || sizing.showGreeting }
+        val gaps = clockSpacing(lines).between
+        lines.forEachIndexed { index, line ->
+            // Keyed by line, so a layout change moves the TextClocks instead of rebuilding them.
+            key(line) {
+                // The space above each line comes only from clockSpacing, a share of the time: the lines are trimmed.
+                val gap = gaps.getOrNull(index - 1)?.let { sizing.metrics.gapDp(it) } ?: 0f
+                Box(modifier = Modifier.lineGap(gap.dp)) {
+                    when (line) {
+                        ClockLine.MESSAGE -> ClockGreetingDisplay(
+                            greeting = params.greeting,
+                            greetingSizeSp = greetingSize,
+                            fontFamily = fontFamily,
+                            textColor = params.composeTextColor,
+                            textAlign = textAlign
+                        )
+                        ClockLine.TIME -> ClockTimeDisplay(params = timeParams)
+                        ClockLine.DATE -> ClockDateDisplay(
+                            datePattern = datePattern,
+                            dateSizeSp = dateSize,
+                            dateTypeface = dateTypeface,
+                            textColor = params.composeTextColor,
+                            textAlign = textAlign
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -149,7 +143,7 @@ private fun ClockDateDisplay(
     textAlign: TextAlign
 ) {
     AndroidView(
-        modifier = Modifier.trimVerticalBands(DATE_TRIM_TOP, 0f),
+        modifier = Modifier.trimVerticalBands(DATE_TRIM_TOP, DATE_TRIM_BOTTOM),
         factory = { ctx ->
             TextClock(ctx).apply {
                 format12Hour = datePattern
@@ -216,13 +210,17 @@ private fun ClockHeaderContentPreview() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.MSG_TIME_DATE.lines,
+                    maxTextWidthDp = 300f,
+                    maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Boa tarde",
-                clockStyle = "STANDARD",
+                layout = ClockLayout.MSG_TIME_DATE,
                 alignment = "CENTER",
-                fontFamily = "DEFAULT",
+                fontFamily = FONT_KEY_LAUNCHER,
                 timeFormat = "12H",
                 dateFormat = "DEFAULT"
             )
@@ -236,13 +234,17 @@ private fun ClockHeaderContentDateOnTopPreview() {
     AureoleLauncherTheme {
         ClockHeaderContent(
             params = ClockHeaderContentParams(
-                maxHeight = 120.dp,
+                sizing = resolveClockSizing(
+                    ClockLayout.DATE_ON_TOP.lines,
+                    maxTextWidthDp = 300f,
+                    maxHeightDp = 152f
+                ),
                 colorPrimary = android.graphics.Color.WHITE,
                 composeTextColor = Color.White,
                 greeting = "Bom dia",
-                clockStyle = "DATE_ON_TOP",
+                layout = ClockLayout.DATE_ON_TOP,
                 alignment = "START",
-                fontFamily = "DEFAULT",
+                fontFamily = FONT_KEY_LAUNCHER,
                 timeFormat = "24H",
                 dateFormat = "DEFAULT"
             )

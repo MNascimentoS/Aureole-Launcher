@@ -49,7 +49,7 @@ class AureoleOverlayWindowTest {
         composeTestRule.onNodeWithText("Scroll App").performTouchInput { longClick() }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("App Info").assertExists()
+        composeTestRule.onNodeWithText("App info").assertExists()
     }
 
     @Test
@@ -61,7 +61,7 @@ class AureoleOverlayWindowTest {
         composeTestRule.onNodeWithText("Scroll App").performTouchInput { longClick() }
         composeTestRule.waitForIdle()
 
-        composeTestRule.onNodeWithText("App Info").assertExists()
+        composeTestRule.onNodeWithText("App info").assertExists()
     }
 
     @Test

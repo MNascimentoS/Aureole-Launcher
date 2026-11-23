@@ -4,6 +4,8 @@ import android.content.Context
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
+import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_SERIF
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -28,15 +30,15 @@ class ClockConfigMigrationTest {
     private lateinit var gridRepository: GridRepository
 
     private val customized = ClockConfig(
-        style = "GREETING",
+        style = "MSG_ON_TOP",
         customGreeting = "Olá",
         alignment = "START",
-        fontFamily = "SERIF",
+        fontFamily = FONT_KEY_SERIF,
         timeFormat = "H24",
         dateFormat = "SHORT",
         textColor = TEXT_COLOR,
         backgroundColor = BACKGROUND_COLOR,
-        isBackgroundEnabled = true
+        isFontBold = false
     )
 
     @Before
@@ -56,11 +58,11 @@ class ClockConfigMigrationTest {
         settingsRepository.clockCustomGreeting = config.customGreeting
         settingsRepository.clockAlignment = config.alignment
         settingsRepository.clockFontFamily = config.fontFamily
+        settingsRepository.clockFontBold = config.isFontBold
         settingsRepository.clockTimeFormat = config.timeFormat
         settingsRepository.clockDateFormat = config.dateFormat
         settingsRepository.clockTextColor = config.textColor
         settingsRepository.clockBackgroundColor = config.backgroundColor
-        settingsRepository.isClockBackgroundEnabled = config.isBackgroundEnabled
     }
 
     private fun clock(id: String, col: Int = 0) =
@@ -71,6 +73,29 @@ class ClockConfigMigrationTest {
         saveGlobals(customized)
 
         assertEquals(customized, settingsRepository.globalClockConfig())
+    }
+
+    @Test
+    fun `when settings hold a font of 0_9_59 or older, should read it as the catalog font in bold`() {
+        settingsRepository.clockFontFamily = "SERIF"
+        settingsRepository.clockFontBold = false
+
+        val config = settingsRepository.globalClockConfig()
+
+        assertEquals(FONT_KEY_SERIF, config.fontFamily)
+        assertTrue(config.isFontBold)
+    }
+
+    @Test
+    fun `when a saved clock config has an old font, should read it as the catalog font`() = runBlocking {
+        context.getSharedPreferences(ClockConfigRepository.PREFS_NAME, Context.MODE_PRIVATE).edit()
+            .putBoolean("migrated_from_globals", true)
+            .putString("clock_config_old", """{"fontFamily":"BOLD","alignment":"START"}""")
+            .commit()
+
+        val config = newRepository().get("old")
+
+        assertEquals(ClockConfig(alignment = "START", fontFamily = FONT_KEY_LAUNCHER, isFontBold = true), config)
     }
 
     @Test
@@ -130,13 +155,13 @@ class ClockConfigMigrationTest {
         saveGlobals(customized)
         newRepository().ensureMigrated()
 
-        saveGlobals(ClockConfig(style = "MINIMAL", fontFamily = "MONOSPACE"))
+        saveGlobals(ClockConfig(style = "TIME_ONLY", fontFamily = "MONOSPACE"))
         gridRepository.saveGridItems(listOf(clock(GridDefaults.CLOCK_ITEM_ID), clock("clock_added_later")))
         val restarted = newRepository()
 
         assertEquals(customized, restarted.get(GridDefaults.CLOCK_ITEM_ID))
         assertNull(restarted.get("clock_added_later"))
-        assertEquals("MINIMAL", restarted.getOrDefault("clock_added_later").style)
+        assertEquals("TIME_ONLY", restarted.getOrDefault("clock_added_later").style)
     }
 
     @Test
@@ -154,10 +179,10 @@ class ClockConfigMigrationTest {
     @Test
     fun `when a clock already has a config, should not overwrite it with the settings look`() = runBlocking {
         val prefs = context.getSharedPreferences(ClockConfigRepository.PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putString("clock_config_${GridDefaults.CLOCK_ITEM_ID}", "{\"style\":\"MINIMAL\"}").commit()
+        prefs.edit().putString("clock_config_${GridDefaults.CLOCK_ITEM_ID}", "{\"style\":\"TIME_ONLY\"}").commit()
         saveGlobals(customized)
 
-        assertEquals(ClockConfig(style = "MINIMAL"), newRepository().get(GridDefaults.CLOCK_ITEM_ID))
+        assertEquals(ClockConfig(style = "TIME_ONLY"), newRepository().get(GridDefaults.CLOCK_ITEM_ID))
     }
 
     @Test
@@ -171,5 +196,16 @@ class ClockConfigMigrationTest {
 
         settingsPrefs.edit().remove("left_handed_mode").commit()
         assertEquals(customized, newRepository().get(GridDefaults.CLOCK_ITEM_ID))
+    }
+
+    @Test
+    fun `when a clock config holds an old style, should read it as its layout and message`() = runBlocking {
+        val prefs = context.getSharedPreferences(ClockConfigRepository.PREFS_NAME, Context.MODE_PRIVATE)
+        val json = "{\"style\":\"CUSTOM_GREETING\",\"customGreeting\":\"Oi\"}"
+        prefs.edit().putString("clock_config_${GridDefaults.CLOCK_ITEM_ID}", json).commit()
+
+        val config = newRepository().get(GridDefaults.CLOCK_ITEM_ID)
+
+        assertEquals(ClockConfig(style = "MSG_TIME_DATE", message = "CUSTOM", customGreeting = "Oi"), config)
     }
 }

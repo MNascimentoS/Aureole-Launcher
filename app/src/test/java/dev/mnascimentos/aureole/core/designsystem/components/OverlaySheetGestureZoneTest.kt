@@ -8,13 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.doubleClick
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performCustomAccessibilityActionWithLabel
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeUp
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
@@ -29,10 +32,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
-private const val GESTURE_ZONE = "Hold the top of the sheet"
+private const val GESTURE_ZONE = "Close"
 private const val LONG_PRESS_MS = 800L
 private const val SWIPE_DISTANCE_PX = 600f
 private const val TALL_ROWS = 60
+private const val MIN_TOUCH_TARGET_DP = 48f
 
 @OptIn(ExperimentalTestApi::class)
 @RunWith(RobolectricTestRunner::class)
@@ -44,11 +48,17 @@ class OverlaySheetGestureZoneTest {
     private var settingsClicks = 0
 
     /** [isTall] fills the sheet with more rows than fit at rest, so it can expand; otherwise the content fits. */
-    private fun setOverlay(state: AureoleEditOverlayState, isLeftHanded: Boolean = false, isTall: Boolean = true) {
+    private fun setOverlay(
+        state: AureoleEditOverlayState,
+        isLeftHanded: Boolean = false,
+        isTall: Boolean = true,
+        onDismiss: () -> Unit = {}
+    ) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 AureoleEditOverlay(
                     state = state,
+                    onDismissRequest = onDismiss,
                     params = AureoleEditOverlayParams(
                         config = AureoleEditOverlayConfig(
                             title = "Zone Overlay",
@@ -73,6 +83,36 @@ class OverlaySheetGestureZoneTest {
     private fun gestureZoneActionLabels(): List<String> {
         val config = composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).fetchSemanticsNode().config
         return config.getOrNull(SemanticsActions.CustomActions).orEmpty().map { it.label }
+    }
+
+    @Test
+    fun `the handle should be at least a touch target tall and read as close`() {
+        setOverlay(AureoleEditOverlayState())
+
+        val handle = composeTestRule.onNodeWithContentDescription(GESTURE_ZONE)
+        handle.assertHasClickAction()
+        val bounds = handle.getUnclippedBoundsInRoot()
+        assertTrue((bounds.bottom - bounds.top).value >= MIN_TOUCH_TARGET_DP)
+    }
+
+    @Test
+    fun `when the handle is activated by TalkBack, should close the sheet`() {
+        var dismissed = 0
+        setOverlay(AureoleEditOverlayState(), onDismiss = { dismissed++ })
+
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).performSemanticsAction(SemanticsActions.Dismiss)
+        composeTestRule.waitForIdle()
+        assertEquals(1, dismissed)
+    }
+
+    @Test
+    fun `when the handle is clicked through accessibility, should close the sheet`() {
+        var dismissed = 0
+        setOverlay(AureoleEditOverlayState(), onDismiss = { dismissed++ })
+
+        composeTestRule.onNodeWithContentDescription(GESTURE_ZONE).performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.waitForIdle()
+        assertEquals(1, dismissed)
     }
 
     @Test

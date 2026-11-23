@@ -32,7 +32,6 @@ fun HomeAppItemRow(
             isLeftHandedMode = uiState.isLeftHandedMode
         ),
         actions = actions.copy(
-            onOpenSettings = actions.onOpenSettings ?: homeActions.onSettingsClick,
             onCustomizeHome = actions.onCustomizeHome ?: homeActions.onOpenCustomizeBottomSheet
         )
     )

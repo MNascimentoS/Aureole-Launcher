@@ -142,7 +142,9 @@ internal class OverlaySheetController(
     }
 
     fun onDrag(delta: Float) {
+        val wasArmed = motion.isDismissArmed(bounds)
         if (motion.dragBy(delta, expanded, bounds)) events.onTick()
+        if (!wasArmed && motion.isDismissArmed(bounds)) events.onDismissArmed()
     }
 
     /**
@@ -214,9 +216,11 @@ internal class OverlaySheetController(
  * @property onExpandedChanged The sheet moved to the expanded (true) or rest (false) height.
  * @property onDismiss The sheet was released low or flung down at rest and should close.
  * @property onTick The sheet crossed or settled on a detent: play the segment tick vibration.
+ * @property onDismissArmed A drag just took the sheet below the height where a release closes it.
  */
 internal data class OverlaySheetEvents(
     val onExpandedChanged: (Boolean) -> Unit,
     val onDismiss: () -> Unit,
-    val onTick: () -> Unit
+    val onTick: () -> Unit,
+    val onDismissArmed: () -> Unit = {}
 )

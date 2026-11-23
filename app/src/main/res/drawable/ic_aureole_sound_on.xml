@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <!-- Speaker on: stroke-based; tinted at runtime. -->
+  <path
+      android:pathData="M4,9.5V14.5H8L13,18.5V5.5L8,9.5ZM16,9A4,4 0,0 1,16,15M18.5,6.5A8,8 0,0 1,18.5,17.5"
+      android:strokeWidth="2"
+      android:strokeColor="#FFFFFF"
+      android:strokeLineCap="round"
+      android:strokeLineJoin="round"
+      android:fillColor="#00000000"/>
+</vector>

@@ -40,10 +40,10 @@ class SettingsInventoryTest {
         "Color palette",
         "Change font",
         "Themed icons",
-        "Set Background",
+        "Set background",
         "Image scale",
         "Restore background",
-        "Change Border",
+        "Change border",
         "Glass effect"
     )
     private val behaviorItems = listOf(

@@ -12,14 +12,17 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.addClock
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.dismissClockSaveHint
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.recordClockSize
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.resetClockSettings
-import dev.mnascimentos.aureole.feature.home.components.clock.extensions.toggleClockBackground
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockAlignment
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockBackgroundColor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockCustomGreeting
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockDateFormat
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockFontBold
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockFontFamily
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockMessage
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockStyle
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTextColor
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTimeFormat
@@ -126,16 +129,15 @@ class HomeActionsFactory(
                     context.startActivity(launchIntent)
                 }
             },
-            onExpandNotificationShade = { IntentUtils.expandNotificationShade(context) },
+            onExpandNotificationShade = {
+                viewModel.onOnboardingSignal(OnboardingSignal.NOTIFICATIONS_OPENED)
+                IntentUtils.expandNotificationShade(context)
+            },
             onFolderIntent = { viewModel.onFolderIntent(it) },
             onSetAddAppToFolderDialogVisible = { viewModel.setAddAppToFolderDialogVisible(it) },
             onSetRenameFolderDialogVisible = { viewModel.setRenameFolderDialogVisible(it) },
             onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
-            onSettingsClick = {
-                viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
-                val intent = Intent(context, SettingsActivity::class.java)
-                context.startActivity(intent)
-            },
+            onSettingsClick = { openSettings() },
             onAllAppsDrawerClose = { viewModel.setAllAppsDrawerOpen(false) },
             onAllAppsDrawerOpen = { viewModel.setAllAppsDrawerOpen(true) },
             onAllAppsDrawerOpenFromEdge = { viewModel.setAllAppsDrawerOpen(true, AllAppsOpenSource.EDGE) },
@@ -165,6 +167,11 @@ class HomeActionsFactory(
         val homeActions = attachGridActions(baseActions)
         val onboarding = OnboardingActionsFactory(context, viewModel, homeActions, launchDefaultHomeRequest)
         return homeActions.copy(onboarding = onboarding.createOnboardingActions())
+    }
+
+    private fun openSettings() {
+        viewModel.onOnboardingSignal(OnboardingSignal.SETTINGS_OPENED)
+        context.startActivity(Intent(context, SettingsActivity::class.java))
     }
 
     private fun attachGridActions(base: HomeScreenActions): HomeScreenActions {
@@ -227,15 +234,18 @@ class HomeActionsFactory(
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
             onOpenEditClockBottomSheet = { clockId -> viewModel.openEditClockBottomSheet(clockId) },
             onCloseEditClockBottomSheet = { viewModel.closeEditClockBottomSheet() },
+            onDismissClockSaveHint = { viewModel.dismissClockSaveHint() },
+            onClockMeasured = { clockId, size -> viewModel.recordClockSize(clockId, size) },
             onUpdateClockStyle = { style -> viewModel.updateClockStyle(style) },
             onUpdateClockCustomGreeting = { greeting -> viewModel.updateClockCustomGreeting(greeting) },
+            onUpdateClockMessage = { message -> viewModel.updateClockMessage(message) },
             onUpdateClockAlignment = { alignment -> viewModel.updateClockAlignment(alignment) },
             onUpdateClockFontFamily = { fontFamily -> viewModel.updateClockFontFamily(fontFamily) },
+            onUpdateClockFontBold = { isBold -> viewModel.updateClockFontBold(isBold) },
             onUpdateClockTimeFormat = { format -> viewModel.updateClockTimeFormat(format) },
             onUpdateClockDateFormat = { format -> viewModel.updateClockDateFormat(format) },
             onUpdateClockTextColor = { color -> viewModel.updateClockTextColor(color) },
             onUpdateClockBackgroundColor = { color -> viewModel.updateClockBackgroundColor(color) },
-            onToggleClockBackground = { viewModel.toggleClockBackground() },
             onResetClockSettings = { viewModel.resetClockSettings() },
             onOpenQuickButtonSettings = { id -> viewModel.onOpenQuickButtonSettings(id) },
             onCloseQuickButtonSettings = { viewModel.onCloseQuickButtonSettings() },

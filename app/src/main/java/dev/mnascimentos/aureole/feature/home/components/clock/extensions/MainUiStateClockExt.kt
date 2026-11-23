@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 fun MainUiState.defaultClockConfig(): ClockConfig = ClockConfig(
     style = clockStyle,
     customGreeting = clockCustomGreeting,
+    message = clockMessage,
     alignment = clockAlignment,
     fontFamily = clockFontFamily,
     timeFormat = clockTimeFormat,
@@ -16,8 +17,12 @@ fun MainUiState.defaultClockConfig(): ClockConfig = ClockConfig(
     backgroundColor = clockBackgroundColor,
     textColorRef = clockTextColorRef,
     backgroundColorRef = clockBackgroundColorRef,
-    isBackgroundEnabled = isClockBackgroundEnabled
+    isFontBold = clockFontBold
 )
+
+/** Whether the clock look of the state has a card: it has a card color (null is "None", RF-E2). */
+val MainUiState.isClockBackgroundEnabled: Boolean
+    get() = clockBackgroundColorRef != null || clockBackgroundColor != 0
 
 /** The look of the clock [itemId]: its own config, or the [defaultClockConfig] when it has none (or no id). */
 fun MainUiState.clockConfigOf(itemId: String?): ClockConfig =
@@ -31,6 +36,7 @@ val MainUiState.editingClockConfig: ClockConfig
 fun MainUiState.withClockFields(config: ClockConfig): MainUiState = copy(
     clockStyle = config.style,
     clockCustomGreeting = config.customGreeting,
+    clockMessage = config.message,
     clockAlignment = config.alignment,
     clockFontFamily = config.fontFamily,
     clockTimeFormat = config.timeFormat,
@@ -39,7 +45,7 @@ fun MainUiState.withClockFields(config: ClockConfig): MainUiState = copy(
     clockBackgroundColor = config.backgroundColor,
     clockTextColorRef = config.textColorRef,
     clockBackgroundColorRef = config.backgroundColorRef,
-    isClockBackgroundEnabled = config.isBackgroundEnabled
+    clockFontBold = config.isFontBold
 )
 
 /**
@@ -52,6 +58,7 @@ fun MainUiState.forClockEditor(): MainUiState = withClockFields(editingClockConf
 fun ClockConfig.toHeaderConfig(): ClockHeaderConfig = ClockHeaderConfig(
     style = style,
     customGreeting = customGreeting,
+    message = message,
     alignment = alignment,
     fontFamily = fontFamily,
     timeFormat = timeFormat,
@@ -60,5 +67,6 @@ fun ClockConfig.toHeaderConfig(): ClockHeaderConfig = ClockHeaderConfig(
     backgroundColor = backgroundColor,
     textColorRef = textColorRef,
     backgroundColorRef = backgroundColorRef,
-    isBackgroundEnabled = isBackgroundEnabled
+    isBackgroundEnabled = isBackgroundEnabled,
+    isFontBold = isFontBold
 )

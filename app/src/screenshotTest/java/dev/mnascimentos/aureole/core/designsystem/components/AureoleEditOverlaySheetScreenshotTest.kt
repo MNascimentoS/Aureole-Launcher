@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.core.designsystem.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -9,6 +10,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderTitle
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -97,3 +99,17 @@ private fun OverlaySheetHeaderLongTitleScreenshotTest() {
 
 private val TITLE_LINE_CENTER = 32.dp
 
+
+/** RF-C3/C4: without a title icon, title and subtitle are centered on each other, the subtitle one step smaller. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun OverlaySheetHeaderSubtitleScreenshotTest() {
+    AureoleLauncherTheme {
+        Box(modifier = Modifier.background(AureoleDS.colors.surface)) {
+            OverlaySheetHeader(
+                title = OverlayHeaderTitle(text = "Clock font", subtitle = "Only for this clock")
+            )
+        }
+    }
+}

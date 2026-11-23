@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.composable.clock
 
-import android.graphics.Typeface
 import android.icu.text.DateTimePatternGenerator
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
@@ -28,16 +27,6 @@ internal object ClockHeaderUtils {
             "CENTER" -> Pair(Alignment.CenterHorizontally, TextAlign.Center)
             "END", "RIGHT" -> Pair(Alignment.End, TextAlign.End)
             else -> Pair(Alignment.Start, TextAlign.Start)
-        }
-    }
-
-    fun resolveClockTypeface(fontFamily: String): Typeface {
-        return when (fontFamily.uppercase()) {
-            "BOLD" -> Typeface.create(Typeface.DEFAULT_BOLD, Typeface.BOLD)
-            "SERIF" -> Typeface.create(Typeface.SERIF, Typeface.BOLD)
-            "MONOSPACE" -> Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-            "ROUNDED" -> Typeface.create("sans-serif-rounded", Typeface.BOLD)
-            else -> Typeface.create("sans-serif-medium", Typeface.BOLD)
         }
     }
 }

@@ -43,7 +43,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -209,7 +208,7 @@ private fun ExposedDropdownMenuBoxScope.AlignmentDropdownMenu(
             width = AureoleDS.dimens.borderMinimal,
             color = AureoleDS.colors.outline.copy(alpha = 0.3f)
         ),
-        shadowElevation = 8.dp,
+        shadowElevation = AureoleDS.dimens.floatingElevation,
         modifier = Modifier.padding(vertical = AureoleDS.dimens.xxSmall)
     ) {
         optionsMap.forEach { (key, label) ->

@@ -244,7 +244,7 @@ class FolderBranchCoverageTest {
 
         // Create without typing anything
         composeTestRule.onNodeWithText("Create and pick apps").performSemanticsAction(SemanticsActions.OnClick)
-        assertEquals("New Folder", savedName)
+        assertEquals("New folder", savedName)
     }
 
     @Test

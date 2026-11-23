@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleColors
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.isClockBackgroundEnabled
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 @Composable
@@ -19,7 +20,6 @@ fun HomeClockHeader(
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     config: ClockHeaderConfig = ClockHeaderConfig(),
-    onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null
 ) {
     val uiState = LocalHomeUiState.current
@@ -27,7 +27,6 @@ fun HomeClockHeader(
         resolvedConfig = resolveClockConfig(config, uiState, AureoleDS.colors),
         modifier = modifier,
         hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
-        onClick = onClick,
         onLongClick = onLongClick
     )
 }
@@ -40,8 +39,10 @@ internal fun resolveClockConfig(
     return ResolvedClockConfig(
         style = config.style ?: uiState.clockStyle,
         customGreeting = config.customGreeting ?: uiState.clockCustomGreeting,
+        message = config.message ?: uiState.clockMessage,
         alignment = config.alignment ?: uiState.clockAlignment,
         fontFamily = config.fontFamily ?: uiState.clockFontFamily,
+        isFontBold = config.isFontBold ?: uiState.clockFontBold,
         timeFormat = config.timeFormat ?: uiState.clockTimeFormat,
         dateFormat = config.dateFormat ?: uiState.clockDateFormat,
         textColor = resolveClockColor(

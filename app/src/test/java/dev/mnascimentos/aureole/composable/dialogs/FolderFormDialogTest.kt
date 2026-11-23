@@ -72,7 +72,7 @@ class FolderFormDialogTest {
     fun `a new folder shows the empty name pill and the suggestions follow what is typed`() {
         setForm()
 
-        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("New folder").assertIsDisplayed()
         composeTestRule.onNodeWithText("Name it").assertIsDisplayed()
         composeTestRule.onNodeWithText("SUGGESTED").assertExists()
 
@@ -88,7 +88,7 @@ class FolderFormDialogTest {
 
         composeTestRule.onNodeWithText("Create and pick apps").tap()
 
-        assertEquals(FolderDetails(name = "New Folder", icon = "folder"), saved)
+        assertEquals(FolderDetails(name = "New folder", icon = "folder"), saved)
     }
 
     @Test
@@ -193,7 +193,7 @@ class FolderFormDialogTest {
         composeTestRule.onNodeWithText("All icons").tap()
         composeTestRule.closeOverlayWithBack()
 
-        composeTestRule.onNodeWithText("New Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("New folder").assertIsDisplayed()
         assertNull(saved)
     }
 
@@ -202,7 +202,7 @@ class FolderFormDialogTest {
         var deleted = false
         setForm(folder = AppFolder(id = "1", name = "Tools", icon = "build"), onDelete = { deleted = true })
 
-        composeTestRule.onNodeWithText("Edit Folder").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Edit folder").assertIsDisplayed()
         composeTestRule.onNodeWithText("Tools").assertExists()
         composeTestRule.onNodeWithText("Save").assertDoesNotExist()
         composeTestRule.onNodeWithText("Create and pick apps").assertDoesNotExist()

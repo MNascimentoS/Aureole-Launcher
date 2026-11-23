@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -94,15 +95,22 @@ data class HomeScreenActions(
     /** Opens the clock editor for the clock with this grid item id; null edits the default clock look. */
     val onOpenEditClockBottomSheet: (String?) -> Unit = {},
     val onCloseEditClockBottomSheet: () -> Unit = {},
+    /** "Got it" on the clock editor's onboarding notice: hides it for good (relogio-home-sheet RF-D2). */
+    val onDismissClockSaveHint: () -> Unit = {},
+    /** Reports the size a clock has on the home (grid item id; null for the list header), for the editor preview. */
+    val onClockMeasured: (String?, DpSize) -> Unit = { _, _ -> },
     val onUpdateClockStyle: (String) -> Unit = {},
     val onUpdateClockCustomGreeting: (String) -> Unit = {},
+    /** Picks what the message line shows: a `ClockMessage` key. */
+    val onUpdateClockMessage: (String) -> Unit = {},
     val onUpdateClockAlignment: (String) -> Unit = {},
     val onUpdateClockFontFamily: (String) -> Unit = {},
+    /** Turns the bold of the clock's time on or off. */
+    val onUpdateClockFontBold: (Boolean) -> Unit = {},
     val onUpdateClockTimeFormat: (String) -> Unit = {},
     val onUpdateClockDateFormat: (String) -> Unit = {},
     val onUpdateClockTextColor: (ThemeColorRef?) -> Unit = {},
     val onUpdateClockBackgroundColor: (ThemeColorRef?) -> Unit = {},
-    val onToggleClockBackground: () -> Unit = {},
     val onResetClockSettings: () -> Unit = {},
 
     // Quick Button Customization Actions

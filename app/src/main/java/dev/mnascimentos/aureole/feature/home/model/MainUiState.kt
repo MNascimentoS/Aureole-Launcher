@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.model
 
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.composable.undo.model.UndoSnackbarState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
@@ -39,11 +40,12 @@ data class MainUiState(
     val isContainerEnabled: Boolean = true,
     val isContainerBackgroundEnabled: Boolean = true,
     val isContainerExpandCell: Boolean = false,
-    val isClockBackgroundEnabled: Boolean = false,
     val clockStyle: String = SettingsRepository.DEFAULT_CLOCK_STYLE,
     val clockCustomGreeting: String = "",
+    val clockMessage: String = ClockConfig.DEFAULT_MESSAGE,
     val clockAlignment: String = SettingsRepository.DEFAULT_CLOCK_ALIGNMENT,
     val clockFontFamily: String = SettingsRepository.DEFAULT_CLOCK_FONT_FAMILY,
+    val clockFontBold: Boolean = SettingsRepository.DEFAULT_CLOCK_FONT_BOLD,
     val clockTimeFormat: String = SettingsRepository.DEFAULT_CLOCK_TIME_FORMAT,
     val clockDateFormat: String = SettingsRepository.DEFAULT_CLOCK_DATE_FORMAT,
     val clockTextColor: Int = 0,
@@ -71,6 +73,8 @@ data class MainUiState(
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
+    val isSwipeDownNotificationsEnabled: Boolean = true,
+    val isSwipeUpAllAppsEnabled: Boolean = true,
     val showSettingsButtonInAllApps: Boolean = true,
     val settingsButtonPosition: String = "Right",
     val showSearchBarInAllApps: Boolean = true,
@@ -126,6 +130,15 @@ data class MainUiState(
     val showEditClockBottomSheet: Boolean = false,
     /** The grid item id of the clock the clock editor changes; null edits the clock fields above (the default). */
     val editingClockId: String? = null,
+    /**
+     * Size each clock has on the home, by `clockSizeKey` (grid item id, or the list header), measured and kept in
+     * memory only: the editor preview draws the clock at that size (relogio-home-sheet RF-B5).
+     */
+    val clockSizes: Map<String, DpSize> = emptyMap(),
+    /** The look the edited clock had when the editor opened: closing with another look offers an undo (RF-D7). */
+    val editingClockSnapshot: ClockConfig? = null,
+    /** The user tapped "Got it" on the editor's onboarding notice; it never shows again (RF-D2). */
+    val isClockSaveHintDismissed: Boolean = false,
     val showQuickButtonSettingsBottomSheet: Boolean = false,
     val showQuickButtonAppearanceBottomSheet: Boolean = false,
     val showShortcutSelectionBottomSheet: Boolean = false,

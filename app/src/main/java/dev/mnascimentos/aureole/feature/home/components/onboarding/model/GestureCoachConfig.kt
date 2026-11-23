@@ -9,6 +9,8 @@ data class GestureCoachConfig(
     /** TalkBack users cannot perform the demo gesture freely, so "Show me" appears right away. */
     val isTouchExplorationEnabled: Boolean = false,
     val isLandscape: Boolean = false,
+    /** Settings › Behavior "Swipe down for notifications": off hides the swipe down step. */
+    val isSwipeDownEnabled: Boolean = true,
     /** No letters yet (apps still loading): the scrub step waits for them. */
     val isAlphabetLoading: Boolean = false
 )

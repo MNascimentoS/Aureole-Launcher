@@ -33,6 +33,8 @@ internal fun SecretGameTexts(
     val go = stringResource(R.string.secret_game_go)
     val paused = stringResource(R.string.secret_game_paused)
     val resume = stringResource(R.string.secret_game_tap_to_resume)
+    val backToExit = stringResource(R.string.secret_game_back_to_exit)
+    val level = stringResource(R.string.secret_game_level, frame.levelLabel)
     val resultTitle = frame.result?.let { stringResource(R.string.secret_game_score, it.score) }
     val resultSub = frame.result?.let {
         stringResource(if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck)
@@ -41,10 +43,14 @@ internal fun SecretGameTexts(
     Canvas(modifier = modifier) {
         val u = size.width
         frame.hudScore?.let {
-            drawCentered(
-                pen,
-                SecretText(it.toString(), u * D.HUD_TOP, D.HUD_TEXT, colors.ship.copy(alpha = D.HUD_ALPHA))
-            )
+            val alpha = (D.HUD_ALPHA + T.HUD_FLASH_ALPHA * frame.hudFlash).coerceIn(0f, 1f)
+            val size = D.HUD_TEXT * (1f + T.HUD_FLASH_SCALE * frame.hudFlash)
+            drawCentered(pen, SecretText(it.toString(), u * D.HUD_TOP, size, colors.ship.copy(alpha = alpha)))
+            if (frame.hudFlash > 0f) {
+                val fade = minOf(1f, frame.hudFlash * T.LEVEL_LABEL_FADE) * T.LEVEL_LABEL_ALPHA
+                val top = u * (D.HUD_TOP + D.HUD_TEXT * D.LEVEL_GAP)
+                drawCentered(pen, SecretText(level, top, D.LEVEL_TEXT, colors.ship.copy(alpha = fade)))
+            }
         }
         frame.countdown?.let {
             val isGo = it.label == SecretCountdownLabel.GO
@@ -65,6 +71,8 @@ internal fun SecretGameTexts(
             val mid = u * aspect * T.CENTER_Y_FRACTION
             drawCentered(pen, SecretText(paused, mid, D.TITLE_TEXT, colors.ship, true))
             drawCentered(pen, SecretText(resume, mid + u * D.RESULT_LINE_GAP, D.SUB_TEXT, colors.ship, true))
+            val backColor = colors.ship.copy(alpha = D.BACK_HINT_ALPHA)
+            drawCentered(pen, SecretText(backToExit, mid + u * D.BACK_HINT_GAP, D.SUB_TEXT, backColor, true))
         }
         frame.result?.let {
             val mid = u * aspect * T.CENTER_Y_FRACTION

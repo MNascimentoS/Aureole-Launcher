@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.model.PaletteChipLabel
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -79,7 +80,7 @@ private fun ThemePickerGridPreview() {
                 items(items = allPalettes, key = { it.name }) { palette ->
                     PaletteChip(
                         palette = palette,
-                        displayName = palette.name,
+                        label = PaletteChipLabel(palette.name),
                         isSelected = palette == allPalettes.first(),
                         onSelect = {}
                     )

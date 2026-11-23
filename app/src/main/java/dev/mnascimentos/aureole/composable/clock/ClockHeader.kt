@@ -1,23 +1,34 @@
 package dev.mnascimentos.aureole.composable.clock
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
+import dev.mnascimentos.aureole.composable.clock.model.resolveClockSizing
+import dev.mnascimentos.aureole.core.data.model.ClockMessage
+import dev.mnascimentos.aureole.core.data.model.resolveClockLayout
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -25,13 +36,17 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 
-@OptIn(ExperimentalFoundationApi::class)
+/**
+ * The clock card. Its sizes come from the room it gets (`resolveClockSizing`): the time takes the biggest size that
+ * fits the width and the height, and every other size is a share of it (relogio-home-sheet D-08), so the card is
+ * the same at any size on the grid and in the editor preview. [onLongClick] opens the editor; a tap does nothing
+ * and shows no ripple (RF-A1).
+ */
 @Composable
 fun ClockHeader(
     resolvedConfig: ResolvedClockConfig,
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
-    onClick: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null
 ) {
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
@@ -48,13 +63,13 @@ fun ClockHeader(
     val surfaceColor = AureoleDS.colors.surface
     val hazeTintColor = AureoleDS.colors.surfaceVariant
     val hazeBlurRadius = glassBlurRadius(AureoleDS.dimens.large)
+    val sidePadding = AureoleDS.dimens.large
     val hourGreeting = stringResource(greetingRes(hourOfDay()))
+    val fontScale = LocalDensity.current.fontScale
 
-    val greeting = if (resolvedConfig.style == "CUSTOM_GREETING" && resolvedConfig.customGreeting.isNotBlank()) {
-        resolvedConfig.customGreeting
-    } else {
-        hourGreeting
-    }
+    // A style saved by an older version reads as its layout and message, so the look never changes.
+    val layoutChoice = resolveClockLayout(resolvedConfig.style, resolvedConfig.message)
+    val greeting = clockGreeting(layoutChoice.message, resolvedConfig.customGreeting, hourGreeting)
 
     val containerBgColor = resolveClockBgColor(
         isBgEnabled = isBgEnabled,
@@ -64,39 +79,75 @@ fun ClockHeader(
         surfaceColor = surfaceColor
     )
 
-    BoxWithConstraints(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
-            .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
-            .background(containerBgColor)
-            .clockClickable(onClick, onLongClick)
-            .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.xSmall)
-    ) {
-        ClockHeaderContent(
-            params = ClockHeaderContentParams(
-                maxHeight = maxHeight,
-                colorPrimary = colorPrimaryInt,
-                composeTextColor = colorPrimaryCompose,
-                greeting = greeting,
-                clockStyle = resolvedConfig.style,
-                alignment = resolvedConfig.alignment,
-                fontFamily = resolvedConfig.fontFamily,
-                timeFormat = resolvedConfig.timeFormat,
-                dateFormat = resolvedConfig.dateFormat
-            )
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val sizing = resolveClockSizing(
+            lines = layoutChoice.layout.lines,
+            maxTextWidthDp = (maxWidth - sidePadding * 2).value,
+            maxHeightDp = maxHeight.value,
+            fontScale = fontScale
         )
+        val edge = sizing.metrics.edgeDp.dp
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(sizing.metrics.radiusDp.dp))
+                .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
+                .background(containerBgColor)
+                .clockLongPressOf(onLongClick)
+                // Inner room: 24 dp on the sides; above and below the trimmed lines, the edge share of the time.
+                .padding(start = sidePadding, end = sidePadding, top = edge, bottom = edge)
+        ) {
+            ClockHeaderContent(
+                params = ClockHeaderContentParams(
+                    sizing = sizing,
+                    colorPrimary = colorPrimaryInt,
+                    composeTextColor = colorPrimaryCompose,
+                    greeting = greeting,
+                    layout = layoutChoice.layout,
+                    alignment = resolvedConfig.alignment,
+                    fontFamily = resolvedConfig.fontFamily,
+                    timeFormat = resolvedConfig.timeFormat,
+                    dateFormat = resolvedConfig.dateFormat,
+                    isFontBold = resolvedConfig.isFontBold
+                )
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-private fun Modifier.clockClickable(onClick: (() -> Unit)?, onLongClick: (() -> Unit)?): Modifier {
-    if (onClick == null && onLongClick == null) return this
-    return this.combinedClickable(
-        onClick = { onClick?.invoke() },
-        onLongClick = onLongClick,
-        role = Role.Button
-    ).semantics(mergeDescendants = true) {}
+/** The custom message when the layout asks for it and it is not blank; the greeting of the hour otherwise. */
+private fun clockGreeting(message: ClockMessage, customGreeting: String, hourGreeting: String): String =
+    if (message == ClockMessage.CUSTOM && customGreeting.isNotBlank()) customGreeting else hourGreeting
+
+/**
+ * The long press of the clock: a `LongPress` haptic, then [onLongClick]; no modifier at all without it. The gesture
+ * reads the latest callback, so a recomposition never restarts a press in progress.
+ */
+@Composable
+private fun Modifier.clockLongPressOf(onLongClick: (() -> Unit)?): Modifier {
+    val label = stringResource(R.string.home_clock_customize_title)
+    val haptics = LocalHapticFeedback.current
+    val currentOnLongClick by rememberUpdatedState(onLongClick)
+    return clockLongPress(isEnabled = onLongClick != null, label = label) {
+        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+        currentOnLongClick?.invoke()
+    }
+}
+
+/**
+ * Long press only, with no press indication (RF-A1, RF-A2): holding runs [onHold]. No button role; TalkBack reads
+ * the merged clock and offers "double tap and hold to [label]" (RF-A3). Not [isEnabled]: no gesture at all.
+ */
+private fun Modifier.clockLongPress(isEnabled: Boolean, label: String, onHold: () -> Unit): Modifier {
+    if (!isEnabled) return this
+    return this
+        .pointerInput(Unit) { detectTapGestures(onLongPress = { onHold() }) }
+        .semantics(mergeDescendants = true) {
+            onLongClick(label = label) {
+                onHold()
+                true
+            }
+        }
 }
 
 @AureolePreview

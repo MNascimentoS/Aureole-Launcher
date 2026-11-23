@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.SemanticsActions
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -106,7 +107,8 @@ class ClockPerItemRenderTest {
                 }
             }
         }
-        composeTestRule.onNode(hasClickAction()).performTouchInput { longClick() }
+        composeTestRule.onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.OnLongClick))
+            .performTouchInput { longClick() }
 
         assertEquals(CLOCK_B, openedFor)
     }
@@ -134,7 +136,7 @@ class ClockPerItemRenderTest {
         composeTestRule.waitForIdle()
 
         // Clock B greets with its own text, although the default look has no greeting at all.
-        composeTestRule.onNodeWithText("Greeting Text").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Greeting text").performScrollTo().assertIsDisplayed()
         composeTestRule.onNode(hasSetTextAction()).assert(hasText("Clock B"))
     }
 

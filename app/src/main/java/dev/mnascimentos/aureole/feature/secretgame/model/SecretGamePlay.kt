@@ -1,37 +1,31 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import dev.mnascimentos.aureole.composable.fireworks.model.fireworksShow
 import kotlin.math.PI
 import kotlin.random.Random
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
-/** Velocidade de queda em alturas de tela por segundo, após [seconds] de jogo. */
-fun secretFallSpeed(seconds: Float): Float = minOf(T.SPEED_BASE + T.SPEED_GROWTH * seconds, T.SPEED_MAX)
-
-/** Intervalo entre levas de rostos, em ms. */
-fun secretSpawnInterval(seconds: Float): Float = maxOf(T.SPAWN_BASE_MS - T.SPAWN_GROWTH_MS * seconds, T.SPAWN_MIN_MS)
-
-/** Chance de uma leva trazer 2 rostos. Nunca 3: sempre sobra uma faixa livre. */
-fun secretDoubleChance(seconds: Float): Float {
-    if (seconds < T.DOUBLE_FROM_S) return 0f
-    return minOf(T.DOUBLE_BASE + T.DOUBLE_GROWTH * (seconds - T.DOUBLE_FROM_S), T.DOUBLE_MAX)
-}
-
 internal fun SecretGameState.stepPlay(dt: Long, random: Random): SecretGameStep {
-    val playSeconds = (playMs + dt) / MS_PER_SECOND
-    val fall = secretFallSpeed(playSeconds) * layout.aspect * (dt / MS_PER_SECOND)
+    val level = secretLevel(score)
+    val fall = secretFallSpeed(level) * layout.aspect * (dt / MS_PER_SECOND)
     val fallen = faces.map { it.copy(y = it.y + fall) }
     val kept = fallen.filter { it.y < layout.aspect + T.PASS_MARGIN }
+    val newScore = score + (fallen.size - kept.size) * T.POINTS_PER_FACE
+    val levelUp = secretLevel(newScore) > level
     val scored = copy(
         playMs = playMs + dt,
         faces = kept,
-        score = score + (fallen.size - kept.size) * T.POINTS_PER_FACE,
+        score = newScore,
+        levelFlashMs = if (levelUp) T.LEVEL_FLASH_MS else levelFlashMs,
         streaks = streaks.map { it.fall(fall * T.STREAK_SPEED, layout.aspect, random) },
         spawnCooldownMs = spawnCooldownMs - dt,
-    ).spawnIfDue(playSeconds, random)
-    val hit = scored.faces.firstOrNull { scored.hits(it) } ?: return SecretGameStep(scored)
+    ).spawnIfDue(random)
+    val levelEvents = if (levelUp) listOf(SecretGameEvent.LevelUp(secretLevel(newScore))) else emptyList()
+    val hit = scored.faces.firstOrNull { scored.hits(it) } ?: return SecretGameStep(scored, levelEvents)
+    val crashed = scored.finishRun().copy(crashedFaceId = hit.id).to(SecretGamePhase.EXPLODE)
     return SecretGameStep(
-        scored.finishRun().copy(crashedFaceId = hit.id).to(SecretGamePhase.EXPLODE),
-        listOf(SecretGameEvent.Crash, SecretGameEvent.GameOver(scored.score)),
+        if (crashed.isNewRecord) crashed.copy(fireworks = fireworksShow()) else crashed,
+        levelEvents + listOf(SecretGameEvent.Crash, SecretGameEvent.GameOver(scored.score)),
     )
 }
 
@@ -43,18 +37,19 @@ internal fun SecretGameState.hits(face: SecretFace): Boolean {
         face.y - reach < shipY + shipHeight * T.SHIP_HIT_BOTTOM
 }
 
-private fun SecretGameState.spawnIfDue(seconds: Float, random: Random): SecretGameState {
+private fun SecretGameState.spawnIfDue(random: Random): SecretGameState {
     if (spawnCooldownMs > 0f) return this
-    val count = if (random.nextFloat() < secretDoubleChance(seconds)) 2 else 1
-    val lanes = (0 until T.LANE_COUNT).shuffled(random).take(count)
-    val spawned = lanes.mapIndexed { i, lane ->
+    val level = secretLevel(score)
+    val wave = nextSecretWave(lastSafeLane, level, random)
+    val spawned = wave.blocked.mapIndexed { i, lane ->
         val kind = if (random.nextBoolean()) SecretFaceKind.CREATOR else SecretFaceKind.DREAMER
         SecretFace(nextFaceId + i, lane, -T.FACE_SIZE, kind, wobble = random.nextFloat() * FULL_TURN)
     }
     return copy(
         faces = faces + spawned,
-        nextFaceId = nextFaceId + count,
-        spawnCooldownMs = secretSpawnInterval(seconds),
+        nextFaceId = nextFaceId + spawned.size,
+        lastSafeLane = wave.safeLane,
+        spawnCooldownMs = secretSpawnInterval(level),
     )
 }
 
@@ -67,16 +62,4 @@ internal fun SecretGameState.explode(random: Random): SecretGameState {
     return copy(hasExploded = true, particles = particles + shipBits + faceBits.orEmpty())
 }
 
-/** Faíscas de comemoração enquanto o "Novo recorde!" está na tela. */
-internal fun SecretGameState.maybeSparkle(seconds: Float, random: Random): SecretGameState {
-    val showing = phase == SecretGamePhase.RESULT && isNewRecord && phaseMs < T.RESULT_IN_MS + T.RESULT_HOLD_MS
-    if (!showing || random.nextFloat() >= T.SPARKS_PER_SECOND * seconds) return this
-    val x = HALF_WIDTH + (random.nextFloat() - HALF) * T.SPARK_SPREAD
-    val y = layout.aspect * T.CENTER_Y_FRACTION - T.SPARK_RISE * random.nextFloat()
-    val kind = if (random.nextBoolean()) SecretParticleKind.SHIP else SecretParticleKind.FACE
-    return copy(particles = particles + burst(SecretBurst(x, y, kind, 1, T.SPARK_BURST), random))
-}
-
 internal const val FULL_TURN = (2 * PI).toFloat()
-private const val HALF = 0.5f
-private const val HALF_WIDTH = 0.5f

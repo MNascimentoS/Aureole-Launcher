@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.core.data.repository
 
 import android.content.Context
+import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ClockConfig
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -45,8 +46,8 @@ class ClockConfigRepositoryTest {
 
     @Test
     fun `when saving two clocks, should read each one back on its own`() = runBlocking {
-        val configA = ClockConfig(style = "MINIMAL", fontFamily = "SERIF")
-        val configB = ClockConfig(alignment = "END", isBackgroundEnabled = true)
+        val configA = ClockConfig(style = "TIME_ONLY", fontFamily = "Serif")
+        val configB = ClockConfig(alignment = "END", backgroundColorRef = CLOCK_CARD_THEME_REF.toJson())
 
         repository.save(CLOCK_A, configA)
         repository.save(CLOCK_B, configB)
@@ -57,7 +58,7 @@ class ClockConfigRepositoryTest {
 
     @Test
     fun `when saving one clock again, should not change the other`() = runBlocking {
-        val configB = ClockConfig(style = "GREETING")
+        val configB = ClockConfig(style = "MSG_ON_TOP")
         repository.save(CLOCK_A, ClockConfig())
         repository.save(CLOCK_B, configB)
 
@@ -86,10 +87,10 @@ class ClockConfigRepositoryTest {
         repository.ensureMigrated()
 
         val save = launch(Dispatchers.IO, start = CoroutineStart.UNDISPATCHED) {
-            repository.save(CLOCK_A, ClockConfig(style = "MINIMAL"))
+            repository.save(CLOCK_A, ClockConfig(style = "TIME_ONLY"))
         }
 
-        assertEquals("MINIMAL", repository.configs.value.getValue(CLOCK_A).style)
+        assertEquals("TIME_ONLY", repository.configs.value.getValue(CLOCK_A).style)
         save.join()
     }
 
@@ -105,35 +106,35 @@ class ClockConfigRepositoryTest {
 
     @Test
     fun `when removing a clock, should delete only its config`() = runBlocking {
-        repository.save(CLOCK_A, ClockConfig(style = "MINIMAL"))
-        repository.save(CLOCK_B, ClockConfig(style = "GREETING"))
+        repository.save(CLOCK_A, ClockConfig(style = "TIME_ONLY"))
+        repository.save(CLOCK_B, ClockConfig(style = "MSG_ON_TOP"))
 
         repository.remove(CLOCK_A)
 
         assertNull(repository.get(CLOCK_A))
-        assertEquals(ClockConfig(style = "GREETING"), repository.get(CLOCK_B))
+        assertEquals(ClockConfig(style = "MSG_ON_TOP"), repository.get(CLOCK_B))
         val restarted = ClockConfigRepository(context, gridRepository, settingsRepository)
         assertEquals(setOf(CLOCK_B), restarted.getAll().keys)
     }
 
     @Test
     fun `when a clock has no config, should give the settings look as its default`() = runBlocking {
-        settingsRepository.clockStyle = "MINIMAL"
+        settingsRepository.clockStyle = "TIME_ONLY"
         settingsRepository.isClockBackgroundEnabled = true
 
         val config = repository.getOrDefault(CLOCK_A)
 
-        assertEquals(ClockConfig(style = "MINIMAL", isBackgroundEnabled = true), config)
+        assertEquals(ClockConfig(style = "TIME_ONLY", backgroundColorRef = CLOCK_CARD_THEME_REF.toJson()), config)
         assertEquals(config, repository.defaultConfig())
     }
 
     @Test
     fun `when saving and removing, should publish the configs`() = runBlocking {
-        repository.save(CLOCK_A, ClockConfig(style = "MINIMAL"))
+        repository.save(CLOCK_A, ClockConfig(style = "TIME_ONLY"))
         repository.save(CLOCK_B, ClockConfig())
         repository.remove(CLOCK_B)
 
-        assertEquals(mapOf(CLOCK_A to ClockConfig(style = "MINIMAL")), repository.configs.value)
+        assertEquals(mapOf(CLOCK_A to ClockConfig(style = "TIME_ONLY")), repository.configs.value)
     }
 
     @Test
@@ -144,6 +145,6 @@ class ClockConfigRepositoryTest {
             .putInt("unrelated_key", 1)
             .commit()
 
-        assertEquals(mapOf(CLOCK_B to ClockConfig(fontFamily = "SERIF")), repository.getAll())
+        assertEquals(mapOf(CLOCK_B to ClockConfig(fontFamily = "Serif")), repository.getAll())
     }
 }

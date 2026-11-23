@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.settings.model
 
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameModifiers
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretShineState
 
 /** How the settings screens arrange their content for the available area. */
 enum class SettingsLayout { SINGLE_COLUMN, TWO_PANES }
@@ -20,5 +21,6 @@ data class SettingsNavigationActions(
 data class SettingsHeaderParams(
     val versionName: String,
     val onClick: () -> Unit,
-    val secret: SecretGameModifiers
+    val secret: SecretGameModifiers,
+    val shine: SecretShineState = SecretShineState()
 )

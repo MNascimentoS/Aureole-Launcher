@@ -19,9 +19,11 @@ internal data class AnchoredSheetState(
  * @property isExpanded Whether the sheet is expanded.
  * @property isLeftHanded Whether the settings action sits on the left.
  * @property canExpand False when the sheet at rest already shows all its content.
+ * @property isDismissArmed A drag holds the sheet low enough that a release closes it: the handle lights up.
  */
 data class GestureZoneState(
     val isExpanded: Boolean,
     val isLeftHanded: Boolean,
-    val canExpand: Boolean = true
+    val canExpand: Boolean = true,
+    val isDismissArmed: Boolean = false
 )

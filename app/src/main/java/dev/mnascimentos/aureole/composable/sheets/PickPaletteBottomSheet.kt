@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorOptions
+import dev.mnascimentos.aureole.composable.sheets.model.PaletteChipLabel
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
@@ -33,7 +35,8 @@ private const val PALETTE_COLUMNS = 3
  * Palette picker with a live preview: tapping a palette repaints the mini-home and the sheet at once, and
  * nothing is persisted until the sheet closes. Closing with a different palette calls [onPaletteSelected] and then
  * [onDismissRequest]; closing without a change only calls [onDismissRequest]. [options] adds a footer and the
- * Aureole logo in the header.
+ * Aureole logo in the header. A component that picks one color uses the overload that takes
+ * [ComponentColorOptions].
  */
 @Composable
 fun PickPaletteBottomSheet(
@@ -82,6 +85,22 @@ fun PickPaletteBottomSheet(
 }
 
 /**
+ * The palette picker in color mode (RF-F6), for any component that picks one color of its own (the clock text and
+ * card): title and subtitle of the component, "Theme" first, the saved color as "Current" when no palette has it,
+ * and each palette as a tile with only the tone of [ComponentColorOptions.role]. Every tap applies at once through
+ * [ComponentColorOptions.onSelect] and closes the sheet; [onDismissRequest] runs once it is gone. The saved value
+ * stays a [dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef].
+ */
+@Composable
+fun PickPaletteBottomSheet(
+    color: ComponentColorOptions,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ComponentColorSheet(options = color, onDismissRequest = onDismissRequest, modifier = modifier)
+}
+
+/**
  * Body of the palette picker without its sheet: the label and the grid of palettes, [shownName] marked. [onSelect]
  * gets the palette as displayed (the light variant on a light system). The Appearance sheet of the settings shows it
  * inside itself.
@@ -107,7 +126,7 @@ internal fun PalettePickerGrid(
             val active = if (isDarkTheme) basePalette else basePalette.toLight()
             PaletteChip(
                 palette = active,
-                displayName = basePalette.name,
+                label = PaletteChipLabel(basePalette.name),
                 isSelected = basePalette.name.equals(shownBase, ignoreCase = true),
                 onSelect = { onSelect(active) }
             )

@@ -3,6 +3,9 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.toSize
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
@@ -27,7 +30,13 @@ fun ClockContainer(
     actions: HomeScreenActions = LocalHomeActions.current
 ) {
     val clockConfig = uiState.clockConfigOf(clockId)
-    Box(modifier = modifier) {
+    val density = LocalDensity.current
+    // The editor preview draws this clock at the size it has here (RF-B5).
+    Box(
+        modifier = modifier.onSizeChanged { size ->
+            actions.onClockMeasured(clockId, with(density) { size.toSize().toDpSize() })
+        }
+    ) {
         HomeClockHeader(
             hazeConfig = ClockHazeConfig(
                 hazeState = hazeState,

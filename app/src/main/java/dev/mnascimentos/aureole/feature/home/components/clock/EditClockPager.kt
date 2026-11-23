@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -28,8 +27,6 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.pagerMinHeight
-import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 /** Pages kept composed beside the visible one, so every tab is measured and the height can follow the tabs. */
 private const val OFFSCREEN_PAGES = 2
@@ -51,7 +48,8 @@ internal fun EditClockPager(
         state = pagerState,
         modifier = modifier
             .fillMaxWidth()
-            .then(if (params.isExpanded) Modifier.animateContentSize() else Modifier)
+            // No animateContentSize: its spring lagged behind the sheet while it grew, so the content was
+            // revealed from the bottom up instead of moving 1:1 with the finger (ajustes-review-aislan-2 RF-F1).
             .followActivePage(pagerState, pageHeights, params.isExpanded),
         verticalAlignment = Alignment.Top,
         beyondViewportPageCount = OFFSCREEN_PAGES,
@@ -67,7 +65,7 @@ internal fun EditClockPager(
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { contentDescription = description }
-                .fadingEdges(scrollState, AureoleDS.dimens.fadingEdge)
+                .fadingEdges(scrollState, AureoleDS.dimens.xSmall)
                 .verticalScroll(scrollState)
                 .padding(horizontal = AureoleDS.dimens.small)
         ) {
@@ -79,11 +77,11 @@ internal fun EditClockPager(
                 when (tab) {
                     ClockTab.STYLE -> EditClockStylePage(params)
                     ClockTab.FORMAT -> EditClockFormatPage(params)
-                    ClockTab.COLORS -> EditClockColorsPage(params.uiState, params.actions)
+                    ClockTab.COLORS -> EditClockColorsPage(params)
                 }
                 // Room under the last control so it is not cut in half at the edge of the scroll; the
                 // expanded sheet does not scroll, so the divider sits right after the content instead.
-                if (!params.isExpanded) Spacer(modifier = Modifier.height(AureoleDS.dimens.xLarge))
+                if (!params.isExpanded) Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
             }
         }
     }
@@ -109,24 +107,25 @@ private fun Modifier.followActivePage(
 
 @Composable
 private fun ColumnScope.EditClockStylePage(params: EditClockPagerParams) {
+    // Alignment first (D-10): its effect shows on the layout tiles right below.
+    EditClockAlignmentSection(uiState = params.uiState, actions = params.actions)
+    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
     EditClockStyleSection(
         uiState = params.uiState,
         actions = params.actions,
-        tempCustomGreeting = params.tempCustomGreeting,
-        onGreetingChange = params.onGreetingChange
+        tempCustomGreeting = params.greeting.text,
+        onGreetingChange = params.greeting.onChange
     )
     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockAlignmentSection(uiState = params.uiState, actions = params.actions)
+    EditClockFontSection(uiState = params.uiState, onOpenFontPicker = params.pickers.onFont)
 }
 
 @Composable
 private fun ColumnScope.EditClockFormatPage(params: EditClockPagerParams) {
     EditClockFormatSection(uiState = params.uiState, actions = params.actions, nowMillis = params.nowMillis)
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockFontSection(uiState = params.uiState, actions = params.actions, nowMillis = params.nowMillis)
 }
 
 @Composable
-private fun ColumnScope.EditClockColorsPage(uiState: MainUiState, actions: HomeScreenActions) {
-    EditClockColorsSection(uiState = uiState, actions = actions)
+private fun ColumnScope.EditClockColorsPage(params: EditClockPagerParams) {
+    EditClockColorsSection(uiState = params.uiState, onOpenColorPicker = params.pickers.onColor)
 }

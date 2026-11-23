@@ -60,7 +60,7 @@ private const val NAME_PILL_BACKGROUND_ALPHA = 0.5f
  * that will be saved (the placeholder when the typed one is blank).
  */
 @Composable
-fun FolderFormPreview(
+fun FolderFormGlyphCard(
     draft: FolderFormDraft,
     label: String,
     onNameChange: (String) -> Unit,
@@ -230,7 +230,7 @@ private fun NamePillButton(isClear: Boolean, onClick: () -> Unit) {
 @Composable
 private fun FolderFormPreviewPreview() {
     AureoleLauncherTheme {
-        FolderFormPreview(draft = FolderFormDraft(name = "Bank"), label = "Bank", onNameChange = {})
+        FolderFormGlyphCard(draft = FolderFormDraft(name = "Bank"), label = "Bank", onNameChange = {})
     }
 }
 

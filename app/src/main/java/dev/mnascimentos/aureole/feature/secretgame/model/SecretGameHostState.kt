@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.secretgame.model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -12,8 +13,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 
 /** What the Settings root needs to host the hidden game: what is open, where the logo is and the current frame. */
-class SecretGameHostState {
-    var isGameOpen by mutableStateOf(false)
+class SecretGameHostState(isGameOpen: Boolean = false) {
+    var isGameOpen by mutableStateOf(isGameOpen)
     var showBestScore by mutableStateOf(false)
     var frame by mutableStateOf<SecretGameFrame?>(null)
     var logoBounds by mutableStateOf<Rect?>(null)
@@ -41,4 +42,12 @@ class SecretGameHostState {
 
     val rootModifier: Modifier
         get() = Modifier.onGloballyPositioned { rootOrigin = it.positionInWindow() }
+
+    companion object {
+        /** Guarda só "jogo aberto", para sobreviver à recriação da Activity. */
+        val Saver: Saver<SecretGameHostState, Boolean> = Saver(
+            save = { it.isGameOpen },
+            restore = { SecretGameHostState(isGameOpen = it) }
+        )
+    }
 }

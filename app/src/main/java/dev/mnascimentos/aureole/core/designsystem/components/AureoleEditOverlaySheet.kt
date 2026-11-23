@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -37,8 +36,9 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetDecorations
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.hasHeaderAction
+import dev.mnascimentos.aureole.core.designsystem.model.isPreviewHidden
 import dev.mnascimentos.aureole.core.designsystem.model.overlayLayoutFor
-import dev.mnascimentos.aureole.core.designsystem.model.previewFit
+import dev.mnascimentos.aureole.core.designsystem.model.previewAlpha
 import dev.mnascimentos.aureole.core.designsystem.model.sheetRestFraction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -52,10 +52,6 @@ private const val ANIMATION_DURATION_MS = 300
 
 /** The sheet slides out faster than it comes in. */
 private const val SHEET_EXIT_MS = 250
-
-/** The preview shrinks around its bottom center, so its bottom keeps the gap to the sheet. */
-private const val PREVIEW_PIVOT_X = 0.5f
-private const val PREVIEW_PIVOT_Y = 1f
 
 /** Lets the entry spring settle to the pixel instead of stopping 1% short. */
 private const val SHEET_SLIDE_THRESHOLD = 0.001f
@@ -106,23 +102,16 @@ internal fun OverlayContentBox(
         val state = AnchoredSheetState(bounds, motion, stateData.isExpanded)
         val maxSheetWidth = params.config.host.maxSheetWidth
         val hiddenFraction = rememberSheetHiddenFraction(stateData)
+        // As the sheet expands the preview only fades (D-04): same width, scale and corners, never cut.
+        val alpha: () -> Float = { previewAlpha(expandFractionOf(motion, stateData.isExpanded, bounds)) }
         val preview: @Composable () -> Unit = {
-            PreviewSlot(
-                previewContent = params.previewContent,
-                modifier = Modifier.fadeWith(stateData),
-                // Stacked, the layout shrinks or fades the preview only when the sheet needs its room (RF-09).
-                expandFraction = if (overlayLayout == OverlayLayout.STACKED) {
-                    { 0f }
-                } else {
-                    { expandFractionOf(motion, stateData.isExpanded, bounds) }
-                }
-            )
+            PreviewSlot(previewContent = params.previewContent, alpha = alpha, modifier = Modifier.fadeWith(stateData))
         }
         val sheet: @Composable () -> Unit = {
             SheetSurface(stateData = stateData, params = params, bounds = bounds, motion = motion)
         }
         when (overlayLayout) {
-            OverlayLayout.STACKED -> AnchoredPreviewLayout(state, hiddenFraction, preview, sheet)
+            OverlayLayout.STACKED -> AnchoredPreviewLayout(state, hiddenFraction, alpha, preview, sheet)
             OverlayLayout.SIDE_BY_SIDE -> SideBySidePreviewLayout(state, maxSheetWidth, hiddenFraction, preview, sheet)
         }
     }
@@ -167,14 +156,17 @@ private fun rememberSheetHiddenFraction(stateData: OverlaySheetStateData): () ->
 
 /**
  * Places the sheet at the bottom and the preview right above the sheet's real top, measured in the same
- * layout pass. The preview follows the sheet while it is dragged, settles, expands over it or slides in and
- * out with the overlay ([hiddenFraction] of the sheet height below its place), and keeps the size it gets above
- * the sheet at rest.
+ * layout pass. The preview follows the sheet while it is dragged, settles, expands or slides in and out with the
+ * overlay ([hiddenFraction] of the sheet height below its place), so the room it takes shrinks
+ * with the rising sheet. It keeps the size it gets above the sheet at rest: no scale, so it is never cut at the
+ * sides (a scaled layer also threw off the clock's Haze glass, RF-G1). Fully faded ([previewAlpha] 0) it is not
+ * placed, so it takes no touch.
  */
 @Composable
 private fun AnchoredPreviewLayout(
     state: AnchoredSheetState,
     hiddenFraction: () -> Float,
+    previewAlpha: () -> Float,
     preview: @Composable () -> Unit,
     sheet: @Composable () -> Unit
 ) {
@@ -209,15 +201,8 @@ private fun AnchoredPreviewLayout(
         layout(constraints.maxWidth, layoutHeight) {
             val slide = (hiddenFraction() * sheetHeight).roundToInt()
             val sheetTop = layoutHeight - sheetHeight + motion.translation(bounds).roundToInt() + slide
-            val room = (sheetTop - previewTopPaddingPx).toFloat()
-            previewPlaceables.forEach { placeable ->
-                val fit = previewFit(placeable.height.toFloat(), room, previewGapPx.toFloat())
-                placeable.placeRelativeWithLayer(0, sheetTop - previewGapPx - placeable.height) {
-                    transformOrigin = TransformOrigin(PREVIEW_PIVOT_X, PREVIEW_PIVOT_Y)
-                    scaleX = fit.scale
-                    scaleY = fit.scale
-                    alpha = fit.alpha
-                }
+            if (!isPreviewHidden(previewAlpha())) {
+                previewPlaceables.forEach { it.placeRelative(0, sheetTop - previewGapPx - it.height) }
             }
             // Centered: a sheet narrower than the screen (OverlayHostSpec.maxSheetWidth) sits in the middle.
             sheetPlaceables.forEach { it.placeRelative((constraints.maxWidth - it.width) / 2, sheetTop) }
@@ -228,13 +213,13 @@ private fun AnchoredPreviewLayout(
 @Composable
 private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
-    expandFraction: () -> Float,
+    alpha: () -> Float,
     modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .graphicsLayer { alpha = 1f - expandFraction() },
+            .graphicsLayer { this.alpha = alpha() },
         contentAlignment = Alignment.BottomCenter
     ) {
         previewContent?.invoke(this)
@@ -305,8 +290,8 @@ internal fun OverlaySheetBody(
                 modifier = Modifier.padding(
                     start = AureoleDS.dimens.small,
                     end = AureoleDS.dimens.small,
-                    top = AureoleDS.dimens.small,
-                    bottom = AureoleDS.dimens.medium
+                    top = if (decorations.hasTabBottomBar) AureoleDS.dimens.xSmall else AureoleDS.dimens.small,
+                    bottom = if (decorations.hasTabBottomBar) AureoleDS.dimens.xSmall else AureoleDS.dimens.medium
                 )
             ) {
                 bottomBarContent()

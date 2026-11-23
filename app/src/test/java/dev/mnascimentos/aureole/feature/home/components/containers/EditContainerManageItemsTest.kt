@@ -114,7 +114,7 @@ class EditContainerManageItemsTest {
 
         composeTestRule.onNodeWithText("Folder").assertIsDisplayed().performClick()
 
-        composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("New folder")[0].assertIsDisplayed()
     }
 
     private fun setManageItems(state: EditContainerState, onBack: () -> Unit = {}) {
@@ -152,10 +152,10 @@ class EditContainerManageItemsTest {
         setManageItems(state, onBack = { backClicked = true })
 
         composeTestRule.onNodeWithText("Folder").performClick()
-        composeTestRule.onAllNodesWithText("New Folder")[0].assertIsDisplayed()
+        composeTestRule.onAllNodesWithText("New folder")[0].assertIsDisplayed()
         composeTestRule.closeOverlayWithBack()
 
-        composeTestRule.onAllNodesWithText("New Folder").assertCountEquals(0)
+        composeTestRule.onAllNodesWithText("New folder").assertCountEquals(0)
         composeTestRule.onNodeWithText("Back").assertIsDisplayed()
         assertTrue(state.folders.isEmpty())
         assertTrue(!backClicked)

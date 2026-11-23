@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -43,6 +45,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetEvents
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetMotion
 import dev.mnascimentos.aureole.core.designsystem.model.OverlaySheetStateData
 import dev.mnascimentos.aureole.core.designsystem.model.SheetBounds
+import dev.mnascimentos.aureole.core.designsystem.model.isDismissArmed
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -66,11 +69,14 @@ internal fun SheetSurface(
     motion: OverlaySheetMotion,
     modifier: Modifier = Modifier
 ) {
-    val controller = rememberSheetController(stateData, bounds, motion)
+    val config = params.config
+    val controller = rememberSheetController(stateData, bounds, motion, config.showsDismissFeedback)
     val nestedScrollConnection = remember(controller) { sheetNestedScrollConnection(controller) }
     val draggableState = rememberDraggableState { delta -> controller.onDrag(delta) }
     val isExpanded = stateData.isExpanded
-    val config = params.config
+    // Flips only when the drag crosses the close height, so the handle does not recompose every frame.
+    val isDismissArmed by remember(motion, bounds) { derivedStateOf { motion.isDismissArmed(bounds) } }
+    val showsArmed = config.showsDismissFeedback && isDismissArmed
 
     Surface(
         modifier = modifier
@@ -104,39 +110,45 @@ internal fun SheetSurface(
             onSettingsClick = config.onSettingsClick,
             bottomBarContent = params.bottomBarContent,
             sheetContent = params.sheetContent,
-            decorations = OverlaySheetDecorations(
-                edgeToEdgeContent = config.edgeToEdgeContent,
-                showHeaderAction = config.showHeaderAction && config.host.showHeaderAction,
-                isLeftHanded = config.isLeftHanded,
-                headerSlots = OverlayHeaderSlots(
-                    headerIcon = config.headerIcon,
-                    titleIcon = config.titleIcon,
-                    subtitle = config.subtitle,
-                    accessory = config.headerAccessory,
-                    leadingAction = config.headerLeadingAction
-                ),
-                gestureZone = {
-                    OverlaySheetGestureZone(
-                        state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),
-                        onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
-                        onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked }
-                    )
-                }
-            )
+            decorations = config.sheetDecorations {
+                OverlaySheetGestureZone(
+                    state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds), showsArmed),
+                    onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
+                    onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked },
+                    onDismiss = stateData.triggerDismiss.takeUnless { config.isLocked }
+                )
+            }
         )
     }
 }
+
+/** Header, margins and handle of the sheet body, from [this] config; [gestureZone] draws the handle. */
+private fun AureoleEditOverlayConfig.sheetDecorations(gestureZone: @Composable () -> Unit) = OverlaySheetDecorations(
+    edgeToEdgeContent = edgeToEdgeContent,
+    showHeaderAction = showHeaderAction && host.showHeaderAction,
+    isLeftHanded = isLeftHanded,
+    hasTabBottomBar = hasTabBottomBar,
+    headerSlots = OverlayHeaderSlots(
+        headerIcon = headerIcon,
+        titleIcon = titleIcon,
+        subtitle = subtitle,
+        accessory = headerAccessory,
+        leadingAction = headerLeadingAction
+    ),
+    gestureZone = gestureZone
+)
 
 @Composable
 private fun rememberSheetController(
     stateData: OverlaySheetStateData,
     bounds: SheetBounds,
-    motion: OverlaySheetMotion
+    motion: OverlaySheetMotion,
+    showsDismissFeedback: Boolean
 ): OverlaySheetController {
     val scope = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val density = LocalDensity.current.density
-    return remember(stateData, bounds, motion, scope, haptics, density) {
+    return remember(stateData, bounds, motion, scope, haptics, density, showsDismissFeedback) {
         OverlaySheetController(
             motion = motion,
             bounds = bounds,
@@ -144,7 +156,10 @@ private fun rememberSheetController(
             events = OverlaySheetEvents(
                 onExpandedChanged = stateData.onExpandedChanged,
                 onDismiss = stateData.triggerDismiss,
-                onTick = { haptics.performHapticFeedback(HapticFeedbackType.SegmentTick) }
+                onTick = { haptics.performHapticFeedback(HapticFeedbackType.SegmentTick) },
+                onDismissArmed = {
+                    if (showsDismissFeedback) haptics.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+                }
             ),
             scope = scope,
             density = density

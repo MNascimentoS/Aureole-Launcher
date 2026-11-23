@@ -28,6 +28,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowConfig
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleDivider
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleSectionHeader
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -87,18 +88,30 @@ fun LazyListScope.appsListItems(
 
 private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
     item(key = "aureole_settings_item", contentType = "settings_item") {
-        Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
+        AureoleDivider(
+            modifier = Modifier.padding(
+                start = AureoleDS.dimens.medium,
+                top = AppsListMetrics.DividerExtraTop,
+                end = AureoleDS.dimens.medium,
+                bottom = AppsListMetrics.DividerExtraBottom
+            )
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
                 .clickable { actions.onSettingsClick() }
-                .padding(horizontal = AureoleDS.dimens.medium, vertical = AureoleDS.dimens.small),
+                .padding(
+                    start = AureoleDS.dimens.medium - AppsListMetrics.SettingsIconOverflow,
+                    end = AureoleDS.dimens.medium,
+                    top = AureoleDS.dimens.small,
+                    bottom = AureoleDS.dimens.small
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(AppsListMetrics.SettingsIconContainerSize)
+                    .size(AppsListMetrics.SettingsIconSize)
                     .clip(CircleShape)
                     .background(AureoleDS.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
@@ -106,11 +119,11 @@ private fun LazyListScope.settingsListItem(actions: HomeScreenActions) {
                 // The Aureole logo instead of the gear, in the same circle (RF-08).
                 AureoleDS.icons.Logo(
                     tint = AureoleDS.colors.onSurfaceHigh,
-                    modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+                    modifier = Modifier.size(AppsListMetrics.SettingsGlyphSize)
                 )
             }
 
-            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium))
+            Spacer(modifier = Modifier.width(AureoleDS.dimens.medium - AppsListMetrics.SettingsIconOverflow))
 
             AureoleText(
                 text = stringResource(R.string.home_customize_aureole_settings),

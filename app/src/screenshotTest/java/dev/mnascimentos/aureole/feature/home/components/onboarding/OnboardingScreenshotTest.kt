@@ -77,11 +77,52 @@ private fun GestureCoachScrubScreenshotTest() {
 @PreviewTest
 @AureolePreview
 @Composable
-private fun GestureCoachCustomizeScreenshotTest() {
+private fun GestureCoachNotificationsScreenshotTest() {
     AureoleLauncherTheme {
         GestureCoachComponent(
             onboarding = OnboardingUiState(
                 completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB)
+            ),
+            actions = OnboardingActions(),
+            glass = OnboardingGlass(),
+            config = GestureCoachConfig()
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun GestureCoachNotificationsSuccessScreenshotTest() {
+    AureoleLauncherTheme {
+        GestureCoachComponent(
+            onboarding = OnboardingUiState(
+                completedSteps = setOf(
+                    GestureCoachStep.OPEN_APPS,
+                    GestureCoachStep.ALPHABET_SCRUB,
+                    GestureCoachStep.NOTIFICATIONS
+                ),
+                succeededStep = GestureCoachStep.NOTIFICATIONS
+            ),
+            actions = OnboardingActions(),
+            glass = OnboardingGlass(),
+            config = GestureCoachConfig()
+        )
+    }
+}
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun GestureCoachCustomizeScreenshotTest() {
+    AureoleLauncherTheme {
+        GestureCoachComponent(
+            onboarding = OnboardingUiState(
+                completedSteps = setOf(
+                    GestureCoachStep.OPEN_APPS,
+                    GestureCoachStep.ALPHABET_SCRUB,
+                    GestureCoachStep.NOTIFICATIONS
+                )
             ),
             actions = OnboardingActions(),
             glass = OnboardingGlass(),

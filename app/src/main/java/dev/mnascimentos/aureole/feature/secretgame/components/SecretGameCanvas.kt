@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -19,13 +20,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.fireworks.drawFireworks
+import dev.mnascimentos.aureole.composable.fireworks.model.FireworkColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretStarSprite
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretStarsTuning
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 
 /** Painters of the sprites, remembered once per canvas. */
@@ -58,21 +64,22 @@ fun SecretGameCanvas(
 
 private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors, painters: SecretPainters) {
     val u = size.width
+    drawStars(frame.stars, colors.face)
     frame.streaks.forEach {
         drawLine(
-            color = colors.ship.copy(alpha = D.STREAK_ALPHA),
+            color = colors.ship.copy(alpha = D.STREAK_ALPHA * frame.streaksAlpha),
             start = Offset(it.x * u, it.y * u),
             end = Offset(it.x * u, (it.y + it.length) * u),
             strokeWidth = D.STREAK_WIDTH * u
         )
     }
     frame.faces.forEach {
-        drawFaceGlow(it.sprite, colors.face)
         val (painter, aspect) = if (it.kind == SecretFaceKind.CREATOR) {
             painters.creator to D.FACE_ASPECT_CREATOR
         } else {
             painters.dreamer to D.FACE_ASPECT_DREAMER
         }
+        if (it.trail > 0f) drawTrail(it.sprite, it.trail, aspect, colors.ship)
         drawSprite(painter, aspect, it.sprite, colors.face)
     }
     if (frame.flame > 0f) drawFlame(frame, colors.ship)
@@ -83,7 +90,43 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
         val color = if (it.kind == SecretParticleKind.SHIP) colors.ship else colors.face
         drawCircle(color.copy(alpha = it.life.coerceIn(0f, 1f)), it.radius * u, Offset(it.x * u, it.y * u))
     }
-    frame.buttons?.let { drawButtons(it.draw, it.collapse, colors.ship) }
+    val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
+    drawFireworks(frame.rockets, frame.sparks, fireworkColors)
+    frame.buttons?.let { drawButtons(it, colors.ship) }
+}
+
+private fun DrawScope.drawStars(stars: List<SecretStarSprite>, color: Color) {
+    val u = size.width
+    stars.forEach {
+        val center = Offset(it.x * u, it.y * u)
+        if (it.tail > 0f) {
+            drawWarpStar(it, color)
+            return@forEach
+        }
+        if (it.glowAlpha > 0f) {
+            drawCircle(color.copy(alpha = it.glowAlpha), it.radius * SecretStarsTuning.GLOW_SCALE * u, center)
+        }
+        drawCircle(color.copy(alpha = it.alpha), it.radius * u, center)
+    }
+}
+
+/** Warp: risco de (x, y − tail) até (x, y), transparente no topo e na cor dos rostos na ponta; sem halo. */
+private fun DrawScope.drawWarpStar(star: SecretStarSprite, color: Color) {
+    val u = size.width
+    val top = Offset(star.x * u, (star.y - star.tail) * u)
+    val tip = Offset(star.x * u, star.y * u)
+    val width = maxOf(1.dp.toPx(), star.radius * SecretStarsTuning.WARP_STROKE * u)
+    drawLine(
+        brush = Brush.verticalGradient(
+            listOf(Color.Transparent, color.copy(alpha = star.alpha)),
+            startY = top.y,
+            endY = tip.y
+        ),
+        start = top,
+        end = tip,
+        strokeWidth = width,
+        cap = StrokeCap.Round
+    )
 }
 
 private fun DrawScope.drawSprite(painter: Painter, aspect: Float, sprite: SecretSprite, tint: Color) {
@@ -96,22 +139,6 @@ private fun DrawScope.drawSprite(painter: Painter, aspect: Float, sprite: Secret
     }) {
         with(painter) { draw(Size(width, height), sprite.alpha, ColorFilter.tint(tint)) }
     }
-}
-
-private fun DrawScope.drawFaceGlow(sprite: SecretSprite, color: Color) {
-    val u = size.width
-    val w = sprite.width * u * D.FACE_GLOW_WIDTH
-    val h = sprite.width * u * D.FACE_GLOW_HEIGHT
-    val top = sprite.y * u - h * D.FACE_GLOW_RISE
-    drawOval(
-        brush = Brush.verticalGradient(
-            listOf(Color.Transparent, color.copy(alpha = D.FACE_GLOW_ALPHA * sprite.alpha)),
-            startY = top,
-            endY = top + h
-        ),
-        topLeft = Offset(sprite.x * u - w * D.HALF, top),
-        size = Size(w, h)
-    )
 }
 
 private fun DrawScope.drawFlame(frame: SecretGameFrame, color: Color) {

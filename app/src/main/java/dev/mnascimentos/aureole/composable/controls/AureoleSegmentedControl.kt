@@ -17,7 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.composable.controls.model.SegmentStyle
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -38,7 +41,7 @@ class SegmentedOption(val label: String, val icon: (@Composable (Color) -> Unit)
  * @param selectedIndex Index of the selected segment, or -1 when none matches.
  * @param onSelect Called with the index of the tapped segment.
  * @param modifier Modifier applied to the bar.
- * @param itemHeight Height of each segment.
+ * @param style Height and TalkBack role of the segments (see [SegmentStyle]).
  */
 @Composable
 fun AureoleSegmentedControl(
@@ -46,14 +49,14 @@ fun AureoleSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget
+    style: SegmentStyle = SegmentStyle()
 ) {
     AureoleIconSegmentedControl(
         options = options.map { SegmentedOption(it) },
         selectedIndex = selectedIndex,
         onSelect = onSelect,
         modifier = modifier,
-        itemHeight = itemHeight
+        style = style
     )
 }
 
@@ -64,7 +67,7 @@ fun AureoleIconSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget
+    style: SegmentStyle = SegmentStyle()
 ) {
     Row(
         modifier = modifier
@@ -75,12 +78,13 @@ fun AureoleIconSegmentedControl(
             .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
+        val height = style.itemHeight ?: AureoleDS.dimens.minTouchTarget
         options.forEachIndexed { index, option ->
             SegmentItem(
-                label = option.label,
+                option = option,
                 isSelected = index == selectedIndex,
-                height = itemHeight,
-                icon = option.icon,
+                height = height,
+                role = style.role,
                 onClick = { onSelect(index) }
             )
         }
@@ -89,10 +93,10 @@ fun AureoleIconSegmentedControl(
 
 @Composable
 private fun RowScope.SegmentItem(
-    label: String,
+    option: SegmentedOption,
     isSelected: Boolean,
     height: Dp,
-    icon: (@Composable (Color) -> Unit)?,
+    role: Role,
     onClick: () -> Unit
 ) {
     val container = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
@@ -103,18 +107,25 @@ private fun RowScope.SegmentItem(
             .height(height)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(container)
-            .selectable(selected = isSelected, role = Role.Tab, onClick = onClick),
+            .selectable(selected = isSelected, role = role, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = AureoleDS.dimens.xSmall),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall, Alignment.CenterHorizontally)
         ) {
-            icon?.invoke(content)
+            option.icon?.invoke(content)
             AureoleText(
-                text = label,
+                text = option.label,
+                modifier = Modifier.weight(1f, fill = false),
                 color = content,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, maxLines = 1)
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
             )
         }
     }

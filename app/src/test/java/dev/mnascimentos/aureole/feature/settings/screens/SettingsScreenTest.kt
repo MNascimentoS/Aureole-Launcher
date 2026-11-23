@@ -75,7 +75,7 @@ class SettingsScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Reset Layout?").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Reset layout?").assertIsDisplayed()
         composeTestRule.onNodeWithText("Restore").performClick()
         composeTestRule.mainClock.advanceTimeBy(DISMISS_ANIMATION_MS)
         assertTrue(confirmCalled)

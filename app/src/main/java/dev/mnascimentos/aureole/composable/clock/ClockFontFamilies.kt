@@ -7,46 +7,41 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import dev.mnascimentos.aureole.composable.clock.model.ClockFontSpec
+import dev.mnascimentos.aureole.core.data.model.ClockFontChoice
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.theme.AvailableFonts
 
-private val RoundedFontFamily: FontFamily by lazy { FontFamily(Typeface.create("sans-serif-rounded", Typeface.NORMAL)) }
-
-/** Compose family of this option; [ClockFontSpec.THEME] is the family of the current theme. */
+/** Compose family of this font; the launcher font is the family of the current theme. */
 @Composable
 @ReadOnlyComposable
-internal fun ClockFontSpec.fontFamily(): FontFamily {
-    // Read unconditionally: a theme read only in the THEME branch would change the reads when the font changes.
+internal fun ClockFontChoice.fontFamily(): FontFamily {
+    // Read unconditionally: a theme read only in the launcher branch would change the reads when the font changes.
     val themeFamily = AureoleDS.typography.fontFamily
     return fontFamilyFor(themeFamily)
 }
 
-/** Compose family of this option, given the family of the current theme. */
-internal fun ClockFontSpec.fontFamilyFor(themeFamily: FontFamily): FontFamily = when (this) {
-    ClockFontSpec.THEME -> themeFamily
-    ClockFontSpec.BOLD -> FontFamily.SansSerif
-    ClockFontSpec.SERIF -> FontFamily.Serif
-    ClockFontSpec.MONO -> FontFamily.Monospace
-    ClockFontSpec.ROUNDED -> RoundedFontFamily
-}
+/** Compose family of this font, given the family of the current theme (also for a key the catalog lost). */
+internal fun ClockFontChoice.fontFamilyFor(themeFamily: FontFamily): FontFamily =
+    if (followsLauncher) themeFamily else AvailableFonts[fontKey] ?: themeFamily
 
-/** Android [Typeface] of the clock's time: the theme font for [ClockFontSpec.THEME], a system face otherwise. */
+/** Weight of the clock's time: bold when the bold switch is on. A font without a Bold file gets a synthetic one. */
+internal val ClockFontChoice.timeWeight: FontWeight
+    get() = if (isBold) FontWeight.Bold else FontWeight.Normal
+
+/** Android [Typeface] of the clock's time, in [timeWeight]. */
 @Composable
-internal fun ClockFontSpec.timeTypeface(): Typeface {
+internal fun ClockFontChoice.timeTypeface(): Typeface {
     val resolver = LocalFontFamilyResolver.current
-    val themeFamily = AureoleDS.typography.fontFamily
-    return remember(this, resolver, themeFamily) {
-        if (this == ClockFontSpec.THEME) {
-            resolver.resolve(themeFamily, FontWeight.Bold).value as? Typeface ?: Typeface.DEFAULT_BOLD
-        } else {
-            ClockHeaderUtils.resolveClockTypeface(storageKey)
-        }
+    val family = fontFamily()
+    val weight = timeWeight
+    return remember(family, weight, resolver) {
+        resolver.resolve(family, weight).value as? Typeface ?: Typeface.DEFAULT
     }
 }
 
 /** Android [Typeface] of the clock's date, in the same family as the time but regular weight. */
 @Composable
-internal fun ClockFontSpec.dateTypeface(): Typeface {
+internal fun ClockFontChoice.dateTypeface(): Typeface {
     val resolver = LocalFontFamilyResolver.current
     val family = fontFamily()
     return remember(family, resolver) {

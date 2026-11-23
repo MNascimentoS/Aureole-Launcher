@@ -39,7 +39,7 @@
   <article>
     <span class="eyebrow">Aureole Launcher</span>
     <h1>Privacy Policy</h1>
-    <p class="meta">Last updated: November 14, 2026 · Controller: Teu Apps</p>
+    <p class="meta">Last updated: November 21, 2026 · Controller: Teu Apps</p>
     <div class="summary"><strong>In short</strong><ul><li>Aureole has no account, login, sign-up, ads, analytics or tracking tools.</li><li>We do not collect data that identifies you. Everything you set up (folders, favorites, wallpaper, settings) stays only on your device.</li><li>The app has no backend server of its own and does not send your app list, photos or settings to us or to third parties.</li><li>The only information the app sends off the device is technical crash reports, sent through Google’s Firebase Crashlytics when the app crashes. They do not contain your name, email, contacts, location, photos or the list of installed apps.</li></ul></div>
 
 <h2 id="informacoes-gerais"><span>01</span>General information</h2>
@@ -67,6 +67,7 @@
 <tr><td><code>REQUEST_DELETE_PACKAGES</code><br>request uninstall</td><td>Opens Android’s own uninstall screen when you choose “Uninstall” on an app. Removal always requires your confirmation in the system dialog.</td></tr>
 <tr><td><code>SET_WALLPAPER</code><br>set wallpaper</td><td>Applies the wallpaper you chose in the launcher settings.</td></tr>
 <tr><td><code>BIND_APPWIDGET</code><br>host widgets</td><td>Shows widgets from other apps that you add to the home screen.</td></tr>
+<tr><td><code>EXPAND_STATUS_BAR</code><br>open notifications</td><td>Opens Android’s notification shade when you swipe down on the home screen or tap the “Notifications” shortcut. Aureole does not read your notifications.</td></tr>
 <tr><td><code>INTERNET</code> and<br><code>ACCESS_NETWORK_STATE</code></td><td>Not declared by Aureole itself: Android adds them automatically because they are required by the Google libraries used for crash reporting (Firebase Crashlytics) and in-app updates (Google Play In-App Updates). Aureole does not use the internet for anything else.</td></tr>
 </tbody>
 </table><p>To choose a wallpaper, Aureole uses the Android photo picker, which requires no gallery permission: the app only receives the image you select.</p>

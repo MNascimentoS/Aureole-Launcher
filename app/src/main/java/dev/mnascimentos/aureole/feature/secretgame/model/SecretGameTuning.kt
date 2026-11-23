@@ -45,27 +45,29 @@ object SecretGameTuning {
     const val SHIP_ASPECT = 93f / 111f
     const val LOGO_ASPECT = 73f / 128f
     const val SHIP_BOTTOM_OFFSET = 0.583f
-    const val BUTTON_SIZE = 0.122f
-    const val BUTTON_BOTTOM_OFFSET = 0.328f
-    const val BUTTON_SIDE_INSET = 0.083f
+    const val BUTTON_SIZE = 0.161f
+    const val BUTTON_BOTTOM_OFFSET = 0.378f
+    const val BUTTON_SIDE_INSET = 0.061f
     const val CENTER_Y_FRACTION = 0.40f
     const val INTIMIDATE_FROM_Y = -0.144f
     const val INTIMIDATE_TO_Y = 0.178f
     const val PASS_MARGIN = FACE_SIZE
 
-    // Dificuldade: velocidade em alturas de tela por segundo
-    const val SPEED_BASE = 0.30f
-    const val SPEED_GROWTH = 0.011f
-    const val SPEED_MAX = 0.85f
-    const val SPAWN_BASE_MS = 1250f
-    const val SPAWN_GROWTH_MS = 17f
-    const val SPAWN_MIN_MS = 430f
+    // Dificuldade: curvas por nível em SecretDifficulty
     const val FIRST_SPAWN_MS = 600f
-    const val DOUBLE_FROM_S = 25f
-    const val DOUBLE_BASE = 0.12f
-    const val DOUBLE_GROWTH = 0.012f
-    const val DOUBLE_MAX = 0.35f
     const val POINTS_PER_FACE = 10
+    const val LEVEL_FLASH_MS = 900L
+
+    // Rastro dos rostos caindo: comprimento = FACE_SIZE × (TRAIL_BASE + velocidade × TRAIL_SPEED)
+    const val TRAIL_BASE = 0.5f
+    const val TRAIL_SPEED = 1.6f
+
+    // Placar e aviso de nível (alpha e escala do HUD)
+    const val HUD_ALPHA = 0.35f
+    const val HUD_FLASH_ALPHA = 0.6f
+    const val HUD_FLASH_SCALE = 0.35f
+    const val LEVEL_LABEL_FADE = 1.6f
+    const val LEVEL_LABEL_ALPHA = 0.8f
 
     // Hitbox (frações do tamanho do sprite)
     const val FACE_HIT = 0.36f
@@ -73,9 +75,21 @@ object SecretGameTuning {
     const val SHIP_HIT_BOTTOM = 0.40f
 
     // Movimento e voo
-    const val LANE_FOLLOW_REST = 0.0005f
-    const val TILT_DECAY_REST = 0.004f
-    const val TILT_ON_MOVE = 0.32f
+    const val SHIP_FOLLOW_RATE = 48f
+
+    /** Inclinação persegue a distância que falta até a faixa: pico ~5°, volta suave em ~280 ms. */
+    const val TILT_PER_LANE = 0.9f
+    const val TILT_CHASE_RATE = 10f
+
+    // Toque nos botões: aperta, acende o fundo, solta um anel e a seta dá um passo para o lado
+    const val PRESS_MS = 220L
+    const val PRESS_SQUEEZE_MS = 140L
+    const val PRESS_SCALE = 0.08f
+    const val PRESS_FILL_ALPHA = 0.24f
+    const val PRESS_RING_ALPHA = 0.45f
+    const val PRESS_RING_GROWTH = 0.35f
+    const val PRESS_NUDGE = 0.011f
+    const val PRESS_IDLE_MS = 100_000L
     const val BOB_AMPLITUDE = 0.011f
     const val BOB_PERIOD_S = 1.7f
     const val SWAY_AMPLITUDE = 0.035f
@@ -132,8 +146,4 @@ object SecretGameTuning {
     const val FLASH_MIN_RADIUS = 0.055f
     const val FLASH_RADIUS_GROWTH = 0.39f
     const val FLASH_ALPHA = 0.7f
-    const val SPARKS_PER_SECOND = 30f
-    const val SPARK_SPREAD = 0.44f
-    const val SPARK_RISE = 0.11f
-    const val SPARK_BURST = 0.17f
 }
