@@ -13,14 +13,21 @@ import kotlinx.coroutines.launch
 internal fun HomeViewModel.editClock(change: (ClockConfig) -> ClockConfig) {
     val state = uiState.value
     val clockId = state.editingClockId
-    val updated = change(state.clockConfigOf(clockId))
+    saveClockConfig(clockId, change(state.clockConfigOf(clockId)))
+}
+
+/**
+ * Saves [config] as the look of the clock [clockId] (null: the clock look of the settings). Also used by the undo of
+ * the editor, which runs after the editor closed (RF-D7).
+ */
+internal fun HomeViewModel.saveClockConfig(clockId: String?, config: ClockConfig) {
     if (clockId == null) {
-        saveDefaultClockConfig(updated)
+        saveDefaultClockConfig(config)
         return
     }
     // The state changes at once; the repository keeps the saves in call order.
-    updateUiState { it.copy(clockConfigs = it.clockConfigs + (clockId to updated)) }
-    viewModelScope.launch { clockConfigRepository.save(clockId, updated) }
+    updateUiState { it.copy(clockConfigs = it.clockConfigs + (clockId to config)) }
+    viewModelScope.launch { clockConfigRepository.save(clockId, config) }
 }
 
 /** Writes [config] to the clock look of the settings: the look of every clock without a config of its own. */

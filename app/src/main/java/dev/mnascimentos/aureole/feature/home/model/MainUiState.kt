@@ -136,6 +136,10 @@ data class MainUiState(
      * memory only: the editor preview draws the clock at that size (relogio-home-sheet RF-B5).
      */
     val clockSizes: Map<String, DpSize> = emptyMap(),
+    /** The look the edited clock had when the editor opened: closing with another look offers an undo (RF-D7). */
+    val editingClockSnapshot: ClockConfig? = null,
+    /** The user tapped "Got it" on the editor's onboarding notice; it never shows again (RF-D2). */
+    val isClockSaveHintDismissed: Boolean = false,
     val showQuickButtonSettingsBottomSheet: Boolean = false,
     val showQuickButtonAppearanceBottomSheet: Boolean = false,
     val showShortcutSelectionBottomSheet: Boolean = false,

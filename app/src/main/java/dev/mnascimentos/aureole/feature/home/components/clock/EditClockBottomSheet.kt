@@ -50,6 +50,7 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOve
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPickerOpeners
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPickersParams
+import dev.mnascimentos.aureole.feature.home.components.clock.model.showsClockSaveHint
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -112,7 +113,15 @@ internal fun EditClockOverlay(
             params = AureoleEditOverlayParams(
                 config = clockOverlayConfig(clockState, actions, effectiveHazeState, isVisible),
                 previewContent = preview,
-                bottomBarContent = { EditClockFooter(pagerState = pagerState) },
+                bottomBarContent = {
+                    if (showsClockSaveHint(clockState.onboarding.stage, clockState.isClockSaveHintDismissed)) {
+                        EditClockSaveHint(
+                            onDismiss = actions.onDismissClockSaveHint,
+                            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
+                        )
+                    }
+                    EditClockFooter(pagerState = pagerState)
+                },
                 sheetContent = {
                     EditClockPager(
                         pagerState = pagerState,
@@ -158,7 +167,9 @@ private fun clockOverlayConfig(
     isVisible = isVisible,
     isLeftHanded = clockState.isLeftHandedMode,
     edgeToEdgeContent = true,
-    hasTabBottomBar = true
+    hasTabBottomBar = true,
+    // No save button (D-06): the sheet closes by dragging, so the handle shows when a release would close it.
+    showsDismissFeedback = true
 )
 
 /** The font picker and the color picker, each shown over the editor while open (RF-B2, F2). */

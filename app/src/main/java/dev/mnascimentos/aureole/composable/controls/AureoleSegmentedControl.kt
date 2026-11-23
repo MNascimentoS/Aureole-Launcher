@@ -41,6 +41,7 @@ class SegmentedOption(val label: String, val icon: (@Composable (Color) -> Unit)
  * @param onSelect Called with the index of the tapped segment.
  * @param modifier Modifier applied to the bar.
  * @param itemHeight Height of each segment.
+ * @param segmentRole What TalkBack calls each segment: a tab by default; [Role.RadioButton] for a choice of values.
  */
 @Composable
 fun AureoleSegmentedControl(
@@ -48,14 +49,16 @@ fun AureoleSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget
+    itemHeight: Dp = AureoleDS.dimens.minTouchTarget,
+    segmentRole: Role = Role.Tab
 ) {
     AureoleIconSegmentedControl(
         options = options.map { SegmentedOption(it) },
         selectedIndex = selectedIndex,
         onSelect = onSelect,
         modifier = modifier,
-        itemHeight = itemHeight
+        itemHeight = itemHeight,
+        segmentRole = segmentRole
     )
 }
 
@@ -66,7 +69,8 @@ fun AureoleIconSegmentedControl(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    itemHeight: Dp = AureoleDS.dimens.minTouchTarget
+    itemHeight: Dp = AureoleDS.dimens.minTouchTarget,
+    segmentRole: Role = Role.Tab
 ) {
     Row(
         modifier = modifier
@@ -83,6 +87,7 @@ fun AureoleIconSegmentedControl(
                 isSelected = index == selectedIndex,
                 height = itemHeight,
                 icon = option.icon,
+                role = segmentRole,
                 onClick = { onSelect(index) }
             )
         }
@@ -95,6 +100,7 @@ private fun RowScope.SegmentItem(
     isSelected: Boolean,
     height: Dp,
     icon: (@Composable (Color) -> Unit)?,
+    role: Role,
     onClick: () -> Unit
 ) {
     val container = if (isSelected) AureoleDS.colors.onSurfaceHigh else Color.Transparent
@@ -105,7 +111,7 @@ private fun RowScope.SegmentItem(
             .height(height)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusSmall))
             .background(container)
-            .selectable(selected = isSelected, role = Role.Tab, onClick = onClick),
+            .selectable(selected = isSelected, role = role, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Row(

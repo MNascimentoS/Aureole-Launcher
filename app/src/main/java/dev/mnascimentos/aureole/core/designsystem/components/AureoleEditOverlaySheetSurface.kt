@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -66,11 +68,14 @@ internal fun SheetSurface(
     motion: OverlaySheetMotion,
     modifier: Modifier = Modifier
 ) {
-    val controller = rememberSheetController(stateData, bounds, motion)
+    val config = params.config
+    val controller = rememberSheetController(stateData, bounds, motion, config.showsDismissFeedback)
     val nestedScrollConnection = remember(controller) { sheetNestedScrollConnection(controller) }
     val draggableState = rememberDraggableState { delta -> controller.onDrag(delta) }
     val isExpanded = stateData.isExpanded
-    val config = params.config
+    // Flips only when the drag crosses the close height, so the handle does not recompose every frame.
+    val isDismissArmed by remember(motion, bounds) { derivedStateOf { motion.isDismissArmed(bounds) } }
+    val showsArmed = config.showsDismissFeedback && isDismissArmed
 
     Surface(
         modifier = modifier
@@ -118,7 +123,7 @@ internal fun SheetSurface(
                 ),
                 gestureZone = {
                     OverlaySheetGestureZone(
-                        state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds)),
+                        state = GestureZoneState(isExpanded, config.isLeftHanded, motion.canExpand(bounds), showsArmed),
                         onToggleExpanded = if (config.isLocked) ({}) else controller::toggle,
                         onSettingsClick = config.onSettingsClick.takeUnless { config.isLocked },
                         onDismiss = stateData.triggerDismiss.takeUnless { config.isLocked }
@@ -133,12 +138,13 @@ internal fun SheetSurface(
 private fun rememberSheetController(
     stateData: OverlaySheetStateData,
     bounds: SheetBounds,
-    motion: OverlaySheetMotion
+    motion: OverlaySheetMotion,
+    showsDismissFeedback: Boolean
 ): OverlaySheetController {
     val scope = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val density = LocalDensity.current.density
-    return remember(stateData, bounds, motion, scope, haptics, density) {
+    return remember(stateData, bounds, motion, scope, haptics, density, showsDismissFeedback) {
         OverlaySheetController(
             motion = motion,
             bounds = bounds,
@@ -146,7 +152,10 @@ private fun rememberSheetController(
             events = OverlaySheetEvents(
                 onExpandedChanged = stateData.onExpandedChanged,
                 onDismiss = stateData.triggerDismiss,
-                onTick = { haptics.performHapticFeedback(HapticFeedbackType.SegmentTick) }
+                onTick = { haptics.performHapticFeedback(HapticFeedbackType.SegmentTick) },
+                onDismissArmed = {
+                    if (showsDismissFeedback) haptics.performHapticFeedback(HapticFeedbackType.SegmentFrequentTick)
+                }
             ),
             scope = scope,
             density = density

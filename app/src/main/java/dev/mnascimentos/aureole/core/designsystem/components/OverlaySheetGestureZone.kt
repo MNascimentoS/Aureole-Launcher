@@ -123,10 +123,12 @@ internal fun OverlaySheetGestureZone(
                     .height(AureoleDS.dimens.smallCompact),
                 contentAlignment = Alignment.Center
             ) {
+                val colors = AureoleDS.colors
+                val barColor = if (state.isDismissArmed) colors.onSurfaceHigh else colors.onSurfaceLow
                 Box(
                     modifier = Modifier
                         .size(width = AureoleDS.dimens.xxLarge, height = SheetHandleBarHeight)
-                        .background(AureoleDS.colors.onSurfaceLow, RoundedCornerShape(AureoleDS.dimens.radiusFull))
+                        .background(barColor, RoundedCornerShape(AureoleDS.dimens.radiusFull))
                 )
             }
         }

@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.clock.extensions
 
 import dev.mnascimentos.aureole.core.data.repository.SettingsRepository
+import dev.mnascimentos.aureole.core.data.repository.isClockSaveHintDismissed
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
 /** The state with the global clock settings read from [settings]. */
@@ -16,5 +17,6 @@ fun MainUiState.withClockSettings(settings: SettingsRepository): MainUiState = c
     clockTextColor = settings.clockTextColor,
     clockBackgroundColor = settings.clockBackgroundColor,
     clockTextColorRef = settings.clockTextColorRef,
-    clockBackgroundColorRef = settings.clockBackgroundColorRef
+    clockBackgroundColorRef = settings.clockBackgroundColorRef,
+    isClockSaveHintDismissed = settings.isClockSaveHintDismissed
 )

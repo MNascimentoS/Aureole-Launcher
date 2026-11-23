@@ -107,14 +107,15 @@ private fun Modifier.followActivePage(
 
 @Composable
 private fun ColumnScope.EditClockStylePage(params: EditClockPagerParams) {
+    // Alignment first (D-10): its effect shows on the layout tiles right below.
+    EditClockAlignmentSection(uiState = params.uiState, actions = params.actions)
+    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
     EditClockStyleSection(
         uiState = params.uiState,
         actions = params.actions,
         tempCustomGreeting = params.greeting.text,
         onGreetingChange = params.greeting.onChange
     )
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
-    EditClockAlignmentSection(uiState = params.uiState, actions = params.actions)
     Spacer(modifier = Modifier.height(AureoleDS.dimens.medium))
     EditClockFontSection(uiState = params.uiState, onOpenFontPicker = params.pickers.onFont)
 }

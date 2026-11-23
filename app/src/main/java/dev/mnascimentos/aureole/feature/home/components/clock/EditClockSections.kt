@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
@@ -52,7 +53,8 @@ internal fun EditClockStyleSection(
     EditClockSectionHeader(title = stringResource(R.string.home_clock_layout))
     EditClockStyleCards(
         selectedKey = choice.layout.key,
-        onSelect = { actions.onUpdateClockStyle(it.key) }
+        onSelect = { actions.onUpdateClockStyle(it.key) },
+        alignment = uiState.clockAlignment
     )
     if (!choice.layout.showsMessage) return
 
@@ -90,7 +92,9 @@ internal fun EditClockAlignmentSection(
     AureoleSegmentedControl(
         options = ClockAlignmentOption.entries.map { stringResource(it.labelRes) },
         selectedIndex = ClockAlignmentOption.indexOfKey(uiState.clockAlignment),
-        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) }
+        onSelect = { actions.onUpdateClockAlignment(ClockAlignmentOption.entries[it].key) },
+        // A choice of one value, read as "selected, 2 of 3" (RF-D6).
+        segmentRole = Role.RadioButton
     )
 }
 

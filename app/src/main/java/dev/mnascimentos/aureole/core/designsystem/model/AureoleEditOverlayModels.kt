@@ -97,6 +97,11 @@ data class AureoleEditOverlayConfig(
     val hasTabBottomBar: Boolean = false,
     val dismissOnTapOutside: Boolean = true,
     val isLocked: Boolean = false,
+    /**
+     * While a drag holds the sheet low enough that letting go closes it, the handle lights up and a tick plays once
+     * on the way down (relogio-home-sheet RF-D8). For sheets with no close or save button.
+     */
+    val showsDismissFeedback: Boolean = false,
     val headerAccessory: (@Composable () -> Unit)? = null,
     val headerLeadingAction: (@Composable () -> Unit)? = null,
 )

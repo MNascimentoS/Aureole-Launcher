@@ -32,12 +32,15 @@ internal fun resolveDetent(
     val target = when {
         isFlingUp(velocity) -> SheetDetentTarget.Expanded
         velocity >= FLING_VELOCITY_DP_PER_SECOND -> flingDownTarget(height, rest)
-        height < rest * DISMISS_FRACTION_OF_REST -> SheetDetentTarget.Dismiss
+        isBelowDismiss(height, rest) -> SheetDetentTarget.Dismiss
         height - rest <= expanded - height -> SheetDetentTarget.Rest
         else -> SheetDetentTarget.Expanded
     }
     return if (!canExpand && target == SheetDetentTarget.Expanded) SheetDetentTarget.Rest else target
 }
+
+/** Whether a sheet [height] tall, released without a fling, closes: under the dismiss share of [rest]. */
+internal fun isBelowDismiss(height: Float, rest: Float): Boolean = height < rest * DISMISS_FRACTION_OF_REST
 
 /** Whether a release at [velocity] dp per second (positive = down) is a fling up. */
 internal fun isFlingUp(velocity: Float): Boolean = velocity <= -FLING_VELOCITY_DP_PER_SECOND

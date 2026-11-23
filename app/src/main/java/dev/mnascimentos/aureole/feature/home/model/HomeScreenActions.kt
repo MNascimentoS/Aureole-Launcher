@@ -95,6 +95,8 @@ data class HomeScreenActions(
     /** Opens the clock editor for the clock with this grid item id; null edits the default clock look. */
     val onOpenEditClockBottomSheet: (String?) -> Unit = {},
     val onCloseEditClockBottomSheet: () -> Unit = {},
+    /** "Got it" on the clock editor's onboarding notice: hides it for good (relogio-home-sheet RF-D2). */
+    val onDismissClockSaveHint: () -> Unit = {},
     /** Reports the size a clock has on the home (grid item id; null for the list header), for the editor preview. */
     val onClockMeasured: (String?, DpSize) -> Unit = { _, _ -> },
     val onUpdateClockStyle: (String) -> Unit = {},

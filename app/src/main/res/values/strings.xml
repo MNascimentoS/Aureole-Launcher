@@ -172,6 +172,10 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Customize clock</string>
+    <string name="home_clock_save_hint_title">Drag down to close</string>
+    <string name="home_clock_save_hint_body">Everything you change here is already saved</string>
+    <string name="home_clock_save_hint_got_it">Got it</string>
+    <string name="home_clock_undo_updated">Clock updated</string>
     <string name="home_clock_greeting_text">Greeting text</string>
     <string name="home_clock_greeting_placeholder">E.g: Welcome back!</string>
     <string name="home_clock_alignment">Alignment</string>

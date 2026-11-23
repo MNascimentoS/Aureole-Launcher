@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.extensions.onSearchQueryChanged
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.addClock
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.closeEditClockBottomSheet
+import dev.mnascimentos.aureole.feature.home.components.clock.extensions.dismissClockSaveHint
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.openEditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.recordClockSize
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.resetClockSettings
@@ -234,6 +235,7 @@ class HomeActionsFactory(
             onCloseCustomizeBottomSheet = { viewModel.setShowCustomizeBottomSheet(false) },
             onOpenEditClockBottomSheet = { clockId -> viewModel.openEditClockBottomSheet(clockId) },
             onCloseEditClockBottomSheet = { viewModel.closeEditClockBottomSheet() },
+            onDismissClockSaveHint = { viewModel.dismissClockSaveHint() },
             onClockMeasured = { clockId, size -> viewModel.recordClockSize(clockId, size) },
             onUpdateClockStyle = { style -> viewModel.updateClockStyle(style) },
             onUpdateClockCustomGreeting = { greeting -> viewModel.updateClockCustomGreeting(greeting) },
