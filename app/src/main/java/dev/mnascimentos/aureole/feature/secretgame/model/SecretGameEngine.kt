@@ -34,12 +34,13 @@ class SecretGameEngine(private val random: Random = Random.Default) {
         return if (extra.isEmpty()) step else step.copy(events = step.events + extra)
     }
 
-    /** [direction] -1 = esquerda, 1 = direita. Fora do jogo, ou na borda, não faz nada. */
+    /** [direction] -1 = esquerda, 1 = direita. Fora do jogo não faz nada; na borda só anima o botão. */
     fun move(state: SecretGameState, direction: Int): SecretGameStep {
+        if (!state.acceptsInput) return SecretGameStep(state)
+        val pressed = if (direction < 0) state.copy(leftPressMs = 0L) else state.copy(rightPressMs = 0L)
         val target = (state.lane + direction).coerceIn(0, T.LANE_COUNT - 1)
-        if (!state.acceptsInput || target == state.lane) return SecretGameStep(state)
-        val moved = state.copy(lane = target, tilt = direction * T.TILT_ON_MOVE)
-        return SecretGameStep(moved, listOf(SecretGameEvent.LaneTick))
+        if (target == state.lane) return SecretGameStep(pressed)
+        return SecretGameStep(pressed.copy(lane = target), listOf(SecretGameEvent.LaneTick))
     }
 
     /** Back: jogando pausa; pausado sai salvando o recorde; nas animações é consumido sem efeito. */
@@ -70,11 +71,15 @@ internal fun SecretGameState.finishRun(): SecretGameState {
 
 private fun SecretGameState.advanceMotion(dt: Long): SecretGameState {
     val seconds = dt / MS_PER_SECOND
+    val x = lerp(shipX, laneX(lane), secretShipFollow(seconds))
+    val lean = (laneX(lane) - x) * T.LANE_COUNT * T.TILT_PER_LANE
     return copy(
         phaseMs = phaseMs + dt,
         clockMs = clockMs + dt,
-        tilt = tilt * secretTiltKeep(seconds),
-        shipX = lerp(shipX, laneX(lane), secretShipFollow(seconds)),
+        tilt = lerp(tilt, lean, secretTiltChase(seconds)),
+        shipX = x,
+        leftPressMs = (leftPressMs + dt).coerceAtMost(T.PRESS_IDLE_MS),
+        rightPressMs = (rightPressMs + dt).coerceAtMost(T.PRESS_IDLE_MS),
         particles = particles.advance(seconds),
         levelFlashMs = (levelFlashMs - dt).coerceAtLeast(0L),
     )

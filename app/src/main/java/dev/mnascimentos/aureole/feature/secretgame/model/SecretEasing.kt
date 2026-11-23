@@ -27,4 +27,5 @@ fun easeOutCubic(value: Float): Float = 1f - (1f - clamp01(value)).pow(CUBIC)
 /** Fração do caminho até a faixa feita em [seconds] (~90 ms para chegar). */
 fun secretShipFollow(seconds: Float): Float = 1f - exp(-T.SHIP_FOLLOW_RATE * seconds)
 
-fun secretTiltKeep(seconds: Float): Float = exp(-T.TILT_DECAY_RATE * seconds)
+/** Quanto da inclinação alvo a nave alcança em [seconds]. */
+fun secretTiltChase(seconds: Float): Float = 1f - exp(-T.TILT_CHASE_RATE * seconds)

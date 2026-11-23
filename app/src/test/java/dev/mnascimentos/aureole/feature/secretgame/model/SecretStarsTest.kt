@@ -41,15 +41,29 @@ class SecretStarsTest {
     }
 
     @Test
-    fun `stars leave before the speed lines come in`() {
-        val leaving = at(SecretGamePhase.PLAY, playMs = SecretStarsTuning.OUT_MS / 2)
-        assertEquals(0.5f, leaving.starsAlpha(), EPS)
-        assertEquals(0f, leaving.streaksAlpha(), EPS)
-        val gone = at(SecretGamePhase.PLAY, playMs = SecretStarsTuning.OUT_MS)
-        assertTrue(gone.toFrame().stars.isEmpty())
-        val lines = at(SecretGamePhase.PLAY, playMs = SecretStarsTuning.OUT_MS + SecretStarsTuning.STREAKS_IN_MS)
-        assertEquals(1f, lines.toFrame().streaksAlpha, EPS)
-        assertEquals(1f, at(SecretGamePhase.PAUSED).streaksAlpha(), EPS)
+    fun `on GO the stars warp down, stretch into streaks and the speed lines take over`() {
+        val start = at(SecretGamePhase.PLAY, playMs = 0L).toFrame().stars
+        assertTrue(start.all { it.tail > 0f })
+        val mid = at(SecretGamePhase.PLAY, playMs = SecretStarsTuning.WARP_MS / 2).toFrame()
+        val pairs = started.stars.zip(mid.stars)
+        assertTrue(pairs.all { (star, sprite) -> sprite.y > star.y })
+        assertTrue(mid.stars.zip(start).all { (now, before) -> now.tail >= before.tail })
+        val nearest = started.stars.indexOf(started.stars.maxBy { it.radius })
+        val farthest = started.stars.indexOf(started.stars.minBy { it.radius })
+        assertTrue(mid.stars[nearest].y - started.stars[nearest].y > mid.stars[farthest].y - started.stars[farthest].y)
+        assertEquals(0f, at(SecretGamePhase.PLAY, playMs = 100L).streaksAlpha(), EPS)
+        assertTrue(mid.streaksAlpha > 0f)
+        val done = at(SecretGamePhase.PLAY, playMs = SecretStarsTuning.WARP_MS)
+        assertTrue(done.toFrame().stars.isEmpty())
+        assertEquals(1f, done.streaksAlpha(), EPS)
+    }
+
+    @Test
+    fun `pausing during the warp freezes it`() {
+        val play = at(SecretGamePhase.PLAY, playMs = SecretStarsTuning.WARP_MS / 3).toFrame()
+        val paused = at(SecretGamePhase.PAUSED, playMs = SecretStarsTuning.WARP_MS / 3).toFrame()
+        assertEquals(play.stars, paused.stars)
+        assertEquals(play.streaksAlpha, paused.streaksAlpha, EPS)
     }
 
     @Test

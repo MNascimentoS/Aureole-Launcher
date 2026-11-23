@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.fireworks.drawFireworks
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkColors
@@ -90,18 +92,41 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
     }
     val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
     drawFireworks(frame.rockets, frame.sparks, fireworkColors)
-    frame.buttons?.let { drawButtons(it.draw, it.collapse, colors.ship) }
+    frame.buttons?.let { drawButtons(it, colors.ship) }
 }
 
 private fun DrawScope.drawStars(stars: List<SecretStarSprite>, color: Color) {
     val u = size.width
     stars.forEach {
         val center = Offset(it.x * u, it.y * u)
+        if (it.tail > 0f) {
+            drawWarpStar(it, color)
+            return@forEach
+        }
         if (it.glowAlpha > 0f) {
             drawCircle(color.copy(alpha = it.glowAlpha), it.radius * SecretStarsTuning.GLOW_SCALE * u, center)
         }
         drawCircle(color.copy(alpha = it.alpha), it.radius * u, center)
     }
+}
+
+/** Warp: risco de (x, y − tail) até (x, y), transparente no topo e na cor dos rostos na ponta; sem halo. */
+private fun DrawScope.drawWarpStar(star: SecretStarSprite, color: Color) {
+    val u = size.width
+    val top = Offset(star.x * u, (star.y - star.tail) * u)
+    val tip = Offset(star.x * u, star.y * u)
+    val width = maxOf(1.dp.toPx(), star.radius * SecretStarsTuning.WARP_STROKE * u)
+    drawLine(
+        brush = Brush.verticalGradient(
+            listOf(Color.Transparent, color.copy(alpha = star.alpha)),
+            startY = top.y,
+            endY = tip.y
+        ),
+        start = top,
+        end = tip,
+        strokeWidth = width,
+        cap = StrokeCap.Round
+    )
 }
 
 private fun DrawScope.drawSprite(painter: Painter, aspect: Float, sprite: SecretSprite, tint: Color) {

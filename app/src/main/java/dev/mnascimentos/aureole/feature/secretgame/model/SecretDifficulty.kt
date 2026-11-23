@@ -7,7 +7,7 @@ import kotlin.random.Random
 /** Dificuldade por nível: 1 nível a cada [POINTS_PER_LEVEL] pontos. Velocidade em alturas de tela por segundo. */
 object SecretDifficulty {
     const val POINTS_PER_LEVEL = 100
-    const val SPEED_BASE = 0.26f
+    const val SPEED_BASE = 0.32f
     const val SPEED_GROWTH = 1.08f
     const val SPEED_MAX = 2.5f
     const val SPAWN_BASE_MS = 1250f

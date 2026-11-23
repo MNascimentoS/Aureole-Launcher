@@ -14,8 +14,19 @@ data class SecretFaceSprite(val kind: SecretFaceKind, val sprite: SecretSprite, 
 /** Brilho radial (troca logo → nave e explosão). */
 data class SecretGlow(val x: Float, val y: Float, val radius: Float, val alpha: Float)
 
-/** [draw] desenha as molduras (0..1); [collapse] recolhe para os cantos na explosão (0..1). */
-data class SecretButtonsFrame(val draw: Float, val collapse: Float)
+/**
+ * [draw] desenha as molduras (0..1); [collapse] recolhe para os cantos na explosão (0..1);
+ * [leftPress]/[rightPress]: efeito de toque, 1 no toque → 0 em [SecretGameTuning.PRESS_MS];
+ * [leftSqueeze]/[rightSqueeze]: escala extra da moldura apertada (0 → [SecretGameTuning.PRESS_SCALE] → 0).
+ */
+data class SecretButtonsFrame(
+    val draw: Float,
+    val collapse: Float,
+    val leftPress: Float = 0f,
+    val rightPress: Float = 0f,
+    val leftSqueeze: Float = 0f,
+    val rightSqueeze: Float = 0f,
+)
 
 enum class SecretCountdownLabel { THREE, TWO, ONE, GO }
 
@@ -126,7 +137,14 @@ private fun SecretGameState.arenaFrame(base: SecretGameFrame): SecretGameFrame {
         ship = flyingShip(shake = 0f),
         flame = flame(),
         faces = faces.map { faceSprite(it, facesAlpha) },
-        buttons = SecretButtonsFrame(draw = 1f, collapse = 0f),
+        buttons = SecretButtonsFrame(
+            draw = 1f,
+            collapse = 0f,
+            leftPress = pressGlow(leftPressMs),
+            rightPress = pressGlow(rightPressMs),
+            leftSqueeze = pressSqueeze(leftPressMs),
+            rightSqueeze = pressSqueeze(rightPressMs),
+        ),
         countdown = if (phase == SecretGamePhase.COUNTDOWN) countdownFrame() else null,
         streaks = if (inGame) streaks else emptyList(),
         hudScore = if (inGame) score else null,

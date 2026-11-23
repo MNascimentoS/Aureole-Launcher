@@ -45,9 +45,9 @@ object SecretGameTuning {
     const val SHIP_ASPECT = 93f / 111f
     const val LOGO_ASPECT = 73f / 128f
     const val SHIP_BOTTOM_OFFSET = 0.583f
-    const val BUTTON_SIZE = 0.122f
-    const val BUTTON_BOTTOM_OFFSET = 0.328f
-    const val BUTTON_SIDE_INSET = 0.083f
+    const val BUTTON_SIZE = 0.161f
+    const val BUTTON_BOTTOM_OFFSET = 0.378f
+    const val BUTTON_SIDE_INSET = 0.061f
     const val CENTER_Y_FRACTION = 0.40f
     const val INTIMIDATE_FROM_Y = -0.144f
     const val INTIMIDATE_TO_Y = 0.178f
@@ -76,8 +76,20 @@ object SecretGameTuning {
 
     // Movimento e voo
     const val SHIP_FOLLOW_RATE = 48f
-    const val TILT_DECAY_RATE = 12f
-    const val TILT_ON_MOVE = 0.32f
+
+    /** Inclinação persegue a distância que falta até a faixa: pico ~5°, volta suave em ~280 ms. */
+    const val TILT_PER_LANE = 0.9f
+    const val TILT_CHASE_RATE = 10f
+
+    // Toque nos botões: aperta, acende o fundo, solta um anel e a seta dá um passo para o lado
+    const val PRESS_MS = 220L
+    const val PRESS_SQUEEZE_MS = 140L
+    const val PRESS_SCALE = 0.08f
+    const val PRESS_FILL_ALPHA = 0.24f
+    const val PRESS_RING_ALPHA = 0.45f
+    const val PRESS_RING_GROWTH = 0.35f
+    const val PRESS_NUDGE = 0.011f
+    const val PRESS_IDLE_MS = 100_000L
     const val BOB_AMPLITUDE = 0.011f
     const val BOB_PERIOD_S = 1.7f
     const val SWAY_AMPLITUDE = 0.035f

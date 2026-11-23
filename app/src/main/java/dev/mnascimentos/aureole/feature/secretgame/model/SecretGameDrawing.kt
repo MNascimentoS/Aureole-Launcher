@@ -68,7 +68,10 @@ object SecretGameDrawing {
     const val BUTTON_STROKE = 0.006f
     const val BUTTON_RADIUS = 0.025f
     const val BUTTON_ALPHA = 0.8f
-    const val BUTTON_ARROW = 0.28f
+    const val BUTTON_SHAFT = 0.18f
+    const val BUTTON_HEAD = 0.15f
+    const val PRESS_RING_STROKE_DP = 1.2f
+    const val PRESS_START_RING = 0.5f
     const val BUTTON_TARGET_SCALE = 1.5f
     const val COLLAPSE_SCALE_MIN = 0.1f
 

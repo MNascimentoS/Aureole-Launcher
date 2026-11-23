@@ -101,6 +101,16 @@ fun SecretGameButtonsHiddenScreenshotTest() = FrameCase(7)
 @PreviewTest
 @AureolePreview
 @Composable
+fun SecretGameWarpScreenshotTest() = FrameCase(8)
+
+@PreviewTest
+@AureolePreview
+@Composable
+fun SecretGameButtonPressedScreenshotTest() = FrameCase(9)
+
+@PreviewTest
+@AureolePreview
+@Composable
 fun SecretSoundButtonOnScreenshotTest() {
     AureoleLauncherTheme { SecretSoundButton(isOn = true, onToggle = {}) }
 }
@@ -172,9 +182,14 @@ private fun sampleFrames(): List<SecretGameFrame> = listOf(
     sampleState(SecretGamePhase.RESULT, RESULT_MS, score = 290, record = true)
         .copy(fireworks = fireworksSample()).toFrame(),
     sampleState(SecretGamePhase.ENTER, ENTER_MID_MS).toFrame().copy(buttons = SecretButtonsFrame(0f, 0f)),
+    sampleState(SecretGamePhase.PLAY, PLAY_MS, score = 120).copy(playMs = WARP_MID_MS).toFrame(),
+    sampleState(SecretGamePhase.PLAY, PLAY_MS, score = 120).toFrame().let {
+        it.copy(buttons = SecretButtonsFrame(1f, 0f, leftPress = 1f, leftSqueeze = 0.08f, rightPress = 0.4f))
+    },
 )
 
 private const val SAMPLE_ASPECT = 2.1f
+private const val WARP_MID_MS = 450L
 private const val ENTER_MID_MS = 1400L
 private const val COUNTDOWN_MS = 800L
 private const val PLAY_MS = 4000L

@@ -61,14 +61,28 @@ class SecretGameEngineTest {
         val s = playing()
         val left = engine.move(s, -1)
         assertEquals(0, left.state.lane)
-        assertTrue(left.state.tilt < 0f)
+        assertEquals(0L, left.state.leftPressMs)
+        assertTrue(engine.step(left.state, STEP).state.tilt < 0f)
         assertEquals(listOf(SecretGameEvent.LaneTick), left.events)
-        val edge = engine.move(left.state, -1)
+        val edge = engine.move(left.state.copy(leftPressMs = BIG.toLong()), -1)
         assertEquals(0, edge.state.lane)
+        assertEquals(0L, edge.state.leftPressMs)
         assertTrue(edge.events.isEmpty())
         val entering = engine.move(engine.start(layout, 0), 1)
         assertEquals(1, entering.state.lane)
         assertTrue(entering.events.isEmpty())
+    }
+
+    @Test
+    fun `the lean is small and settles smoothly`() {
+        var s = engine.move(playing(), 1).state
+        var peak = 0f
+        repeat(LEAN_STEPS) {
+            s = engine.step(s.copy(spawnCooldownMs = BIG, faces = emptyList()), STEP).state
+            peak = maxOf(peak, s.tilt)
+        }
+        assertTrue(peak in MIN_PEAK_LEAN..MAX_PEAK_LEAN)
+        assertTrue(s.tilt < 0.01f)
     }
 
     @Test
@@ -185,7 +199,7 @@ class SecretGameEngineTest {
     @Test
     fun `ship reaches the lane in about 90 ms`() {
         assertTrue(1f - secretShipFollow(0.1f) < 0.01f)
-        assertTrue(secretTiltKeep(0.5f) < 0.01f)
+        assertTrue(secretTiltChase(0.5f) > 0.99f)
     }
 
     @Test
@@ -237,6 +251,9 @@ class SecretGameEngineTest {
         const val LONG_MS = 3000L
         const val BIG = 1_000_000f
         const val HIGH_SCORE = 3000
+        const val LEAN_STEPS = 25
+        const val MIN_PEAK_LEAN = 0.05f
+        const val MAX_PEAK_LEAN = 0.12f
         const val WAVES = 200
         const val EPS = 0.001f
     }

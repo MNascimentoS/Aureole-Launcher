@@ -164,7 +164,7 @@ private fun BoxWithConstraintsScope.PausedSoundButton(sound: SecretGameSound, la
         onToggle = sound.onToggle,
         modifier = Modifier
             .align(Alignment.TopCenter)
-            .offset(y = maxWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP))
+            .offset(y = maxWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP) + AureoleDS.dimens.medium)
     )
 }
 

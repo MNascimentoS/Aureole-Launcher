@@ -45,6 +45,8 @@ data class SecretGameState(
     val lane: Int = 1,
     val shipX: Float = laneX(1),
     val tilt: Float = 0f,
+    val leftPressMs: Long = SecretGameTuning.PRESS_IDLE_MS,
+    val rightPressMs: Long = SecretGameTuning.PRESS_IDLE_MS,
     val faces: List<SecretFace> = emptyList(),
     val particles: List<SecretParticle> = emptyList(),
     val streaks: List<SecretStreak> = emptyList(),

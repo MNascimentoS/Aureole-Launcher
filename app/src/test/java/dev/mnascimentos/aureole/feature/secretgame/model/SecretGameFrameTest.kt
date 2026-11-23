@@ -84,6 +84,19 @@ class SecretGameFrameTest {
     }
 
     @Test
+    fun `pressed button glows, squeezes and calms down`() {
+        val just = assertNotNullAndGet(at(SecretGamePhase.PLAY, 10L, base.copy(rightPressMs = 0L)).buttons)
+        assertEquals(1f, just.rightPress, EPS)
+        assertEquals(0f, just.leftPress, EPS)
+        val squeezing = base.copy(rightPressMs = T.PRESS_SQUEEZE_MS / 2)
+        val mid = assertNotNullAndGet(at(SecretGamePhase.PLAY, 10L, squeezing).buttons)
+        assertEquals(T.PRESS_SCALE, mid.rightSqueeze, EPS)
+        val calm = assertNotNullAndGet(at(SecretGamePhase.PLAY, 10L, base.copy(rightPressMs = T.PRESS_MS)).buttons)
+        assertEquals(0f, calm.rightPress, EPS)
+        assertEquals(0f, calm.rightSqueeze, EPS)
+    }
+
+    @Test
     fun `hud flashes after a level up and shows the next level`() {
         val f = at(SecretGamePhase.PLAY, 10L, base.copy(score = 120, levelFlashMs = T.LEVEL_FLASH_MS / 2))
         assertEquals(0.5f, f.hudFlash, EPS)

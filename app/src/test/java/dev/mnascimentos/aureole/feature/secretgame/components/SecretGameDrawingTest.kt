@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretButtonsFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
 import org.junit.Rule
 import org.junit.Test
@@ -46,7 +47,9 @@ class SecretGameDrawingTest {
     fun `when the frames of the buttons are drawn, should render hidden, half and complete`() {
         var draw by mutableFloatStateOf(0f)
         rule.setContent {
-            Canvas(modifier = Modifier.fillMaxSize()) { drawButtons(draw, collapse = 0f, color = Color.White) }
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawButtons(SecretButtonsFrame(draw, 0f, leftPress = 0.5f, leftSqueeze = 0.04f), Color.White)
+            }
         }
 
         listOf(0f, 0.0005f, 0.5f, 1f).forEach {
