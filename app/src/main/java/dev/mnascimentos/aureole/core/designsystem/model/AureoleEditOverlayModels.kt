@@ -134,7 +134,7 @@ internal data class SheetBounds(
 )
 
 /**
- * Extra slots of the sheet body: a custom header icon and the invisible gesture zone above the header.
+ * Extra slots of the sheet body: a custom header icon and the handle (gesture zone) above the header.
  */
 internal class OverlaySheetDecorations(
     val gestureZone: (@Composable () -> Unit)? = null,
