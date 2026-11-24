@@ -76,6 +76,7 @@ class OnboardingActionsFactoryTest {
         onAddGridItem = { type, _, _ -> calls += "add:$type" },
         onSetIsAddingSingleWidget = { adding -> calls += "singleWidget:$adding" },
         onAddWidgetClick = { stack -> calls += "widgetPicker:$stack" },
+        onOpenEditGridItemDialog = { item -> calls += "widgetGroup:${item.id}" },
         onOpenEditClockBottomSheet = { calls += "clock:$it" },
         onSaveGridEditMode = { calls += "saveGrid" }
     )
@@ -174,12 +175,12 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when the widget task is tapped, should save a compact widget list and open the picker for it`() {
+    fun `when the widget task is tapped, should save a compact widget list and open its group editor`() {
         actions().onTaskClick(OnboardingTask.ADD_WIDGET)
 
         val state = viewModel.uiState.value
         val list = state.gridItems.single()
-        assertEquals(listOf("widgetPicker:${list.id}"), calls)
+        assertEquals(listOf("widgetGroup:${list.id}"), calls)
         assertEquals(LauncherItemType.WIDGET_LIST, list.safeType)
         assertFalse(state.isGridEditMode)
         assertEquals(OnboardingTask.ADD_WIDGET, state.onboarding.pendingTask)
