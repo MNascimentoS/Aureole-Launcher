@@ -39,7 +39,8 @@ resposta: A (dono) | A (padrão proposto) | A (padrão conservador, registrado p
 - Ao fim de cada fase: marcar o `PROGRESSO.md`. Item que não fechou vai para "Ficou faltando" e a execução segue.
 - `PROGRESSO.md` tem colunas Gates, Visual e Aparelho. **Aparelho é marcado só pelo Mateus**, depois de testar no
   celular.
-- Mudança visual sempre termina com prints (screenshot tests ou `prints-resultado/`) para validar.
+- Mudança visual sempre termina com o estado de tela ou o passo de fluxo afetado atualizado
+  ([`aureole_screenshots.md`](aureole_screenshots.md)), e `prints-resultado/` quando a spec pedir.
 
 ## 4. Git
 - Trabalho na branch da release em andamento: `release/x.y.z` (ex.: `release/0.9.48`).

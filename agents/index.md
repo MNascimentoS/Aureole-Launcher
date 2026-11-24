@@ -21,7 +21,7 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
    - Single Source of Truth repositories.
 
 4. **[Testing & Quality Assurance](aureole_testing.md)**
-   - Mandatory unit tests (`app/src/test/`) and screenshot tests (`@PreviewTest`).
+   - Mandatory unit tests (`app/src/test/`) and screenshot tests (`@PreviewTest`) by screen, flow and catalog (see 8).
    - Mandatory `@AureolePreview` with private functions.
    - Quality gates: detekt with 0 issues, lintDebug with 0 errors/warnings, coverage, screenshots, assemble.
    - Tests that never hang (no blocking the Robolectric main thread) and ViewModel logic tested on the plain JVM.
@@ -40,6 +40,11 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
    - Trabalho novo = spec nova em `specs/<nome>/` (IDEIA → SPEC → PLANO → DECISOES → PROGRESSO → EXECUTAR).
    - Formato das decisões D-xx, execução por fases, branch `release/x.y.z`, commit só no nome do Mateus, nunca push.
    - Onde guardar a memória do projeto.
+
+8. **[Screenshots: telas, fluxos e catálogo](aureole_screenshots.md)**
+   - Contrato v1 das referências: tela inteira (até 3 estados), fluxo em passos `P01…`, catálogo por grupo do DS.
+   - Pastas `telas/`, `fluxos/`, `catalogo/`, manifesto `app/src/screenshotTest/screenshots.json`, chave estável.
+   - Guarda `ScreenshotContractTest` no `testDebugUnitTest`; componente isolado não tem screenshot próprio.
 
 ## 🗺️ Mapa do código (leitura sob demanda)
 - Os guias acima são obrigatórios no início de toda tarefa. **[`mapa/index.md`](mapa/index.md)** não: leia o índice e depois só o mapa da área tocada

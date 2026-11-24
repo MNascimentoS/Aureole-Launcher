@@ -38,11 +38,28 @@ Exemplo: `clockTextColorRef` em `M/core/data/repository/SettingsRepository.kt`.
 5. Cor do usuário: guarde `ThemeColorRef.toJson()`, leia com `parseThemeColorRef` (teste `ThemeColorRefTest`). Classe própria de prefs: `OnboardingPreferences.kt` + `OnboardingPreferencesTest`.
 
 ## Novo screenshot test
-Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/composable/menu/AureoleRadioSheetScreenshotTest.kt`.
-1. `*ScreenshotTest.kt` no pacote espelho, máx. 800 linhas.
-2. `@Composable private fun XCase(...)` com `ProvideHomeUiState(MainUiState(...)) { AureoleLauncherTheme { ... } }`.
-3. Cada variante: `@PreviewTest @AureolePreview @Composable private fun XScreenshotTest() = XCase(...)` (`com.android.tools.screenshot.PreviewTest`).
-4. `./gradlew updateDebugScreenshotTest` gera as referências em `app/src/screenshotTestDebug/reference/`; depois `./gradlew validateDebugScreenshotTest`.
+Regras e contrato em [`aureole_screenshots.md`](../aureole_screenshots.md). Componente isolado não tem screenshot
+próprio. Em todas as receitas: casos com `@Composable private fun XCase(...)` envolvendo
+`ProvideHomeUiState(MainUiState(...)) { AureoleLauncherTheme { ... } }`, dados repetidos em `fixtures/`, máx. 800
+linhas; `@PreviewTest` vem de `com.android.tools.screenshot.PreviewTest`. Depois: `./gradlew updateDebugScreenshotTest`,
+`./gradlew validateDebugScreenshotTest` e `./gradlew testDebugUnitTest --tests "*ScreenshotContractTest*"`.
+
+### Estado de tela
+Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/telas/<tela>/<Tela>TelaScreenshotTest.kt`.
+1. Um arquivo por tela; id da pasta em minúsculas sem separador (`todosapps`), imutável.
+2. `@PreviewTest @AureolePreview @Composable private fun <Estado>ScreenshotTest() = XCase(...)`; o primeiro é `Padrao`.
+3. Até 3 estados em retrato, só quando muda o layout; paisagem (`@AureoleLandscapePreview`) só com `paisagem: true`.
+4. Item em `screenshots.json` (`telas[]`): `id`, `area`, `titulo` pt/en, `estados` com `antes` se substitui chave legada.
+
+### Passo de fluxo
+Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/fluxos/<fluxo>/<Fluxo>FluxoScreenshotTest.kt`.
+1. `fun P<NN><Passo>ScreenshotTest()` com `NN` contínuo a partir de `01`, estado de cada passo montado à mão.
+2. Passo igual a um estado de tela não gera PNG: no manifesto, `"ref": "telas/<id>/<Estado>"`.
+
+### Item de catálogo
+Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/catalogo/<grupo>/<Grupo>CatalogoScreenshotTest.kt`.
+1. Um preview por grupo (`fun <Grupo>ScreenshotTest()`) com todas as variantes em coluna.
+2. Variante nova de um primitivo entra na coluna do grupo, não em PNG novo; item em `catalogo[]` do manifesto.
 
 ## Novo teste de lógica de ViewModel em JVM puro
 Exemplos: `app/src/test/.../composable/menu/model/MenuModelsTest.kt`, `.../feature/home/model/MainUiStateFavoritesTest.kt`.
