@@ -79,9 +79,8 @@ internal fun EditClockPager(
                     ClockTab.FORMAT -> EditClockFormatPage(params)
                     ClockTab.COLORS -> EditClockColorsPage(params)
                 }
-                // Room under the last control so it is not cut in half at the edge of the scroll; the
-                // expanded sheet does not scroll, so the divider sits right after the content instead.
-                if (!params.isExpanded) Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
+                // No room under the last control: the fading edge itself meets the notice and the tab bar, almost
+                // without margin (telas-ajustesfundo RF-05).
             }
         }
     }

@@ -1,11 +1,14 @@
 package dev.mnascimentos.aureole.composable.sheets
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
@@ -15,11 +18,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.actions.AureolePrimaryActionButton
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSheet
@@ -36,6 +42,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 private const val CHIP_ALPHA = 0.5f
+private val LANDSCAPE_BUTTON_MIN_WIDTH = 140.dp
 
 /**
  * "What's new": the notes of one version as cards, with the version chips and the "Understood" button in the
@@ -79,6 +86,33 @@ private fun ReleaseNotesBottomBar(
     onUnderstood: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val understood: @Composable (Modifier) -> Unit = {
+        AureolePrimaryActionButton(
+            label = stringResource(R.string.core_common_understood),
+            onClick = onUnderstood,
+            modifier = it
+        )
+    }
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        // Landscape has little height: the chips and the button share one line, so the notes get the room.
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val hasChips = versions.size > 1
+            if (hasChips) {
+                VersionChipsRow(
+                    versions = versions,
+                    selected = selected,
+                    onSelect = onSelect,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            understood(if (hasChips) Modifier.widthIn(min = LANDSCAPE_BUTTON_MIN_WIDTH) else Modifier.weight(1f))
+        }
+        return
+    }
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small)
@@ -86,11 +120,7 @@ private fun ReleaseNotesBottomBar(
         if (versions.size > 1) {
             VersionChipsRow(versions = versions, selected = selected, onSelect = onSelect)
         }
-        AureolePrimaryActionButton(
-            label = stringResource(R.string.core_common_understood),
-            onClick = onUnderstood,
-            modifier = Modifier.fillMaxWidth()
-        )
+        understood(Modifier.fillMaxWidth())
     }
 }
 

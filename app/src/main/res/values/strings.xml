@@ -426,7 +426,6 @@
     <string name="undo_cards_glass_changed">Cards and glass updated</string>
     <string name="undo_folder_changed">Folder updated</string>
     <string name="settings_background_section_theme">From your theme</string>
-    <string name="settings_background_section_palettes">Palettes</string>
     <string name="settings_background_section_tones">Tones</string>
     <string name="settings_background_category_cold">Cold</string>
     <string name="settings_background_category_cool">Cool</string>

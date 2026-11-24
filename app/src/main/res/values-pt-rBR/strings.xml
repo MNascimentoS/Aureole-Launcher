@@ -429,7 +429,6 @@
     <string name="undo_cards_glass_changed">Cartões e vidro atualizados</string>
     <string name="undo_folder_changed">Pasta atualizada</string>
     <string name="settings_background_section_theme">Do seu tema</string>
-    <string name="settings_background_section_palettes">Paletas</string>
     <string name="settings_background_section_tones">Tons</string>
     <string name="settings_background_category_cold">Frias</string>
     <string name="settings_background_category_cool">Frescas</string>
