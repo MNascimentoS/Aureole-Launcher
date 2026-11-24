@@ -113,7 +113,7 @@ class ScreenshotContractTest {
 
     @Test
     fun `regra 1 png fora de telas, fluxos e catalogo`() {
-        val legacy = "feature/home/HomeScreenScreenshotTestKt/HomeDefaultScreenshotTest_Dark Mode_c7acffac_0.png"
+        val legacy = "composable/AppIconRadiusScreenshotTestKt/AppIconRadius24ScreenshotTest_Dark Mode_c7acffac_0.png"
         val loose = "outros/home/XKt/Padrao_Dark Mode_c7acffac_0.png"
 
         assertEquals(2, outsideContractViolations(paths + legacy + loose, emptyList()).size)

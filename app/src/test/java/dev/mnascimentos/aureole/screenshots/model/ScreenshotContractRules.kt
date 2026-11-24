@@ -4,7 +4,7 @@ package dev.mnascimentos.aureole.screenshots.model
 // em texto; lista vazia = regra cumprida. `paths` são caminhos relativos à pasta `referencias`.
 
 /** Prefixos legados aceitos enquanto a migração anda (fases 2–5 tiram o que esvaziar; a fase G apaga). */
-val LEGADO_PERMITIDO = listOf("composable/", "core/", "feature/")
+val LEGADO_PERMITIDO = listOf("composable/", "core/")
 
 const val MAX_PORTRAIT_STATES = 3
 

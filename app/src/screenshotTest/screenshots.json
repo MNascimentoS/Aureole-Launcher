@@ -1169,6 +1169,357 @@
       ]
     }
   ],
-  "fluxos": [],
+  "fluxos": [
+    {
+      "id": "onboarding",
+      "area": "home",
+      "titulo": {
+        "pt": "Onboarding",
+        "en": "Onboarding"
+      },
+      "paisagem": true,
+      "passos": [
+        {
+          "id": "P01BoasVindas",
+          "titulo": {
+            "pt": "Boas-vindas",
+            "en": "Welcome"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/WelcomeScreenScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P02LauncherPadrao",
+          "titulo": {
+            "pt": "Launcher padrão",
+            "en": "Default launcher"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/DefaultHomeStepScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/DefaultHomeStepAfterAttemptScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P03TodosApps",
+          "titulo": {
+            "pt": "Gesto: todos os apps",
+            "en": "Gesture: all apps"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachAppsScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachSuccessScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P04Alfabeto",
+          "titulo": {
+            "pt": "Gesto: alfabeto",
+            "en": "Gesture: alphabet"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachScrubScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P05DeslizarParaBaixo",
+          "titulo": {
+            "pt": "Gesto: deslizar para baixo",
+            "en": "Gesture: swipe down"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachNotificationsScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachNotificationsSuccessScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P06Segurar",
+          "titulo": {
+            "pt": "Gesto: segurar",
+            "en": "Gesture: touch and hold"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachCustomizeScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P07Checklist",
+          "titulo": {
+            "pt": "Lista de tarefas",
+            "en": "Checklist"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistOneDoneScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistFourDoneScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistSkippedScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistMorphExpandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P08Paleta",
+          "titulo": {
+            "pt": "Escolher paleta",
+            "en": "Choose palette"
+          },
+          "ref": "telas/tema/Padrao",
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPalettePickerScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P09Pilula",
+          "titulo": {
+            "pt": "Lista minimizada",
+            "en": "Minimized checklist"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistPillScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistMorphMinimizedScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleEmptyScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleHalfScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleFullScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P10DicaEdicao",
+          "titulo": {
+            "pt": "Dica de edição",
+            "en": "Edit hint"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingEditHintScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillOnlyScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillGesturingScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillTopScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P11Comemoracao",
+          "titulo": {
+            "pt": "Comemoração",
+            "en": "Celebration"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingCelebrationScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingParticlesScreenshotTestKt/OnboardingCelebrationBurstScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jogosecreto",
+      "area": "jogo",
+      "titulo": {
+        "pt": "Jogo secreto",
+        "en": "Secret game"
+      },
+      "passos": [
+        {
+          "id": "P01CincoToques",
+          "titulo": {
+            "pt": "Cinco toques no logo",
+            "en": "Five taps on the logo"
+          },
+          "ref": "telas/ajustes/Padrao",
+          "antes": [
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretThankYouSweepScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretThankYouStarScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P02Inicio",
+          "titulo": {
+            "pt": "Início",
+            "en": "Start"
+          },
+          "antes": [
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameEnterScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameCountdownScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameButtonsHiddenScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P03Jogando",
+          "titulo": {
+            "pt": "Jogando",
+            "en": "Playing"
+          },
+          "antes": [
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGamePlayScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameLevelUpScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameWarpScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameButtonPressedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P04Pausa",
+          "titulo": {
+            "pt": "Pausa",
+            "en": "Paused"
+          },
+          "antes": [
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGamePausedScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretSoundButtonOnScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretSoundButtonOffScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P05Fim",
+          "titulo": {
+            "pt": "Fim",
+            "en": "Game over"
+          },
+          "antes": [
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameResultScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretGameFireworksScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P06Recorde",
+          "titulo": {
+            "pt": "Recorde",
+            "en": "Best score"
+          },
+          "antes": [
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretBestScoreEmptyScreenshotTest_Dark Mode",
+            "feature/secretgame/SecretGameScreenshotTestKt/SecretBestScoreRecordScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "criarpasta",
+      "area": "home",
+      "titulo": {
+        "pt": "Criar pasta",
+        "en": "Create folder"
+      },
+      "passos": [
+        {
+          "id": "P01SegurarApp",
+          "titulo": {
+            "pt": "Segurar um app",
+            "en": "Long-press an app"
+          },
+          "ref": "telas/menuapp/Padrao"
+        },
+        {
+          "id": "P02Formulario",
+          "titulo": {
+            "pt": "Nome e ícone da pasta",
+            "en": "Folder name and icon"
+          },
+          "ref": "telas/pastaformulario/Padrao"
+        },
+        {
+          "id": "P03Apps",
+          "titulo": {
+            "pt": "Escolher os apps",
+            "en": "Choose the apps"
+          },
+          "ref": "telas/pastaapps/Padrao"
+        },
+        {
+          "id": "P04PastaAberta",
+          "titulo": {
+            "pt": "Pasta aberta",
+            "en": "Open folder"
+          },
+          "ref": "telas/pasta/Padrao"
+        }
+      ]
+    },
+    {
+      "id": "editarrelogio",
+      "area": "home",
+      "titulo": {
+        "pt": "Editar relógio",
+        "en": "Edit clock"
+      },
+      "passos": [
+        {
+          "id": "P01SegurarRelogio",
+          "titulo": {
+            "pt": "Segurar o relógio",
+            "en": "Long-press the clock"
+          },
+          "ref": "telas/home/Padrao"
+        },
+        {
+          "id": "P02AvisoOnboarding",
+          "titulo": {
+            "pt": "Aviso de salvar no onboarding",
+            "en": "Save notice during onboarding"
+          }
+        },
+        {
+          "id": "P03Estilo",
+          "titulo": {
+            "pt": "Estilo",
+            "en": "Style"
+          },
+          "ref": "telas/relogio/Padrao"
+        },
+        {
+          "id": "P04PaginaCor",
+          "titulo": {
+            "pt": "Página de cor",
+            "en": "Color page"
+          },
+          "ref": "telas/relogio/PaginaCor"
+        },
+        {
+          "id": "P05Desfazer",
+          "titulo": {
+            "pt": "Desfazer",
+            "en": "Undo"
+          },
+          "ref": "telas/desfazer/Padrao"
+        }
+      ]
+    },
+    {
+      "id": "atalho",
+      "area": "home",
+      "titulo": {
+        "pt": "Botão rápido com atalho",
+        "en": "Quick button with shortcut"
+      },
+      "passos": [
+        {
+          "id": "P01BotaoRapido",
+          "titulo": {
+            "pt": "Botão rápido",
+            "en": "Quick button"
+          },
+          "ref": "telas/botaorapido/Padrao"
+        },
+        {
+          "id": "P02Aparencia",
+          "titulo": {
+            "pt": "Aparência",
+            "en": "Appearance"
+          },
+          "ref": "telas/botaorapidoaparencia/Padrao"
+        },
+        {
+          "id": "P03Seletor",
+          "titulo": {
+            "pt": "Escolher atalho",
+            "en": "Choose shortcut"
+          },
+          "ref": "telas/atalhos/Padrao"
+        },
+        {
+          "id": "P04Busca",
+          "titulo": {
+            "pt": "Buscar atalho",
+            "en": "Search shortcut"
+          },
+          "ref": "telas/atalhos/Busca"
+        }
+      ]
+    }
+  ],
   "catalogo": []
 }
