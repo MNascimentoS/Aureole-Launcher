@@ -35,11 +35,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.wallpaper.drawFramedWallpaper
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.common.drawFramedWallpaper
 import dev.mnascimentos.aureole.feature.settings.model.EDITOR_ZOOM_STEP
 import dev.mnascimentos.aureole.feature.settings.model.EditorA11yLabels
 import dev.mnascimentos.aureole.feature.settings.model.EditorGestureCallbacks

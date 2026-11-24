@@ -267,7 +267,6 @@
     <string name="home_menu_customize_home_subtitle">Adjust, add components…</string>
     <string name="home_folder_container_settings">Container settings</string>
     <string name="home_folder_settings">Folder settings</string>
-    <string name="home_folder_is_empty">Folder is empty</string>
     <string name="home_container_saved">Container settings saved</string>
 
     <!-- Reusable -->

@@ -23,13 +23,13 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.wallpaper.FramedWallpaperImage
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.ImageSwap
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.common.FramedWallpaperImage
 import dev.mnascimentos.aureole.feature.settings.model.BackgroundPhotoCard
 import java.io.File
 

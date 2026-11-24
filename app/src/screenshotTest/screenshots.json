@@ -1195,8 +1195,23 @@
             "feature/settings/SettingsDialogsScreenshotTestKt/SettingsBottomSheetScreenshotTest_Dark Mode",
             "feature/settings/SettingsSheetsScreenshotTestKt/SettingsContributorsSheetScreenshotTest_Dark Mode"
           ]
+        },
+        {
+          "id": "PosicaoBotao",
+          "titulo": {
+            "pt": "Posição do botão",
+            "en": "Button position"
+          }
+        },
+        {
+          "id": "PosicaoBusca",
+          "titulo": {
+            "pt": "Posição da busca",
+            "en": "Search position"
+          }
         }
-      ]
+      ],
+      "excecao": "screenshots-telas-fluxos D-20"
     },
     {
       "id": "wallpaper",
