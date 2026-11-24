@@ -859,6 +859,314 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ajustes",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Ajustes",
+        "en": "Settings"
+      },
+      "paisagem": true,
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/settings/SettingsLandscapeScreenshotTestKt/SettingsRootScreenLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/settings/SettingsScreenScreenshotTestKt/SettingsRootScreenScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Aparencia",
+          "titulo": {
+            "pt": "Aparência",
+            "en": "Appearance"
+          },
+          "antes": [
+            "feature/settings/SettingsLandscapeScreenshotTestKt/SettingsAppearanceSheetLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAppearanceSheetScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAppearanceThemedIconsScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Avancado",
+          "titulo": {
+            "pt": "Avançado",
+            "en": "Advanced"
+          },
+          "antes": [
+            "feature/settings/SettingsLandscapeScreenshotTestKt/SettingsAdvancedSheetLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAdvancedSheetCareZoneScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAdvancedSheetLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAdvancedSheetScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAdvancedSheetSectionSpacingScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsBehaviorSheetScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ajustesfundo",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Fundo",
+        "en": "Background"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/settings/SettingsBackgroundScreenshotTestKt/SetBackgroundLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/settings/SettingsBackgroundScreenshotTestKt/SetBackgroundLeftHandedLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/settings/SettingsBackgroundScreenshotTestKt/SetBackgroundLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsBackgroundScreenshotTestKt/SetBackgroundRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Vidro",
+          "titulo": {
+            "pt": "Vidro dos cartões",
+            "en": "Cards glass"
+          },
+          "antes": [
+            "feature/settings/CardsGlassScreenshotTestKt/CardsGlassSheetFlatNoGlassScreenshotTest_Dark Mode",
+            "feature/settings/CardsGlassScreenshotTestKt/CardsGlassSheetLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/CardsGlassScreenshotTestKt/CardsGlassSheetRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Foto",
+          "titulo": {
+            "pt": "Imagem própria",
+            "en": "Custom image"
+          },
+          "antes": [
+            "feature/settings/SettingsBackgroundScreenshotTestKt/SetBackgroundCustomImageScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/SetBackgroundPhotoCardLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/SetBackgroundPhotoCardScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ajustesbloqueio",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Tela de bloqueio",
+        "en": "Lock screen"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Ligado",
+            "en": "On"
+          },
+          "antes": [
+            "feature/settings/SettingsLockScreenScreenshotTestKt/SetBackgroundLockScreenOffScreenshotTest_Dark Mode",
+            "feature/settings/SettingsLockScreenScreenshotTestKt/SetBackgroundLockScreenOnScreenshotTest_Dark Mode",
+            "feature/settings/SettingsLockScreenScreenshotTestKt/SetBackgroundLockScreenUnavailableScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "licencas",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Licenças",
+        "en": "Licenses"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Lista",
+            "en": "List"
+          },
+          "antes": [
+            "feature/settings/SettingsLicensesScreenshotTestKt/LicensesScreenLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsLicensesScreenshotTestKt/LicensesScreenRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Detalhe",
+          "titulo": {
+            "pt": "Detalhe",
+            "en": "Detail"
+          },
+          "antes": [
+            "feature/settings/SettingsLicensesScreenshotTestKt/LicenseSheetLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsLicensesScreenshotTestKt/LicenseSheetRightHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsLicensesScreenshotTestKt/LicenseSheetTermsScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ajustesopcao",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Sheet de opção",
+        "en": "Option sheet"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/settings/SettingsDialogsScreenshotTestKt/ContainerPositionDialogScreenshotTest_Dark Mode",
+            "feature/settings/SettingsDialogsScreenshotTestKt/SearchIconPositionDialogScreenshotTest_Dark Mode",
+            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsButtonPositionDialogScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/settings/SettingsDialogsScreenshotTestKt/ContainerPositionDialogLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsDialogsScreenshotTestKt/SearchIconPositionDialogLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsButtonPositionDialogLeftHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tema",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Paleta e fonte",
+        "en": "Palette and font"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Paleta",
+            "en": "Palette"
+          },
+          "antes": [
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/PickPaletteSheetLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/PickPaletteSheetRightHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/ThemePickerGridScreenshotTest_Dark Mode",
+            "feature/settings/SettingsDialogsScreenshotTestKt/PickPaletteBottomSheetScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Fonte",
+          "titulo": {
+            "pt": "Fonte",
+            "en": "Font"
+          },
+          "antes": [
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/PickFontSheetLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/PickFontSheetRightHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/ThemePickerChipsLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ThemePreviewSheetsScreenshotTestKt/ThemePickerChipsScreenshotTest_Dark Mode",
+            "feature/settings/SettingsDialogsScreenshotTestKt/PickFontBottomSheetScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAppearanceFontInnerScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Previa",
+          "titulo": {
+            "pt": "Prévia",
+            "en": "Preview"
+          },
+          "antes": [
+            "feature/settings/SettingsLandscapeScreenshotTestKt/SettingsAppearancePaletteLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsAppearancePaletteInnerScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ajustesdialogos",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Diálogos dos ajustes",
+        "en": "Settings dialogs"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Resetar",
+            "en": "Reset"
+          },
+          "antes": [
+            "feature/settings/SettingsDialogsScreenshotTestKt/ResetGridDialogScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Sobre",
+          "titulo": {
+            "pt": "Sobre",
+            "en": "About"
+          },
+          "antes": [
+            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsBottomSheetScreenshotTest_Dark Mode",
+            "feature/settings/SettingsSheetsScreenshotTestKt/SettingsContributorsSheetScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wallpaper",
+      "area": "ajustes",
+      "titulo": {
+        "pt": "Editor de papel de parede",
+        "en": "Wallpaper editor"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Enquadrar",
+            "en": "Frame"
+          },
+          "antes": [
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Ajuste",
+          "titulo": {
+            "pt": "Ajuste",
+            "en": "Adjust"
+          },
+          "antes": [
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorDimLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorDimScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameLeftHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
     }
   ],
   "fluxos": [],
