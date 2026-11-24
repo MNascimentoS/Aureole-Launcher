@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPlacementLayout
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.OpenedFolderPopup
@@ -30,6 +31,7 @@ private val POPUP_END_PADDING = 88.dp
 /** Pasta aberta em popup sobre a home. */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() {
     val sampleData = createSampleHomeData()

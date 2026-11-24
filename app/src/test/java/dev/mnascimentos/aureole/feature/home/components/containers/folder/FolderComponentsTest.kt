@@ -261,48 +261,6 @@ class FolderComponentsTest {
         assertEquals("Social Media", savedName)
     }
 
-    // --- FolderDialog Tests ---
-
-    @Test
-    fun `when rendering FolderDialog with apps, should display header and apps`() {
-        var appClicked = false
-        composeTestRule.setContent {
-            ProvideHomeUiState(MainUiState()) {
-                AureoleLauncherTheme {
-                    FolderDialog(
-                        folder = sampleFolder,
-                        allApps = listOf(sampleApp),
-                        onDismiss = {},
-                        onAppClick = { appClicked = true }
-                    )
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithText("Social").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Test App").assertIsDisplayed().performClick()
-        assertTrue(appClicked)
-    }
-
-    @Test
-    fun `when rendering empty FolderDialog, should display empty message`() {
-        val emptyFolder = AppFolder(id = "f_empty", name = "Empty", appPackageNames = emptyList())
-        composeTestRule.setContent {
-            ProvideHomeUiState(MainUiState()) {
-                AureoleLauncherTheme {
-                    FolderDialog(
-                        folder = emptyFolder,
-                        allApps = emptyList(),
-                        onDismiss = {},
-                        onAppClick = {}
-                    )
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithText("Folder is empty").assertIsDisplayed()
-    }
-
     // --- FolderAppPickerDialog Tests ---
 
     @Config(qualifiers = TALL_WINDOW)

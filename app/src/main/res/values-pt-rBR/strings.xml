@@ -268,7 +268,6 @@
     <string name="home_menu_customize_home_subtitle">Ajustar, adicionar componentes…</string>
     <string name="home_folder_container_settings">Configurações do Container</string>
     <string name="home_folder_settings">Configurações da Pasta</string>
-    <string name="home_folder_is_empty">A pasta está vazia</string>
     <string name="home_container_saved">Configurações do container salvas</string>
 
     <!-- Reusable -->

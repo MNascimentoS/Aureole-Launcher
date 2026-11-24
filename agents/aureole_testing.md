@@ -38,5 +38,6 @@ Before finishing complex changes, validate using:
 
 ## 6. ViewModel Logic Is Tested on the JVM, Not by Booting the ViewModel in Robolectric
 - Booting `HomeViewModel` or `SettingsViewModel` under Robolectric (real repositories, Room, prefs, IO threads) produced flaky tests and hung builds. **New ViewModel logic must be written as pure functions or extensions** (in `model/` or `extensions/`) **and tested as plain JVM tests**, without creating the ViewModel and without Robolectric.
+- A ViewModel does not need its own unit test (Robolectric in CI made them flaky). Any logic that must be tested lives **outside the ViewModel** (repository, use case, manager or pure function in `model/`/`extensions/`) and has its own unit test. <!-- verifica: logica-testada -->
 - Keep in the ViewModel only the wiring (collect a flow, call a pure function, save through a repository). Repositories are tested on their own; screens with Compose UI tests or screenshots.
 - Existing ViewModel tests stay while they are stable. A ViewModel test that fails intermittently is not retried or relaxed: replace it with a JVM test of the same logic (extracting the logic if needed) and delete it.

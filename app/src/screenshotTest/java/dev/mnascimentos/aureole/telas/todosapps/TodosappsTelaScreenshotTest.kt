@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import com.android.tools.screenshot.PreviewTest
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawer
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
@@ -78,6 +79,7 @@ private fun DrawerHeldOnLetter(letter: Char) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = DrawerCase(
     MainUiState(

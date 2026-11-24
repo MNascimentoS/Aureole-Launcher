@@ -6,6 +6,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
 import dev.mnascimentos.aureole.core.data.model.ScrollOrientation
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.content.ScrollViewContainerContent
 import dev.mnascimentos.aureole.feature.home.components.content.model.ScrollViewContainerParams
@@ -34,6 +35,7 @@ private fun group(children: List<LauncherItemState>) = LauncherItemState(
 /** Sheet do grupo: relógio com "Altura" e "- Nx +", lista de apps com "Lista inteira". */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = HomeCase(createSampleHomeData().uiState) {
     EditGridItemDialog(

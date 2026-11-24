@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerDialogBody
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.FolderAppPickerBodyParams
@@ -47,6 +48,7 @@ private fun PickerGridCase(isLeftHanded: Boolean) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = PickerGridCase(isLeftHanded = false)
 

@@ -6,12 +6,16 @@ pasta, nome ou campo do manifesto é mudança de contrato (§6).
 ## 1. O que tem screenshot
 | Tipo | O que é | Quantos |
 |---|---|---|
-| **Tela** | Tela, sheet, dialog ou popup de nível superior, inteiro, como o usuário vê | até **3 estados** em retrato; paisagem só com `paisagem: true` |
+| **Tela** | Tela, sheet, dialog ou popup de nível superior, inteiro, como o usuário vê | até **3 estados** em retrato + o `Padrao` em paisagem (`paisagem: true`) |
 | **Fluxo** | Jornada em passos numerados (`P01`, `P02`…) | 1 PNG por passo novo; passo igual a um estado de tela usa `ref`, sem PNG |
 | **Catálogo** | Um grupo de primitivos do DS (texto, controles, menu, dialog/popup, edit overlay, marca) | 1 PNG por grupo, todas as variantes juntas |
 
 - **Não tem screenshot próprio:** componente isolado, seção de sheet, linha, card, item de lista. Ele aparece na
   tela onde é usado; comportamento vai para Compose UI test ou teste JVM.
+- **Paisagem:** toda tela tem o `Padrao` também em paisagem (`@AureoleLandscapePreview`, `"paisagem": true` no
+  manifesto), mesmo quando o layout deitado é igual (dialog central). Os outros estados ficam só em retrato
+  (`screenshots-telas-fluxos` D-19). O caso monta a paisagem por `fixtures/OrientedCase` (já dentro de `HomeCase`,
+  `SettingsRootCase` e `SettingsSheetCase`); fluxo e catálogo só têm paisagem marcada no manifesto.
 - Estado novo só quando muda o layout (vazio, erro, canhoto espelhado, conteúdo longo). Texto ou cor diferente no
   mesmo layout não é estado.
 - Passar do teto, ou screenshot de componente isolado: decisão `D-xx` na spec, citando esta regra, e

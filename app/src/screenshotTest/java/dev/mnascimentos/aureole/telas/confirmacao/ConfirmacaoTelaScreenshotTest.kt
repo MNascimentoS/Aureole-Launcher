@@ -5,6 +5,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.actions.model.HOLD_CONFIRM_MS
 import dev.mnascimentos.aureole.composable.sheets.AureoleConfirmDialog
 import dev.mnascimentos.aureole.composable.sheets.model.ConfirmDialogParams
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.fixtures.HomeCase
@@ -12,6 +13,7 @@ import dev.mnascimentos.aureole.fixtures.HomeCase
 /** Confirmação simples: restaurar o layout da home. */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = HomeCase(MainUiState()) {
     AureoleConfirmDialog(

@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.containers.ManageItemsContent
@@ -58,6 +59,7 @@ private fun EditContainerCase(isLeftHanded: Boolean) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = EditContainerCase(isLeftHanded = false)
 

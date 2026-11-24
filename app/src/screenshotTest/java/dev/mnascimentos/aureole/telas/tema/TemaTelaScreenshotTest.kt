@@ -6,18 +6,21 @@ import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.composable.sheets.PickFontBottomSheet
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
+import dev.mnascimentos.aureole.fixtures.OrientedCase
 import dev.mnascimentos.aureole.fixtures.SettingsSheetCase
 
 /** Seletor de paletas (o que abre do Personalizar e do onboarding). */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
-private fun PadraoScreenshotTest() {
+private fun PadraoScreenshotTest() = OrientedCase {
     AureoleLauncherTheme {
         ProvideHomeUiState(MainUiState()) {
             PickPaletteBottomSheet(selectedPaletteName = "Frostbite", onPaletteSelected = {}, onDismissRequest = {})

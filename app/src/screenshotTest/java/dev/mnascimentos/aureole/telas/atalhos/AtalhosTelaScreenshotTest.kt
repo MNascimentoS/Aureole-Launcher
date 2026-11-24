@@ -5,6 +5,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.ShortcutSelectionBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.ShortcutSelectionOptions
@@ -39,6 +40,7 @@ private fun ShortcutCase(query: String = "") {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = ShortcutCase()
 

@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.common
+package dev.mnascimentos.aureole.composable.wallpaper
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable

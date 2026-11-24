@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.core.data.model.ReleaseNoteItem
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteSection
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteType
 import dev.mnascimentos.aureole.core.data.model.ReleaseNoteVersion
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.fixtures.HomeCase
@@ -37,6 +38,7 @@ private val SAMPLE_VERSION = ReleaseNoteVersion(
 /** Novidades: a versão atual aberta e duas anteriores. */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = HomeCase(MainUiState()) {
     ReleaseNotesBottomSheet(

@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.telas.widgets
 
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.widgets.WidgetSelectorScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.WidgetAppGroup
@@ -16,6 +17,7 @@ private const val CALENDAR_ID = "com.example.calendar"
 /** Seletor de widgets com um app aberto e duas variantes. */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() {
     val group = WidgetAppGroup(

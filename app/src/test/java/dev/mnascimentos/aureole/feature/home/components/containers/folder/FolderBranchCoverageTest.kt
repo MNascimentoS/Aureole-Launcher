@@ -292,68 +292,6 @@ class FolderBranchCoverageTest {
         assertEquals("build", selectedIconResult)
     }
 
-    // --- 4. FolderDialog Branches ---
-
-    @Test
-    fun `when FolderDialog rendered in InspectionMode, should render in Box layout`() {
-        val folder = AppFolder(
-            id = "f1",
-            name = "Inspection Folder",
-            appPackageNames = listOf(app1.packageName)
-        )
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(
-                LocalInspectionMode provides true,
-                LocalHomeUiState provides MainUiState(),
-                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
-            ) {
-                AureoleLauncherTheme {
-                    FolderDialog(
-                        folder = folder,
-                        allApps = listOf(app1),
-                        onDismiss = {},
-                        onAppClick = {}
-                    )
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithText("Inspection Folder").assertIsDisplayed()
-        composeTestRule.onNodeWithText("App One").assertIsDisplayed()
-    }
-
-    @Test
-    fun `when FolderDialog rendered with displayAsGrid true, should render LazyVerticalGrid`() {
-        val gridFolder =
-            AppFolder(
-                id = "fg",
-                name = "Grid Folder",
-                displayAsGrid = true,
-                appPackageNames = listOf(app1.packageName, app2.packageName)
-            )
-
-        composeTestRule.setContent {
-            CompositionLocalProvider(
-                LocalInspectionMode provides true,
-                LocalHomeUiState provides MainUiState(),
-                LocalLeftHanded provides (MainUiState()).isLeftHandedMode
-            ) {
-                AureoleLauncherTheme {
-                    FolderDialog(
-                        folder = gridFolder,
-                        allApps = listOf(app1, app2),
-                        onDismiss = {},
-                        onAppClick = {}
-                    )
-                }
-            }
-        }
-
-        composeTestRule.onNodeWithText("Grid Folder").assertIsDisplayed()
-        composeTestRule.onAllNodesWithText("A")[0].assertIsDisplayed()
-    }
-
     // --- 5. FolderAppPickerDialog & List Branches ---
 
     @Config(qualifiers = TALL_WINDOW)

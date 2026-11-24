@@ -12,7 +12,7 @@ import dev.mnascimentos.aureole.feature.settings.screens.SettingsRootScreen
 
 /** A raiz dos ajustes sozinha, com [uiState]. */
 @Composable
-internal fun SettingsRootCase(uiState: SettingsUiState = SettingsUiState()) {
+internal fun SettingsRootCase(uiState: SettingsUiState = SettingsUiState()) = OrientedCase {
     AureoleLauncherTheme {
         SettingsRootScreen(
             uiState = uiState,
@@ -29,7 +29,7 @@ internal fun SettingsSheetCase(
     sheet: SettingsSheet,
     uiState: SettingsUiState = SettingsUiState(),
     scroll: Int = 0
-) {
+) = OrientedCase {
     AureoleLauncherTheme {
         SettingsSheetHost(
             params = SettingsSheetHostParams(

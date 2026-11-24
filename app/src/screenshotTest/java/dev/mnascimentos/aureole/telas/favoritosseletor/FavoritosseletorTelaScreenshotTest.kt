@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.composable.favorites.FavoriteAppsDialog
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogActions
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.fixtures.HomeCase
 import dev.mnascimentos.aureole.fixtures.createSampleHomeData
@@ -14,6 +15,7 @@ import dev.mnascimentos.aureole.fixtures.createSampleHomeData
 /** Seletor de favoritos de uma lista de apps da home, com "Mostrar todos os apps" ligado. */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() {
     val sampleData = createSampleHomeData()
