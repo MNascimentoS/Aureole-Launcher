@@ -44,6 +44,15 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
+    fun `when the widget task has the group editor open, should count the task as in progress`() {
+        val widgetTask = OnboardingUiState(pendingTask = OnboardingTask.ADD_WIDGET)
+
+        assertTrue(MainUiState(onboarding = widgetTask, editingGridItem = widgetList).isTaskInProgress)
+        assertFalse(MainUiState(onboarding = widgetTask).isTaskInProgress)
+        assertFalse(MainUiState(editingGridItem = widgetList).isTaskInProgress)
+    }
+
+    @Test
     fun `when a clock is on the grid, should meet the clock task`() {
         val clock = LauncherItemState(id = "clock", type = LauncherItemType.CLOCK)
 

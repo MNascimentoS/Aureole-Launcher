@@ -69,10 +69,16 @@ class OnboardingActionsFactory(
             OnboardingTask.ADD_CLOCK -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditClockBottomSheet)
             OnboardingTask.FILL_CONTAINER -> viewModel.startGridTask(task)?.let(homeActions.onOpenEditContainerDialog)
             OnboardingTask.ADD_FAVORITE_APPS -> viewModel.startGridTask(task)?.let(homeActions.onChooseFavorites)
-            OnboardingTask.ADD_WIDGET -> viewModel.startGridTask(task)?.let(homeActions.onAddWidgetClick)
+            OnboardingTask.ADD_WIDGET -> openWidgetGroupEditor(task)
             OnboardingTask.ADJUST_LAYOUT -> viewModel.startLayoutTask()
             OnboardingTask.EXPLORE_SETTINGS -> homeActions.onSettingsClick()
         }
+    }
+
+    /** The widget task opens the group editor (several widgets at once); closing it judges the task. */
+    private fun openWidgetGroupEditor(task: OnboardingTask) {
+        val itemId = viewModel.startGridTask(task) ?: return
+        viewModel.uiState.value.gridItems.firstOrNull { it.id == itemId }?.let(homeActions.onOpenEditGridItemDialog)
     }
 
     private fun requestDefaultHome() {

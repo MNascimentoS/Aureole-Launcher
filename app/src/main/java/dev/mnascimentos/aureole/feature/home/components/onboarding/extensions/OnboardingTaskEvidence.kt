@@ -32,7 +32,12 @@ internal val MainUiState.isTaskEditorOpen: Boolean
         showFavoritePickerDialog ||
         isEditContainerDialogVisible ||
         showWidgetPicker ||
-        pendingWidgetId != -1
+        pendingWidgetId != -1 ||
+        isWidgetGroupEditorOpen
+
+/** The widget group editor ("Widget group" screen) opened by the widget task is on screen. */
+private val MainUiState.isWidgetGroupEditorOpen: Boolean
+    get() = onboarding.pendingTask == OnboardingTask.ADD_WIDGET && editingGridItem != null
 
 /** The task's editor or the grid edit mode is still open: the user has not saved yet. */
 internal val MainUiState.isTaskInProgress: Boolean
