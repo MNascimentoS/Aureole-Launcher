@@ -3,8 +3,8 @@ package dev.mnascimentos.aureole.screenshots.model
 // Regras da guarda do contrato (`agents/aureole_screenshots.md` §4). Cada função devolve a lista de violações
 // em texto; lista vazia = regra cumprida. `paths` são caminhos relativos à pasta `referencias`.
 
-/** Prefixos legados aceitos enquanto a migração anda (fases 2–5 tiram o que esvaziar; a fase G apaga). */
-val LEGADO_PERMITIDO = listOf("composable/", "core/")
+/** Prefixos legados aceitos durante a migração: vazio desde a fase 5 (a fase G apaga). */
+val LEGADO_PERMITIDO: List<String> = emptyList()
 
 const val MAX_PORTRAIT_STATES = 3
 

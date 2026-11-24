@@ -116,8 +116,8 @@ class ScreenshotContractTest {
         val legacy = "composable/AppIconRadiusScreenshotTestKt/AppIconRadius24ScreenshotTest_Dark Mode_c7acffac_0.png"
         val loose = "outros/home/XKt/Padrao_Dark Mode_c7acffac_0.png"
 
-        assertEquals(2, outsideContractViolations(paths + legacy + loose, emptyList()).size)
-        assertEquals(1, outsideContractViolations(paths + legacy + loose, LEGADO_PERMITIDO).size)
+        assertEquals(2, outsideContractViolations(paths + legacy + loose, LEGADO_PERMITIDO).size)
+        assertEquals(1, outsideContractViolations(paths + legacy + loose, listOf("composable/")).size)
     }
 
     @Test

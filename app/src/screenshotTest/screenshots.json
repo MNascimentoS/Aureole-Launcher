@@ -322,6 +322,48 @@
       ]
     },
     {
+      "id": "relogioseletor",
+      "area": "home",
+      "titulo": {
+        "pt": "Fonte e cor do relógio",
+        "en": "Clock font and color"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Fonte",
+            "en": "Font"
+          },
+          "antes": [
+            "composable/sheets/ComponentPickersScreenshotTestKt/ClockFontPickerBoldOffScreenshotTest_Dark Mode",
+            "composable/sheets/ComponentPickersScreenshotTestKt/ClockFontPickerBoldOnScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Expandido",
+          "titulo": {
+            "pt": "Fonte expandida",
+            "en": "Font expanded"
+          },
+          "antes": [
+            "composable/sheets/ComponentPickersScreenshotTestKt/ClockFontPickerExpandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Cor",
+          "titulo": {
+            "pt": "Cor",
+            "en": "Color"
+          },
+          "antes": [
+            "composable/sheets/ComponentPickersScreenshotTestKt/ClockCardColorPickerScreenshotTest_Dark Mode",
+            "composable/sheets/ComponentPickersScreenshotTestKt/ClockTextColorPickerScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
       "id": "botaorapido",
       "area": "home",
       "titulo": {
@@ -1028,7 +1070,8 @@
           "antes": [
             "feature/settings/SettingsDialogsScreenshotTestKt/ContainerPositionDialogScreenshotTest_Dark Mode",
             "feature/settings/SettingsDialogsScreenshotTestKt/SearchIconPositionDialogScreenshotTest_Dark Mode",
-            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsButtonPositionDialogScreenshotTest_Dark Mode"
+            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsButtonPositionDialogScreenshotTest_Dark Mode",
+            "composable/menu/AureoleRadioSheetScreenshotTestKt/RadioSheetRightHandedScreenshotTest_Dark Mode"
           ]
         },
         {
@@ -1040,7 +1083,8 @@
           "antes": [
             "feature/settings/SettingsDialogsScreenshotTestKt/ContainerPositionDialogLeftHandedScreenshotTest_Dark Mode",
             "feature/settings/SettingsDialogsScreenshotTestKt/SearchIconPositionDialogLeftHandedScreenshotTest_Dark Mode",
-            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsButtonPositionDialogLeftHandedScreenshotTest_Dark Mode"
+            "feature/settings/SettingsDialogsScreenshotTestKt/SettingsButtonPositionDialogLeftHandedScreenshotTest_Dark Mode",
+            "composable/menu/AureoleRadioSheetScreenshotTestKt/RadioSheetLeftHandedScreenshotTest_Dark Mode"
           ]
         }
       ]
@@ -1521,5 +1565,115 @@
       ]
     }
   ],
-  "catalogo": []
+  "catalogo": [
+    {
+      "id": "texto",
+      "titulo": {
+        "pt": "Texto",
+        "en": "Text"
+      },
+      "antes": [
+        "core/designsystem/components/AureoleTextScreenshotTestKt/AureoleTextCustomTypographyScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleTextScreenshotTestKt/AureoleTextMaterialTypographyScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleSectionHeaderScreenshotTestKt/AureoleSectionHeaderScreenshotTest_Dark Mode"
+      ]
+    },
+    {
+      "id": "controles",
+      "titulo": {
+        "pt": "Controles",
+        "en": "Controls"
+      },
+      "antes": [
+        "composable/menu/AureoleSwitchRowScreenshotTestKt/SwitchRowsLeftHandedScreenshotTest_Dark Mode",
+        "composable/menu/AureoleSwitchRowScreenshotTestKt/SwitchRowsRightHandedScreenshotTest_Dark Mode",
+        "composable/controls/AureoleSegmentedControlScreenshotTestKt/AureoleSegmentedControlScreenshotTest_Dark Mode",
+        "composable/optiontile/AureoleOptionTileScreenshotTest/AureoleOptionTileSelected_Dark Mode",
+        "composable/optiontile/AureoleOptionTileScreenshotTest/AureoleOptionTileUnselected_Dark Mode",
+        "composable/search/AureoleSearchFieldScreenshotTestKt/AureoleSearchFieldEmptyScreenshotTest_Dark Mode",
+        "composable/search/AureoleSearchFieldScreenshotTestKt/AureoleSearchFieldFilledScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleFloatingSearchBarScreenshotTestKt/AureoleFloatingSearchBarScreenshotTest_Dark Mode",
+        "composable/reorder/ReorderableListsScreenshotTestKt/ReorderableColumnLeftHandedScreenshotTest_Dark Mode",
+        "composable/reorder/ReorderableListsScreenshotTestKt/ReorderableColumnRightHandedScreenshotTest_Dark Mode",
+        "composable/reorder/ReorderableListsScreenshotTestKt/ReorderableRowLeftHandedScreenshotTest_Dark Mode",
+        "composable/reorder/ReorderableListsScreenshotTestKt/ReorderableRowRightHandedScreenshotTest_Dark Mode"
+      ]
+    },
+    {
+      "id": "menus",
+      "titulo": {
+        "pt": "Menus",
+        "en": "Menus"
+      },
+      "antes": [
+        "composable/menu/AureoleMenuScreenshotTestKt/MenuEntriesListLeftHandedScreenshotTest_Dark Mode",
+        "composable/menu/AureoleMenuScreenshotTestKt/MenuEntriesListRightHandedScreenshotTest_Dark Mode",
+        "composable/menu/AureoleMenuScreenshotTestKt/MenuHoldRowLeftHandedScreenshotTest_Dark Mode",
+        "composable/menu/AureoleMenuScreenshotTestKt/MenuHoldRowRightHandedScreenshotTest_Dark Mode",
+        "composable/menu/AureoleMenuScreenshotTestKt/MenuRowsLeftHandedScreenshotTest_Dark Mode",
+        "composable/menu/AureoleMenuScreenshotTestKt/MenuRowsRightHandedScreenshotTest_Dark Mode",
+        "composable/actions/AureoleActionRowScreenshotTestKt/ActionRowDestructiveScreenshotTest_Dark Mode",
+        "composable/actions/AureoleActionRowScreenshotTestKt/ActionRowLeftHandedScreenshotTest_Dark Mode",
+        "composable/actions/AureoleActionRowScreenshotTestKt/ActionRowRightHandedScreenshotTest_Dark Mode",
+        "composable/actions/AureoleActionRowScreenshotTestKt/PrimaryActionButtonFullWidthScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureolePopupItemScreenshotTestKt/AureolePopupItemScreenshotTest_Dark Mode"
+      ]
+    },
+    {
+      "id": "dialogos",
+      "titulo": {
+        "pt": "Dialogs e popups",
+        "en": "Dialogs and popups"
+      },
+      "antes": [
+        "core/designsystem/components/AureoleDialogScreenshotTestKt/AureoleDialogDefaultScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleDialogScreenshotTestKt/AureoleDialogHeaderSlotScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleDialogScreenshotTestKt/AureoleDialogWithIconAndLogoScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureolePopupScreenshotTestKt/AureolePopupScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleOverlayBackdropScreenshotTest/AureoleOverlayBackdropWithoutBlur_Dark Mode"
+      ]
+    },
+    {
+      "id": "overlay",
+      "titulo": {
+        "pt": "Edit overlay",
+        "en": "Edit overlay"
+      },
+      "antes": [
+        "core/designsystem/components/AureoleEditOverlayScreenshotTestKt/AureoleEditOverlayScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlayPreviewFitScreenshotTestKt/PreviewFitShortSheetScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlayPreviewFitScreenshotTestKt/PreviewFitTallSheetScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlaySheetScreenshotTestKt/AureoleEditOverlaySheetScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlaySheetScreenshotTestKt/OverlaySheetHeaderLongTitleScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlaySheetScreenshotTestKt/OverlaySheetHeaderRulerScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlaySheetScreenshotTestKt/OverlaySheetHeaderSubtitleScreenshotTest_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlaySheetSurfaceScreenshotTest/SheetSurfaceDefault_Dark Mode",
+        "core/designsystem/components/AureoleEditOverlaySheetSurfaceScreenshotTest/SheetSurfaceExpanded_Dark Mode",
+        "core/designsystem/components/OverlaySheetGestureZoneScreenshotTest/OverlaySheetGestureZoneDefault_Dark Mode"
+      ]
+    },
+    {
+      "id": "marca",
+      "titulo": {
+        "pt": "Marca e prévias",
+        "en": "Brand and previews"
+      },
+      "antes": [
+        "core/designsystem/components/AureoleLogoRingScreenshotTestKt/AureoleLogoRingScreenshotTest_Dark Mode",
+        "composable/fireworks/AureoleFireworksScreenshotTestKt/AureoleFireworksScreenshotTest_Dark Mode",
+        "composable/preview/AureoleDashedBorderScreenshotTestKt/AureoleDashedBorderScreenshotTest_Dark Mode",
+        "composable/preview/AureolePreviewFrameScreenshotTestKt/AureolePreviewFrameScreenshotTest_Dark Mode",
+        "composable/minihome/AureoleMiniHomeScreenshotTestKt/AureoleMiniHomeLeftHandedScreenshotTest_Dark Mode",
+        "composable/minihome/AureoleMiniHomeScreenshotTestKt/AureoleMiniHomeRightHandedScreenshotTest_Dark Mode",
+        "composable/minihome/AureoleMiniHomeScreenshotTestKt/AureoleMiniHomeThemedIconsScreenshotTest_Dark Mode",
+        "composable/AppIconRadiusScreenshotTestKt/AppIconRadius24ScreenshotTest_Dark Mode",
+        "composable/AppIconRadiusScreenshotTestKt/AppIconRadiusDefaultScreenshotTest_Dark Mode",
+        "composable/AppIconRadiusScreenshotTestKt/AppIconRadiusZeroScreenshotTest_Dark Mode",
+        "composable/clock/ClockHeaderGridSizesScreenshotTestKt/ClockGrid2x1LowScreenshotTest_Dark Mode",
+        "composable/clock/ClockHeaderGridSizesScreenshotTestKt/ClockGrid2x1ScreenshotTest_Dark Mode",
+        "composable/clock/ClockHeaderGridSizesScreenshotTestKt/ClockGrid4x1ScreenshotTest_Dark Mode",
+        "composable/clock/ClockHeaderGridSizesScreenshotTestKt/ClockGrid4x2ScreenshotTest_Dark Mode"
+      ]
+    }
+  ]
 }
