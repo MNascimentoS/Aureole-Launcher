@@ -7,6 +7,7 @@ import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormParams
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.fixtures.HomeCase
@@ -30,6 +31,7 @@ private fun FolderFormCase(folder: AppFolder?) = HomeCase(MainUiState()) {
 /** Pasta nova: nome vazio sob o tile, segmento Ícone com as sugestões, "Criar e escolher apps". */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = FolderFormCase(folder = null)
 

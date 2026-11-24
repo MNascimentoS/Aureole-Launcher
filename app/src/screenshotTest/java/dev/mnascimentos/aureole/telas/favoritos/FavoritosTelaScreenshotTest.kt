@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogAct
 import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogConfig
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.fixtures.HomeCase
 import dev.mnascimentos.aureole.fixtures.createSampleHomeData
@@ -34,6 +35,7 @@ private fun FavoritesCase(isLeftHanded: Boolean, favorites: List<String>) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = FavoritesCase(isLeftHanded = false, favorites = THREE_FAVORITES)
 

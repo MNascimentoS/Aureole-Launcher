@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayState
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockOverlay
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
@@ -35,6 +36,7 @@ private fun EditClockCase(tab: ClockTab = ClockTab.STYLE, colorRole: ComponentCo
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = EditClockCase()
 

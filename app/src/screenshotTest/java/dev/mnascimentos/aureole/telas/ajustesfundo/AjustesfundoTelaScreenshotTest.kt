@@ -6,6 +6,7 @@ import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.WallpaperAdjustments
 import dev.mnascimentos.aureole.core.designsystem.model.GlassLevel
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.CardsGlassBottomSheet
@@ -31,6 +32,7 @@ private val MediumGlass = CardsGlassDraft(CARD_RADIUS_DP, GlassLevel.MEDIUM, Blu
 /** Seletor de fundo: cartões de tipo, amostras de cor e a mini-home ancorada em cima. */
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = SettingsSheetCase(sheet = BackgroundSheet)
 

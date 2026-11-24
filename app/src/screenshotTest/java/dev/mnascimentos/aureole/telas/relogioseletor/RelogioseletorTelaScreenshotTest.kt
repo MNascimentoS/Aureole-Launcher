@@ -10,11 +10,13 @@ import dev.mnascimentos.aureole.composable.sheets.model.ComponentFontOptions
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.theme.model.FONT_KEY_LAUNCHER
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.fixtures.OrientedCase
 
 /** Seletor de fonte do relógio por cima da sheet; negrito ligado ou desligado é o mesmo layout (D-18). */
 @Composable
-private fun FontCase(isExpanded: Boolean) {
+private fun FontCase(isExpanded: Boolean) = OrientedCase {
     AureoleLauncherTheme {
         ComponentFontSheet(
             selectedFontName = FONT_KEY_LAUNCHER,
@@ -35,6 +37,7 @@ private fun FontCase(isExpanded: Boolean) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = FontCase(isExpanded = false)
 

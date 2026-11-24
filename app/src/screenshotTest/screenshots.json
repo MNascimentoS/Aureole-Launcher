@@ -64,6 +64,7 @@
         "pt": "Todos os apps",
         "en": "All apps"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -107,6 +108,7 @@
         "pt": "Grupo rolável",
         "en": "Scroll group"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -141,6 +143,7 @@
         "pt": "Menu do app",
         "en": "App menu"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -177,6 +180,7 @@
         "pt": "Menus da home",
         "en": "Home menus"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -225,6 +229,7 @@
         "pt": "Personalizar",
         "en": "Customize"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -257,6 +262,7 @@
         "pt": "Personalizar relógio",
         "en": "Customize clock"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -328,6 +334,7 @@
         "pt": "Fonte e cor do relógio",
         "en": "Clock font and color"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -370,6 +377,7 @@
         "pt": "Botão rápido",
         "en": "Quick button"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -402,6 +410,7 @@
         "pt": "Aparência do botão rápido",
         "en": "Quick button appearance"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -432,6 +441,7 @@
         "pt": "Atalhos",
         "en": "Shortcuts"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -470,6 +480,7 @@
         "pt": "Favoritos",
         "en": "Favorites"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -524,6 +535,7 @@
         "pt": "Seletor de favoritos",
         "en": "Favorites picker"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -546,6 +558,7 @@
         "pt": "Container",
         "en": "Container"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -593,6 +606,7 @@
         "pt": "Adicionar componente",
         "en": "Add component"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -625,6 +639,7 @@
         "pt": "Grupo de widgets",
         "en": "Widget group"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -649,6 +664,7 @@
         "pt": "Pasta aberta",
         "en": "Opened folder"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -690,6 +706,7 @@
         "pt": "Formulário de pasta",
         "en": "Folder form"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -736,6 +753,7 @@
         "pt": "Apps da pasta",
         "en": "Folder apps"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -782,6 +800,7 @@
         "pt": "Widgets",
         "en": "Widgets"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -802,6 +821,7 @@
         "pt": "Atualização",
         "en": "Update"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -834,6 +854,7 @@
         "pt": "Novidades",
         "en": "Release notes"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -855,6 +876,7 @@
         "pt": "Confirmação",
         "en": "Confirmation"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -887,6 +909,7 @@
         "pt": "Desfazer",
         "en": "Undo"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -958,6 +981,7 @@
         "pt": "Fundo",
         "en": "Background"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -1005,6 +1029,7 @@
         "pt": "Tela de bloqueio",
         "en": "Lock screen"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -1027,6 +1052,7 @@
         "pt": "Licenças",
         "en": "Licenses"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -1060,6 +1086,7 @@
         "pt": "Sheet de opção",
         "en": "Option sheet"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -1096,6 +1123,7 @@
         "pt": "Paleta e fonte",
         "en": "Palette and font"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -1145,6 +1173,7 @@
         "pt": "Diálogos dos ajustes",
         "en": "Settings dialogs"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
@@ -1176,6 +1205,7 @@
         "pt": "Editor de papel de parede",
         "en": "Wallpaper editor"
       },
+      "paisagem": true,
       "estados": [
         {
           "id": "Padrao",

@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.telas.botaorapido
 import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonSettingsBottomSheet
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
@@ -20,6 +21,7 @@ private fun QuickButtonSettingsCase(isLeftHanded: Boolean) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = QuickButtonSettingsCase(isLeftHanded = false)
 

@@ -7,6 +7,7 @@ import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.appitem.AppItemBottomSheet
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemBottomSheetParams
 import dev.mnascimentos.aureole.composable.appitem.model.AppItemRowActions
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.fixtures.HomeCase
 import dev.mnascimentos.aureole.fixtures.createSampleHomeData
@@ -44,6 +45,7 @@ private fun AppMenuCase(isLeftHanded: Boolean) =
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = AppMenuCase(isLeftHanded = false)
 

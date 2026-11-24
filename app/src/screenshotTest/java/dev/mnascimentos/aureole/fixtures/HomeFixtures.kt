@@ -73,26 +73,32 @@ internal fun createSampleHomeData(): SampleHomeData {
     return SampleHomeData(apps, folders, uiState, createDefaultHomeScreenActions())
 }
 
-/** Tema do launcher com os locals da home (estado, mão e ações) que as sheets leem. */
+/**
+ * Tema do launcher com os locals da home (estado, mão e ações) que as sheets leem. Na prévia de paisagem, a
+ * configuração e o estado ficam de paisagem (`OrientedCase`, `inLandscape`).
+ */
 @Composable
 internal fun HomeCase(
     uiState: MainUiState,
     dimens: AureoleDimens? = null,
     content: @Composable () -> Unit
 ) {
+    val state = if (isPreviewLandscape()) uiState.inLandscape() else uiState
     val locals: @Composable () -> Unit = {
         CompositionLocalProvider(
-            LocalHomeUiState provides uiState,
-            LocalLeftHanded provides uiState.isLeftHandedMode,
+            LocalHomeUiState provides state,
+            LocalLeftHanded provides state.isLeftHandedMode,
             LocalHomeActions provides createDefaultHomeScreenActions()
         ) {
             content()
         }
     }
-    if (dimens == null) {
-        AureoleLauncherTheme(content = locals)
-    } else {
-        AureoleLauncherTheme(AureoleThemeConfig(darkTheme = isSystemInDarkTheme(), aureoleDimens = dimens), locals)
+    OrientedCase {
+        if (dimens == null) {
+            AureoleLauncherTheme(content = locals)
+        } else {
+            AureoleLauncherTheme(AureoleThemeConfig(darkTheme = isSystemInDarkTheme(), aureoleDimens = dimens), locals)
+        }
     }
 }
 

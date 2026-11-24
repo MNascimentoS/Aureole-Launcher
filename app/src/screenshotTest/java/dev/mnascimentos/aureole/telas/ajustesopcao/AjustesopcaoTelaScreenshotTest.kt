@@ -4,13 +4,15 @@ import androidx.compose.runtime.Composable
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.ContainerPositionDialog
+import dev.mnascimentos.aureole.fixtures.OrientedCase
 
 /** Sheet de opção única (posição do container); as de botão e de busca têm o mesmo layout. */
 @Composable
-private fun PositionCase(isLeftHanded: Boolean) {
+private fun PositionCase(isLeftHanded: Boolean) = OrientedCase {
     ProvideHomeUiState(MainUiState(isLeftHandedMode = isLeftHanded)) {
         AureoleLauncherTheme {
             ContainerPositionDialog(currentPosition = "Center", onPositionSelected = {}, onDismiss = {})
@@ -20,6 +22,7 @@ private fun PositionCase(isLeftHanded: Boolean) {
 
 @PreviewTest
 @AureolePreview
+@AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = PositionCase(isLeftHanded = false)
 

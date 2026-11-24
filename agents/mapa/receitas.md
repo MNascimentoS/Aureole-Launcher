@@ -48,7 +48,8 @@ linhas; `@PreviewTest` vem de `com.android.tools.screenshot.PreviewTest`. Depois
 Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/telas/<tela>/<Tela>TelaScreenshotTest.kt`.
 1. Um arquivo por tela; id da pasta em minúsculas sem separador (`todosapps`), imutável.
 2. `@PreviewTest @AureolePreview @Composable private fun <Estado>ScreenshotTest() = XCase(...)`; o primeiro é `Padrao`.
-3. Até 3 estados em retrato, só quando muda o layout; paisagem (`@AureoleLandscapePreview`) só com `paisagem: true`.
+3. Até 3 estados em retrato, só quando muda o layout. O `Padrao` leva também `@AureoleLandscapePreview` e a tela
+   `"paisagem": true`; caso fora de `HomeCase`/`SettingsRootCase`/`SettingsSheetCase` vai dentro de `OrientedCase { }`.
 4. Item em `screenshots.json` (`telas[]`): `id`, `area`, `titulo` pt/en, `estados` com `antes` se substitui chave legada.
 
 ### Passo de fluxo
