@@ -21,7 +21,7 @@ Cada funcionalidade ou tela do aplicativo deve ser dividida em camadas bem defin
 - **Proibido `data class` em arquivos de View:** É **estritamente proibido** declarar `data class`, `enum` ou interfaces de parâmetros dentro de arquivos `.kt` de UI. Todos os modelos de dados e estados de tela devem residir na pasta `model/`.
 - **Regra Obrigatória para Bottom Views e Popups:** Qualquer bottom sheet (`*BottomSheet.kt`), diálogo (`*Dialog.kt`) ou popup (`*Popup.kt`) deve obrigatoriamente:
   1. Conter funções de `@Preview` (utilizando obrigatoriamente a anotação `@AureolePreview` e modificador `private fun`) do componente principal diretamente no próprio arquivo onde o componente é declarado.
-  2. Possuir um teste de screenshot correspondente (anotado com `@PreviewTest`) na suíte de testes de screenshot (`app/src/screenshotTest`).
+  2. Aparecer em **um estado da tela onde é usado** (screenshot de tela inteira em `app/src/screenshotTest/.../telas/`), conforme `agents/aureole_screenshots.md`; não tem teste de screenshot próprio.
 
 ### 3. ViewModel (`*ViewModel.kt`)
 - Gerencia o estado da tela exposto em um `StateFlow` imutável e responde às ações enviadas pela UI.

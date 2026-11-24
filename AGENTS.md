@@ -12,7 +12,7 @@ This project uses modular steering documentation located in the [`agents/`](agen
 - **[Architecture & Package Structure](agents/aureole_architecture.md)** (Clean Architecture, MAX-500 rule — 800 lines for tests, No `@Suppress`)
 - **[Components & UI Rules](agents/aureole_components.md)** (UI vs Model separation, `@Composable` only in views, shared `composable/`, Internationalization & strict prohibition of hardcoded strings)
 - **[Providers & DI](agents/aureole_providers.md)** (Koin DI, Lifecycle observers)
-- **[Testing & Quality Assurance](agents/aureole_testing.md)** (Unit tests, Screenshot tests, `@AureolePreview`)
+- **[Testing & Quality Assurance](agents/aureole_testing.md)** (Unit tests, Screenshot tests por tela/fluxo/catálogo conforme [`aureole_screenshots.md`](agents/aureole_screenshots.md), `@AureolePreview`)
 - **[Design System & Tokens](agents/aureole_design_system.md)** (`AureoleDS.colors`, `AureoleDS.dimens`, `AureoleIcons`)
 - **[Product Context](agents/aureole_product.md)** (o que é o app, privacidade, contatos, site em `docs/`, premium planejado)
 - **[Workflow: Specs, Fases e Git](agents/aureole_workflow.md)** (specs em `specs/<nome>/`, decisões D-xx, fases, commit só no nome do Mateus, nunca push)

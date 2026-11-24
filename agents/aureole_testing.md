@@ -1,7 +1,7 @@
 # 🧪 Aureole Testing & Quality Assurance
 
 ## 1. Testing Requirements
-- Every UI component must have screenshot tests (`@PreviewTest`) in `app/src/screenshotTest`.
+- Screenshot tests (`@PreviewTest`) in `app/src/screenshotTest` cover **screens, flows and the design-system catalog** as defined in [`aureole_screenshots.md`](aureole_screenshots.md), not isolated components. A new component appears in a screen state or in its catalog group.
 - Every new feature or business logic change must include unit tests (`app/src/test/`).
 
 - Test files (`app/src/test/`, `app/src/screenshotTest/`, `app/src/androidTest/`) can have **at most 800 lines**. Above that, split the test class by behavior or component.
@@ -15,7 +15,7 @@ Before finishing complex changes, validate using:
 2. `./gradlew lintDebug` (**0 errors and 0 warnings**: `abortOnError` and `warningsAsErrors` are on)
 3. `./gradlew testDebugUnitTest` (100% passing)
 4. `./gradlew jacocoTestCoverageVerification` (minimum **85% lines**, **70% instructions** and **60% logic branches**; report in `app/build/reports/jacoco/jacocoTestReport/html/index.html`)
-5. `./gradlew validateDebugScreenshotTest`
+5. `./gradlew validateDebugScreenshotTest` (the contract guard `ScreenshotContractTest` runs inside `testDebugUnitTest`: `./gradlew testDebugUnitTest --tests "*ScreenshotContractTest*"`)
 6. `./gradlew assembleDebug`
 
 - Detekt and lint are fixed in the code, never silenced: no `@Suppress`, no detekt baseline, no new `tools:ignore` or `severity="ignore"` in `app/lint.xml`, no relaxed rule or threshold. The only accepted exceptions are the ones already in the repo (build-tool version notices in `lint.xml`; protected permissions in the manifest), each with a comment saying why.
