@@ -36,6 +36,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION_
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isTaskLocked
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.nextPendingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistSharedModifiers
@@ -119,10 +120,19 @@ private fun ChecklistCardContent(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         ChecklistHeader(onboarding = onboarding, shared = shared)
+        if (OnboardingTask.entries.any(onboarding::isTaskLocked)) {
+            AureoleText(
+                text = stringResource(R.string.home_onboarding_checklist_locked_notice),
+                modifier = shared.fading.padding(bottom = AureoleDS.dimens.xSmall),
+                color = AureoleDS.colors.onSurfaceMedium,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.text)
+            )
+        }
         OnboardingTask.entries.forEachIndexed { index, task ->
             OnboardingChecklistItemComponent(
                 task = task,
                 status = onboarding.statusOf(task, next),
+                isLocked = onboarding.isTaskLocked(task),
                 onClick = actions.onTaskClick,
                 onSkip = actions.onSkipTask,
                 modifier = Modifier

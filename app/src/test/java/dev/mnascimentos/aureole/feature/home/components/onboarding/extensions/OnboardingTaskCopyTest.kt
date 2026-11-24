@@ -3,7 +3,9 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class OnboardingTaskCopyTest {
@@ -59,5 +61,26 @@ class OnboardingTaskCopyTest {
             ),
             OnboardingTask.entries.toList()
         )
+    }
+
+    @Test
+    fun `layout and settings should be locked while another task is pending`() {
+        val state = OnboardingUiState(completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME))
+
+        assertTrue(state.isTaskLocked(OnboardingTask.ADJUST_LAYOUT))
+        assertTrue(state.isTaskLocked(OnboardingTask.EXPLORE_SETTINGS))
+        assertFalse(state.isTaskLocked(OnboardingTask.ADD_WIDGET))
+    }
+
+    @Test
+    fun `layout and settings should unlock when the other tasks are done or skipped`() {
+        val others = OnboardingTask.entries - setOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS)
+        val state = OnboardingUiState(
+            completedTasks = others.take(3).toSet(),
+            skippedTasks = others.drop(3).toSet()
+        )
+
+        assertFalse(state.isTaskLocked(OnboardingTask.ADJUST_LAYOUT))
+        assertFalse(state.isTaskLocked(OnboardingTask.EXPLORE_SETTINGS))
     }
 }

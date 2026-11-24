@@ -405,6 +405,8 @@
     <string name="home_onboarding_task_widget">Add some &lt;b&gt;widgets&lt;/b&gt;</string>
     <string name="home_onboarding_task_layout">Adjust your &lt;b&gt;layout&lt;/b&gt;</string>
     <string name="home_onboarding_layout_needs_item">Add an item first.</string>
+    <string name="home_onboarding_checklist_locked_notice">You can adjust the home after you add the components</string>
+    <string name="home_onboarding_task_locked_a11y">%1$s, locked until the other steps are done</string>
     <string name="home_onboarding_task_skip">Skip</string>
     <string name="home_onboarding_task_skipped_a11y">%1$s, skipped. Tap to do it now</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>

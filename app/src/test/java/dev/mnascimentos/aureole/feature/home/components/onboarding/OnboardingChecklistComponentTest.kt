@@ -56,9 +56,29 @@ class OnboardingChecklistComponentTest {
     fun `when each pending item is tapped, should open its own task`() {
         render()
 
-        TASK_TITLES.values.forEach { title -> composeTestRule.onNodeWithText(title).performScrollTo().performClick() }
+        TASK_TITLES.filterKeys { it !in LOCKED_TASKS }.values
+            .forEach { title -> composeTestRule.onNodeWithText(title).performScrollTo().performClick() }
 
-        assertEquals(TASK_TITLES.keys.toList(), clickedTasks)
+        assertEquals(TASK_TITLES.keys.filter { it !in LOCKED_TASKS }, clickedTasks)
+    }
+
+    @Test
+    fun `when the other tasks are done, layout and settings should open their own task`() {
+        render(completed = TASK_TITLES.keys.filter { it !in LOCKED_TASKS }.toSet())
+
+        TASK_TITLES.filterKeys { it in LOCKED_TASKS }.values
+            .forEach { title -> composeTestRule.onNodeWithText(title).performScrollTo().performClick() }
+
+        assertEquals(LOCKED_TASKS.toList(), clickedTasks)
+    }
+
+    @Test
+    fun `when other tasks are pending, layout and settings should be locked and not react`() {
+        render()
+
+        composeTestRule.onNodeWithText("Adjust your layout").assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Check more settings").assertHasNoClickAction()
+        composeTestRule.onNodeWithText("Pick a font").assertHasClickAction()
     }
 
     @Test
@@ -136,6 +156,7 @@ class OnboardingChecklistComponentTest {
     }
 
     private companion object {
+        val LOCKED_TASKS = setOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS)
         val TASK_TITLES = linkedMapOf(
             OnboardingTask.SET_DEFAULT_HOME to "Set as home app",
             OnboardingTask.CHOOSE_PALETTE to "Pick a color palette",

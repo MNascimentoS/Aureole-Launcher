@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -51,6 +52,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingTaskStatus
 
 private const val BREATH_MIN_ALPHA = 0.25f
+private const val LOCKED_ALPHA = 0.4f
 
 /**
  * One "First steps" row. Pending rows are buttons; done rows show a check and no longer react. The next row of a
@@ -62,6 +64,7 @@ fun OnboardingChecklistItemComponent(
     status: OnboardingTaskStatus,
     onClick: (OnboardingTask) -> Unit,
     modifier: Modifier = Modifier,
+    isLocked: Boolean = false,
     onSkip: (OnboardingTask) -> Unit = {}
 ) {
     val isDone = status == OnboardingTaskStatus.DONE
@@ -71,6 +74,7 @@ fun OnboardingChecklistItemComponent(
     val description = stringResource(
         when {
             isDone -> R.string.home_onboarding_task_done_a11y
+            isLocked -> R.string.home_onboarding_task_locked_a11y
             isSkipped -> R.string.home_onboarding_task_skipped_a11y
             else -> R.string.home_onboarding_task_pending_a11y
         },
@@ -83,13 +87,14 @@ fun OnboardingChecklistItemComponent(
             .fillMaxWidth()
             .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(shape)
+            .then(if (isLocked) Modifier.alpha(LOCKED_ALPHA) else Modifier)
             .then(if (isNext) Modifier.breathingOutline(shape) else Modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
                 .weight(1f)
-                .then(if (isDone) Modifier else Modifier.clickable(role = Role.Button) { onClick(task) })
+                .then(if (isDone || isLocked) Modifier else Modifier.clickable(role = Role.Button) { onClick(task) })
                 .semantics(mergeDescendants = true) { contentDescription = description }
                 .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
@@ -153,6 +158,19 @@ private fun Modifier.breathingOutline(shape: RoundedCornerShape): Modifier {
         label = "nextTaskAlpha"
     )
     return border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.onSurfaceHigh.copy(alpha = breath), shape)
+}
+
+@AureolePreview
+@Composable
+private fun OnboardingChecklistItemLockedPreview() {
+    AureoleLauncherTheme {
+        OnboardingChecklistItemComponent(
+            task = OnboardingTask.ADJUST_LAYOUT,
+            status = OnboardingTaskStatus.PENDING,
+            onClick = {},
+            isLocked = true
+        )
+    }
 }
 
 @AureolePreview
