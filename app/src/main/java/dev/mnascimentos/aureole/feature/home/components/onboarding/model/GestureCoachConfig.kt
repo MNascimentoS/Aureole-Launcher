@@ -12,9 +12,15 @@ data class GestureCoachConfig(
     /** Settings › Behavior "Swipe down for notifications": off hides the swipe down step. */
     val isSwipeDownEnabled: Boolean = true,
     /** No letters yet (apps still loading): the scrub step waits for them. */
-    val isAlphabetLoading: Boolean = false
+    val isAlphabetLoading: Boolean = false,
+    /** The all-apps drawer is open: the steps that belong to the home wait for the user to come back. */
+    val isAllAppsOpen: Boolean = false
 )
 
 /** The scrub step has nothing to scrub until the apps load: the card waits and hides "Show me". */
 fun GestureCoachConfig.isWaitingForAlphabet(step: GestureCoachStep): Boolean =
     step == GestureCoachStep.ALPHABET_SCRUB && isAlphabetLoading
+
+/** Swipe down and touch and hold are home gestures: they never show over the all-apps drawer (RF-02). */
+fun GestureCoachConfig.isHiddenOverDrawer(step: GestureCoachStep): Boolean =
+    isAllAppsOpen && (step == GestureCoachStep.NOTIFICATIONS || step == GestureCoachStep.CUSTOMIZE)

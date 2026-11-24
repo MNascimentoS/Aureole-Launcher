@@ -38,6 +38,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.coachBodyRes
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.coachTitleRes
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.GestureCoachConfig
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isHiddenOverDrawer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -68,6 +69,7 @@ fun GestureCoachComponent(
             config.isSwipeDownEnabled
         )
         ?: return
+    if (config.isHiddenOverDrawer(step)) return
     val succeeded = onboarding.succeededStep != null
     if (onboarding.succeededStep == GestureCoachStep.NOTIFICATIONS) {
         NotificationsSuccessTimer(onSeen = actions.onNotificationsStepSeen)

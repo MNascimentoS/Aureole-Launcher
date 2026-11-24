@@ -54,7 +54,7 @@ class OnboardingEditHintComponentTest {
     fun `after three seconds, should fold into the save pill and drop the text for good`() {
         render(isVisible = true)
 
-        composeTestRule.mainClock.advanceTimeBy(EDIT_HINT_TEXT_MS + 100)
+        composeTestRule.mainClock.advanceTimeBy(EDIT_HINT_TEXT_MS + FOLD_ANIMATION_MS)
 
         composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
         composeTestRule.onNodeWithText("Save").performClick()
@@ -70,7 +70,7 @@ class OnboardingEditHintComponentTest {
             tracker.begin()
             Snapshot.sendApplyNotifications()
         }
-        composeTestRule.mainClock.advanceTimeBy(100)
+        composeTestRule.mainClock.advanceTimeBy(FOLD_ANIMATION_MS)
         composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
         composeTestRule.onNodeWithText("Save").performClick()
         assertEquals(0, saveCount)
@@ -93,5 +93,7 @@ class OnboardingEditHintComponentTest {
 
     private companion object {
         const val HINT = "Drag to move, pull the edge to resize."
+        /** The fold fades and resizes for 280 ms (RF-03); the old card is gone only after that. */
+        const val FOLD_ANIMATION_MS = 400L
     }
 }

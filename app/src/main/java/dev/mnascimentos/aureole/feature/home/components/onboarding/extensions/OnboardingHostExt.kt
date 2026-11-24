@@ -79,7 +79,8 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
             isTouchExplorationEnabled = isTouchExplorationEnabled,
             isLandscape = isLandscape,
             isSwipeDownEnabled = isSwipeDownNotificationsEnabled,
-            isAlphabetLoading = alphabet.isEmpty()
+            isAlphabetLoading = alphabet.isEmpty(),
+            isAllAppsOpen = isAllAppsDrawerOpen
         ),
         selection = AppearanceSelection(paletteName = selectedThemeName, fontName = selectedFontName),
         isHomeOverlayActive = isHomeOverlayActive,
