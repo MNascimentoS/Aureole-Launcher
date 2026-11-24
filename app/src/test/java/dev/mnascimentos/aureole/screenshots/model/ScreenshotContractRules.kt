@@ -3,9 +3,6 @@ package dev.mnascimentos.aureole.screenshots.model
 // Regras da guarda do contrato (`agents/aureole_screenshots.md` §4). Cada função devolve a lista de violações
 // em texto; lista vazia = regra cumprida. `paths` são caminhos relativos à pasta `referencias`.
 
-/** Prefixos legados aceitos durante a migração: vazio desde a fase 5 (a fase G apaga). */
-val LEGADO_PERMITIDO: List<String> = emptyList()
-
 const val MAX_PORTRAIT_STATES = 3
 
 private val ID_REGEX = Regex("[a-z0-9]+")
@@ -21,9 +18,9 @@ fun manifestViolations(manifest: ScreenshotManifest?): List<String> = when {
     else -> emptyList()
 }
 
-/** Regra 1: PNG fora de `telas/`, `fluxos/`, `catalogo/` (ou fora da árvore do contrato) e fora do legado. */
-fun outsideContractViolations(paths: List<String>, legacyAllowed: List<String>): List<String> = paths
-    .filter { path -> parseScreenshotKey(path) == null && legacyAllowed.none { path.startsWith(it) } }
+/** Regra 1: PNG fora de `telas/`, `fluxos/`, `catalogo/` (ou fora da árvore do contrato). */
+fun outsideContractViolations(paths: List<String>): List<String> = paths
+    .filter { path -> parseScreenshotKey(path) == null }
     .map { path -> "PNG fora do contrato: $path" }
 
 /** Regra 2a: pasta ou item de referência que o manifesto não lista. */
@@ -94,12 +91,11 @@ fun refViolations(manifest: ScreenshotManifest): List<String> {
 /** Todas as regras sobre o manifesto e os caminhos das referências. */
 fun contractViolations(
     manifest: ScreenshotManifest?,
-    paths: List<String>,
-    legacyAllowed: List<String> = LEGADO_PERMITIDO
+    paths: List<String>
 ): List<String> {
     if (manifest == null || manifestViolations(manifest).isNotEmpty()) return manifestViolations(manifest)
     val keys = paths.mapNotNull { parseScreenshotKey(it) }
-    return outsideContractViolations(paths, legacyAllowed) +
+    return outsideContractViolations(paths) +
         unlistedReferenceViolations(manifest, keys) +
         missingReferenceViolations(manifest, keys) +
         ceilingViolations(manifest, keys) +

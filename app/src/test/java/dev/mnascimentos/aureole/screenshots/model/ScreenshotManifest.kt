@@ -102,11 +102,10 @@ fun parseScreenshotKey(relativePath: String): ScreenshotKey? {
         relativePath.endsWith(PNG_EXTENSION)
     if (!valid) return null
     val stem = legacyKey(segments[3])
-    if (!stem.contains('_')) return null
     val function = stem.substringBeforeLast('_')
     val preview = stem.substringAfterLast('_')
     val item = function.removeSuffix(FUNCTION_SUFFIX)
-    return if (item.isEmpty() || preview.isEmpty()) {
+    return if (!stem.contains('_') || item.isEmpty() || preview.isEmpty()) {
         null
     } else {
         ScreenshotKey(segments[0], segments[1], item, preview)

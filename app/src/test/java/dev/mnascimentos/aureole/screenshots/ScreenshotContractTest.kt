@@ -1,6 +1,5 @@
 package dev.mnascimentos.aureole.screenshots
 
-import dev.mnascimentos.aureole.screenshots.model.LEGADO_PERMITIDO
 import dev.mnascimentos.aureole.screenshots.model.ScreenshotEstado
 import dev.mnascimentos.aureole.screenshots.model.ScreenshotFluxo
 import dev.mnascimentos.aureole.screenshots.model.ScreenshotGrupo
@@ -73,7 +72,7 @@ class ScreenshotContractTest {
 
     @Test
     fun `exemplo valido nao tem violacao`() {
-        assertEquals(emptyList<String>(), contractViolations(manifest, paths, legacyAllowed = emptyList()))
+        assertEquals(emptyList<String>(), contractViolations(manifest, paths))
     }
 
     @Test
@@ -116,8 +115,7 @@ class ScreenshotContractTest {
         val legacy = "composable/AppIconRadiusScreenshotTestKt/AppIconRadius24ScreenshotTest_Dark Mode_c7acffac_0.png"
         val loose = "outros/home/XKt/Padrao_Dark Mode_c7acffac_0.png"
 
-        assertEquals(2, outsideContractViolations(paths + legacy + loose, LEGADO_PERMITIDO).size)
-        assertEquals(1, outsideContractViolations(paths + legacy + loose, listOf("composable/")).size)
+        assertEquals(2, outsideContractViolations(paths + legacy + loose).size)
     }
 
     @Test
