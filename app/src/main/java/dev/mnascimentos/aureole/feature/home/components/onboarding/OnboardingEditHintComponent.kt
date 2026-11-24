@@ -50,9 +50,9 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ED
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintBandCols
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintBandRows
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintEdge
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintBand
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintEdge
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintSaveParams
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintSide

@@ -12,7 +12,6 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.icons.AureoleIconCatalog
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
-import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRole
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -39,9 +38,13 @@ class QuickButtonAppearanceSectionsTest {
         }
     }
 
-    /** Selectable nodes of the Colors tab: 2 color targets, then the theme roles in [ThemeColorRole] order. */
-    private fun tapThemeRole(role: ThemeColorRole) {
-        composeTestRule.onAllNodes(isSelectable())[2 + role.ordinal].performClick()
+    /** Opens the card-grid picker of [row] and taps its "Theme" tile. */
+    private fun chooseTheme(row: String) {
+        composeTestRule.onNodeWithText(row).performScrollTo().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("Theme").performClick()
+        composeTestRule.mainClock.advanceTimeBy(CLOSE_MS)
+        composeTestRule.waitForIdle()
     }
 
     private fun openColors() = composeTestRule.onNodeWithText("Colors").performClick()
@@ -57,14 +60,13 @@ class QuickButtonAppearanceSectionsTest {
     }
 
     @Test
-    fun `when the Colors tab is chosen, should show the color target, the picker, stroke and show name`() {
+    fun `when the Colors tab is chosen, should show the color rows, stroke and show name`() {
         setContent(QuickButtonModel())
 
         openColors()
 
         composeTestRule.onNodeWithText("Icon color").assertIsDisplayed()
         composeTestRule.onNodeWithText("Background color").assertIsDisplayed()
-        composeTestRule.onNodeWithText("FROM YOUR THEME").assertIsDisplayed()
         composeTestRule.onNodeWithText("Stroke").performScrollTo().assertIsDisplayed()
         composeTestRule.onNodeWithText("Show name on the home").performScrollTo().assertIsDisplayed()
     }
@@ -86,28 +88,33 @@ class QuickButtonAppearanceSectionsTest {
     }
 
     @Test
-    fun `when a theme color is chosen for the icon, should save it as a role and keep the other colors`() {
+    fun `when Theme is chosen for the icon, should restore the default icon color and keep the other colors`() {
         var updated: QuickButtonAppearance? = null
-        val appearance = QuickButtonAppearance(backgroundColor = ThemeColorRef.Fixed(1))
+        val appearance = QuickButtonAppearance(
+            backgroundColor = ThemeColorRef.Fixed(1),
+            iconColor = ThemeColorRef.Fixed(2)
+        )
         setContent(QuickButtonModel(appearance = appearance)) { updated = it }
         openColors()
 
-        tapThemeRole(ThemeColorRole.ACCENT)
+        chooseTheme("Icon color")
 
-        assertEquals(appearance.copy(iconColor = ThemeColorRef.Role(ThemeColorRole.ACCENT)), updated)
+        assertEquals(appearance.copy(iconColor = QuickButtonAppearance().iconColor), updated)
     }
 
     @Test
-    fun `when Background color is the target, should change the background and not the icon`() {
+    fun `when Theme is chosen for the background, should change the background and not the icon`() {
         var updated: QuickButtonAppearance? = null
-        val appearance = QuickButtonAppearance(iconColor = ThemeColorRef.Fixed(2))
+        val appearance = QuickButtonAppearance(
+            backgroundColor = ThemeColorRef.Fixed(1),
+            iconColor = ThemeColorRef.Fixed(2)
+        )
         setContent(QuickButtonModel(appearance = appearance)) { updated = it }
         openColors()
 
-        composeTestRule.onNodeWithText("Background color").performClick()
-        tapThemeRole(ThemeColorRole.SURFACE)
+        chooseTheme("Background color")
 
-        assertEquals(appearance.copy(backgroundColor = ThemeColorRef.Role(ThemeColorRole.SURFACE)), updated)
+        assertEquals(appearance.copy(backgroundColor = QuickButtonAppearance().backgroundColor), updated)
     }
 
     @Test
@@ -116,7 +123,7 @@ class QuickButtonAppearanceSectionsTest {
         setContent(QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = false))) { updated = it }
         openColors()
 
-        composeTestRule.onNodeWithText("STROKE COLOR").assertDoesNotExist()
+        composeTestRule.onNodeWithText("Stroke color").assertDoesNotExist()
         composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
 
         assertNotNull(updated)
@@ -124,11 +131,11 @@ class QuickButtonAppearanceSectionsTest {
     }
 
     @Test
-    fun `when stroke is enabled, should show the stroke color picker`() {
+    fun `when stroke is enabled, should show the stroke color row`() {
         setContent(QuickButtonModel(appearance = QuickButtonAppearance(strokeEnabled = true)))
         openColors()
 
-        composeTestRule.onNodeWithText("STROKE COLOR").performScrollTo().assertIsDisplayed()
+        composeTestRule.onNodeWithText("Stroke color").performScrollTo().assertIsDisplayed()
     }
 
     @Test
@@ -141,5 +148,9 @@ class QuickButtonAppearanceSectionsTest {
         composeTestRule.onNodeWithText("Show name on the home").performScrollTo().performClick()
 
         assertEquals(appearance.copy(showLabel = true), updated)
+    }
+
+    private companion object {
+        const val CLOSE_MS = 1_000L
     }
 }

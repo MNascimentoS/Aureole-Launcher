@@ -56,7 +56,6 @@
     <string name="home_quickbutton_tab_icon">Ícone</string>
     <string name="home_quickbutton_tab_colors">Cores</string>
     <string name="home_quickbutton_tabs_label">O que editar</string>
-    <string name="home_quickbutton_color_target_label">Qual cor mudar</string>
     <string name="home_quickbutton_show_name">Mostrar nome na home</string>
     <string name="home_quickbutton_low_contrast">Contraste baixo: o ícone pode ficar difícil de ver</string>
 
@@ -410,6 +409,7 @@
     <string name="home_onboarding_layout_needs_item">Adicione um item primeiro.</string>
     <string name="home_onboarding_checklist_locked_notice">Você poderá ajustar a home depois de adicionar os componentes</string>
     <string name="home_onboarding_task_locked_a11y">%1$s, bloqueada até concluir as outras etapas</string>
+    <string name="settings_background_color">Cor</string>
     <string name="home_onboarding_task_skip">Pular</string>
     <string name="home_onboarding_task_skipped_a11y">%1$s, pulada. Toque para fazer agora</string>
     <string name="home_onboarding_task_settings">Explore mais &lt;b&gt;ajustes&lt;/b&gt;</string>

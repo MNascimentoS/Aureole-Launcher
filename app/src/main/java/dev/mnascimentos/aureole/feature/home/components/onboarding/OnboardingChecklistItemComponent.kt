@@ -64,12 +64,12 @@ fun OnboardingChecklistItemComponent(
     status: OnboardingTaskStatus,
     onClick: (OnboardingTask) -> Unit,
     modifier: Modifier = Modifier,
-    isLocked: Boolean = false,
     onSkip: (OnboardingTask) -> Unit = {}
 ) {
     val isDone = status == OnboardingTaskStatus.DONE
     val isSkipped = status == OnboardingTaskStatus.SKIPPED
     val isNext = status == OnboardingTaskStatus.NEXT
+    val isLocked = status == OnboardingTaskStatus.LOCKED
     val title = AnnotatedString.fromHtml(stringResource(task.titleRes()))
     val description = stringResource(
         when {
@@ -166,9 +166,8 @@ private fun OnboardingChecklistItemLockedPreview() {
     AureoleLauncherTheme {
         OnboardingChecklistItemComponent(
             task = OnboardingTask.ADJUST_LAYOUT,
-            status = OnboardingTaskStatus.PENDING,
-            onClick = {},
-            isLocked = true
+            status = OnboardingTaskStatus.LOCKED,
+            onClick = {}
         )
     }
 }

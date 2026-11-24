@@ -62,7 +62,7 @@ class AppearanceBackgroundInnerTest {
 
         composeTestRule.onNodeWithText("Set background").assertExists()
         composeTestRule.onNodeWithText("TYPE").assertExists()
-        composeTestRule.onNodeWithText("FROM YOUR THEME").assertExists()
+        composeTestRule.onNodeWithText("Color").assertExists()
         composeTestRule.onNodeWithText("VIVID").assertDoesNotExist()
         composeTestRule.onNodeWithText("09:41").assertExists()
         composeTestRule.onNodeWithText("Themed icons").assertDoesNotExist()

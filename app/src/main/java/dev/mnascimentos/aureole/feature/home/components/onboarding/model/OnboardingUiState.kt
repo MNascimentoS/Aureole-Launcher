@@ -15,13 +15,17 @@ enum class OnboardingTaskStatus {
     PENDING,
     NEXT,
     DONE,
-    SKIPPED
+    SKIPPED,
+
+    /** Waits for the other tasks to be done or skipped (RF-01 of telas-ajustesfundo). */
+    LOCKED
 }
 
 /** The row status of [task]: done wins over skipped, and only a pending task can lead. */
 fun OnboardingUiState.statusOf(task: OnboardingTask, next: OnboardingTask?): OnboardingTaskStatus = when {
     task in completedTasks -> OnboardingTaskStatus.DONE
     task in skippedTasks -> OnboardingTaskStatus.SKIPPED
+    isTaskLocked(task) -> OnboardingTaskStatus.LOCKED
     task == next -> OnboardingTaskStatus.NEXT
     else -> OnboardingTaskStatus.PENDING
 }
@@ -110,3 +114,12 @@ fun OnboardingProgress.toUiState(isDefaultLauncher: Boolean): OnboardingUiState 
     isDefaultLauncher = isDefaultLauncher,
     isChecklistExpanded = !isChecklistCollapsed
 )
+
+/** Tasks that only open once every other task is done or skipped: the home can be adjusted after the components. */
+private val LOCKED_UNTIL_REST_RESOLVED = setOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS)
+
+/** True while [task] is waiting for the other tasks to be done or skipped (RF-01 of telas-ajustesfundo). */
+fun OnboardingUiState.isTaskLocked(task: OnboardingTask): Boolean =
+    task in LOCKED_UNTIL_REST_RESOLVED &&
+        task !in resolvedTasks &&
+        OnboardingTask.entries.any { it !in LOCKED_UNTIL_REST_RESOLVED && it !in resolvedTasks }

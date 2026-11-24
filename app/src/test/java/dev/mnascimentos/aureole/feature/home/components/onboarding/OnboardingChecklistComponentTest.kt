@@ -64,7 +64,7 @@ class OnboardingChecklistComponentTest {
 
     @Test
     fun `when the other tasks are done, layout and settings should open their own task`() {
-        render(completed = TASK_TITLES.keys.filter { it !in LOCKED_TASKS }.toSet())
+        render(completed = OnboardingTask.entries.filter { it !in LOCKED_TASKS }.toSet())
 
         TASK_TITLES.filterKeys { it in LOCKED_TASKS }.values
             .forEach { title -> composeTestRule.onNodeWithText(title).performScrollTo().performClick() }

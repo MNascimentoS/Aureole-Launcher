@@ -56,7 +56,6 @@
     <string name="home_quickbutton_tab_icon">Icon</string>
     <string name="home_quickbutton_tab_colors">Colors</string>
     <string name="home_quickbutton_tabs_label">What to edit</string>
-    <string name="home_quickbutton_color_target_label">Which color to change</string>
     <string name="home_quickbutton_show_name">Show name on the home</string>
     <string name="home_quickbutton_low_contrast">Low contrast: the icon may be hard to see</string>
 
@@ -407,6 +406,7 @@
     <string name="home_onboarding_layout_needs_item">Add an item first.</string>
     <string name="home_onboarding_checklist_locked_notice">You can adjust the home after you add the components</string>
     <string name="home_onboarding_task_locked_a11y">%1$s, locked until the other steps are done</string>
+    <string name="settings_background_color">Color</string>
     <string name="home_onboarding_task_skip">Skip</string>
     <string name="home_onboarding_task_skipped_a11y">%1$s, skipped. Tap to do it now</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>

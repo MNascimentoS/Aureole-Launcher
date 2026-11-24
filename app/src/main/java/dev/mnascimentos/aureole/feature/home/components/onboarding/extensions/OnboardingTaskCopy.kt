@@ -23,12 +23,3 @@ fun OnboardingTask.titleRes(): Int = when (this) {
 /** The first unresolved (neither done nor skipped) task in list order: the one with the breathing outline. */
 val OnboardingUiState.nextPendingTask: OnboardingTask?
     get() = OnboardingTask.entries.firstOrNull { it !in resolvedTasks }
-
-/** Tasks that only open once every other task is done or skipped: the home can be adjusted after the components. */
-private val LOCKED_UNTIL_REST_RESOLVED = setOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS)
-
-/** True while [task] is waiting for the other tasks to be done or skipped (RF-01 of telas-ajustesfundo). */
-fun OnboardingUiState.isTaskLocked(task: OnboardingTask): Boolean =
-    task in LOCKED_UNTIL_REST_RESOLVED &&
-        task !in resolvedTasks &&
-        OnboardingTask.entries.any { it !in LOCKED_UNTIL_REST_RESOLVED && it !in resolvedTasks }

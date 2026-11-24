@@ -36,7 +36,6 @@ import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION_
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isTaskLocked
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.nextPendingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistSharedModifiers
@@ -44,6 +43,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isTaskLocked
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.statusOf
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
@@ -132,7 +132,6 @@ private fun ChecklistCardContent(
             OnboardingChecklistItemComponent(
                 task = task,
                 status = onboarding.statusOf(task, next),
-                isLocked = onboarding.isTaskLocked(task),
                 onClick = actions.onTaskClick,
                 onSkip = actions.onSkipTask,
                 modifier = Modifier

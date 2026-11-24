@@ -93,6 +93,7 @@ class OnboardingEditHintComponentTest {
 
     private companion object {
         const val HINT = "Drag to move, pull the edge to resize."
+
         /** The fold fades and resizes for 280 ms (RF-03); the old card is gone only after that. */
         const val FOLD_ANIMATION_MS = 400L
     }

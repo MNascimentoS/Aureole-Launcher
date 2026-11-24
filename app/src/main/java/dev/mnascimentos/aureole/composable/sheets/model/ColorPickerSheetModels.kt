@@ -40,7 +40,7 @@ fun ComponentColorRole.colorIn(palette: ThemePalette): Color = when (this) {
 data class ComponentColorOptions(
     val role: ComponentColorRole,
     val title: String,
-    val subtitle: String,
+    val subtitle: String?,
     val selected: ThemeColorRef?,
     val themeColor: Color,
     val onSelect: (ThemeColorRef?) -> Unit,

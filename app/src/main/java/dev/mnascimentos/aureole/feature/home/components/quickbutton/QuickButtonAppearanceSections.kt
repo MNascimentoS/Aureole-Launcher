@@ -14,16 +14,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.color.AureoleThemeColorPicker
-import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
+import dev.mnascimentos.aureole.composable.color.AureoleColorField
+import dev.mnascimentos.aureole.composable.color.model.ColorFieldParams
 import dev.mnascimentos.aureole.composable.controls.AureoleSheetTabBar
 import dev.mnascimentos.aureole.composable.icons.AureoleIconCatalogGrid
-import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.composable.menu.AureoleSwitchRow
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
+import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.data.model.QuickButtonAppearance
 import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.designsystem.icons.Stroke
@@ -32,12 +30,9 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QUICK_BUTTON_COLOR_TARGETS
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonColorTarget
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonSheetTab
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.colorOf
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.quickButtonColorTargetAt
-import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.quickButtonColorTargetIndex
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.quickButtonSheetTabAt
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.quickButtonSheetTabIndex
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.withColor
@@ -87,9 +82,6 @@ private fun ColumnScope.QuickButtonColorsTab(
     appearance: QuickButtonAppearance,
     onUpdateAppearance: (QuickButtonAppearance) -> Unit
 ) {
-    var targetIndex by rememberSaveable { mutableIntStateOf(0) }
-    val target = quickButtonColorTargetAt(targetIndex)
-    val targetLabel = stringResource(R.string.home_quickbutton_color_target_label)
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -100,16 +92,14 @@ private fun ColumnScope.QuickButtonColorsTab(
             .padding(bottom = AureoleDS.dimens.xSmall),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
-        AureoleSegmentedControl(
-            options = QUICK_BUTTON_COLOR_TARGETS.map { stringResource(colorTargetLabelRes(it)) },
-            selectedIndex = quickButtonColorTargetIndex(target),
-            onSelect = { targetIndex = it },
-            modifier = Modifier.semantics { contentDescription = targetLabel }
-        )
-        AureoleThemeColorPicker(
-            selected = appearance.colorOf(target),
-            onSelect = { onUpdateAppearance(appearance.withColor(target, it)) }
-        )
+        QuickButtonColorTarget.entries.filter { it != QuickButtonColorTarget.STROKE }.forEach { target ->
+            QuickButtonColorField(
+                title = stringResource(colorTargetLabelRes(target)),
+                target = target,
+                appearance = appearance,
+                onUpdateAppearance = onUpdateAppearance
+            )
+        }
         AureoleSwitchRow(
             SwitchRowParams(
                 title = stringResource(R.string.home_quickbutton_stroke),
@@ -119,10 +109,11 @@ private fun ColumnScope.QuickButtonColorsTab(
             )
         )
         if (appearance.strokeEnabled) {
-            AureoleMenuSectionLabel(text = stringResource(R.string.home_quickbutton_stroke_color))
-            AureoleThemeColorPicker(
-                selected = appearance.colorOf(QuickButtonColorTarget.STROKE),
-                onSelect = { onUpdateAppearance(appearance.withColor(QuickButtonColorTarget.STROKE, it)) }
+            QuickButtonColorField(
+                title = stringResource(R.string.home_quickbutton_stroke_color),
+                target = QuickButtonColorTarget.STROKE,
+                appearance = appearance,
+                onUpdateAppearance = onUpdateAppearance
             )
         }
         AureoleSwitchRow(
@@ -134,6 +125,26 @@ private fun ColumnScope.QuickButtonColorsTab(
             )
         )
     }
+}
+
+/** One color of the quick button as the shared color row; "Theme" goes back to that color's default. */
+@Composable
+private fun QuickButtonColorField(
+    title: String,
+    target: QuickButtonColorTarget,
+    appearance: QuickButtonAppearance,
+    onUpdateAppearance: (QuickButtonAppearance) -> Unit
+) {
+    val default = QuickButtonAppearance().colorOf(target)
+    AureoleColorField(
+        params = ColorFieldParams(
+            title = title,
+            selected = appearance.colorOf(target),
+            themeColor = default.resolve(AureoleDS.colors),
+            role = if (target == QuickButtonColorTarget.ICON) ComponentColorRole.TEXT else ComponentColorRole.CARD,
+            onSelect = { onUpdateAppearance(appearance.withColor(target, it ?: default)) }
+        )
+    )
 }
 
 private fun colorTargetLabelRes(target: QuickButtonColorTarget): Int = when (target) {
