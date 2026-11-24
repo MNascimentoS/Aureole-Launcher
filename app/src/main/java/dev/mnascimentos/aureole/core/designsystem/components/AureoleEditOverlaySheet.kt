@@ -25,9 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.model.AnchoredSheetState
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.model.OverlayHeaderTitle
@@ -210,21 +212,34 @@ private fun AnchoredPreviewLayout(
     }
 }
 
+/** The preview above the sheet, with a faint "Preview" label under it: what it shows is only a sample (RF-09). */
 @Composable
 private fun PreviewSlot(
     previewContent: (@Composable BoxScope.() -> Unit)?,
     alpha: () -> Float,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .graphicsLayer { this.alpha = alpha() },
-        contentAlignment = Alignment.BottomCenter
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        previewContent?.invoke(this)
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomCenter) {
+            previewContent?.invoke(this)
+        }
+        if (previewContent != null) {
+            AureoleText(
+                text = stringResource(R.string.overlay_preview_label),
+                color = AureoleDS.colors.onSurfaceMedium.copy(alpha = PREVIEW_LABEL_ALPHA),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall),
+                modifier = Modifier.padding(top = AureoleDS.dimens.xxSmall)
+            )
+        }
     }
 }
+
+private const val PREVIEW_LABEL_ALPHA = 0.35f
 
 /**
  * Inside of the overlay sheet: gesture zone, header (title and logo on one line) and content at the top, bottom bar

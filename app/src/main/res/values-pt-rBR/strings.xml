@@ -409,6 +409,7 @@
     <string name="home_onboarding_layout_needs_item">Adicione um item primeiro.</string>
     <string name="home_onboarding_checklist_locked_notice">Você poderá ajustar a home depois de adicionar os componentes</string>
     <string name="home_onboarding_task_locked_a11y">%1$s, bloqueada até concluir as outras etapas</string>
+    <string name="overlay_preview_label">Prévia</string>
     <string name="settings_background_color">Cor</string>
     <string name="home_onboarding_task_skip">Pular</string>
     <string name="home_onboarding_task_skipped_a11y">%1$s, pulada. Toque para fazer agora</string>
