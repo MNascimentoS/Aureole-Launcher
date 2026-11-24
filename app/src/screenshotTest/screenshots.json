@@ -1,7 +1,866 @@
 {
   "contrato": 1,
   "referencias": "app/src/screenshotTestDebug/reference/dev/mnascimentos/aureole",
-  "telas": [],
+  "telas": [
+    {
+      "id": "home",
+      "area": "home",
+      "titulo": {
+        "pt": "Home",
+        "en": "Home"
+      },
+      "paisagem": true,
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeScreenLandscapeScreenshotTestKt/HomeScreenLandscapeRightHandedScreenshotTest_Dark Mode Landscape",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenGridEditModeScreenshotTest_Dark Mode",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenScreenshotTest_Dark Mode",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenTwoClocksScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/AppsListScreenshotTestKt/AppsListAllAppsWithFavoritesScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/AppsListScreenshotTestKt/AppsListAllAppsWithoutFavoritesScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/AppsListScreenshotTestKt/AppsListFavoritesOnlyScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/AppsListScreenshotTestKt/AppsListLabelsOffScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/HomeScreenLandscapeScreenshotTestKt/HomeScreenLandscapeLeftHandedScreenshotTest_Dark Mode Landscape"
+          ]
+        },
+        {
+          "id": "RaioZero",
+          "titulo": {
+            "pt": "Raio 0",
+            "en": "Zero radius"
+          },
+          "antes": [
+            "feature/home/CornerRadiusZeroScreenshotTestKt/ActionRowRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/CornerRadiusZeroScreenshotTestKt/CardsGlassSheetRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/CornerRadiusZeroScreenshotTestKt/ContainerFolderItemRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/CornerRadiusZeroScreenshotTestKt/ContainersHomeRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/CornerRadiusZeroScreenshotTestKt/CustomizeSheetRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/CornerRadiusZeroScreenshotTestKt/FloatingSearchBarRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/CornerRadiusZeroScreenshotTestKt/MenuSheetRadiusZeroScreenshotTest_Dark Mode",
+            "feature/home/HomeContainersScreenshotTestKt/HomeFourContainersScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "todosapps",
+      "area": "home",
+      "titulo": {
+        "pt": "Todos os apps",
+        "en": "All apps"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "composable/appitem/AppListSkeletonScreenshotTestKt/AppListSkeletonScreenshotTest_Dark Mode",
+            "feature/home/AllAppsScreenScreenshotTestKt/AllAppsScreenScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Busca",
+          "titulo": {
+            "pt": "Busca",
+            "en": "Search"
+          },
+          "antes": [
+            "feature/home/AllAppsScreenScreenshotTestKt/AllAppsScreenWithEmptySearchQueryScreenshotTest_Dark Mode",
+            "feature/home/AllAppsScreenScreenshotTestKt/AllAppsScreenWithSearchQueryScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Alfabeto",
+          "titulo": {
+            "pt": "Alfabeto",
+            "en": "Alphabet scrub"
+          },
+          "antes": [
+            "feature/home/components/scrubber/ScrubberHoldScreenshotTestKt/ScrubberHoldOnPLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/scrubber/ScrubberHoldScreenshotTestKt/ScrubberHoldOnPRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gruporolavel",
+      "area": "home",
+      "titulo": {
+        "pt": "Grupo rolável",
+        "en": "Scroll group"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/EditContainerDialogScreenshotTest_Dark Mode",
+            "feature/home/grid/EditContainerDialogSectionsScreenshotTestKt/EditContainerDialogSectionsScreenshotTest_Dark Mode",
+            "feature/home/grid/ScrollGroupSheetScreenshotTestKt/ScrollGroupHorizontalScreenshotTest_Dark Mode",
+            "feature/home/grid/ScrollGroupSheetScreenshotTestKt/ScrollGroupVerticalScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NaHome",
+          "titulo": {
+            "pt": "Na home",
+            "en": "On the home"
+          },
+          "antes": [
+            "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeHorizontalScreenshotTest_Dark Mode",
+            "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeVerticalScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "menuapp",
+      "area": "home",
+      "titulo": {
+        "pt": "Menu do app",
+        "en": "App menu"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenAppItemBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuInFolderRightHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuInFolderShortcutsRightHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuRightHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuShortcutsRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuInFolderLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/AppMenuShortcutsLeftHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "menushome",
+      "area": "home",
+      "titulo": {
+        "pt": "Menus da home",
+        "en": "Home menus"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Pasta",
+            "en": "Folder"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/ContainerFolderBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenContainerFolderBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/FolderMenuLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/FolderMenuRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenContainerFolderBottomSheetRendered_shouldRenderBottomSheetScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Item",
+          "titulo": {
+            "pt": "Item da grade",
+            "en": "Grid item"
+          },
+          "antes": [
+            "feature/home/MenuSheetsScreenshotTestKt/ItemMenuLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/ItemMenuRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Pilha",
+          "titulo": {
+            "pt": "Pilha de widgets",
+            "en": "Widget stack"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/WidgetStackBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenWidgetStackBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/WidgetStackMenuLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/WidgetStackMenuRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "personalizar",
+      "area": "home",
+      "titulo": {
+        "pt": "Personalizar",
+        "en": "Customize"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/CustomizeBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/components/overlays/CustomizeBottomSheetOneHandScreenshotTest/CustomizeSheetRightHanded_Dark Mode",
+            "feature/home/components/overlays/CustomizeBottomSheetOneHandScreenshotTest/CustomizeSheetShowcase_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/components/overlays/CustomizeBottomSheetOneHandScreenshotTest/CustomizeSheetLeftHanded_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "relogio",
+      "area": "home",
+      "titulo": {
+        "pt": "Personalizar relógio",
+        "en": "Customize clock"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Estilo",
+            "en": "Style"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/EditClockBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/components/clock/ClockHeaderContentScreenshotTestKt/ClockHeaderDateOnTopStartScreenshotTest_Dark Mode",
+            "feature/home/components/clock/ClockHeaderContentScreenshotTestKt/ClockHeaderStandardCenterScreenshotTest_Dark Mode",
+            "feature/home/components/clock/ClockHeaderContentScreenshotTestKt/ClockHeaderThemeFontScreenshotTest_Dark Mode",
+            "feature/home/components/clock/ClockHeaderContentScreenshotTestKt/ClockHeaderTimeOnlyEndScreenshotTest_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetExpandedFormat_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetExpanded_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetLeftHanded_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetOnboardingSaveHint_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetRestWithBackgroundCard_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetRestWithoutBackgroundCard_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetRest_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetTabFormatLeftHanded_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetTabFormat_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetTabStyle_Dark Mode",
+            "feature/home/components/clock/EditClockPreviewScreenshotTest/EditClockPreviewAtHomeSize_Dark Mode",
+            "feature/home/components/clock/EditClockPreviewScreenshotTest/EditClockPreviewDateOnTop_Dark Mode",
+            "feature/home/components/clock/EditClockPreviewScreenshotTest/EditClockPreviewHalfExpanded_Dark Mode",
+            "feature/home/components/clock/EditClockPreviewScreenshotTest/EditClockPreviewMsgTimeDate_Dark Mode",
+            "feature/home/components/clock/EditClockPreviewScreenshotTest/EditClockPreviewTimeOnly_Dark Mode",
+            "feature/home/components/clock/EditClockSectionsScreenshotTest/EditClockColorsNoCard_Dark Mode",
+            "feature/home/components/clock/EditClockSectionsScreenshotTest/EditClockColorsTwoRows_Dark Mode",
+            "feature/home/components/clock/EditClockSectionsScreenshotTest/EditClockFormatDateDisabled_Dark Mode",
+            "feature/home/components/clock/EditClockSectionsScreenshotTest/EditClockFormatDateEnabled_Dark Mode",
+            "feature/home/components/clock/EditClockSectionsScreenshotTest/EditClockStyleCustomText_Dark Mode",
+            "feature/home/components/clock/EditClockSectionsScreenshotTest/EditClockStyleTimeOnlyHidesMessage_Dark Mode",
+            "feature/home/components/clock/EditClockStyleCardsScreenshotTest/EditClockStyleCardsAlignedCenter_Dark Mode",
+            "feature/home/components/clock/EditClockStyleCardsScreenshotTest/EditClockStyleCardsAlignedEnd_Dark Mode",
+            "feature/home/components/clock/EditClockStyleCardsScreenshotTest/EditClockStyleCardsAlignedStart_Dark Mode",
+            "feature/home/components/clock/EditClockStyleCardsScreenshotTest/EditClockStyleCardsDateOnTop_Dark Mode",
+            "feature/home/components/clock/EditClockStyleCardsScreenshotTest/EditClockStyleCardsGreetingAndDate_Dark Mode"
+          ]
+        },
+        {
+          "id": "Cores",
+          "titulo": {
+            "pt": "Cores",
+            "en": "Colors"
+          },
+          "antes": [
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetTabColors_Dark Mode"
+          ]
+        },
+        {
+          "id": "PaginaCor",
+          "titulo": {
+            "pt": "Página de cor",
+            "en": "Color page"
+          },
+          "antes": [
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetCardColorPage_Dark Mode",
+            "feature/home/components/clock/EditClockBottomSheetOneHandScreenshotTest/EditClockBottomSheetTextColorPage_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "botaorapido",
+      "area": "home",
+      "titulo": {
+        "pt": "Botão rápido",
+        "en": "Quick button"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/components/quickbutton/QuickButtonOneHandScreenshotTestKt/QuickButtonSettingsRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonScreenshotTestKt/QuickButtonGridItemScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonScreenshotTestKt/QuickButtonSettingsBottomSheetScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/components/quickbutton/QuickButtonOneHandScreenshotTestKt/QuickButtonSettingsLeftHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "botaorapidoaparencia",
+      "area": "home",
+      "titulo": {
+        "pt": "Aparência do botão rápido",
+        "en": "Quick button appearance"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/components/quickbutton/QuickButtonAppearanceSectionsScreenshotTestKt/QuickButtonAppearanceColorsTabScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonAppearanceSectionsScreenshotTestKt/QuickButtonAppearanceSheetContentScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonOneHandScreenshotTestKt/QuickButtonAppearanceLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonOneHandScreenshotTestKt/QuickButtonAppearanceLowContrastScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonOneHandScreenshotTestKt/QuickButtonAppearanceRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonScreenshotTestKt/QuickButtonAppearanceBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonScreenshotTestKt/QuickButtonAppearanceNameShownScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonSheetVariantsScreenshotTestKt/QuickButtonAppearanceLandscapeScreenshotTest_Dark Mode Landscape",
+            "feature/home/components/quickbutton/QuickButtonSheetVariantsScreenshotTestKt/QuickButtonAppearanceNameHiddenScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonSheetVariantsScreenshotTestKt/QuickButtonAppearanceThemeColorDefaultScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/QuickButtonSheetVariantsScreenshotTestKt/QuickButtonAppearanceThemeColorOtherScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "atalhos",
+      "area": "home",
+      "titulo": {
+        "pt": "Atalhos",
+        "en": "Shortcuts"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/components/quickbutton/QuickButtonScreenshotTestKt/ShortcutSelectionBottomSheetScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutListScreenshotTestKt/ShortcutListIconsScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSelectionScreenshotTestKt/ShortcutPartsLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSelectionScreenshotTestKt/ShortcutPartsRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSelectionScreenshotTestKt/ShortcutSheetLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSelectionScreenshotTestKt/ShortcutSheetRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSelectionScreenshotTestKt/ShortcutSheetSystemRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Busca",
+          "titulo": {
+            "pt": "Busca",
+            "en": "Search"
+          },
+          "antes": [
+            "feature/home/components/quickbutton/ShortcutSearchScreenshotTestKt/ShortcutSearchEmptyScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSearchScreenshotTestKt/ShortcutSearchLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/quickbutton/ShortcutSearchScreenshotTestKt/ShortcutSearchRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favoritos",
+      "area": "home",
+      "titulo": {
+        "pt": "Favoritos",
+        "en": "Favorites"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManageListRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManageOneFavoriteRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManagePiecesRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsHomeSheetLandscapeThreeFavoritesScreenshotTest_Dark Mode Landscape",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsHomeSheetThreeFavoritesScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsManageSheetRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsManageSheetShowLabelsScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Vazio",
+          "titulo": {
+            "pt": "Vazio",
+            "en": "Empty"
+          },
+          "antes": [
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManageNoFavoritesLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManageNoFavoritesRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsHomeSheetLandscapeNoFavoritesScreenshotTest_Dark Mode Landscape",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsHomeSheetNoFavoritesScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsManageSheetEmptyScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManageListLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManageOneFavoriteLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageListScreenshotTestKt/FavoriteAppsManagePiecesLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsHomeSheetLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsManageSheetScreenshotTestKt/FavoriteAppsManageSheetLeftHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "favoritosseletor",
+      "area": "home",
+      "titulo": {
+        "pt": "Seletor de favoritos",
+        "en": "Favorites picker"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/FavoriteAppsDialogScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsMenuScreenshotTestKt/FavoriteAppsMenuLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/favorites/FavoriteAppsMenuScreenshotTestKt/FavoriteAppsMenuRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "container",
+      "area": "home",
+      "titulo": {
+        "pt": "Container",
+        "en": "Container"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/EditContainerHorizontalScreenScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/EditContainerScreenScreenshotTest_Dark Mode",
+            "feature/home/components/containers/ContainerLayoutsScreenshotTestKt/ContainerFourFoldersScreenshotTest_Dark Mode",
+            "feature/home/components/containers/ContainerLayoutsScreenshotTestKt/ContainerLayoutsScreenshotTest_Dark Mode",
+            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerMainRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerOptionsRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerMainLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerOptionsLeftHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Itens",
+          "titulo": {
+            "pt": "Gerenciar itens",
+            "en": "Manage items"
+          },
+          "antes": [
+            "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "adicionarcomponente",
+      "area": "home",
+      "titulo": {
+        "pt": "Adicionar componente",
+        "en": "Add component"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/AddContainerDialogLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/AddContainerDialogScreenshotTest_Dark Mode",
+            "feature/home/components/containers/ContainerAddButtonScreenshotTestKt/ContainerAddButtonScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Componentes",
+          "titulo": {
+            "pt": "Dentro do grupo",
+            "en": "Inside a group"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/AddContainerNestedDialogScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "itemgrade",
+      "area": "home",
+      "titulo": {
+        "pt": "Grupo de widgets",
+        "en": "Widget group"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenTwoWidgetsScreenshotTest_Dark Mode",
+            "feature/home/components/widgets/WidgetMoveRowScreenshotTestKt/WidgetMoveRowLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/widgets/WidgetMoveRowScreenshotTestKt/WidgetMoveRowRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pasta",
+      "area": "home",
+      "titulo": {
+        "pt": "Pasta aberta",
+        "en": "Opened folder"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/FolderDialogScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/FolderMiniGridScreenshotTest_Dark Mode",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenOpenedFolderGridModeScreenshotTest_Dark Mode",
+            "feature/home/HomeScreenScreenshotTestKt/HomeScreenOpenedFolderPopupModeScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/FolderPopupGridLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/FolderPopupGridRightHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/FolderPopupListLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/MenuSheetsScreenshotTestKt/FolderPopupListRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenContainerFolderItemRendered_shouldRenderItemScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderDialogRendered_shouldRenderFolderDialogScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderMiniGridRendered_shouldRenderMiniGridScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenOpenedFolderPopupRendered_shouldRenderPopupScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "UltimoItem",
+          "titulo": {
+            "pt": "Do último item",
+            "en": "From the last item"
+          },
+          "antes": [
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderOpensFromTheLastItem_shouldStayAboveTheNavigationBarScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pastaformulario",
+      "area": "home",
+      "titulo": {
+        "pt": "Formulário de pasta",
+        "en": "Folder form"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Criar",
+            "en": "Create"
+          },
+          "antes": [
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormNewLandscapeScreenshotTest_Dark Mode Landscape",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormNewLeftHandedScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormNewRightHandedScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/CreateFolderDialogScreenshotTest_Dark Mode",
+            "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsFolderFormLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsFolderFormRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Editar",
+          "titulo": {
+            "pt": "Editar",
+            "en": "Edit"
+          },
+          "antes": [
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderAllIconsLeftHandedScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderAllIconsRightHandedScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormDeleteAtEndScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormEditLandscapeScreenshotTest_Dark Mode Landscape",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormEditLeftHandedScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormEditOtherThemeScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormEditRightHandedScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormEmojiScreenshotTest_Dark Mode",
+            "composable/dialogs/FolderFormScreenshotTestKt/FolderFormPreviewTileScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/EditFolderDialogScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/FolderFormDialogScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderFormDialogRendered_shouldRenderFormDialogScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pastaapps",
+      "area": "home",
+      "titulo": {
+        "pt": "Apps da pasta",
+        "en": "Folder apps"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/FolderAppPickerDialogScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridCellStatesScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridRightHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridWithMarkedAppsScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderAppPickerDialogRendered_shouldRenderPickerScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Busca",
+          "titulo": {
+            "pt": "Busca",
+            "en": "Search"
+          },
+          "antes": [
+            "feature/home/components/containers/folder/FolderPickerSearchScreenshotTestKt/FolderPickerSearchLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderPickerSearchScreenshotTestKt/FolderPickerSearchRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridWithMarkedAppsLeftHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "widgets",
+      "area": "home",
+      "titulo": {
+        "pt": "Widgets",
+        "en": "Widgets"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/WidgetPickerBottomSheetScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "atualizacao",
+      "area": "home",
+      "titulo": {
+        "pt": "Atualização",
+        "en": "Update"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Disponível",
+            "en": "Available"
+          },
+          "antes": [
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/UpdateAvailableLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/UpdateAvailableRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Baixada",
+          "titulo": {
+            "pt": "Baixada",
+            "en": "Downloaded"
+          },
+          "antes": [
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/UpdateReadyLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/UpdateReadyRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "novidades",
+      "area": "home",
+      "titulo": {
+        "pt": "Novidades",
+        "en": "Release notes"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "composable/sheets/ReleaseNotesScreenshotTestKt/ReleaseNotesLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ReleaseNotesScreenshotTestKt/ReleaseNotesRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "confirmacao",
+      "area": "home",
+      "titulo": {
+        "pt": "Confirmação",
+        "en": "Confirmation"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/ResetLayoutLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/ResetLayoutRightHandedScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Resetar",
+          "titulo": {
+            "pt": "Segurar para resetar",
+            "en": "Hold to reset"
+          },
+          "antes": [
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/ResetLauncherLeftHandedScreenshotTest_Dark Mode",
+            "composable/sheets/ConfirmDialogsScreenshotTestKt/ResetLauncherRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "desfazer",
+      "area": "home",
+      "titulo": {
+        "pt": "Desfazer",
+        "en": "Undo"
+      },
+      "estados": [
+        {
+          "id": "Padrao",
+          "titulo": {
+            "pt": "Padrão",
+            "en": "Default"
+          },
+          "antes": [
+            "composable/undo/AureoleUndoSnackbarScreenshotTestKt/UndoSnackbarLeftHandedScreenshotTest_Dark Mode",
+            "composable/undo/AureoleUndoSnackbarScreenshotTestKt/UndoSnackbarLongTextScreenshotTest_Dark Mode",
+            "composable/undo/AureoleUndoSnackbarScreenshotTestKt/UndoSnackbarRightHandedScreenshotTest_Dark Mode"
+          ]
+        }
+      ]
+    }
+  ],
   "fluxos": [],
   "catalogo": []
 }
