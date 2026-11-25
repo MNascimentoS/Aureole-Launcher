@@ -69,6 +69,21 @@ data class OnboardingUiState(
 val OnboardingUiState.isBlocking: Boolean
     get() = stage == OnboardingStage.WELCOME || stage == OnboardingStage.DEFAULT_HOME
 
+/**
+ * The home's own items (clock, widget, favorites, group) ignore touches until the onboarding is over, so a swipe,
+ * a scroll or a hold taught by the coach is never eaten by a component already on the home. The layout step
+ * edits the grid, so it is up to the caller to leave edit mode out.
+ */
+val OnboardingUiState.locksHomeItems: Boolean
+    get() = stage != OnboardingStage.COMPLETED
+
+/**
+ * While "Adjust your layout" waits for the rest, the minimized checklist carries a line saying the sizes can be
+ * adjusted there later (D-03), inside the pill itself so the two never stack.
+ */
+val OnboardingUiState.showsLayoutHint: Boolean
+    get() = stage == OnboardingStage.CHECKLIST && isTaskLocked(OnboardingTask.ADJUST_LAYOUT)
+
 val OnboardingUiState.blocksHome: Boolean
     get() = isBlocking || activePicker != null ||
         (stage == OnboardingStage.CHECKLIST && isChecklistExpanded)

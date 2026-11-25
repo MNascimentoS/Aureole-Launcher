@@ -112,4 +112,21 @@ class OnboardingUiStateTest {
             state.copy(completedSteps = GestureCoachStep.entries.toSet()).currentGestureStep(false)
         )
     }
+
+    @Test
+    fun `when the tour is running in any stage, should lock the home items`() {
+        listOf(
+            OnboardingStage.WELCOME,
+            OnboardingStage.DEFAULT_HOME,
+            OnboardingStage.GESTURES,
+            OnboardingStage.CHECKLIST
+        ).forEach { stage ->
+            assertTrue(stage.name, OnboardingUiState(stage = stage).locksHomeItems)
+        }
+    }
+
+    @Test
+    fun `when the tour is over, should leave the home items alone`() {
+        assertFalse(OnboardingUiState(stage = OnboardingStage.COMPLETED).locksHomeItems)
+    }
 }

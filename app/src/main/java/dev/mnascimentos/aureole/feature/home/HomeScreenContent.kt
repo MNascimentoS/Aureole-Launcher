@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import dev.chrisbanes.haze.HazeState
@@ -24,6 +25,7 @@ import dev.mnascimentos.aureole.feature.home.components.favorites.model.Favorite
 import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingNewItemChip
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.highlightedItemId
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onboardingNewItemOutline
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.locksHomeItems
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
@@ -117,6 +119,11 @@ internal fun MainHomeLayout(
                         hazeState = hazeState
                     )
                 )
+                // Inert until the tour is over: the overlay takes the touch away from the item (its list, widget or
+                // button) and leaves it unconsumed, so the home's own gestures and the coach still see it.
+                if (uiState.onboarding.locksHomeItems && !uiState.isGridEditMode) {
+                    Box(modifier = Modifier.matchParentSize().pointerInput(Unit) {})
+                }
                 if (isNewItem) {
                     OnboardingNewItemChip(type = item.safeType, modifier = Modifier.align(Alignment.TopStart))
                 }

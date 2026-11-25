@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
@@ -39,6 +40,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.showsLayoutHint
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
 
 /**
@@ -82,7 +84,20 @@ internal fun OnboardingChecklistPill(
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
                 .clickable(role = Role.Button, onClick = onExpand)
         ) {
-            PillContent(onboarding = onboarding, shared = shared)
+            Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
+                if (onboarding.showsLayoutHint) {
+                    AureoleText(
+                        text = stringResource(R.string.home_onboarding_layout_bounds_hint),
+                        modifier = shared.fading.fillMaxWidth(),
+                        color = AureoleDS.colors.onSurfaceMedium,
+                        format = AureoleTextFormatParams(
+                            style = AureoleDS.typography.bodySmall,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                PillContent(onboarding = onboarding, shared = shared)
+            }
         }
     }
 }

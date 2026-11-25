@@ -55,7 +55,6 @@ fun Modifier.onboardingNewItemOutline(isHighlighted: Boolean): Modifier {
     val radius = AureoleDS.dimens.radiusMedium + OnboardingMotionSpec.NEW_ITEM_MARGIN
     val margin = OnboardingMotionSpec.NEW_ITEM_MARGIN
     return drawWithContent {
-        drawContent()
         val dashPx = dash.toPx()
         val dashes = newItemDashes(draw.value, march?.value ?: 0f, dashPx)
         val outset = margin.toPx()
@@ -84,5 +83,7 @@ fun Modifier.onboardingNewItemOutline(isHighlighted: Boolean): Modifier {
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashPx, dashPx), dashes.phasePx)
             )
         )
+        // After the dashes, so the "New" chip sits above them instead of being struck through.
+        drawContent()
     }
 }
