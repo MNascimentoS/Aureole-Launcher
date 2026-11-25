@@ -31,6 +31,9 @@ internal class OverlaySheetMotion {
     /** Width and height (packed) the content had when [contentFullHeight] was measured; zero until then. */
     var contentMeasuredSize = 0L
 
+    /** The [AureoleEditOverlayConfig.contentKey] it was measured for. */
+    var contentKey: Any? = null
+
     var settleJob: Job? = null
 
     /** Finger height behind the elastic stretch, and the stretched height it produced. */

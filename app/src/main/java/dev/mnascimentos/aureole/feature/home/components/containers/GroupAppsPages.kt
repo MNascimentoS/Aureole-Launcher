@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -29,6 +32,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
 import dev.mnascimentos.aureole.composable.appitem.model.AureoleAppIconParams
 import dev.mnascimentos.aureole.composable.dialogs.FolderNamePill
@@ -40,6 +44,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.icons.Plus
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.search.rankByQuery
+import dev.mnascimentos.aureole.feature.home.components.containers.folder.FolderAppPickerPanel
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupAppListParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.model.NewFolderDraft
@@ -55,19 +60,27 @@ internal fun ColumnScope.GroupAddAppsPage(params: GroupAppListParams) {
 }
 
 /**
- * "New folder" (RF-C4): FOLDER NAME, then the same list of apps in selection mode. The button that creates it sits
- * at the foot of the sheet ([GroupNewFolderFooter]).
+ * "New folder" (RF-C4): FOLDER NAME, then the folder's own app picker (grid with drag-to-mark and A-Z, tray of the
+ * chosen apps in order, search). The button that creates it sits at the foot of the sheet ([GroupNewFolderFooter]);
+ * [onAppsChange] gets the chosen packages as they change.
  */
 @Composable
 internal fun ColumnScope.GroupNewFolderPage(
     draft: NewFolderDraft,
     onNameChange: (String) -> Unit,
-    params: GroupAppListParams
+    allApps: List<AppInfo>,
+    onAppsChange: (List<String>) -> Unit
 ) {
+    val selected = remember { mutableStateListOf<String>().apply { addAll(draft.apps) } }
+    LaunchedEffect(Unit) { snapshotFlow { selected.toList() }.collect(onAppsChange) }
     GroupSectionLabel(text = stringResource(R.string.home_container_group_folder_name_label))
     FolderNamePill(value = draft.name, onValueChange = onNameChange, modifier = Modifier.fillMaxWidth())
     Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-    GroupAppList(params)
+    FolderAppPickerPanel(
+        allApps = allApps,
+        selectedPackages = selected,
+        isLeftHandedMode = LocalHomeUiState.current.isLeftHandedMode
+    )
 }
 
 /** "Create folder with N apps", off with "Choose 2 apps or more" below it while fewer are picked (D-09). */

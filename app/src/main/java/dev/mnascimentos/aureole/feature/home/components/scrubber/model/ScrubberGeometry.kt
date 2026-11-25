@@ -6,6 +6,7 @@ import kotlin.math.roundToInt
 
 private const val LETTER_CENTER_FACTOR = 0.5f
 private const val GAUSSIAN_DIVISOR = 2f
+private const val MIN_LETTER_FIT = 0.5f
 
 /**
  * Pixel heights of the scrubber column on a parent [parentHeightPx] tall: [outerPx] is what the column takes from
@@ -56,6 +57,13 @@ fun letterIndexAt(localYPx: Float, heightPx: Float, alphabetSize: Int): Int {
 /** Center of the letter at [index] in a column [heightPx] tall holding [alphabetSize] letters. */
 fun letterCenterY(index: Int, heightPx: Float, alphabetSize: Int): Float =
     if (alphabetSize <= 0) 0f else (index + LETTER_CENTER_FACTOR) * heightPx / alphabetSize
+
+/**
+ * How much to shrink a letter [letterHeightPx] tall so the letters do not pile up when each has only [spacingPx]:
+ * 1 when they fit, down to [MIN_LETTER_FIT] on a very short strip.
+ */
+fun scrubberLetterFit(spacingPx: Float, letterHeightPx: Float): Float =
+    if (letterHeightPx <= 0f) 1f else (spacingPx / letterHeightPx).coerceIn(MIN_LETTER_FIT, 1f)
 
 /** Gaussian weight (1 at the finger, fading out) of a letter [distancePx] away from the finger. */
 fun scrubberBulgeWeight(distancePx: Float, spreadPx: Float): Float =

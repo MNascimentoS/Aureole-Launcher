@@ -134,8 +134,8 @@ private fun GroupPositionTile(
                     text = title,
                     color = AureoleDS.colors.onSurfaceHigh,
                     format = AureoleTextFormatParams(
-                        style = AureoleDS.typography.bodyMedium,
-                        fontWeight = FontWeight.SemiBold
+                        style = AureoleDS.typography.labelLarge,
+                        fontWeight = FontWeight.Medium
                     )
                 )
             }

@@ -14,11 +14,9 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
-import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.FolderDetails
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
-import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -27,14 +25,13 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.EditCon
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupRemoval
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupRemovalBar
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetBodyParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetFrame
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetNav
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetPage
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTab
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTip
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTipFlow
 import dev.mnascimentos.aureole.feature.home.components.containers.model.RemovedGroupItem
-import dev.mnascimentos.aureole.feature.home.components.containers.model.firstGroupTip
-import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
 
 private const val ANIMATION_DURATION_MS = 300L
@@ -52,6 +49,7 @@ fun EditContainerScreen(
 ) {
     val state = rememberEditContainerState(params.panel)
     val nav = rememberGroupSheetNav(params)
+    val overlayState = rememberGroupOverlayState(nav, params.initialPage)
     var isVisible by remember { mutableStateOf(true) }
     val latestParams by rememberUpdatedState(params)
     val tips = rememberGroupTips(params)
@@ -73,14 +71,18 @@ fun EditContainerScreen(
         val removal = rememberGroupRemoval(state, effectiveUiState.isLeftHandedMode)
         val baseConfig = groupBaseConfig(
             params = params,
-            isVisible = isVisible,
-            isLeftHanded = effectiveUiState.isLeftHandedMode,
+            frame = GroupSheetFrame(
+                isVisible = isVisible,
+                isLeftHanded = effectiveUiState.isLeftHandedMode,
+                contentKey = Triple(nav.tab, nav.page, state.itemsList.size)
+            ),
             onBackPress = goBack,
             onDismiss = closer::closeOnce
         )
         AureoleEditOverlay(
             onDismissRequest = closer::closeOnce,
             modifier = modifier,
+            state = overlayState,
             params = AureoleEditOverlayParams(
                 config = baseConfig.forGroupPage(nav, state, onBack = goBack, onClose = closer::closeOnce),
                 previewContent = { GroupPreviewSlot(params, nav, state) },
@@ -181,46 +183,6 @@ private fun EditContainerScreenPreview() {
             )
         )
     }
-}
-
-@Composable
-private fun rememberGroupSheetNav(params: EditContainerScreenParams): GroupSheetNav = remember {
-    GroupSheetNav(params.initialTab).also { start ->
-        if (params.initialPage != GroupSheetPage.Tabs) start.open(params.initialPage)
-    }
-}
-
-@Composable
-private fun rememberGroupTips(params: EditContainerScreenParams): GroupTipFlow {
-    val latestParams by rememberUpdatedState(params)
-    return remember {
-        val first = params.startTip ?: firstGroupTip(params.isNew, params.areTipsSeen)
-        GroupTipFlow(first) { latestParams.onTipsSeen() }
-    }
-}
-
-@Composable
-private fun groupBaseConfig(
-    params: EditContainerScreenParams,
-    isVisible: Boolean,
-    isLeftHanded: Boolean,
-    onBackPress: () -> Unit,
-    onDismiss: () -> Unit
-): AureoleEditOverlayConfig {
-    val homeActions = LocalHomeActions.current
-    return AureoleEditOverlayConfig(
-        title = stringResource(R.string.home_container_edit_title),
-        onSettingsClick = { homeActions.onSettingsClick() },
-        showHeaderAction = showsHomeSheetLogo(),
-        hazeState = params.hazeState,
-        isVisible = isVisible,
-        animated = true,
-        isLeftHanded = isLeftHanded,
-        onBackPress = onBackPress,
-        onDismiss = onDismiss,
-        hasTabBottomBar = true,
-        showsDismissFeedback = true
-    )
 }
 
 /** Back: out of a page to its tab, or (on the tabs) closes the sheet; leaving "Add apps" with items moves the tips. */

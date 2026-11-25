@@ -29,6 +29,7 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberR
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.letterCenterY
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberBulgeWeight
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterAlpha
+import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterFit
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberLetterScale
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -84,8 +85,9 @@ fun BoxScope.ScrubberAlphabetItems(
                     } else {
                         1f
                     }
-                    scaleX = scale
-                    scaleY = scale
+                    val fit = scrubberLetterFit(containerHeightPx / alphabet.size, size.height)
+                    scaleX = scale * fit
+                    scaleY = scale * fit
                     alpha = scrubberLetterAlpha(
                         isSelected = isActive,
                         isDragging = params.isDragging,

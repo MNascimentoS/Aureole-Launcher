@@ -142,4 +142,16 @@ class ScrubberGeometryTest {
         tracker.reset()
         assertTrue(tracker.select('Q'))
     }
+
+    @Test
+    fun `letters should keep their size when each has room`() {
+        assertEquals(1f, scrubberLetterFit(spacingPx = 20f, letterHeightPx = 16f), 0f)
+    }
+
+    @Test
+    fun `letters should shrink to the room each has, down to half`() {
+        assertEquals(0.75f, scrubberLetterFit(spacingPx = 12f, letterHeightPx = 16f), 0.001f)
+        assertEquals(0.5f, scrubberLetterFit(spacingPx = 2f, letterHeightPx = 16f), 0f)
+        assertEquals(1f, scrubberLetterFit(spacingPx = 2f, letterHeightPx = 0f), 0f)
+    }
 }

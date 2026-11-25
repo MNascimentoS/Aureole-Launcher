@@ -82,3 +82,9 @@ fun addSlotCountFor(itemCount: Int): Int = if (itemCount == 0) GroupSheetMetrics
 
 private const val ORIENTATION_HORIZONTAL = "Horizontal"
 private const val ORIENTATION_VERTICAL = "Vertical"
+
+/**
+ * What the group sheet's frame depends on: whether it [isVisible] (it slides out while closing), the thumb side
+ * ([isLeftHanded]) and the [contentKey] that tells the sheet its content swapped for one of another height.
+ */
+data class GroupSheetFrame(val isVisible: Boolean, val isLeftHanded: Boolean, val contentKey: Any)

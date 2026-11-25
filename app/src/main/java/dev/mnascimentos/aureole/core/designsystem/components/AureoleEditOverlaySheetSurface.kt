@@ -83,7 +83,7 @@ internal fun SheetSurface(
             .widthIn(max = config.host.maxSheetWidth)
             .fillMaxWidth()
             .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
-            .sheetHeight(motion, isExpanded, bounds)
+            .sheetHeight(motion, isExpanded, bounds, config.contentKey)
             .onSizeChanged { size ->
                 if (motion.fixedHeight(isExpanded, bounds) == null) motion.restHeight = size.height.toFloat()
             }
@@ -172,7 +172,12 @@ private fun rememberSheetController(
  * settling or expanded, and up to the rest height (hugging the content) otherwise. At rest it also measures how
  * tall the content would be, which tells whether the sheet can expand and how far.
  */
-private fun Modifier.sheetHeight(motion: OverlaySheetMotion, isExpanded: Boolean, bounds: SheetBounds): Modifier {
+private fun Modifier.sheetHeight(
+    motion: OverlaySheetMotion,
+    isExpanded: Boolean,
+    bounds: SheetBounds,
+    contentKey: Any?
+): Modifier {
     return layout { measurable, constraints ->
         val fixed = motion.fixedHeight(isExpanded, bounds)?.roundToInt()?.coerceAtMost(constraints.maxHeight)
         val childConstraints = if (fixed == null) {
@@ -183,8 +188,9 @@ private fun Modifier.sheetHeight(motion: OverlaySheetMotion, isExpanded: Boolean
         val placeable = measurable.measure(childConstraints)
         // Asking for the intrinsic height invalidates the layout again, so it is asked only when the size changed.
         val measuredSize = (placeable.width.toLong() shl Int.SIZE_BITS) or placeable.height.toLong()
-        if (fixed == null && motion.contentMeasuredSize != measuredSize) {
+        if (fixed == null && (motion.contentMeasuredSize != measuredSize || motion.contentKey != contentKey)) {
             motion.contentMeasuredSize = measuredSize
+            motion.contentKey = contentKey
             motion.contentFullHeight = measurable.fullHeightOrNull(placeable.width, placeable.height)
         }
         layout(placeable.width, placeable.height) { placeable.place(0, 0) }

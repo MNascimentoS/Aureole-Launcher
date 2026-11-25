@@ -25,7 +25,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSh
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetPage
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTab
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTip
-import dev.mnascimentos.aureole.feature.home.components.containers.model.toggledSelection
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonShortcutPickerContent
 
 /** The content of the group sheet: the tab chosen, or the page open in its place (RF-B10). */
@@ -48,13 +47,8 @@ internal fun ColumnScope.GroupSheetBody(params: GroupSheetBodyParams) {
         GroupSheetPage.NewFolder -> GroupNewFolderPage(
             draft = nav.newFolder,
             onNameChange = { nav.newFolder = nav.newFolder.copy(name = it) },
-            params = GroupAppListParams(
-                allApps = params.allApps,
-                query = query,
-                onQueryChange = { query = it },
-                isMarked = { it in nav.newFolder.apps },
-                onToggle = { nav.newFolder = nav.newFolder.copy(apps = toggledSelection(nav.newFolder.apps, it)) }
-            )
+            allApps = params.allApps,
+            onAppsChange = { nav.newFolder = nav.newFolder.copy(apps = it) }
         )
         GroupSheetPage.QuickButton -> GroupScrollingPage {
             QuickButtonShortcutPickerContent(model = QuickButtonModel(), apps = params.allApps, onPick = { action ->

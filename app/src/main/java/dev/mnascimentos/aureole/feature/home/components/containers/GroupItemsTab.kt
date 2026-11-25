@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.composable.mirror.LeftHandMirror
 import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
 import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
@@ -130,24 +131,17 @@ private fun GroupItemList(params: GroupItemsTabParams) {
     }
 }
 
-/** A small caps section label; [trailing], when given, sits at the end of the line. */
+/** A small caps section label like the clock sheet's; [trailing], when given, sits at the end of the line. */
 @Composable
 internal fun GroupSectionLabel(text: String, modifier: Modifier = Modifier, trailing: String? = null) {
-    Row(
-        modifier = modifier.fillMaxWidth().padding(bottom = AureoleDS.dimens.xSmall),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AureoleText(
-            text = text,
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium, fontWeight = FontWeight.Bold)
-        )
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.Bottom) {
+        AureoleMenuSectionLabel(text = text, modifier = Modifier.weight(1f))
         if (trailing != null) {
             AureoleText(
                 text = trailing,
-                color = AureoleDS.colors.onSurfaceMedium,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.labelMedium)
+                color = AureoleDS.colors.onSurfaceLow,
+                modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall),
+                format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall)
             )
         }
     }
@@ -172,16 +166,16 @@ private fun GroupAddTile(
             .padding(AureoleDS.dimens.small),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
-        icon(Modifier.size(AureoleDS.dimens.iconLarge), AureoleDS.colors.onSurfaceHigh)
+        icon(Modifier.size(AureoleDS.dimens.iconMedium), AureoleDS.colors.onSurfaceHigh)
         AureoleText(
             text = title,
             color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Medium)
         )
         AureoleText(
             text = line,
             color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, maxLines = 3)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 2)
         )
     }
 }
