@@ -368,9 +368,9 @@
     </plurals>
     <string name="home_onboarding_preset_use">Usar %1$s</string>
     <string name="home_onboarding_preset_applied">Layout %1$s aplicado</string>
-    <string name="home_onboarding_preset_applied_label_minimal">LAYOUT MINIMAL APLICADO</string>
-    <string name="home_onboarding_preset_applied_label_productive">LAYOUT PRODUTIVO APLICADO</string>
-    <string name="home_onboarding_preset_applied_label_widgets">LAYOUT WIDGETS APLICADO</string>
+    <string name="home_onboarding_preset_applied_label_minimal">Layout Minimal aplicado</string>
+    <string name="home_onboarding_preset_applied_label_productive">Layout Produtivo aplicado</string>
+    <string name="home_onboarding_preset_applied_label_widgets">Layout Widgets aplicado</string>
     <string name="home_onboarding_preset_category_social">Social</string>
     <string name="home_onboarding_preset_category_productivity">Produtividade</string>
     <string name="home_onboarding_preset_category_audio">Áudio</string>
@@ -418,9 +418,9 @@
     <string name="home_onboarding_task_visual">&lt;b&gt;Visual&lt;/b&gt;: paleta e fonte</string>
     <string name="home_onboarding_checklist_dismiss_confirm">Toque de novo para dispensar</string>
     <string name="home_onboarding_checklist_home_built">Home montada. Faltam os extras: faça ou pule.</string>
-    <string name="home_onboarding_checklist_section_home">SUA HOME</string>
-    <string name="home_onboarding_checklist_section_extras">EXTRAS</string>
-    <string name="home_onboarding_checklist_section_extras_locked">EXTRAS · liberam depois de montar a home</string>
+    <string name="home_onboarding_checklist_section_home">Sua home</string>
+    <string name="home_onboarding_checklist_section_extras">Extras</string>
+    <string name="home_onboarding_checklist_section_extras_hint">Liberam depois de montar a home</string>
     <string name="home_onboarding_checklist_pill_next">Próximo: %1$s</string>
     <string name="home_onboarding_checklist_pill_continue">Continuar</string>
     <string name="home_onboarding_task_skipped_label">– · pulado</string>

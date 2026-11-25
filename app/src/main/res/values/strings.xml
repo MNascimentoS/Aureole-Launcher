@@ -364,9 +364,9 @@
     </plurals>
     <string name="home_onboarding_preset_use">Use %1$s</string>
     <string name="home_onboarding_preset_applied">%1$s layout applied</string>
-    <string name="home_onboarding_preset_applied_label_minimal">MINIMAL LAYOUT APPLIED</string>
-    <string name="home_onboarding_preset_applied_label_productive">PRODUCTIVE LAYOUT APPLIED</string>
-    <string name="home_onboarding_preset_applied_label_widgets">WIDGETS LAYOUT APPLIED</string>
+    <string name="home_onboarding_preset_applied_label_minimal">Minimal layout applied</string>
+    <string name="home_onboarding_preset_applied_label_productive">Productive layout applied</string>
+    <string name="home_onboarding_preset_applied_label_widgets">Widgets layout applied</string>
     <string name="home_onboarding_preset_category_social">Social</string>
     <string name="home_onboarding_preset_category_productivity">Productivity</string>
     <string name="home_onboarding_preset_category_audio">Audio</string>
@@ -412,9 +412,9 @@
     <string name="home_onboarding_task_visual">&lt;b&gt;Look&lt;/b&gt;: palette and font</string>
     <string name="home_onboarding_checklist_dismiss_confirm">Tap again to dismiss</string>
     <string name="home_onboarding_checklist_home_built">Home built. Only the extras left: do them or skip.</string>
-    <string name="home_onboarding_checklist_section_home">YOUR HOME</string>
-    <string name="home_onboarding_checklist_section_extras">EXTRAS</string>
-    <string name="home_onboarding_checklist_section_extras_locked">EXTRAS · unlock after you build your home</string>
+    <string name="home_onboarding_checklist_section_home">Your home</string>
+    <string name="home_onboarding_checklist_section_extras">Extras</string>
+    <string name="home_onboarding_checklist_section_extras_hint">Unlock once your home is built</string>
     <string name="home_onboarding_checklist_pill_next">Next: %1$s</string>
     <string name="home_onboarding_checklist_pill_continue">Continue</string>
     <string name="home_onboarding_task_skipped_label">– · skipped</string>

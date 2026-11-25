@@ -130,12 +130,12 @@ private fun ChecklistCardContent(
         onboardingHomeTasks.forEachIndexed { index, task ->
             ChecklistRow(onboarding, task, actions, stagger = index, shared = shared)
         }
-        val extrasLabel = if (onboarding.isHomeBuilt) {
-            R.string.home_onboarding_checklist_section_extras
-        } else {
-            R.string.home_onboarding_checklist_section_extras_locked
-        }
-        ChecklistSectionLabel(text = stringResource(extrasLabel), shared = shared)
+        ChecklistSectionLabel(
+            text = stringResource(R.string.home_onboarding_checklist_section_extras),
+            shared = shared,
+            hint = stringResource(R.string.home_onboarding_checklist_section_extras_hint)
+                .takeIf { !onboarding.isHomeBuilt }
+        )
         onboardingExtraTasks.forEachIndexed { index, task ->
             val stagger = onboardingHomeTasks.size + index
             ChecklistRow(onboarding, task, actions, stagger = stagger, shared = shared)
@@ -165,13 +165,27 @@ private fun ChecklistRow(
 
 /** "YOUR HOME" / "EXTRAS" above each section (RF-A1); the extras label says when they unlock (RF-A4). */
 @Composable
-private fun ChecklistSectionLabel(text: String, shared: ChecklistSharedModifiers) {
-    AureoleText(
-        text = text,
-        modifier = shared.fading.padding(top = AureoleDS.dimens.xSmall, start = AureoleDS.dimens.small),
-        color = AureoleDS.colors.onSurfaceMedium,
-        format = AureoleTextFormatParams(style = AureoleDS.typography.text)
-    )
+private fun ChecklistSectionLabel(text: String, shared: ChecklistSharedModifiers, hint: String? = null) {
+    Column(
+        modifier = shared.fading.padding(
+            top = AureoleDS.dimens.small,
+            start = AureoleDS.dimens.small,
+            bottom = AureoleDS.dimens.xxSmall
+        )
+    ) {
+        AureoleText(
+            text = text,
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.midTitle)
+        )
+        hint?.let {
+            AureoleText(
+                text = it,
+                color = AureoleDS.colors.onSurfaceLow,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
+            )
+        }
+    }
 }
 
 @Composable
