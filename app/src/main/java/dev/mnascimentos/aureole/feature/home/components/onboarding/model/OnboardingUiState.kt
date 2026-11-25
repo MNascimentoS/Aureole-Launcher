@@ -77,13 +77,6 @@ val OnboardingUiState.isBlocking: Boolean
 val OnboardingUiState.locksHomeItems: Boolean
     get() = stage != OnboardingStage.COMPLETED
 
-/**
- * While "Adjust your layout" waits for the rest, the minimized checklist carries a line saying the sizes can be
- * adjusted there later (D-03), inside the pill itself so the two never stack.
- */
-val OnboardingUiState.showsLayoutHint: Boolean
-    get() = stage == OnboardingStage.CHECKLIST && isTaskLocked(OnboardingTask.ADJUST_LAYOUT)
-
 val OnboardingUiState.blocksHome: Boolean
     get() = isBlocking || activePicker != null ||
         (stage == OnboardingStage.CHECKLIST && isChecklistExpanded)
