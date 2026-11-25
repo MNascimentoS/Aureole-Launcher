@@ -171,9 +171,7 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Customize clock</string>
-    <string name="home_clock_save_hint_title">Drag down to close</string>
-    <string name="home_clock_save_hint_body">Everything you change here is already saved</string>
-    <string name="home_clock_save_hint_got_it">Got it</string>
+    <string name="home_clock_save_hint">Your changes are saved automatically when you close</string>
     <string name="home_clock_undo_updated">Clock updated</string>
     <string name="home_clock_greeting_text">Greeting text</string>
     <string name="home_clock_greeting_placeholder">E.g: Welcome back!</string>
@@ -374,13 +372,10 @@
     <string name="home_onboarding_coach_scrub_title_right">Swipe along the right edge</string>
     <string name="home_onboarding_coach_scrub_title_left">Swipe along the left edge</string>
     <string name="home_onboarding_coach_scrub_body">Then slide down to jump straight to a letter.</string>
-    <string name="home_onboarding_coach_scrub_done">Quick, right? Let go to close.</string>
+    <string name="home_onboarding_coach_scrub_done">Quick, right? Go back to close.</string>
     <string name="home_onboarding_coach_customize_title">Touch and hold</string>
     <string name="home_onboarding_coach_customize_body">An empty spot on the screen to customize what shows up there.</string>
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
-    <string name="home_onboarding_coach_notifications_title">Swipe down</string>
-    <string name="home_onboarding_coach_notifications_body">On the home screen to see your notifications.</string>
-    <string name="home_onboarding_coach_notifications_done">Nice! You can turn this off in Settings › Behavior.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
     <plurals name="home_onboarding_checklist_progress">
         <item quantity="one">%1$d of %2$s steps</item>
@@ -390,6 +385,7 @@
         <item quantity="one">%1$d/%2$s first steps</item>
         <item quantity="other">%1$d/%2$s first steps</item>
     </plurals>
+    <string name="home_onboarding_layout_bounds_hint">You can adjust sizes later, in the Adjust your layout step.</string>
     <string name="home_onboarding_checklist_minimize">Minimize</string>
     <string name="home_onboarding_checklist_dismiss">Don\'t show again</string>
     <string name="home_onboarding_checklist_dismissed">You can replay it in Settings › Advanced.</string>

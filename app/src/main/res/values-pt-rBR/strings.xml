@@ -171,9 +171,7 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Personalizar relógio</string>
-    <string name="home_clock_save_hint_title">Arraste para baixo para fechar</string>
-    <string name="home_clock_save_hint_body">Tudo o que você muda aqui já fica salvo</string>
-    <string name="home_clock_save_hint_got_it">Entendi</string>
+    <string name="home_clock_save_hint">Suas mudanças são salvas automaticamente ao fechar</string>
     <string name="home_clock_undo_updated">Relógio atualizado</string>
     <string name="home_clock_greeting_text">Texto da Saudação</string>
     <string name="home_clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
@@ -375,13 +373,10 @@
     <string name="home_onboarding_coach_scrub_title_right">Deslize na borda direita</string>
     <string name="home_onboarding_coach_scrub_title_left">Deslize na borda esquerda</string>
     <string name="home_onboarding_coach_scrub_body">Depois desça o dedo para pular direto para uma letra.</string>
-    <string name="home_onboarding_coach_scrub_done">Rápido, né? Solte para fechar.</string>
+    <string name="home_onboarding_coach_scrub_done">Rápido, né? Volte a tela para fechar.</string>
     <string name="home_onboarding_coach_customize_title">Toque e segure</string>
     <string name="home_onboarding_coach_customize_body">Em um espaço vazio da tela para personalizar o que aparece nela.</string>
     <string name="home_onboarding_coach_customize_done">É aqui que você monta sua tela.</string>
-    <string name="home_onboarding_coach_notifications_title">Deslize para baixo</string>
-    <string name="home_onboarding_coach_notifications_body">Na tela inicial para ver suas notificações.</string>
-    <string name="home_onboarding_coach_notifications_done">Isso aí! Dá para desligar em Configurações › Comportamento.</string>
     <string name="home_onboarding_checklist_title">Primeiros passos</string>
     <plurals name="home_onboarding_checklist_progress">
         <item quantity="one">%1$d de %2$s etapas</item>
@@ -393,6 +388,7 @@
         <item quantity="many">%1$d/%2$s primeiros passos</item>
         <item quantity="other">%1$d/%2$s primeiros passos</item>
     </plurals>
+    <string name="home_onboarding_layout_bounds_hint">Você poderá ajustar os tamanhos depois, na etapa Ajuste o layout.</string>
     <string name="home_onboarding_checklist_minimize">Minimizar</string>
     <string name="home_onboarding_checklist_dismiss">Não mostrar mais</string>
     <string name="home_onboarding_checklist_dismissed">Você pode rever em Configurações › Avançado.</string>

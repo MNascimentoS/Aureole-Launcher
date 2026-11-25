@@ -36,12 +36,11 @@ class EditClockSaveHintTest {
     }
 
     @Test
-    fun `when the onboarding runs, should show the notice and dismiss it on Got it`() {
+    fun `when the onboarding runs, should show the notice and dismiss it on tap`() {
         setSheet(MainUiState(onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST)))
 
-        composeTestRule.onNodeWithText("Drag down to close").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Everything you change here is already saved").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Got it").performClick()
+        composeTestRule.onNodeWithText(HINT).assertIsDisplayed()
+        composeTestRule.onNodeWithText(HINT).performClick()
 
         assertEquals(1, dismissCount)
     }
@@ -50,7 +49,7 @@ class EditClockSaveHintTest {
     fun `when the onboarding is over, should not show the notice`() {
         setSheet(MainUiState())
 
-        composeTestRule.onNodeWithText("Drag down to close").assertDoesNotExist()
+        composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
     }
 
     @Test
@@ -62,6 +61,10 @@ class EditClockSaveHintTest {
             )
         )
 
-        composeTestRule.onNodeWithText("Drag down to close").assertDoesNotExist()
+        composeTestRule.onNodeWithText(HINT).assertDoesNotExist()
+    }
+
+    private companion object {
+        const val HINT = "Your changes are saved automatically when you close"
     }
 }

@@ -189,6 +189,7 @@ private fun ChecklistFooter(actions: OnboardingActions, modifier: Modifier = Mod
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         OnboardingTextButton(
             text = stringResource(R.string.home_onboarding_checklist_dismiss),
+            modifier = Modifier.weight(1f, fill = false),
             onClick = {
                 actions.onDismissChecklist()
                 Toast.makeText(context, dismissedMessage, Toast.LENGTH_LONG).show()

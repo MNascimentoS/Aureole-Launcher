@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
+import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.hostSurface
@@ -28,6 +29,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSurface
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isTaskLocked
 
 /**
  * Top layer of the home: routes the onboarding stage to its surface, plus the checklist (which minimizes into
@@ -53,6 +55,11 @@ fun OnboardingHostComponent(
         ) { surface ->
             OnboardingSurfaceContent(surface = surface, params = params, actions = actions)
         }
+        OnboardingLayoutBoundsComponent(
+            isVisible = onboarding.stage == OnboardingStage.CHECKLIST &&
+                onboarding.isTaskLocked(OnboardingTask.ADJUST_LAYOUT) &&
+                !params.isHomeOverlayActive && !onboarding.isChecklistExpanded
+        )
         OnboardingChecklistMorphComponent(
             onboarding = onboarding,
             isOtherOverlayActive = params.isHomeOverlayActive,
