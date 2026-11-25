@@ -563,16 +563,16 @@
       "id": "container",
       "area": "home",
       "titulo": {
-        "pt": "Container",
-        "en": "Container"
+        "pt": "Personalizar grupo",
+        "en": "Customize group"
       },
       "paisagem": true,
       "estados": [
         {
           "id": "Padrao",
           "titulo": {
-            "pt": "Padrão",
-            "en": "Default"
+            "pt": "Itens",
+            "en": "Items"
           },
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/EditContainerHorizontalScreenScreenshotTest_Dark Mode",
@@ -580,32 +580,39 @@
             "feature/home/components/containers/ContainerLayoutsScreenshotTestKt/ContainerFourFoldersScreenshotTest_Dark Mode",
             "feature/home/components/containers/ContainerLayoutsScreenshotTestKt/ContainerLayoutsScreenshotTest_Dark Mode",
             "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerMainRightHandedScreenshotTest_Dark Mode",
-            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerOptionsRightHandedScreenshotTest_Dark Mode"
-          ]
-        },
-        {
-          "id": "Canhoto",
-          "titulo": {
-            "pt": "Canhoto",
-            "en": "Left-handed"
-          },
-          "antes": [
+            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerOptionsRightHandedScreenshotTest_Dark Mode",
             "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerMainLeftHandedScreenshotTest_Dark Mode",
-            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerOptionsLeftHandedScreenshotTest_Dark Mode"
-          ]
-        },
-        {
-          "id": "Itens",
-          "titulo": {
-            "pt": "Gerenciar itens",
-            "en": "Manage items"
-          },
-          "antes": [
+            "feature/home/components/containers/EditContainerOneHandScreenshotTestKt/EditContainerOptionsLeftHandedScreenshotTest_Dark Mode",
             "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsLeftHandedScreenshotTest_Dark Mode",
             "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsRightHandedScreenshotTest_Dark Mode"
           ]
+        },
+        {
+          "id": "Layout",
+          "titulo": {
+            "pt": "Layout",
+            "en": "Layout"
+          },
+          "antes": []
+        },
+        {
+          "id": "Aparencia",
+          "titulo": {
+            "pt": "Aparência",
+            "en": "Appearance"
+          },
+          "antes": []
+        },
+        {
+          "id": "PaginaCor",
+          "titulo": {
+            "pt": "Página de cor",
+            "en": "Color page"
+          },
+          "antes": []
         }
-      ]
+      ],
+      "excecao": "grupo-apps-pastas D-17"
     },
     {
       "id": "adicionarcomponente",
@@ -1614,6 +1621,63 @@
             "en": "Search shortcut"
           },
           "ref": "telas/atalhos/Busca"
+        }
+      ]
+    },
+    {
+      "id": "adicionargrupo",
+      "area": "home",
+      "titulo": {
+        "pt": "Adicionar grupo",
+        "en": "Add group"
+      },
+      "passos": [
+        {
+          "id": "P01AdicionarComponente",
+          "titulo": {
+            "pt": "Adicionar componente",
+            "en": "Add component"
+          }
+        },
+        {
+          "id": "P02GrupoVazioDica1",
+          "titulo": {
+            "pt": "Grupo vazio, dica 1",
+            "en": "Empty group, tip 1"
+          }
+        },
+        {
+          "id": "P03AdicionarApps",
+          "titulo": {
+            "pt": "Adicionar apps",
+            "en": "Add apps"
+          }
+        },
+        {
+          "id": "P04ItensDica2",
+          "titulo": {
+            "pt": "Itens, dica 2",
+            "en": "Items, tip 2"
+          }
+        },
+        {
+          "id": "P05LayoutDica3",
+          "titulo": {
+            "pt": "Layout, dica 3",
+            "en": "Layout, tip 3"
+          }
+        },
+        {
+          "id": "P06NovaPasta",
+          "titulo": {
+            "pt": "Nova pasta",
+            "en": "New folder"
+          }
+        },
+        {
+          "id": "P07Home",
+          "ref": "telas/home/Padrao",
+          "excecao": "grupo-apps-pastas D-18"
         }
       ]
     }

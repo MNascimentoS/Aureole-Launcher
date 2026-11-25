@@ -92,7 +92,7 @@ internal fun GroupSheetPreview(state: EditContainerState, homeSize: DpSize?, onA
             val sizeModifier = homeSize?.let { size ->
                 val scale = previewFitScale(size.width.value, size.height.value, maxWidth.value, maxHeight.value)
                 Modifier.scaledLayout(scale).size(size)
-            } ?: unmeasuredPreviewModifier(isLyingDown(state.orientation))
+            } ?: Modifier.unmeasuredPreview(isLyingDown(state.orientation))
             Container(
                 config = config,
                 onFolderClick = { _, _ -> },
@@ -105,12 +105,12 @@ internal fun GroupSheetPreview(state: EditContainerState, homeSize: DpSize?, onA
     }
 }
 
-private fun unmeasuredPreviewModifier(isLyingDown: Boolean): Modifier = if (isLyingDown) {
-    Modifier
+private fun Modifier.unmeasuredPreview(isLyingDown: Boolean): Modifier = if (isLyingDown) {
+    this
         .wrapContentWidth(Alignment.CenterHorizontally)
         .heightIn(min = ContainerPreviewMetrics.MinSize, max = ContainerPreviewMetrics.MaxSize)
 } else {
-    Modifier
+    this
         .wrapContentHeight(Alignment.Bottom)
         .widthIn(min = ContainerPreviewMetrics.MinSize, max = ContainerPreviewMetrics.MaxSize)
 }
@@ -128,7 +128,10 @@ internal fun ColumnScope.GroupSheetBottomBar(
 ) {
     AureoleUndoSnackbar(
         state = removal.removed?.let {
-            UndoSnackbarState(id = it.id, message = TextResource.fromResId(R.string.home_container_group_removed, it.name))
+            UndoSnackbarState(
+                id = it.id,
+                message = TextResource.fromResId(R.string.home_container_group_removed, it.name)
+            )
         },
         isLeftHanded = removal.isLeftHanded,
         onUndo = removal.onUndo,

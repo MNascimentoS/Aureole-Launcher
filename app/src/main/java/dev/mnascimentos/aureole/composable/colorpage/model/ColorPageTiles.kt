@@ -70,7 +70,10 @@ fun cardColorTiles(
 /** What picking this tile saves for a card whose theme color is [themeRef]: null for "None", [themeRef] for "Theme". */
 fun ColorPageTile.toCardColorRef(themeRef: ThemeColorRef): ThemeColorRef? = when (this) {
     ColorPageTile.None -> null
-    is ColorPageTile.Entry -> if (entry == ComponentColorEntry.Theme) themeRef else entry.toColorRef(ComponentColorRole.CARD)
+    is ColorPageTile.Entry -> when (entry) {
+        ComponentColorEntry.Theme -> themeRef
+        else -> entry.toColorRef(ComponentColorRole.CARD)
+    }
 }
 
 /** Fixed values of the color pages that are not design system tokens. */

@@ -22,7 +22,11 @@ import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonS
 internal fun EditContainerState.quickButton(id: String): QuickButtonModel? = quickButtons.find { it.id == id }
 
 private fun QuickButtonModel.appInfoIn(allApps: List<AppInfo>): AppInfo? =
-    if (shortcuts.click.type == ShortcutType.OPEN_APP) allApps.find { it.packageName == shortcuts.click.target } else null
+    if (shortcuts.click.type == ShortcutType.OPEN_APP) {
+        allApps.find { it.packageName == shortcuts.click.target }
+    } else {
+        null
+    }
 
 /** True while an item is edited in place, so the preview above the sheet is the item's and not the group's. */
 internal fun GroupSheetNav.showsItemPreview(state: EditContainerState): Boolean = when (val current = page) {
@@ -89,7 +93,11 @@ internal fun ColumnScope.GroupQuickButtonEditorPage(state: EditContainerState, q
     state.quickButton(quickButtonId)?.let { model ->
         QuickButtonAppearanceSheetContent(
             activeModel = model,
-            onUpdateAppearance = { appearance -> state.updateQuickButton(model.id) { it.copy(appearance = appearance) } },
+            onUpdateAppearance = { appearance ->
+                state.updateQuickButton(
+                    model.id
+                ) { it.copy(appearance = appearance) }
+            },
             modifier = Modifier.weight(1f, fill = false)
         )
     }

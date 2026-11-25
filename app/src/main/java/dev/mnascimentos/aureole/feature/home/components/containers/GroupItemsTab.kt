@@ -29,6 +29,7 @@ import dev.mnascimentos.aureole.composable.reorder.ReorderableColumn
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableActions
 import dev.mnascimentos.aureole.composable.reorder.model.ReorderableParams
 import dev.mnascimentos.aureole.composable.tips.TipPulse
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
@@ -37,6 +38,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Folder
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupItemRowParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupItemsTabParams
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetNav
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetPage
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTip
 import dev.mnascimentos.aureole.feature.home.components.containers.model.groupItemCount
@@ -108,13 +110,7 @@ private fun GroupItemList(params: GroupItemsTabParams) {
         ),
         autoScroll = params.autoScroll
     ) { item ->
-        val folder = state.folders.find { it.id == item.folderId }
-        val quickButtonId = item.quickButtonId ?: item.id
-        val onOpen: (() -> Unit)? = when {
-            folder != null -> { { params.nav.openFolder(folder) } }
-            state.quickButton(quickButtonId) != null -> { { params.nav.open(GroupSheetPage.QuickButtonEditor(quickButtonId)) } }
-            else -> null
-        }
+        val onOpen = groupItemOpener(item, state, params.nav)
         val name = groupItemName(item, state.folders, params.allApps)
         GroupItemRow(
             GroupItemRowParams(
@@ -198,5 +194,17 @@ private fun GroupEmptyBox() {
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, textAlign = TextAlign.Center)
         )
+    }
+}
+
+/** What tapping the row does: opens the folder or quick button editor in place; null for an app (RF-C2). */
+private fun groupItemOpener(item: ContainerItemEntity, state: EditContainerState, nav: GroupSheetNav): (() -> Unit)? {
+    val folder = state.folders.find { it.id == item.folderId }
+    val quickButtonId = item.quickButtonId ?: item.id
+    return when {
+        folder != null -> ({ nav.openFolder(folder) })
+        state.quickButton(quickButtonId) != null ->
+            ({ nav.open(GroupSheetPage.QuickButtonEditor(quickButtonId)) })
+        else -> null
     }
 }

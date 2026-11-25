@@ -108,8 +108,15 @@ internal fun GroupHelpText(text: String) {
 
 /** A position tile: three squares standing or lying, the title and what it means (RF-D1). */
 @Composable
-private fun GroupPositionTile(isLyingDown: Boolean, isSelected: Boolean, onClick: () -> Unit, modifier: Modifier) {
-    val title = stringResource(if (isLyingDown) R.string.home_container_group_lying else R.string.home_container_group_upright)
+private fun GroupPositionTile(
+    isLyingDown: Boolean,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val title = stringResource(
+        if (isLyingDown) R.string.home_container_group_lying else R.string.home_container_group_upright
+    )
     val line = stringResource(
         if (isLyingDown) R.string.home_container_group_lying_line else R.string.home_container_group_upright_line
     )
@@ -120,7 +127,10 @@ private fun GroupPositionTile(isLyingDown: Boolean, isSelected: Boolean, onClick
                 AureoleText(
                     text = title,
                     color = AureoleDS.colors.onSurfaceHigh,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 )
             }
         },
@@ -142,9 +152,13 @@ private fun GroupPositionMiniature(isLyingDown: Boolean) {
         )
     }
     if (isLyingDown) {
-        Row(horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal)) { repeat(MINIATURE_SQUARES) { square() } }
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal)
+        ) { repeat(MINIATURE_SQUARES) { square() } }
     } else {
-        Column(verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal)) { repeat(MINIATURE_SQUARES) { square() } }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.minimal)
+        ) { repeat(MINIATURE_SQUARES) { square() } }
     }
 }
 

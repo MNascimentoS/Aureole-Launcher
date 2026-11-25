@@ -80,7 +80,13 @@ class EditContainerStateGroupTest {
     @Test
     fun `when a folder is removed and undone, should bring its folder back too`() {
         val folder = AppFolder(id = "f", name = "Work", appPackageNames = listOf("x", "y"))
-        val item = ContainerItemEntity(id = "i", panelId = "p", itemType = ContainerItemType.FOLDER, folderId = "f", orderIndex = 0)
+        val item = ContainerItemEntity(
+            id = "i",
+            panelId = "p",
+            itemType = ContainerItemType.FOLDER,
+            folderId = "f",
+            orderIndex = 0
+        )
         val state = state(items = listOf(item), folders = listOf(folder))
 
         val removed = requireNotNull(state.removeItemAt(index = 0, id = 1L, name = "Work"))

@@ -111,7 +111,10 @@ internal fun GroupItemRow(params: GroupItemRowParams) {
                 .size(AureoleDS.dimens.minTouchTarget)
                 .semantics { contentDescription = removeLabel }
         ) {
-            AureoleDS.icons.Close(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(AureoleDS.dimens.iconSmall))
+            AureoleDS.icons.Close(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+            )
         }
     }
 }
@@ -126,7 +129,10 @@ private fun GroupItemDragHandle() {
             .then(handle.gestureModifier),
         contentAlignment = Alignment.Center
     ) {
-        AureoleDS.icons.DragHandle(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(AureoleDS.dimens.iconSmall))
+        AureoleDS.icons.DragHandle(
+            tint = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.size(AureoleDS.dimens.iconSmall)
+        )
     }
 }
 
@@ -163,7 +169,10 @@ private fun GroupItemIcon(itemType: ContainerItemType, app: AppInfo?, folder: Ap
         val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
         val tint = AureoleDS.colors.onSurfaceHigh
         when {
-            itemType == ContainerItemType.FOLDER && folder != null -> AureoleDS.icons.Folder(tint = tint, modifier = iconModifier)
+            itemType == ContainerItemType.FOLDER && folder != null -> AureoleDS.icons.Folder(
+                tint = tint,
+                modifier = iconModifier
+            )
             itemType == ContainerItemType.QUICK_BUTTON -> AureoleDS.icons.Click(tint = tint, modifier = iconModifier)
             else -> AureoleDS.icons.AppSelect(tint = tint, modifier = iconModifier)
         }

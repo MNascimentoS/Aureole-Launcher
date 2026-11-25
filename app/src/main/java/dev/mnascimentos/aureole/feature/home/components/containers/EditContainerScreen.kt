@@ -51,59 +51,39 @@ fun EditContainerScreen(
     modifier: Modifier = Modifier
 ) {
     val state = rememberEditContainerState(params.panel)
-    val nav = remember { GroupSheetNav() }
+    val nav = rememberGroupSheetNav(params)
     var isVisible by remember { mutableStateOf(true) }
     val latestParams by rememberUpdatedState(params)
-    val tips = remember { GroupTipFlow(firstGroupTip(params.isNew, params.areTipsSeen)) { latestParams.onTipsSeen() } }
+    val tips = rememberGroupTips(params)
 
     val currentUiState = LocalHomeUiState.current
     val effectiveUiState =
         if (currentUiState.apps.isEmpty()) currentUiState.copy(apps = params.allApps) else currentUiState
-    val homeActions = LocalHomeActions.current
 
     ProvideHomeUiState(effectiveUiState) {
         DismissAfterAnimation(isVisible, params.onDismiss)
         val closer = remember(state) {
             EditContainerCloser(save = { latestParams.onSave(state.toModel()) }, close = { isVisible = false })
         }
-        val goBack: () -> Unit = {
-            val wasAddingApps = nav.page == GroupSheetPage.AddApps
-            if (nav.back()) {
-                if (wasAddingApps) tips.onAppsPageClosed(state.itemsList.size)
-            } else {
-                closer.closeOnce()
-            }
-        }
+        val goBack = groupGoBack(nav, state, tips, closer)
         val selectTab: (GroupTab) -> Unit = { tab ->
             nav.selectTab(tab)
             tips.onTabSelected(tab)
         }
         val removal = rememberGroupRemoval(state, effectiveUiState.isLeftHandedMode)
-        val baseConfig = AureoleEditOverlayConfig(
-            title = stringResource(R.string.home_container_edit_title),
-            onSettingsClick = { homeActions.onSettingsClick() },
-            showHeaderAction = showsHomeSheetLogo(),
-            hazeState = params.hazeState,
+        val baseConfig = groupBaseConfig(
+            params = params,
             isVisible = isVisible,
-            animated = true,
             isLeftHanded = effectiveUiState.isLeftHandedMode,
             onBackPress = goBack,
-            onDismiss = closer::closeOnce,
-            hasTabBottomBar = true,
-            showsDismissFeedback = true
+            onDismiss = closer::closeOnce
         )
         AureoleEditOverlay(
             onDismissRequest = closer::closeOnce,
             modifier = modifier,
             params = AureoleEditOverlayParams(
                 config = baseConfig.forGroupPage(nav, state, onBack = goBack, onClose = closer::closeOnce),
-                previewContent = {
-                    if (nav.showsItemPreview(state)) {
-                        GroupItemEditorPreview(nav = nav, state = state, allApps = params.allApps)
-                    } else {
-                        GroupSheetPreview(state = state, homeSize = params.homeSize) { nav.open(GroupSheetPage.AddApps) }
-                    }
-                },
+                previewContent = { GroupPreviewSlot(params, nav, state) },
                 bottomBarContent = groupBottomBar(nav, state, removal.bar, tips, selectTab),
                 sheetContent = {
                     GroupSheetBody(
@@ -200,5 +180,70 @@ private fun EditContainerScreenPreview() {
                 areTipsSeen = false
             )
         )
+    }
+}
+
+@Composable
+private fun rememberGroupSheetNav(params: EditContainerScreenParams): GroupSheetNav = remember {
+    GroupSheetNav(params.initialTab).also { start ->
+        if (params.initialPage != GroupSheetPage.Tabs) start.open(params.initialPage)
+    }
+}
+
+@Composable
+private fun rememberGroupTips(params: EditContainerScreenParams): GroupTipFlow {
+    val latestParams by rememberUpdatedState(params)
+    return remember {
+        val first = params.startTip ?: firstGroupTip(params.isNew, params.areTipsSeen)
+        GroupTipFlow(first) { latestParams.onTipsSeen() }
+    }
+}
+
+@Composable
+private fun groupBaseConfig(
+    params: EditContainerScreenParams,
+    isVisible: Boolean,
+    isLeftHanded: Boolean,
+    onBackPress: () -> Unit,
+    onDismiss: () -> Unit
+): AureoleEditOverlayConfig {
+    val homeActions = LocalHomeActions.current
+    return AureoleEditOverlayConfig(
+        title = stringResource(R.string.home_container_edit_title),
+        onSettingsClick = { homeActions.onSettingsClick() },
+        showHeaderAction = showsHomeSheetLogo(),
+        hazeState = params.hazeState,
+        isVisible = isVisible,
+        animated = true,
+        isLeftHanded = isLeftHanded,
+        onBackPress = onBackPress,
+        onDismiss = onDismiss,
+        hasTabBottomBar = true,
+        showsDismissFeedback = true
+    )
+}
+
+/** Back: out of a page to its tab, or (on the tabs) closes the sheet; leaving "Add apps" with items moves the tips. */
+private fun groupGoBack(
+    nav: GroupSheetNav,
+    state: EditContainerState,
+    tips: GroupTipFlow,
+    closer: EditContainerCloser
+): () -> Unit = {
+    val wasAddingApps = nav.page == GroupSheetPage.AddApps
+    if (nav.back()) {
+        if (wasAddingApps) tips.onAppsPageClosed(state.itemsList.size)
+    } else {
+        closer.closeOnce()
+    }
+}
+
+/** The group above the sheet: the editor of the open folder or quick button, or the group as on the home. */
+@Composable
+private fun GroupPreviewSlot(params: EditContainerScreenParams, nav: GroupSheetNav, state: EditContainerState) {
+    if (nav.showsItemPreview(state)) {
+        GroupItemEditorPreview(nav = nav, state = state, allApps = params.allApps)
+    } else {
+        GroupSheetPreview(state = state, homeSize = params.homeSize) { nav.open(GroupSheetPage.AddApps) }
     }
 }

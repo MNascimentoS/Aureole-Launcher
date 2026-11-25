@@ -77,7 +77,9 @@ class QuickButtonNameTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                GroupItemRow(GroupItemRowParams(item = item, folders = emptyList(), allApps = emptyList(), onRemove = {}))
+                GroupItemRow(
+                    GroupItemRowParams(item = item, folders = emptyList(), allApps = emptyList(), onRemove = {})
+                )
             }
         }
 

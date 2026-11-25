@@ -5,15 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 /** The three tips of the first group (RF-F2), in order; [number] is the step shown on the card. */
-enum class GroupTip(val number: Int) {
+enum class GroupTip {
     /** Items tab of the empty group: "This is your app & folder group", button "Add app". */
-    FIRST_APP(1),
+    FIRST_APP,
 
     /** Items tab, back from "Add apps" with an item: "Done, the group is on the home", button "Choose position". */
-    CHOOSE_POSITION(2),
+    CHOOSE_POSITION,
 
     /** Layout tab: "Standing or lying down?"; picking a position ends the tips. */
-    PICK_POSITION(3);
+    PICK_POSITION;
+
+    /** The step shown on the card, from 1. */
+    val number: Int
+        get() = ordinal + 1
 
     /** The tab whose content shows this tip at its top. */
     val tab: GroupTab

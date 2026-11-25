@@ -62,7 +62,10 @@ private fun ContainerAddSlot(isBackgroundEnabled: Boolean, onClick: (() -> Unit)
         contentAlignment = Alignment.Center
     ) {
         if (onClick != null) {
-            AureoleDS.icons.AddNew(tint = AureoleDS.colors.onSurfaceMedium, modifier = Modifier.size(AureoleDS.dimens.iconMedium))
+            AureoleDS.icons.AddNew(
+                tint = AureoleDS.colors.onSurfaceMedium,
+                modifier = Modifier.size(AureoleDS.dimens.iconMedium)
+            )
         }
     }
 }

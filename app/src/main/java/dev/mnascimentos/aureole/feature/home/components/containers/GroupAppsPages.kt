@@ -118,7 +118,10 @@ private fun ColumnScope.GroupAppList(params: GroupAppListParams) {
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xxSmall)
     ) {
         items(items = shown, key = { it.packageName }) { app ->
-            GroupAppToggleRow(app = app, isMarked = params.isMarked(app.packageName)) { params.onToggle(app.packageName) }
+            GroupAppToggleRow(
+                app = app,
+                isMarked = params.isMarked(app.packageName)
+            ) { params.onToggle(app.packageName) }
         }
     }
 }

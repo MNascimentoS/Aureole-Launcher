@@ -52,9 +52,11 @@ fun orientationOf(isLyingDown: Boolean): String = if (isLyingDown) ORIENTATION_H
  */
 @StringRes
 fun alignmentLabelRes(alignment: GroupAlignment, isLyingDown: Boolean): Int = when (alignment) {
-    GroupAlignment.START -> if (isLyingDown) R.string.home_container_group_align_left else R.string.home_container_group_align_top
+    GroupAlignment.START ->
+        if (isLyingDown) R.string.home_container_group_align_left else R.string.home_container_group_align_top
     GroupAlignment.CENTER -> R.string.home_container_group_align_center
-    GroupAlignment.END -> if (isLyingDown) R.string.home_container_group_align_right else R.string.home_container_group_align_bottom
+    GroupAlignment.END ->
+        if (isLyingDown) R.string.home_container_group_align_right else R.string.home_container_group_align_bottom
 }
 
 /** The alignment option a saved [position] stands for; -1 for the old spread ones, which stay as they are (D-14). */

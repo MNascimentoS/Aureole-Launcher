@@ -609,7 +609,7 @@
     <string name="theme_color_swatch_default">Tema</string>
     <string name="home_container_add_subtitle">Escolha o que vai para a home</string>
     <string name="home_container_add_clock_subtitle">Hora, data e uma mensagem</string>
-    <string name="home_container_add_apps_list_subtitle">Todos os apps, de A a Z</string>
+    <string name="home_container_add_apps_list_subtitle">Todos os apps, em ordem alfabética</string>
     <string name="home_container_add_group_subtitle">Seus apps, pastas e atalhos juntos</string>
     <string name="home_container_add_widget_list_subtitle">Widgets do Android empilhados</string>
     <string name="home_container_add_quick_button_subtitle">Uma ação do sistema num toque</string>
@@ -679,18 +679,22 @@
     <string name="home_container_tip_third_text">Toque numa opção e a prévia muda na hora. Dá para trocar quando quiser.</string>
     <plurals name="home_container_group_item_count">
         <item quantity="one">%1$d item</item>
+        <item quantity="many">%1$d itens</item>
         <item quantity="other">%1$d itens</item>
     </plurals>
     <plurals name="home_container_group_type_folder">
         <item quantity="one">Pasta · %1$d app</item>
+        <item quantity="many">Pasta · %1$d apps</item>
         <item quantity="other">Pasta · %1$d apps</item>
     </plurals>
     <plurals name="home_container_group_add_apps_count">
         <item quantity="one">%1$d item no grupo</item>
+        <item quantity="many">%1$d itens no grupo</item>
         <item quantity="other">%1$d itens no grupo</item>
     </plurals>
     <plurals name="home_container_group_create_folder">
         <item quantity="one">Criar pasta com %1$d app</item>
+        <item quantity="many">Criar pasta com %1$d apps</item>
         <item quantity="other">Criar pasta com %1$d apps</item>
     </plurals>
 </resources>

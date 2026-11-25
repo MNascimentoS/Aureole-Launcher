@@ -10,69 +10,82 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
-import dev.mnascimentos.aureole.feature.home.model.MainUiState
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupColorTarget
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetPage
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupTab
 import dev.mnascimentos.aureole.fixtures.HomeCase
 import dev.mnascimentos.aureole.fixtures.createSampleHomeData
-import dev.mnascimentos.aureole.fixtures.sampleApp
 
-private const val PANEL_APPS = 4
+private const val PANEL_APPS = 3
+private const val PANEL_ID = "panel_1"
 
-private val MANAGE_APPS = listOf(
-    sampleApp("Telefone", "pkg.0", 0xFF2E7D32),
-    sampleApp("Câmera", "pkg.1", 0xFF1B65C0)
-)
-
-/** Editor do container: prévia ao vivo, linhas de OPÇÕES e Cancelar/Salvar do lado do polegar. */
-@Composable
-private fun EditContainerCase(isLeftHanded: Boolean) {
-    val sampleData = createSampleHomeData()
-    val apps = sampleData.apps.take(PANEL_APPS)
-    val panel = ContainerModel(
-        id = "panel_1",
+/** Grupo com 3 apps e uma pasta, o conteúdo de todo estado desta tela. */
+private fun sampleGroup(apps: List<String>): ContainerModel {
+    val folder = AppFolder(id = "folder_1", panelId = PANEL_ID, name = "Trabalho", appPackageNames = apps.take(2))
+    val items = apps.mapIndexed { index, pkg ->
+        ContainerItemEntity(
+            id = "item_$index",
+            panelId = PANEL_ID,
+            itemType = ContainerItemType.APP,
+            packageName = pkg,
+            orderIndex = index
+        )
+    } + ContainerItemEntity(
+        id = "item_folder",
+        panelId = PANEL_ID,
+        itemType = ContainerItemType.FOLDER,
+        folderId = folder.id,
+        orderIndex = apps.size
+    )
+    return ContainerModel(
+        id = PANEL_ID,
         orientation = "Vertical",
         isBackgroundEnabled = true,
-        appPackageNames = apps.map { it.packageName },
-        items = apps.mapIndexed { index, app ->
-            ContainerItemEntity(
-                id = "item_$index",
-                panelId = "panel_1",
-                itemType = ContainerItemType.APP,
-                packageName = app.packageName,
-                orderIndex = index
-            )
-        }
+        appPackageNames = apps,
+        folders = listOf(folder),
+        items = items
     )
-    HomeCase(sampleData.uiState.copy(isLeftHandedMode = isLeftHanded)) {
+}
+
+/** Sheet "Personalizar grupo" na aba [tab] ou na página [page], com o grupo de exemplo. */
+@Composable
+private fun GroupSheetCase(tab: GroupTab = GroupTab.ITEMS, page: GroupSheetPage = GroupSheetPage.Tabs) {
+    val sampleData = createSampleHomeData()
+    val apps = sampleData.apps.take(PANEL_APPS)
+    HomeCase(sampleData.uiState) {
         EditContainerScreen(
-            params = EditContainerScreenParams(panel = panel, allApps = sampleData.apps, onDismiss = {}, onSave = {})
+            params = EditContainerScreenParams(
+                panel = sampleGroup(apps.map { it.packageName }),
+                allApps = sampleData.apps,
+                onDismiss = {},
+                onSave = {},
+                initialTab = tab,
+                initialPage = page
+            )
         )
     }
 }
 
+/** Aba Itens: tiles Adicionar, a lista "No grupo" com apps e uma pasta. */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
-private fun PadraoScreenshotTest() = EditContainerCase(isLeftHanded = false)
+private fun PadraoScreenshotTest() = GroupSheetCase()
 
 @PreviewTest
 @AureolePreview
 @Composable
-private fun CanhotoScreenshotTest() = EditContainerCase(isLeftHanded = true)
+private fun LayoutScreenshotTest() = GroupSheetCase(tab = GroupTab.LAYOUT)
 
-/** Aba Itens do grupo com apps e uma pasta (a fase G troca os estados desta tela, RF-T2). */
 @PreviewTest
 @AureolePreview
 @Composable
-private fun ItensScreenshotTest() {
-    val panel = ContainerModel(
-        id = "p1",
-        appPackageNames = MANAGE_APPS.map { it.packageName },
-        folders = listOf(AppFolder(id = "f1", panelId = "p1", name = "Trabalho"))
-    )
-    HomeCase(MainUiState()) {
-        EditContainerScreen(
-            params = EditContainerScreenParams(panel = panel, allApps = MANAGE_APPS, onDismiss = {}, onSave = {})
-        )
-    }
-}
+private fun AparenciaScreenshotTest() = GroupSheetCase(tab = GroupTab.APPEARANCE)
+
+/** A página de cor do fundo dentro da sheet: voltar, título e sem barra de abas. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun PaginaCorScreenshotTest() =
+    GroupSheetCase(tab = GroupTab.APPEARANCE, page = GroupSheetPage.Color(GroupColorTarget.BACKGROUND))

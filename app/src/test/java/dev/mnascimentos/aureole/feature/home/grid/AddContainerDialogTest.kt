@@ -110,12 +110,18 @@ class AddContainerDialogTest {
         var selectedType: LauncherItemType? = null
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                AddContainerDialog(onDismissRequest = {}, onSelectType = { selectedType = it }, showsGroupStartHere = true)
+                AddContainerDialog(
+                    onDismissRequest = {},
+                    onSelectType = { selectedType = it },
+                    showsGroupStartHere = true
+                )
             }
         }
 
         composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_start_here)).assertExists()
-        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_shortcuts_container)).performClick()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_add_shortcuts_container)
+        ).performClick()
 
         assertEquals(LauncherItemType.SHORTCUTS_CONTAINER, selectedType)
     }

@@ -16,11 +16,26 @@ class GroupSheetModelsTest {
 
     @Test
     fun `the alignment labels should follow the position of the group`() {
-        assertEquals(R.string.home_container_group_align_top, alignmentLabelRes(GroupAlignment.START, isLyingDown = false))
-        assertEquals(R.string.home_container_group_align_bottom, alignmentLabelRes(GroupAlignment.END, isLyingDown = false))
-        assertEquals(R.string.home_container_group_align_left, alignmentLabelRes(GroupAlignment.START, isLyingDown = true))
-        assertEquals(R.string.home_container_group_align_right, alignmentLabelRes(GroupAlignment.END, isLyingDown = true))
-        assertEquals(R.string.home_container_group_align_center, alignmentLabelRes(GroupAlignment.CENTER, isLyingDown = true))
+        assertEquals(
+            R.string.home_container_group_align_top,
+            alignmentLabelRes(GroupAlignment.START, isLyingDown = false)
+        )
+        assertEquals(
+            R.string.home_container_group_align_bottom,
+            alignmentLabelRes(GroupAlignment.END, isLyingDown = false)
+        )
+        assertEquals(
+            R.string.home_container_group_align_left,
+            alignmentLabelRes(GroupAlignment.START, isLyingDown = true)
+        )
+        assertEquals(
+            R.string.home_container_group_align_right,
+            alignmentLabelRes(GroupAlignment.END, isLyingDown = true)
+        )
+        assertEquals(
+            R.string.home_container_group_align_center,
+            alignmentLabelRes(GroupAlignment.CENTER, isLyingDown = true)
+        )
     }
 
     @Test

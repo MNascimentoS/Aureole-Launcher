@@ -55,7 +55,11 @@ fun AddContainerDialog(
             onSelectType(type)
             onDismissRequest()
         }
-        AddContainerRow(CustomizeAddItem.CLOCK, R.string.home_container_add_clock, R.string.home_container_add_clock_subtitle) {
+        AddContainerRow(
+            CustomizeAddItem.CLOCK,
+            R.string.home_container_add_clock,
+            R.string.home_container_add_clock_subtitle
+        ) {
             select(LauncherItemType.CLOCK)
         }
         AddContainerRow(

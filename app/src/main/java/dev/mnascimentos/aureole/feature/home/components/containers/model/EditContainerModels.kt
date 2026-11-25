@@ -17,6 +17,9 @@ import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
  * @property areTipsSeen The first group's tips were already seen (RF-F1).
  * @property onTipsSeen Saves that the tips were seen (skipped or finished).
  * @property homeSize Size the group has on the home, for the preview (RF-B3); null when never measured.
+ * @property initialTab Tab the sheet opens on.
+ * @property initialPage Page the sheet opens on, in place of the tabs.
+ * @property startTip Tip the sheet opens with, in place of the one [isNew] and [areTipsSeen] give.
  */
 data class EditContainerScreenParams(
     val panel: ContainerModel,
@@ -27,7 +30,10 @@ data class EditContainerScreenParams(
     val isNew: Boolean = false,
     val areTipsSeen: Boolean = true,
     val onTipsSeen: () -> Unit = {},
-    val homeSize: DpSize? = null
+    val homeSize: DpSize? = null,
+    val initialTab: GroupTab = GroupTab.ITEMS,
+    val initialPage: GroupSheetPage = GroupSheetPage.Tabs,
+    val startTip: GroupTip? = null
 )
 
 data class ContainerOptionsState(

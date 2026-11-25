@@ -147,7 +147,7 @@ fun Container(
     }
 }
 
-/** Room around each item for the group's [ContainerItemSpacing] (RF-D3): [ContainerItemSpacing.NORMAL] is the old one. */
+/** Room around each item for the group's [ContainerItemSpacing] (RF-D3): NORMAL is the old one. */
 @Composable
 @ReadOnlyComposable
 internal fun ContainerItemSpacing.itemPadding(): Dp = when (this) {
