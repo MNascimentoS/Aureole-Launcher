@@ -154,6 +154,7 @@ class HomeViewModel(
                     glassLevel = glassLevelOf(settingsRepository.hazeBlurLevel),
                     isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                     isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
+                    isSheetHandleHidden = settingsRepository.isSheetHandleHidden,
                     isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
                     isSwipeDownNotificationsEnabled = settingsRepository.isSwipeDownNotificationsEnabled,
                     isSwipeUpAllAppsEnabled = settingsRepository.isSwipeUpAllAppsEnabled,

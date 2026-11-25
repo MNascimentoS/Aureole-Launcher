@@ -104,6 +104,7 @@
     <string name="settings_appearance_change_font">Alterar fonte</string>
     <string name="settings_appearance_pick_font">Escolher fonte</string>
     <string name="settings_appearance_color_palette">Paleta de cores</string>
+    <string name="settings_appearance_hide_sheet_handle">Ocultar a alça das sheets</string>
     <string name="settings_appearance_themed_icons">Ícones temáticos</string>
     <string name="settings_appearance_image_scale">Escala da imagem</string>
     <string name="settings_appearance_custom_framing">Enquadramento personalizado</string>

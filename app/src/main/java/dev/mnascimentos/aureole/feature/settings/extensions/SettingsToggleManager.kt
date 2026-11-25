@@ -22,6 +22,7 @@ internal object SettingsToggleManager {
             SettingToggle.DYNAMIC_WALLPAPER,
             SettingToggle.IN_APP_UPDATE,
             SettingToggle.THEMED_APP_ICONS,
+            SettingToggle.HIDE_SHEET_HANDLE,
             SettingToggle.SWIPE_DOWN_NOTIFICATIONS,
             SettingToggle.SWIPE_UP_ALL_APPS -> toggleGroupThree(vm, toggle)
         }
@@ -116,6 +117,11 @@ internal object SettingsToggleManager {
                 val newValue = !vm.uiState.value.isInAppUpdateEnabled
                 vm.settingsRepository.isInAppUpdateEnabled = newValue
                 vm.updateUiState { it.copy(isInAppUpdateEnabled = newValue) }
+            }
+            SettingToggle.HIDE_SHEET_HANDLE -> {
+                val newValue = !vm.uiState.value.isSheetHandleHidden
+                vm.settingsRepository.isSheetHandleHidden = newValue
+                vm.updateUiState { it.copy(isSheetHandleHidden = newValue) }
             }
             SettingToggle.THEMED_APP_ICONS -> {
                 val newValue = !vm.uiState.value.isThemedAppIconsEnabled

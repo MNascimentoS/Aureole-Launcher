@@ -38,6 +38,7 @@ class SettingsActivity : ComponentActivity() {
                     aureoleColors = palette.colors,
                     aureoleFontName = uiState.selectedFontName,
                     aureoleDimens = AureoleDimens.forCornerRadius(uiState.cornerRadiusDp)
+                        .withSheetHandleHidden(uiState.isSheetHandleHidden)
                 )
             ) {
                 LaunchedEffect(uiState.shouldFinishActivity) {

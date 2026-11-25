@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.Dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.model.GestureZoneState
 import dev.mnascimentos.aureole.core.designsystem.model.SheetHandleAction
-import dev.mnascimentos.aureole.core.designsystem.model.SheetHandleBarHeight
 import dev.mnascimentos.aureole.core.designsystem.model.sheetHandleActions
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -127,7 +126,7 @@ private fun HandleBar(isDismissArmed: Boolean) {
         Box(
             modifier = Modifier
                 .offset(y = AureoleDS.dimens.xxSmall)
-                .size(width = AureoleDS.dimens.xxLarge, height = SheetHandleBarHeight)
+                .size(width = AureoleDS.dimens.xxLarge, height = AureoleDS.dimens.sheetHandleBarHeight)
                 .background(barColor, RoundedCornerShape(AureoleDS.dimens.radiusFull))
         )
     }

@@ -72,6 +72,7 @@ data class MainUiState(
     val glassLevel: GlassLevel = GlassLevel.MEDIUM,
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
+    val isSheetHandleHidden: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val isSwipeDownNotificationsEnabled: Boolean = false,
     val isSwipeUpAllAppsEnabled: Boolean = false,

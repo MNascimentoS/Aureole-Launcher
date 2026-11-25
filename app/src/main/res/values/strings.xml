@@ -104,6 +104,7 @@
     <string name="settings_appearance_change_font">Change font</string>
     <string name="settings_appearance_pick_font">Pick font</string>
     <string name="settings_appearance_color_palette">Color palette</string>
+    <string name="settings_appearance_hide_sheet_handle">Hide sheet drag handle</string>
     <string name="settings_appearance_themed_icons">Themed icons</string>
     <string name="settings_appearance_image_scale">Image scale</string>
     <string name="settings_appearance_custom_framing">Custom framing</string>

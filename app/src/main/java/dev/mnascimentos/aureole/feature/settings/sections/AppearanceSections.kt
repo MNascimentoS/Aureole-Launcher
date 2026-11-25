@@ -12,6 +12,7 @@ import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
 import dev.mnascimentos.aureole.composable.menu.model.SwitchRowParams
 import dev.mnascimentos.aureole.core.designsystem.icons.AppSelect
 import dev.mnascimentos.aureole.core.designsystem.icons.Dots
+import dev.mnascimentos.aureole.core.designsystem.icons.DragHandle
 import dev.mnascimentos.aureole.core.designsystem.icons.Edit
 import dev.mnascimentos.aureole.core.designsystem.icons.Layout
 import dev.mnascimentos.aureole.core.designsystem.icons.Text
@@ -87,6 +88,14 @@ private fun ThemeGroup(
                 checked = uiState.isThemedAppIconsEnabled,
                 onCheckedChange = { actions.onToggleThemedAppIcons() },
                 icon = { m, c -> AureoleDS.icons.AppSelect(modifier = m, tint = c) }
+            )
+        )
+        AureoleSwitchRow(
+            SwitchRowParams(
+                title = stringResource(R.string.settings_appearance_hide_sheet_handle),
+                checked = uiState.isSheetHandleHidden,
+                onCheckedChange = { actions.onToggleHideSheetHandle() },
+                icon = { m, c -> AureoleDS.icons.DragHandle(modifier = m, tint = c) }
             )
         )
     }

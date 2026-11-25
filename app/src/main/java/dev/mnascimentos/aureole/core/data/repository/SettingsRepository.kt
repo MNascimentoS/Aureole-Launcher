@@ -170,6 +170,11 @@ class SettingsRepository(
         get() = prefs.getInt(KEY_CORNER_RADIUS_DP, DEFAULT_CORNER_RADIUS_DP)
         set(value) = prefs.edit { putInt(KEY_CORNER_RADIUS_DP, value) }
 
+    /** Settings › Appearance: hides the bar of the sheet handle; its gestures and the dragging stay. */
+    var isSheetHandleHidden: Boolean
+        get() = prefs.getBoolean(KEY_HIDE_SHEET_HANDLE, false)
+        set(value) = prefs.edit { putBoolean(KEY_HIDE_SHEET_HANDLE, value) }
+
     var isThemedAppIconsEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
@@ -474,6 +479,7 @@ class SettingsRepository(
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
+        private const val KEY_HIDE_SHEET_HANDLE = "hide_sheet_handle"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SWIPE_DOWN_NOTIFICATIONS = "swipe_down_notifications"
         const val DEFAULT_SWIPE_DOWN_NOTIFICATIONS = false

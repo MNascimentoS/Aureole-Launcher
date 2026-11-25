@@ -56,6 +56,7 @@ data class SettingsUiState(
     val headerOffsetPercent: Int = 10,
     val cornerRadiusDp: Int = SettingsRepository.DEFAULT_CORNER_RADIUS_DP,
     val isThemedAppIconsEnabled: Boolean = false,
+    val isSheetHandleHidden: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
     val isSwipeDownNotificationsEnabled: Boolean = false,
     val isSwipeUpAllAppsEnabled: Boolean = false,

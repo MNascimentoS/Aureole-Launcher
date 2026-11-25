@@ -125,6 +125,15 @@ class SettingsToggleManagerTest {
     }
 
     @Test
+    fun `toggle HIDE_SHEET_HANDLE should flip isSheetHandleHidden state, off by default`() {
+        val initial = viewModel.uiState.value.isSheetHandleHidden
+        assertEquals(false, initial)
+        SettingsToggleManager.toggleSetting(viewModel, SettingToggle.HIDE_SHEET_HANDLE)
+        assertEquals(!initial, viewModel.uiState.value.isSheetHandleHidden)
+        assertEquals(!initial, settingsRepository.isSheetHandleHidden)
+    }
+
+    @Test
     fun `toggle SWIPE_DOWN_NOTIFICATIONS should flip isSwipeDownNotificationsEnabled state`() {
         val initial = viewModel.uiState.value.isSwipeDownNotificationsEnabled
         SettingsToggleManager.toggleSetting(viewModel, SettingToggle.SWIPE_DOWN_NOTIFICATIONS)

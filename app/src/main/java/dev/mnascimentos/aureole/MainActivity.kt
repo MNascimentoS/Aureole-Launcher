@@ -140,6 +140,7 @@ class MainActivity : ComponentActivity() {
                     aureoleColors = palette.colors,
                     aureoleFontName = uiState.selectedFontName,
                     aureoleDimens = AureoleDimens.forCornerRadius(uiState.cornerRadiusDp)
+                        .withSheetHandleHidden(uiState.isSheetHandleHidden)
                 )
             ) {
                 MainRoute(
