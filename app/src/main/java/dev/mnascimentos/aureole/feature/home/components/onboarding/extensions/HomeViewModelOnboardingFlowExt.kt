@@ -37,17 +37,14 @@ fun HomeViewModel.skipGestures() {
     }
 }
 
-/**
- * Performs the current gesture for the user; the reducer then completes the step. The shade is a system surface,
- * so [openNotificationShade] (which also reports the step) comes from the activity side.
- */
-fun HomeViewModel.showMeGesture(openNotificationShade: () -> Unit = {}) {
+/** Performs the current gesture for the user; the reducer then completes the step. */
+fun HomeViewModel.showMeGesture() {
     val state = uiState.value
     if (state.onboarding.stage != OnboardingStage.GESTURES) return
     val step = state.onboarding.currentGestureStep(
         state.isAlphabetScrubberDisabled,
         state.isLandscape,
-        state.isSwipeDownNotificationsEnabled
+        state.isSwipeUpAllAppsEnabled
     )
     when (step) {
         GestureCoachStep.OPEN_APPS -> setAllAppsDrawerOpen(true)
@@ -55,13 +52,7 @@ fun HomeViewModel.showMeGesture(openNotificationShade: () -> Unit = {}) {
             setAllAppsDrawerOpen(true)
             onOnboardingSignal(OnboardingSignal.ALPHABET_SCRUBBED)
         }
-        GestureCoachStep.NOTIFICATIONS -> openNotificationShade()
         GestureCoachStep.CUSTOMIZE -> setShowCustomizeBottomSheet(true)
         null -> Unit
     }
-}
-
-/** The swipe down success card was read: the coach goes on to the next step. */
-fun HomeViewModel.finishNotificationsStep() {
-    updateOnboarding(OnboardingStage.GESTURES) { finishedNotificationsStep() }
 }

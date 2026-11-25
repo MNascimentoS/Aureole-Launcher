@@ -14,22 +14,6 @@ internal fun OnboardingUiState.onAlphabetScrubbed(): OnboardingUiState {
     )
 }
 
-/**
- * The shade covers the home, so the step stays in its success card until [finishedNotificationsStep] runs once the
- * user is back on the home. A swipe outside the coach (or after the step) changes nothing.
- */
-internal fun OnboardingUiState.onNotificationsOpened(): OnboardingUiState {
-    if (stage != OnboardingStage.GESTURES || GestureCoachStep.NOTIFICATIONS in completedSteps) return this
-    return copy(
-        completedSteps = completedSteps + GestureCoachStep.NOTIFICATIONS,
-        succeededStep = GestureCoachStep.NOTIFICATIONS
-    )
-}
-
-/** The swipe down success card was read: the coach moves on (the reducer finishes it if it was the last step). */
-internal fun OnboardingUiState.finishedNotificationsStep(): OnboardingUiState =
-    if (succeededStep == GestureCoachStep.NOTIFICATIONS) copy(succeededStep = null) else this
-
 internal fun OnboardingUiState.onPickerConfirmed(): OnboardingUiState {
     if (stage != OnboardingStage.CHECKLIST) return this
     val task = when (activePicker) {

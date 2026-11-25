@@ -18,11 +18,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -66,14 +64,11 @@ fun GestureCoachComponent(
         ?: onboarding.currentGestureStep(
             config.isAlphabetScrubberDisabled,
             config.isLandscape,
-            config.isSwipeDownEnabled
+            config.isSwipeUpEnabled
         )
         ?: return
     if (config.isHiddenOverDrawer(step)) return
     val succeeded = onboarding.succeededStep != null
-    if (onboarding.succeededStep == GestureCoachStep.NOTIFICATIONS) {
-        NotificationsSuccessTimer(onSeen = actions.onNotificationsStepSeen)
-    }
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         if (!succeeded && !config.isWaitingForAlphabet(step)) {
             GestureCoachHandComponent(step = step, isLeftHandedMode = config.isLeftHandedMode)
@@ -115,7 +110,7 @@ private fun GestureCoachCardContent(
             steps = visibleGestureSteps(
                 config.isAlphabetScrubberDisabled,
                 config.isLandscape,
-                config.isSwipeDownEnabled
+                config.isSwipeUpEnabled
             ),
             completed = onboarding.completedSteps,
             current = step
@@ -139,22 +134,6 @@ private fun GestureCoachCardContent(
                 showMeAtOnce = config.isTouchExplorationEnabled,
                 canShowMe = !config.isWaitingForAlphabet(step)
             )
-        }
-    }
-}
-
-/**
- * The shade covers the home right after the swipe: the success card counts its time only while the home window has
- * the focus again, so the user gets to read it before the coach moves on.
- */
-@Composable
-private fun NotificationsSuccessTimer(onSeen: () -> Unit) {
-    val isWindowFocused = LocalWindowInfo.current.isWindowFocused
-    val currentOnSeen by rememberUpdatedState(onSeen)
-    if (isWindowFocused) {
-        LaunchedEffect(Unit) {
-            delay(OnboardingMotionSpec.NOTIFICATIONS_SUCCESS_MS)
-            currentOnSeen()
         }
     }
 }

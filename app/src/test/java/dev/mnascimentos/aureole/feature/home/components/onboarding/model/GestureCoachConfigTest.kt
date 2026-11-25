@@ -12,7 +12,6 @@ class GestureCoachConfigTest {
         val config = GestureCoachConfig(isAllAppsOpen = true)
 
         assertTrue(config.isHiddenOverDrawer(GestureCoachStep.CUSTOMIZE))
-        assertTrue(config.isHiddenOverDrawer(GestureCoachStep.NOTIFICATIONS))
     }
 
     @Test

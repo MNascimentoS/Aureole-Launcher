@@ -137,8 +137,7 @@ class OnboardingReducerTest {
             OnboardingUiState(
                 completedSteps = setOf(
                     GestureCoachStep.OPEN_APPS,
-                    GestureCoachStep.ALPHABET_SCRUB,
-                    GestureCoachStep.NOTIFICATIONS
+                    GestureCoachStep.ALPHABET_SCRUB
                 )
             )
         )
@@ -158,7 +157,6 @@ class OnboardingReducerTest {
             OnboardingUiState(
                 completedSteps = setOf(
                     GestureCoachStep.OPEN_APPS,
-                    GestureCoachStep.NOTIFICATIONS,
                     GestureCoachStep.CUSTOMIZE
                 ),
                 succeededStep = GestureCoachStep.CUSTOMIZE

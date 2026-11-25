@@ -9,8 +9,8 @@ data class GestureCoachConfig(
     /** TalkBack users cannot perform the demo gesture freely, so "Show me" appears right away. */
     val isTouchExplorationEnabled: Boolean = false,
     val isLandscape: Boolean = false,
-    /** Settings › Behavior "Swipe down for notifications": off hides the swipe down step. */
-    val isSwipeDownEnabled: Boolean = true,
+    /** Settings › Behavior "Swipe up for all apps": off hides the swipe up step. */
+    val isSwipeUpEnabled: Boolean = true,
     /** No letters yet (apps still loading): the scrub step waits for them. */
     val isAlphabetLoading: Boolean = false,
     /** The all-apps drawer is open: the steps that belong to the home wait for the user to come back. */
@@ -21,6 +21,6 @@ data class GestureCoachConfig(
 fun GestureCoachConfig.isWaitingForAlphabet(step: GestureCoachStep): Boolean =
     step == GestureCoachStep.ALPHABET_SCRUB && isAlphabetLoading
 
-/** Swipe down and touch and hold are home gestures: they never show over the all-apps drawer (RF-02). */
+/** Touch and hold is a home gesture: it never shows over the all-apps drawer (RF-02). */
 fun GestureCoachConfig.isHiddenOverDrawer(step: GestureCoachStep): Boolean =
-    isAllAppsOpen && (step == GestureCoachStep.NOTIFICATIONS || step == GestureCoachStep.CUSTOMIZE)
+    isAllAppsOpen && step == GestureCoachStep.CUSTOMIZE

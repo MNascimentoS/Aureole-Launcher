@@ -21,8 +21,7 @@ class CustomizeShowcaseTest {
             stage = OnboardingStage.GESTURES,
             completedSteps = setOf(
                 GestureCoachStep.OPEN_APPS,
-                GestureCoachStep.ALPHABET_SCRUB,
-                GestureCoachStep.NOTIFICATIONS
+                GestureCoachStep.ALPHABET_SCRUB
             )
         )
     )

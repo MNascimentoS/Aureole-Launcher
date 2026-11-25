@@ -8,7 +8,6 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.co
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissAppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.finishCelebration
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.finishNotificationsStep
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onTaskClick
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.postponeDefaultHome
@@ -45,9 +44,8 @@ class OnboardingActionsFactory(
         onOpenSystemHomeSettings = { openSystemHomeSettings() },
         onPostponeDefaultHome = { viewModel.postponeDefaultHome() },
         onSkipGestures = { viewModel.skipGestures() },
-        onShowMeGesture = { viewModel.showMeGesture(openNotificationShade = homeActions.onExpandNotificationShade) },
+        onShowMeGesture = { viewModel.showMeGesture() },
         onAlphabetScrubbed = { viewModel.onOnboardingSignal(OnboardingSignal.ALPHABET_SCRUBBED) },
-        onNotificationsStepSeen = { viewModel.finishNotificationsStep() },
         onTaskClick = { task -> handleTaskClick(task) },
         onSkipTask = { task -> viewModel.skipTask(task) },
         onSelectPalette = { name -> viewModel.selectPalette(name) },

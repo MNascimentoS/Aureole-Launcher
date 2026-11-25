@@ -28,7 +28,11 @@ class MainScaffoldOnboardingTest {
     val composeTestRule = createComposeRule()
 
     private fun render(stage: OnboardingStage, actions: HomeScreenActions = createDefaultHomeScreenActions()) {
-        val uiState = MainUiState(isLoading = false, onboarding = OnboardingUiState(stage = stage))
+        val uiState = MainUiState(
+            isLoading = false,
+            isSwipeUpAllAppsEnabled = true,
+            onboarding = OnboardingUiState(stage = stage)
+        )
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 CompositionLocalProvider(
@@ -64,7 +68,7 @@ class MainScaffoldOnboardingTest {
         render(OnboardingStage.GESTURES, actions)
         composeTestRule.onNodeWithText("Swipe up").assertExists()
 
-        composeTestRule.onRoot().performTouchInput { swipeUp() }
+        composeTestRule.onRoot().performTouchInput { swipeUp(startY = centerY, endY = 0f) }
 
         assertTrue(drawerOpened)
     }

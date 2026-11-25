@@ -12,7 +12,6 @@ data class OnboardingActions(
     val onShowMeGesture: () -> Unit = {},
     val onAlphabetScrubbed: () -> Unit = {},
     /** The swipe down success card stayed on the focused home long enough to be read. */
-    val onNotificationsStepSeen: () -> Unit = {},
     val onTaskClick: (OnboardingTask) -> Unit = {},
     val onSkipTask: (OnboardingTask) -> Unit = {},
     val onSelectPalette: (String) -> Unit = {},

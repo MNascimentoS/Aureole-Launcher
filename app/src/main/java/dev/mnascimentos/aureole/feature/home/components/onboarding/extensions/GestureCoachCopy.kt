@@ -13,7 +13,6 @@ fun GestureCoachStep.coachTitleRes(isLeftHandedMode: Boolean): Int = when (this)
     } else {
         R.string.home_onboarding_coach_scrub_title_right
     }
-    GestureCoachStep.NOTIFICATIONS -> R.string.home_onboarding_coach_notifications_title
     GestureCoachStep.CUSTOMIZE -> R.string.home_onboarding_coach_customize_title
 }
 
@@ -29,11 +28,6 @@ fun GestureCoachStep.coachBodyRes(succeeded: Boolean): Int = when (this) {
         R.string.home_onboarding_coach_scrub_done
     } else {
         R.string.home_onboarding_coach_scrub_body
-    }
-    GestureCoachStep.NOTIFICATIONS -> if (succeeded) {
-        R.string.home_onboarding_coach_notifications_done
-    } else {
-        R.string.home_onboarding_coach_notifications_body
     }
     GestureCoachStep.CUSTOMIZE -> if (succeeded) {
         R.string.home_onboarding_coach_customize_done

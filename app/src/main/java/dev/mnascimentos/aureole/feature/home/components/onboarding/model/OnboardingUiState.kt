@@ -72,17 +72,17 @@ val OnboardingUiState.taskProgress: Float
     get() = resolvedTasks.size.toFloat() / OnboardingTask.entries.size
 
 /**
- * The scrubber is off when disabled and does not exist in landscape, so its step is left out; the swipe down step
- * shows only while that gesture is on. Order: all apps, alphabet, swipe down, touch and hold.
+ * The scrubber is off when disabled and does not exist in landscape, so its step is left out; the swipe up step
+ * shows only while that gesture is on (RF-03 of gestos-swipe). Order: all apps, alphabet, touch and hold.
  */
 fun visibleGestureSteps(
     isAlphabetScrubberDisabled: Boolean,
     isLandscape: Boolean = false,
-    isSwipeDownEnabled: Boolean = true
+    isSwipeUpEnabled: Boolean = true
 ): List<GestureCoachStep> = GestureCoachStep.entries.filter {
     when (it) {
+        GestureCoachStep.OPEN_APPS -> isSwipeUpEnabled
         GestureCoachStep.ALPHABET_SCRUB -> !isAlphabetScrubberDisabled && !isLandscape
-        GestureCoachStep.NOTIFICATIONS -> isSwipeDownEnabled
         else -> true
     }
 }
@@ -91,11 +91,11 @@ fun visibleGestureSteps(
 fun OnboardingUiState.currentGestureStep(
     isAlphabetScrubberDisabled: Boolean,
     isLandscape: Boolean = false,
-    isSwipeDownEnabled: Boolean = true
+    isSwipeUpEnabled: Boolean = true
 ): GestureCoachStep? = visibleGestureSteps(
     isAlphabetScrubberDisabled,
     isLandscape,
-    isSwipeDownEnabled
+    isSwipeUpEnabled
 ).firstOrNull { it !in completedSteps }
 
 fun OnboardingUiState.toProgress(): OnboardingProgress = OnboardingProgress(

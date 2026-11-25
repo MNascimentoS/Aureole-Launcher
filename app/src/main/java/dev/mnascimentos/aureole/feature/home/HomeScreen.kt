@@ -77,6 +77,7 @@ import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
 import dev.mnascimentos.aureole.feature.home.model.SwipeUpConditions
 import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
 import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
+import dev.mnascimentos.aureole.feature.home.model.activeHomeGestures
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
 import dev.mnascimentos.aureole.feature.home.model.opensAllApps
@@ -188,7 +189,12 @@ private fun Modifier.homeDragModifier(
     val upConnection = remember(upTracker) {
         swipeNestedConnection(upTracker, canOpen = { currentCanSwipeUp }, onOpen = { currentOnOpenDrawer() })
     }
-    return homeSwipeNestedScroll(tracker, connection).homeSwipeNestedScroll(upTracker, upConnection).homeDragGestures(
+    val active = uiState.activeHomeGestures()
+    // A swipe that is off installs nothing: the home and what is on it keep every touch (RF-02).
+    val nested = this
+        .then(if (active.isSwipeDownOn) Modifier.homeSwipeNestedScroll(tracker, connection) else Modifier)
+        .then(if (active.isSwipeUpOn) Modifier.homeSwipeNestedScroll(upTracker, upConnection) else Modifier)
+    return nested.homeDragGestures(
         HomeDragParams(
             isLeftHandedMode = uiState.isLeftHandedMode,
             // No alphabet in landscape, so no edge scrub there either.
@@ -198,7 +204,7 @@ private fun Modifier.homeDragModifier(
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = density,
             isSwipeDownEnabled = canSwipeDown,
-            isSwipeUpEnabled = uiState.isSwipeUpAllAppsEnabled,
+            isSwipeUpEnabled = canSwipeUp,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
             onExpandNotificationShade = actions.onExpandNotificationShade,

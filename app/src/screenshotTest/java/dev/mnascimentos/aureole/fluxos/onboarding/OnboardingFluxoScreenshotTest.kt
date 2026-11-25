@@ -92,7 +92,7 @@ private fun P05DeslizarParaBaixoScreenshotTest() =
 @AureolePreview
 @Composable
 private fun P06SegurarScreenshotTest() = OnboardingCase(
-    coach(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB, GestureCoachStep.NOTIFICATIONS)
+    coach(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB)
 )
 
 @PreviewTest

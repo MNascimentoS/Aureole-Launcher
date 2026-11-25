@@ -27,6 +27,7 @@ import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
 import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
 import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
+import dev.mnascimentos.aureole.feature.home.model.isInSystemZone
 import dev.mnascimentos.aureole.feature.home.model.opensHome
 import dev.mnascimentos.aureole.feature.home.model.verticalSwipeOf
 
@@ -85,7 +86,10 @@ internal fun HomeDragParams.scrubberEdgeZone(): ScrubberEdgeZone? {
     )
 }
 
-private fun Modifier.homeVerticalGestures(params: HomeDragParams): Modifier = pointerInput(
+private fun Modifier.homeVerticalGestures(params: HomeDragParams): Modifier =
+    if (params.isSwipeDownEnabled || params.isSwipeUpEnabled) verticalDetector(params) else this
+
+private fun Modifier.verticalDetector(params: HomeDragParams): Modifier = pointerInput(
     params.isLeftHandedMode,
     params.isAlphabetScrubberDisabled,
     params.isSwipeDownEnabled,
@@ -103,7 +107,8 @@ private fun Modifier.homeVerticalGestures(params: HomeDragParams): Modifier = po
         onDragStart = { down, _, _ ->
             totalDragOffset = Offset.Zero
             hasTriggeredGesture = false
-            isEdgeGesture = edgeZone?.contains(down.position.x, down.position.y) == true
+            isEdgeGesture = edgeZone?.contains(down.position.x, down.position.y) == true ||
+                params.isInSystemZone(down.position)
         },
         onDrag = { change, dragAmount ->
             totalDragOffset += dragAmount

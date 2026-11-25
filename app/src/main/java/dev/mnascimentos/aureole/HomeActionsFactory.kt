@@ -130,7 +130,6 @@ class HomeActionsFactory(
                 }
             },
             onExpandNotificationShade = {
-                viewModel.onOnboardingSignal(OnboardingSignal.NOTIFICATIONS_OPENED)
                 IntentUtils.expandNotificationShade(context)
             },
             onFolderIntent = { viewModel.onFolderIntent(it) },
