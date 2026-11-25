@@ -124,11 +124,13 @@ data class DrawerDragCallbacks(
 
 /** The state of one vertical gesture: it fired already, and it is the swipe up that pulls the drawer. */
 class VerticalGestureState {
+    var lock = GestureLock.UNDECIDED
     var hasTriggered = false
     var isDrawerDrag = false
     var progress = 0f
 
     fun reset() {
+        lock = GestureLock.UNDECIDED
         hasTriggered = false
         isDrawerDrag = false
         progress = 0f

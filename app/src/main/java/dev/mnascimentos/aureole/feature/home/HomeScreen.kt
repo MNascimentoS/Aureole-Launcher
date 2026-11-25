@@ -180,7 +180,10 @@ private fun Modifier.homeDragModifier(
             isSwipeUpEnabled = up.canOpen,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
-            onExpandNotificationShade = actions.onExpandNotificationShade,
+            onExpandNotificationShade = {
+                haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                actions.onExpandNotificationShade()
+            },
             onExternalTouchYChange = onExternalTouchYChange,
             onEdgeScrubChange = onEdgeScrubChange,
             drawerDrag = drawerDrag.toCallbacks(
