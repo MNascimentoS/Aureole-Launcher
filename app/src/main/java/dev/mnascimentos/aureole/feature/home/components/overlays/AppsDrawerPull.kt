@@ -30,19 +30,26 @@ import dev.mnascimentos.aureole.feature.home.model.homeDimAlpha
 import dev.mnascimentos.aureole.feature.home.model.homeScale
 import kotlinx.coroutines.launch
 
-/** The home shrinks and dims while the drawer is pulled up (RF-04, D-06); nothing without a [drawerDrag]. */
-fun Modifier.drawerPullEffect(drawerDrag: DrawerDragState?): Modifier {
+/**
+ * The home content shrinks while the drawer is pulled up (RF-04, D-06); nothing without a [drawerDrag]. Only the
+ * content scales: the wallpaper stays full, so the edges never show the window behind.
+ */
+fun Modifier.drawerPullScale(drawerDrag: DrawerDragState?): Modifier {
     if (drawerDrag == null) return this
-    return this
-        .graphicsLayer {
-            val scale = homeScale(drawerDrag.effect.value)
-            scaleX = scale
-            scaleY = scale
-        }
-        .drawWithContent {
-            drawContent()
-            drawRect(Color.Black.copy(alpha = homeDimAlpha(drawerDrag.effect.value)))
-        }
+    return this.graphicsLayer {
+        val scale = homeScale(drawerDrag.effect.value)
+        scaleX = scale
+        scaleY = scale
+    }
+}
+
+/** The whole home (wallpaper included) dims while the drawer is pulled up; nothing without a [drawerDrag]. */
+fun Modifier.drawerPullDim(drawerDrag: DrawerDragState?): Modifier {
+    if (drawerDrag == null) return this
+    return this.drawWithContent {
+        drawContent()
+        drawRect(Color.Black.copy(alpha = homeDimAlpha(drawerDrag.effect.value)))
+    }
 }
 
 /**

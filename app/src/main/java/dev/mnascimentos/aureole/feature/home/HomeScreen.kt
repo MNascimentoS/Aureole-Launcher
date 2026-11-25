@@ -55,7 +55,8 @@ import dev.mnascimentos.aureole.feature.home.components.containers.EditContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
-import dev.mnascimentos.aureole.feature.home.components.overlays.drawerPullEffect
+import dev.mnascimentos.aureole.feature.home.components.overlays.drawerPullDim
+import dev.mnascimentos.aureole.feature.home.components.overlays.drawerPullScale
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
 import dev.mnascimentos.aureole.feature.home.components.overlays.rememberSwipeDownNested
@@ -226,7 +227,7 @@ private fun BoxScope.HomeScreenBody(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .drawerPullEffect(config.drawerDrag)
+            .drawerPullDim(config.drawerDrag)
             .then(homeContentHazeModifier)
     ) {
         WallpaperBackground(
@@ -238,12 +239,14 @@ private fun BoxScope.HomeScreenBody(
 
         // No global spinner: the grid comes from preferences at once, and app lists show their own
         // skeleton until the first app sync lands (FUE-24).
-        MainHomeLayout(
-            appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
-            currentHeightPx = config.currentHeightPx,
-            favListState = config.favListState,
-            hazeState = config.hazeState,
-        )
+        Box(modifier = Modifier.fillMaxSize().drawerPullScale(config.drawerDrag)) {
+            MainHomeLayout(
+                appWidgetHost = config.appWidgetHost ?: AppWidgetHost(LocalContext.current, DEFAULT_APP_WIDGET_HOST_ID),
+                currentHeightPx = config.currentHeightPx,
+                favListState = config.favListState,
+                hazeState = config.hazeState,
+            )
+        }
     }
 
     val overlaysConfig = HomeOverlaysConfig(
