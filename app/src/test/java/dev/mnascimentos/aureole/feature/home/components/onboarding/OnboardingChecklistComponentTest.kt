@@ -68,9 +68,9 @@ class OnboardingChecklistComponentTest {
     fun `should split the steps into the home section and the extras`() {
         render()
 
-        composeTestRule.onNodeWithText("YOUR HOME", useUnmergedTree = true).assertExists()
-        composeTestRule.onNodeWithText("EXTRAS · unlock after you build your home", useUnmergedTree = true)
-            .assertExists()
+        composeTestRule.onNodeWithText("Your home", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("Extras", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("Unlock once your home is built", useUnmergedTree = true).assertExists()
     }
 
     @Test
@@ -81,7 +81,8 @@ class OnboardingChecklistComponentTest {
             .forEach { title -> composeTestRule.onNodeWithText(title).performScrollTo().performClick() }
 
         assertEquals(LOCKED_TASKS.toList(), clickedTasks)
-        composeTestRule.onNodeWithText("EXTRAS", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("Extras", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithText("Unlock once your home is built", useUnmergedTree = true).assertDoesNotExist()
         composeTestRule.onNodeWithText("Home built. Only the extras left: do them or skip.").assertExists()
     }
 
