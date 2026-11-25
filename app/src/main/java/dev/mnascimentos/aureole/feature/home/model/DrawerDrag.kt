@@ -63,12 +63,12 @@ fun homeScale(progress: Float): Float = 1f - (1f - HOME_SCALE_MIN) * progress.co
  * animations removed, RF-08) a drag ends at its final state with no animation.
  */
 @Stable
-class DrawerDragState(private val isAnimated: Boolean = true) {
-    val progress = Animatable(0f)
-    val effect = Animatable(0f)
+class DrawerDragState(private val isAnimated: Boolean = true, initialProgress: Float = 0f) {
+    val progress = Animatable(initialProgress)
+    val effect = Animatable(initialProgress)
 
     /** The finger is down, or the drawer is settling: the pulled drawer is drawn. */
-    var isActive by mutableStateOf(false)
+    var isActive by mutableStateOf(initialProgress > 0f)
         private set
 
     /** The drawer that opens next was already on screen: it appears in place, with no slide of its own. */

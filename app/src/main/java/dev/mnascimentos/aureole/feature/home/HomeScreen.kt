@@ -85,6 +85,8 @@ private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
 fun HomeScreen(
     appWidgetHost: AppWidgetHost?,
     modifier: Modifier = Modifier,
+    // With the system animations removed the drawer ends a drag at its final state, with no animation (RF-08).
+    drawerDrag: DrawerDragState = remember { DrawerDragState(isAnimated = ValueAnimator.areAnimatorsEnabled()) }
 ) {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
@@ -100,8 +102,6 @@ fun HomeScreen(
     var screenHeightPx by remember { mutableFloatStateOf(0f) }
     var screenWidthPx by remember { mutableFloatStateOf(0f) }
 
-    // With the system animations removed the drawer ends a drag at its final state, with no animation (RF-08).
-    val drawerDrag = remember { DrawerDragState(isAnimated = ValueAnimator.areAnimatorsEnabled()) }
     val dragModifier = Modifier.homeDragModifier(
         screenWidthPx = screenWidthPx,
         screenHeightPx = screenHeightPx,

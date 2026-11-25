@@ -5,6 +5,7 @@ import android.content.ComponentName
 import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalContext
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -18,6 +19,7 @@ import dev.mnascimentos.aureole.feature.home.HomeScreen
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
+import dev.mnascimentos.aureole.feature.home.model.DrawerDragState
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 
@@ -104,10 +106,15 @@ internal fun HomeCase(
 
 /** A home inteira com [uiState]. */
 @Composable
-internal fun HomeScreenCase(uiState: MainUiState, dimens: AureoleDimens? = null) {
+internal fun HomeScreenCase(
+    uiState: MainUiState,
+    dimens: AureoleDimens? = null,
+    drawerDrag: DrawerDragState? = null
+) {
     val context = LocalContext.current
+    val drag = drawerDrag ?: remember { DrawerDragState() }
     HomeCase(uiState, dimens) {
-        HomeScreen(appWidgetHost = AppWidgetHost(context, HOST_ID))
+        HomeScreen(appWidgetHost = AppWidgetHost(context, HOST_ID), drawerDrag = drag)
     }
 }
 

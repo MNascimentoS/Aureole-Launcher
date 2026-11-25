@@ -98,8 +98,16 @@
             "feature/home/components/scrubber/ScrubberHoldScreenshotTestKt/ScrubberHoldOnPLeftHandedScreenshotTest_Dark Mode",
             "feature/home/components/scrubber/ScrubberHoldScreenshotTestKt/ScrubberHoldOnPRightHandedScreenshotTest_Dark Mode"
           ]
+        },
+        {
+          "id": "GavetaPuxada",
+          "titulo": {
+            "pt": "Gaveta puxada",
+            "en": "Pulled drawer"
+          }
         }
-      ]
+      ],
+      "excecao": "gestos-swipe D-09"
     },
     {
       "id": "gruporolavel",

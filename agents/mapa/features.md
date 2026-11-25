@@ -13,7 +13,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | Repositórios | via `model/HomeRepositories.kt`: App, Widget, Settings, Folder, FavoriteContainer, Container, Grid, ClockConfig (+ `UndoController`) |
 | UiState | `model/MainUiState.kt`: apps/busca, widgets, relógio, tema/vidro, wallpaper, pastas, favoritos, grade, containers, flags de sheets, `undoSnackbar`, `onboarding` |
 | Actions | `model/HomeScreenActions.kt` (data class de lambdas `onXxx`); params em `model/HomeScreenConfigs.kt` |
-| Outros models | `MainUiStateFavorites.kt`, `AllAppsOpenSource.kt`, `GestureExclusion.kt`, `HomeLocalProvider.kt`, `SwipeDownNotifications.kt` (`verticalSwipeOf`, `SwipeDownConditions.opensNotifications`, `SwipeUpConditions.opensAllApps`, `VerticalSwipe.opensHome`, `SwipeScrollTracker (direção DOWN ou UP)`: quando o deslizar para baixo abre as notificações) |
+| Outros models | `MainUiStateFavorites.kt`, `AllAppsOpenSource.kt`, `GestureExclusion.kt`, `HomeLocalProvider.kt`, `SwipeDownNotifications.kt`, `ActiveHomeGestures.kt` (gestos ligados, faixas do sistema), `GestureLock.kt` (trava de direção, limite de 48 dp), `DrawerDrag.kt` (progresso, `drawerSettleOf`, `DrawerDragState`) (`verticalSwipeOf`, `SwipeDownConditions.opensNotifications`, `SwipeUpConditions.opensAllApps`, `VerticalSwipe.opensHome`, `SwipeScrollTracker (direção DOWN ou UP)`: quando o deslizar para baixo abre as notificações) |
 - `updateUiState` passa pelo `OnboardingReducer`. Há também `components/widgets/WidgetPickerViewModel.kt`.
 - Estados `showWidgetPopup`, `showWidgetResizeDialog` e `showSettingsDialog` estão no `MainUiState` mas nenhum composable os consome.
 
@@ -26,8 +26,8 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | containers | `Container`, `EditContainerScreen`; `folder/` com `OpenedFolderPopup` |
 | content | `GridItemContent` (despacha o tipo do item), `HomeScreenScrollContent` |
 | favorites | `AppsList`, `FavoritesListRow` |
-| onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep`. Etapas do coach (`GestureCoachStep`, ordem em `visibleGestureSteps`): todos os apps → alfabeto → deslizar para baixo (`NOTIFICATIONS`, só com `swipe_down_notifications` ligado) → tocar e segurar. Paisagem do onboarding: `onboardingLandscapeLayout` + `withOwnLandscapeContent` (container e widgets com id próprio, vazios) |
-| overlays | `HomeOverlays`, `CustomizeBottomSheet`, `HomeDragGestures` (+ `homeSwipeDownNestedScroll`: o delta que sobra de uma lista no topo abre as notificações), `InAppUpdateDialog` |
+| onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep`. Etapas do coach (`GestureCoachStep`, ordem em `visibleGestureSteps`): todos os apps (só com o swipe up ligado) → alfabeto → tocar e segurar; o passo das notificações foi removido. Paisagem do onboarding: `onboardingLandscapeLayout` + `withOwnLandscapeContent` (container e widgets com id próprio, vazios) |
+| overlays | `HomeOverlays`, `CustomizeBottomSheet`, `HomeDragGestures` e `HomeVerticalGesture` (detector vertical só com o gesto ligado; a gaveta acompanha o dedo), `AppsDrawerPull` (efeito na home e fechar arrastando), `HomeNestedSwipes` (o delta que sobra de uma lista no topo abre as notificações ou a gaveta), `InAppUpdateDialog` |
 | quickbutton | Sheets de Settings, Appearance e ShortcutSelection |
 | scrubber | `CurvedAlphabetScrubber` |
 | widgets | `WidgetPickerScreen`, `WidgetHostManager`, `EditWidgetGroupScreen`, `WidgetStackBottomSheet` |
