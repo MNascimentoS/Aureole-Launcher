@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -40,7 +42,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
  * The clock card. Its sizes come from the room it gets (`resolveClockSizing`): the time takes the biggest size that
  * fits the width and the height, and every other size is a share of it (relogio-home-sheet D-08), so the card is
  * the same at any size on the grid and in the editor preview. [onLongClick] opens the editor; a tap does nothing
- * and shows no ripple (RF-A1).
+ * and shows no ripple (RF-A1). A card taller than its lines (a tall cell on the grid) centers them.
  */
 @Composable
 fun ClockHeader(
@@ -88,8 +90,10 @@ fun ClockHeader(
         )
         val edge = sizing.metrics.edgeDp.dp
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (constraints.hasBoundedHeight) Modifier.fillMaxHeight() else Modifier)
                 .clip(RoundedCornerShape(sizing.metrics.radiusDp.dp))
                 .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
                 .background(containerBgColor)

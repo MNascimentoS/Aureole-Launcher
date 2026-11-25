@@ -24,8 +24,8 @@ object ScrubberDimensions {
     /** Gap from the alphabet edge of the column to the near side of the large badge, clear of the bulged letters. */
     val ProminentBadgeInset = 96.dp
 
-    /** How far above the finger the center of the large badge sits, so the thumb never covers it. */
-    val ProminentBadgeLift = 56.dp
+    /** How far above the selected letter the center of the large badge sits: none, it lines up with the letter. */
+    val ProminentBadgeLift = 0.dp
 
     /** Spread of the letter growth around the finger: tighter than [Spread], so only the neighbours grow. */
     val GrowthSpread = 24.dp
