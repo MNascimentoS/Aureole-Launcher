@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,7 +49,10 @@ internal fun ColumnScope.GroupLayoutTab(
     val lyingDown = isLyingDown(state.orientation)
     GroupSectionLabel(text = stringResource(R.string.home_container_group_position_label))
     TipPulse(isActive = isPositionPulsing) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
+        Row(
+            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+        ) {
             listOf(false, true).forEach { option ->
                 GroupPositionTile(
                     isLyingDown = option,
@@ -55,14 +61,14 @@ internal fun ColumnScope.GroupLayoutTab(
                         state.orientation = orientationOf(option)
                         onPositionPicked()
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).fillMaxHeight()
                 )
             }
         }
     }
     GroupSectionLabel(
         text = stringResource(R.string.home_container_group_alignment_label),
-        modifier = Modifier.padding(top = AureoleDS.dimens.medium)
+        modifier = Modifier.padding(top = AureoleDS.dimens.large)
     )
     GroupHelpText(text = stringResource(R.string.home_container_group_alignment_help))
     AureoleSegmentedControl(
@@ -73,7 +79,7 @@ internal fun ColumnScope.GroupLayoutTab(
     )
     GroupSectionLabel(
         text = stringResource(R.string.home_container_group_spacing_label),
-        modifier = Modifier.padding(top = AureoleDS.dimens.medium)
+        modifier = Modifier.padding(top = AureoleDS.dimens.large)
     )
     AureoleSegmentedControl(
         options = listOf(
@@ -91,7 +97,7 @@ internal fun ColumnScope.GroupLayoutTab(
             checked = state.isExpandCell,
             onCheckedChange = { state.isExpandCell = it }
         ),
-        modifier = Modifier.padding(top = AureoleDS.dimens.xSmall)
+        modifier = Modifier.padding(top = AureoleDS.dimens.medium)
     )
 }
 

@@ -42,13 +42,12 @@ class ContainerRepository(
     }
 
     /**
-     * The group [panelId], created with the initial values when it does not exist yet: with [isBackgroundEnabled]
-     * it starts with the theme background, and its items with the theme item background (D-12).
+     * The group [panelId], created with the initial values when it does not exist yet: it starts with no background
+     * and its items with the theme item background (D-12, D-19).
      */
     suspend fun ensureContainerExists(
         panelId: String,
         defaultTitle: String = "Painel Lateral",
-        isBackgroundEnabled: Boolean = false,
         position: String = ContainerModel().position,
         isExpandCell: Boolean = false
     ): ContainerModel =
@@ -56,12 +55,12 @@ class ContainerRepository(
             val existing = getContainer(panelId)
             if (existing != null) return@withContext existing
 
-            val colors = newContainerColors(hasBackground = isBackgroundEnabled)
+            val colors = newContainerColors()
             val newEntity = ContainerEntity(
                 id = panelId,
                 title = defaultTitle,
                 position = position,
-                isBackgroundEnabled = isBackgroundEnabled,
+                isBackgroundEnabled = colors.background != null,
                 isExpandCell = isExpandCell,
                 backgroundColorRef = colors.background?.toJson(),
                 itemColorRef = colors.item?.toJson()

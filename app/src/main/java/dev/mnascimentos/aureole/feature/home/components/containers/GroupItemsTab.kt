@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,8 +55,11 @@ internal fun ColumnScope.GroupItemsTab(params: GroupItemsTabParams) {
     val state = params.state
     val nav = params.nav
     GroupSectionLabel(text = stringResource(R.string.home_container_group_add_label))
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)) {
-        TipPulse(isActive = params.tip == GroupTip.FIRST_APP, modifier = Modifier.weight(1f)) {
+    Row(
+        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+    ) {
+        TipPulse(isActive = params.tip == GroupTip.FIRST_APP, modifier = Modifier.weight(1f).fillMaxHeight()) {
             GroupAddTile(
                 title = stringResource(R.string.home_container_group_add_app),
                 line = stringResource(R.string.home_container_group_add_app_line),
@@ -66,21 +72,21 @@ internal fun ColumnScope.GroupItemsTab(params: GroupItemsTabParams) {
             line = stringResource(R.string.home_container_group_add_folder_line),
             icon = { m, c -> AureoleDS.icons.Folder(modifier = m, tint = c) },
             onClick = { nav.open(GroupSheetPage.NewFolder) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).fillMaxHeight()
         )
         GroupAddTile(
             title = stringResource(R.string.home_container_group_add_quick_button),
             line = stringResource(R.string.home_container_group_add_quick_button_line),
             icon = { m, c -> AureoleDS.icons.Click(modifier = m, tint = c) },
             onClick = { nav.open(GroupSheetPage.QuickButton) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).fillMaxHeight()
         )
     }
     val count = groupItemCount(state.itemsList)
     GroupSectionLabel(
         text = stringResource(R.string.home_container_group_in_group_label),
         trailing = pluralStringResource(R.plurals.home_container_group_item_count, count, count),
-        modifier = Modifier.padding(top = AureoleDS.dimens.medium)
+        modifier = Modifier.padding(top = AureoleDS.dimens.large)
     )
     if (state.itemsList.isEmpty()) {
         GroupEmptyBox()
@@ -175,7 +181,7 @@ private fun GroupAddTile(
         AureoleText(
             text = line,
             color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, maxLines = 2)
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, maxLines = 3)
         )
     }
 }

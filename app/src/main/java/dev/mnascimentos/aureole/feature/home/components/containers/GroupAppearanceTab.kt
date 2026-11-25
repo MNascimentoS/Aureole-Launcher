@@ -51,7 +51,7 @@ internal fun ColumnScope.GroupAppearanceTab(state: EditContainerState, onOpenCol
     }
     GroupSectionLabel(
         text = stringResource(R.string.home_container_group_folders_label),
-        modifier = Modifier.padding(top = AureoleDS.dimens.medium)
+        modifier = Modifier.padding(top = AureoleDS.dimens.large)
     )
     GroupHelpText(text = stringResource(R.string.home_container_group_folders_help))
     AureoleSegmentedControl(

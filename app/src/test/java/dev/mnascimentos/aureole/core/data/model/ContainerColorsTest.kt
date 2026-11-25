@@ -32,12 +32,8 @@ class ContainerColorsTest {
     }
 
     @Test
-    fun `a new group should start with the theme background and items`() {
-        assertEquals(
-            ContainerColorRefs(CONTAINER_BACKGROUND_THEME_REF, CONTAINER_ITEM_THEME_REF),
-            newContainerColors(true)
-        )
-        assertNull(newContainerColors(false).background)
+    fun `a new group should start with no background and the theme items`() {
+        assertEquals(ContainerColorRefs(null, CONTAINER_ITEM_THEME_REF), newContainerColors())
     }
 
     @Test

@@ -13,7 +13,6 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.withEdi
 import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerOpened
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmContainerTaskOnSave
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
-import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.extensions.containerIds
 import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.missingContainerIds
@@ -35,12 +34,11 @@ fun HomeViewModel.loadContainers() {
 
 /**
  * Makes sure the container [id] exists, with the initial values: position and expand cell come from the settings
- * (they only seed a new container), and the default layout's container starts without a background.
+ * (they only seed a new container), and every new container starts without a background (D-19).
  */
 internal suspend fun HomeViewModel.ensureContainer(id: String): ContainerModel =
     containerRepository.ensureContainerExists(
         panelId = id,
-        isBackgroundEnabled = id != GridDefaults.CONTAINER_ITEM_ID,
         position = settingsRepository.containerPosition,
         isExpandCell = settingsRepository.isContainerExpandCell
     )

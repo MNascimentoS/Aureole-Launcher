@@ -9,10 +9,14 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
+import dev.mnascimentos.aureole.composable.ProvideHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -35,20 +39,22 @@ class GroupSheetScreenTest {
     private var tipsSeen = 0
     private val saved = mutableListOf<ContainerModel>()
 
-    private fun setSheet(isNew: Boolean, areTipsSeen: Boolean = false) {
+    private fun setSheet(isNew: Boolean, areTipsSeen: Boolean = false, uiState: MainUiState = MainUiState()) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                EditContainerScreen(
-                    params = EditContainerScreenParams(
-                        panel = ContainerModel(id = "group"),
-                        allApps = listOf(app),
-                        onDismiss = {},
-                        onSave = { saved += it },
-                        isNew = isNew,
-                        areTipsSeen = areTipsSeen,
-                        onTipsSeen = { tipsSeen++ }
+                ProvideHomeUiState(uiState) {
+                    EditContainerScreen(
+                        params = EditContainerScreenParams(
+                            panel = ContainerModel(id = "group"),
+                            allApps = listOf(app),
+                            onDismiss = {},
+                            onSave = { saved += it },
+                            isNew = isNew,
+                            areTipsSeen = areTipsSeen,
+                            onTipsSeen = { tipsSeen++ }
+                        )
                     )
-                )
+                }
             }
         }
         composeTestRule.mainClock.advanceTimeBy(OPEN_MS)
@@ -64,7 +70,17 @@ class GroupSheetScreenTest {
         composeTestRule.onNodeWithText("Layout").assertIsDisplayed()
         composeTestRule.onNodeWithText("Appearance").assertIsDisplayed()
         composeTestRule.onNodeWithText("Skip tips").assertDoesNotExist()
-        composeTestRule.onNodeWithText("Your changes are saved automatically when you close").assertExists()
+        composeTestRule.onNodeWithText(SAVED_HINT).assertDoesNotExist()
+    }
+
+    @Test
+    fun `when the onboarding runs, should show the saved notice on the Items tab`() {
+        setSheet(
+            isNew = false,
+            uiState = MainUiState(onboarding = OnboardingUiState(stage = OnboardingStage.CHECKLIST))
+        )
+
+        composeTestRule.onNodeWithText(SAVED_HINT).assertExists()
     }
 
     @Test
@@ -117,6 +133,7 @@ class GroupSheetScreenTest {
 
     private companion object {
         const val OPEN_MS = 500L
+        const val SAVED_HINT = "Your changes are saved automatically when you close"
         const val APP_LABEL = "Camera"
         const val APP_PACKAGE = "com.example.camera"
         const val APP_COLOR = 0xFF1B65C0.toInt()

@@ -2,7 +2,9 @@ package dev.mnascimentos.aureole.feature.home.components.containers
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -110,6 +112,7 @@ private fun ColumnScope.GroupTabs(params: GroupSheetBodyParams) {
             )
             GroupTab.APPEARANCE -> GroupAppearanceTab(state = params.state) { nav.open(GroupSheetPage.Color(it)) }
         }
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
     }
 }
 

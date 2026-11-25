@@ -1,6 +1,8 @@
 package dev.mnascimentos.aureole.telas.container
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -18,6 +20,8 @@ import dev.mnascimentos.aureole.fixtures.createSampleHomeData
 
 private const val PANEL_APPS = 3
 private const val PANEL_ID = "panel_1"
+private const val HOME_WIDTH = 84
+private const val HOME_HEIGHT = 330
 
 /** Grupo com 3 apps e uma pasta, o conteúdo de todo estado desta tela. */
 private fun sampleGroup(apps: List<String>): ContainerModel {
@@ -49,7 +53,11 @@ private fun sampleGroup(apps: List<String>): ContainerModel {
 
 /** Sheet "Personalizar grupo" na aba [tab] ou na página [page], com o grupo de exemplo. */
 @Composable
-private fun GroupSheetCase(tab: GroupTab = GroupTab.ITEMS, page: GroupSheetPage = GroupSheetPage.Tabs) {
+private fun GroupSheetCase(
+    tab: GroupTab = GroupTab.ITEMS,
+    page: GroupSheetPage = GroupSheetPage.Tabs,
+    homeSize: DpSize? = null
+) {
     val sampleData = createSampleHomeData()
     val apps = sampleData.apps.take(PANEL_APPS)
     HomeCase(sampleData.uiState) {
@@ -60,7 +68,8 @@ private fun GroupSheetCase(tab: GroupTab = GroupTab.ITEMS, page: GroupSheetPage 
                 onDismiss = {},
                 onSave = {},
                 initialTab = tab,
-                initialPage = page
+                initialPage = page,
+                homeSize = homeSize
             )
         )
     }
@@ -76,7 +85,7 @@ private fun PadraoScreenshotTest() = GroupSheetCase()
 @PreviewTest
 @AureolePreview
 @Composable
-private fun LayoutScreenshotTest() = GroupSheetCase(tab = GroupTab.LAYOUT)
+private fun LayoutScreenshotTest() = GroupSheetCase(tab = GroupTab.LAYOUT, homeSize = DpSize(HOME_WIDTH.dp, HOME_HEIGHT.dp))
 
 @PreviewTest
 @AureolePreview

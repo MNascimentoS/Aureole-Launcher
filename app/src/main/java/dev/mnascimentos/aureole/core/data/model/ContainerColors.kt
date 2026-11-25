@@ -26,8 +26,5 @@ fun migratedContainerColors(isBackgroundEnabled: Boolean, legacyBackgroundArgb: 
     return ContainerColorRefs(background = background, item = CONTAINER_ITEM_THEME_REF)
 }
 
-/** The colors a new group starts with (D-12): background "Theme" when [hasBackground], items "Theme". */
-fun newContainerColors(hasBackground: Boolean): ContainerColorRefs = ContainerColorRefs(
-    background = if (hasBackground) CONTAINER_BACKGROUND_THEME_REF else null,
-    item = CONTAINER_ITEM_THEME_REF
-)
+/** The colors a new group starts with (D-12, D-19): background "None", items "Theme". */
+fun newContainerColors(): ContainerColorRefs = ContainerColorRefs(background = null, item = CONTAINER_ITEM_THEME_REF)
