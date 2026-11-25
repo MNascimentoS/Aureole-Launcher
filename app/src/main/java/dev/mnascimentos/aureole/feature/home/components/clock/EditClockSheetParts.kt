@@ -1,19 +1,14 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.clockColorTitleRes
@@ -85,8 +80,7 @@ internal fun ColumnScope.EditClockBottomBar(
 ) {
     if (showsClockSaveHint(clockState.onboarding.stage, clockState.isClockSaveHintDismissed)) {
         EditClockSaveHint(
-            onDismiss = actions.onDismissClockSaveHint,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
+            onDismiss = actions.onDismissClockSaveHint
         )
     }
     EditClockFooter(pagerState = pagerState)

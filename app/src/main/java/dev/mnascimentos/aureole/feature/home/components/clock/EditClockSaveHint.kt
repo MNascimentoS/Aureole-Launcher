@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -30,8 +29,7 @@ internal fun EditClockSaveHint(onDismiss: () -> Unit, modifier: Modifier = Modif
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onDismiss)
-            .heightIn(min = AureoleDS.dimens.minTouchTarget)
-            .padding(horizontal = AureoleDS.dimens.xSmall),
+            .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {

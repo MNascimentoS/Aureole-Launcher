@@ -42,14 +42,15 @@ import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
  * The clock card. Its sizes come from the room it gets (`resolveClockSizing`): the time takes the biggest size that
  * fits the width and the height, and every other size is a share of it (relogio-home-sheet D-08), so the card is
  * the same at any size on the grid and in the editor preview. [onLongClick] opens the editor; a tap does nothing
- * and shows no ripple (RF-A1). A card taller than its lines (a tall cell on the grid) centers them.
+ * and shows no ripple (RF-A1). With [isCentered], a card taller than its lines (a tall cell on the grid) centers them.
  */
 @Composable
 fun ClockHeader(
     resolvedConfig: ResolvedClockConfig,
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
-    onLongClick: (() -> Unit)? = null
+    onLongClick: (() -> Unit)? = null,
+    isCentered: Boolean = false
 ) {
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
     val isHazeEnabled = hazeConfig.isHazeEnabled
@@ -93,7 +94,7 @@ fun ClockHeader(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .then(if (constraints.hasBoundedHeight) Modifier.fillMaxHeight() else Modifier)
+                .then(if (isCentered && constraints.hasBoundedHeight) Modifier.fillMaxHeight() else Modifier)
                 .clip(RoundedCornerShape(sizing.metrics.radiusDp.dp))
                 .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
                 .background(containerBgColor)
