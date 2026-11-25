@@ -142,9 +142,11 @@ class OnboardingPresetLayoutTest {
         val items = LayoutPreset.WIDGETS.thumbnailItems(plan = null, isLeftHanded = false)
 
         assertTrue(items.any { it.safeType == LauncherItemType.SHORTCUTS_CONTAINER })
-        assertTrue(LayoutPreset.MINIMAL.thumbnailItems(plan = null, isLeftHanded = false).none {
-            it.safeType == LauncherItemType.SHORTCUTS_CONTAINER
-        })
+        assertTrue(
+            LayoutPreset.MINIMAL.thumbnailItems(plan = null, isLeftHanded = false).none {
+                it.safeType == LauncherItemType.SHORTCUTS_CONTAINER
+            }
+        )
     }
 
     @Test

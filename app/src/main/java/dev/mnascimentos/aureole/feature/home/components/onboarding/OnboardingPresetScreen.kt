@@ -114,35 +114,37 @@ fun OnboardingPresetScreen(
 
 @Composable
 private fun PresetHeader(onBack: () -> Unit) {
-    val backDescription = stringResource(R.string.home_onboarding_preset_back)
-    Box(
-        modifier = Modifier
-            .padding(top = AureoleDS.dimens.small)
-            .size(AureoleDS.dimens.minTouchTarget)
-            .clip(CircleShape)
-            .clickable(role = Role.Button, onClick = onBack)
-            .semantics { contentDescription = backDescription },
-        contentAlignment = Alignment.Center
-    ) {
-        AureoleDS.icons.ChevronLeft(
-            modifier = Modifier.size(AureoleDS.dimens.iconLarge),
-            tint = AureoleDS.colors.onSurfaceHigh
+    Column {
+        val backDescription = stringResource(R.string.home_onboarding_preset_back)
+        Box(
+            modifier = Modifier
+                .padding(top = AureoleDS.dimens.small)
+                .size(AureoleDS.dimens.minTouchTarget)
+                .clip(CircleShape)
+                .clickable(role = Role.Button, onClick = onBack)
+                .semantics { contentDescription = backDescription },
+            contentAlignment = Alignment.Center
+        ) {
+            AureoleDS.icons.ChevronLeft(
+                modifier = Modifier.size(AureoleDS.dimens.iconLarge),
+                tint = AureoleDS.colors.onSurfaceHigh
+            )
+        }
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
+        AureoleText(
+            text = stringResource(R.string.home_onboarding_preset_title),
+            color = AureoleDS.colors.onSurfaceHigh,
+            modifier = Modifier.semantics { heading() },
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge)
         )
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
+        AureoleText(
+            text = stringResource(R.string.home_onboarding_preset_subtitle),
+            color = AureoleDS.colors.onSurfaceMedium,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
+        )
+        Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
     }
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
-    AureoleText(
-        text = stringResource(R.string.home_onboarding_preset_title),
-        color = AureoleDS.colors.onSurfaceHigh,
-        modifier = Modifier.semantics { heading() },
-        format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge)
-    )
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
-    AureoleText(
-        text = stringResource(R.string.home_onboarding_preset_subtitle),
-        color = AureoleDS.colors.onSurfaceMedium,
-        format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-    )
-    Spacer(modifier = Modifier.height(AureoleDS.dimens.large))
 }
 
 @Composable

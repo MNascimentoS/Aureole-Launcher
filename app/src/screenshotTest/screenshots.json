@@ -1326,52 +1326,63 @@
           ]
         },
         {
-          "id": "P05DeslizarParaBaixo",
-          "titulo": {
-            "pt": "Gesto: deslizar para baixo",
-            "en": "Gesture: swipe down"
-          },
-          "antes": [
-            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachNotificationsScreenshotTest_Dark Mode",
-            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachNotificationsSuccessScreenshotTest_Dark Mode"
-          ]
-        },
-        {
-          "id": "P06Segurar",
+          "id": "P05Segurar",
           "titulo": {
             "pt": "Gesto: segurar",
             "en": "Gesture: touch and hold"
           },
           "antes": [
-            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachCustomizeScreenshotTest_Dark Mode"
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachCustomizeScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachNotificationsScreenshotTest_Dark Mode",
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/GestureCoachNotificationsSuccessScreenshotTest_Dark Mode",
+            "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P05DeslizarParaBaixoScreenshotTest_Dark Mode",
+            "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P06SegurarScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "P07Checklist",
+          "id": "P06IssoAi",
           "titulo": {
-            "pt": "Lista de tarefas",
-            "en": "Checklist"
+            "pt": "Gesto: \"Isso aí!\"",
+            "en": "Gesture: \"Nice!\""
+          }
+        },
+        {
+          "id": "P07ChipVolte",
+          "titulo": {
+            "pt": "Gesto: chip para voltar",
+            "en": "Gesture: back chip"
+          }
+        },
+        {
+          "id": "P08ChecklistInicio",
+          "titulo": {
+            "pt": "Lista: começo",
+            "en": "Checklist: start"
           },
           "antes": [
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistOneDoneScreenshotTest_Dark Mode",
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistFourDoneScreenshotTest_Dark Mode",
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistSkippedScreenshotTest_Dark Mode",
-            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistMorphExpandedScreenshotTest_Dark Mode"
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistMorphExpandedScreenshotTest_Dark Mode",
+            "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P07ChecklistScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "P08Paleta",
+          "id": "P09ChecklistExtrasBloqueados",
           "titulo": {
-            "pt": "Escolher paleta",
-            "en": "Choose palette"
-          },
-          "ref": "telas/tema/Padrao",
-          "antes": [
-            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPalettePickerScreenshotTest_Dark Mode"
-          ]
+            "pt": "Lista: extras bloqueados",
+            "en": "Checklist: locked extras"
+          }
         },
         {
-          "id": "P09Pilula",
+          "id": "P10ChecklistExtrasLiberados",
+          "titulo": {
+            "pt": "Lista: extras liberados",
+            "en": "Checklist: unlocked extras"
+          }
+        },
+        {
+          "id": "P11Pilula",
           "titulo": {
             "pt": "Lista minimizada",
             "en": "Minimized checklist"
@@ -1381,11 +1392,43 @@
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingChecklistMorphMinimizedScreenshotTest_Dark Mode",
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleEmptyScreenshotTest_Dark Mode",
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleHalfScreenshotTest_Dark Mode",
-            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleFullScreenshotTest_Dark Mode"
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPeekBubbleFullScreenshotTest_Dark Mode",
+            "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P09PilulaScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "P10DicaEdicao",
+          "id": "P12VisualPaleta",
+          "titulo": {
+            "pt": "Visual: paleta",
+            "en": "Visual: palette"
+          },
+          "antes": [
+            "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingPalettePickerScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "P13VisualFonte",
+          "titulo": {
+            "pt": "Visual: fonte",
+            "en": "Visual: font"
+          }
+        },
+        {
+          "id": "P14DestaqueRelogio",
+          "titulo": {
+            "pt": "Destaque no relógio",
+            "en": "Clock highlight"
+          }
+        },
+        {
+          "id": "P15DestaqueFavoritos",
+          "titulo": {
+            "pt": "Destaque nos favoritos",
+            "en": "Favorites highlight"
+          }
+        },
+        {
+          "id": "P16DicaEdicao",
           "titulo": {
             "pt": "Dica de edição",
             "en": "Edit hint"
@@ -1394,19 +1437,45 @@
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingEditHintScreenshotTest_Dark Mode",
             "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillOnlyScreenshotTest_Dark Mode",
             "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillGesturingScreenshotTest_Dark Mode",
-            "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillTopScreenshotTest_Dark Mode"
+            "feature/home/components/onboarding/OnboardingEditHintStatesScreenshotTestKt/OnboardingEditHintPillTopScreenshotTest_Dark Mode",
+            "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P10DicaEdicaoScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "P11Comemoracao",
+          "id": "P17TudoPronto",
           "titulo": {
-            "pt": "Comemoração",
-            "en": "Celebration"
+            "pt": "Tudo pronto",
+            "en": "All set"
           },
           "antes": [
             "feature/home/components/onboarding/OnboardingScreenshotTestKt/OnboardingCelebrationScreenshotTest_Dark Mode",
-            "feature/home/components/onboarding/OnboardingParticlesScreenshotTestKt/OnboardingCelebrationBurstScreenshotTest_Dark Mode"
+            "feature/home/components/onboarding/OnboardingParticlesScreenshotTestKt/OnboardingCelebrationBurstScreenshotTest_Dark Mode",
+            "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P11ComemoracaoScreenshotTest_Dark Mode"
           ]
+        }
+      ]
+    },
+    {
+      "id": "layoutpronto",
+      "area": "home",
+      "titulo": {
+        "pt": "Layout pronto",
+        "en": "Ready-made layout"
+      },
+      "passos": [
+        {
+          "id": "P01Escolha",
+          "titulo": {
+            "pt": "Escolher o ponto de partida",
+            "en": "Pick a starting point"
+          }
+        },
+        {
+          "id": "P02ChecklistAplicado",
+          "titulo": {
+            "pt": "Lista com o layout aplicado",
+            "en": "Checklist with the layout applied"
+          }
         }
       ]
     },

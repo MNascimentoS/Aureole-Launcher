@@ -25,6 +25,7 @@ import dev.mnascimentos.aureole.composable.sheets.AureoleSheetSavedHint
 import dev.mnascimentos.aureole.composable.sheets.FontPickerGrid
 import dev.mnascimentos.aureole.composable.sheets.PalettePickerGrid
 import dev.mnascimentos.aureole.composable.sheets.ThemePreviewOverlay
+import dev.mnascimentos.aureole.composable.sheets.model.PickerGridExtras
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewState
 import dev.mnascimentos.aureole.composable.sheets.model.basePaletteName
@@ -93,7 +94,7 @@ fun OnboardingVisualSheetComponent(
                 AppearancePicker.FONT -> FontPickerGrid(
                     shownFont = pending.fontName ?: selection.fontName,
                     onSelect = { pending = pending.copy(fontName = it) },
-                    fadesEdges = true
+                    extras = PickerGridExtras(fadesEdges = true)
                 )
             }
         }

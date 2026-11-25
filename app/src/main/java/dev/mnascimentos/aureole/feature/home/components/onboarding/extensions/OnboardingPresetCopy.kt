@@ -51,8 +51,14 @@ val LayoutPreset.contentLines: List<PresetContentLine>
         }
         val group = when (presetSpec.groupKind) {
             PresetGroupKind.NONE -> PresetContentLine.Text(R.string.home_onboarding_preset_no_group)
-            PresetGroupKind.SIDE -> PresetContentLine.Count(R.plurals.home_onboarding_preset_group_folders, presetSpec.maxFolders)
-            PresetGroupKind.DOCK -> PresetContentLine.Count(R.plurals.home_onboarding_preset_dock, presetSpec.groupAppCount)
+            PresetGroupKind.SIDE -> PresetContentLine.Count(
+                R.plurals.home_onboarding_preset_group_folders,
+                presetSpec.maxFolders
+            )
+            PresetGroupKind.DOCK -> PresetContentLine.Count(
+                R.plurals.home_onboarding_preset_dock,
+                presetSpec.groupAppCount
+            )
         }
         return listOf(
             PresetContentLine.Text(clock),

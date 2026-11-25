@@ -6,6 +6,12 @@ package dev.mnascimentos.aureole.core.data.model
  */
 enum class LayoutPreset { MINIMAL, PRODUCTIVE, WIDGETS }
 
+/**
+ * `ApplicationInfo.CATEGORY_ACCESSIBILITY`, which only exists from API 31 (the minimum is 28). The compiler inlines
+ * the constant, so using its value reads the same category on every version (an older system never reports it).
+ */
+const val CATEGORY_ACCESSIBILITY_VALUE = 8
+
 /** One launchable app as the presets see it; [category] is `ApplicationInfo.category` (-1 when undefined). */
 data class PresetApp(val packageName: String, val label: String, val category: Int)
 

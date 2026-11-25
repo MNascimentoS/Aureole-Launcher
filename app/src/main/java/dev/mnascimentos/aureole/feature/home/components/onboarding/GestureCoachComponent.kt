@@ -100,7 +100,13 @@ fun GestureCoachComponent(
             if (chip) {
                 GestureCoachBackChip(glass = glass)
             } else {
-                GestureCoachCard(onboarding = onboarding, step = step, actions = actions, glass = glass, config = config)
+                GestureCoachCard(
+                    onboarding = onboarding,
+                    step = step,
+                    actions = actions,
+                    glass = glass,
+                    config = config
+                )
             }
         }
     }
@@ -136,8 +142,8 @@ private fun GestureCoachCard(
 
 /** "◁ Go back to continue", in the top end corner once "Nice!" shrank (RF-E2). */
 @Composable
-private fun GestureCoachBackChip(glass: OnboardingGlass) {
-    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+fun GestureCoachBackChip(glass: OnboardingGlass, modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
         OnboardingGlassCard(
             glass = glass,
             contentPadding = AureoleDS.dimens.small,

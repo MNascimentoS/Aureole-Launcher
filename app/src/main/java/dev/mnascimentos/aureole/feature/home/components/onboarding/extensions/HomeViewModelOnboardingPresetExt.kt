@@ -50,9 +50,10 @@ fun HomeViewModel.selectPreset(preset: LayoutPreset) {
 fun HomeViewModel.applyPreset(preset: LayoutPreset) {
     val state = uiState.value
     val onboarding = state.onboarding
-    val plan = onboarding.presetPlans.firstOrNull { it.preset == preset } ?: return
-    if (onboarding.stage != OnboardingStage.WELCOME) return
-    if (!canTakeLayoutPreset(state.portraitGridItems, state.landscapeGridItems)) return
+    val plan = onboarding.presetPlans.firstOrNull { it.preset == preset }
+    val isOpen = onboarding.stage == OnboardingStage.WELCOME &&
+        canTakeLayoutPreset(state.portraitGridItems, state.landscapeGridItems)
+    if (plan == null || !isOpen) return
     val isLeftHanded = settingsRepository.isLeftHandedMode
     val portrait = presetPortraitItems(plan, isLeftHanded)
     gridRepository.saveGridItems(portrait, isLandscape = false)
@@ -96,7 +97,10 @@ private fun HomeViewModel.savePresetContent(plan: LayoutPresetPlan, placement: P
  * wait for the end of the tour, but this one belongs to it.
  */
 private fun HomeViewModel.offerPresetUndo(preset: LayoutPreset, before: OnboardingUiState, placement: PresetPlacement) {
-    val message = TextResource.fromResId(R.string.home_onboarding_preset_applied, TextResource.fromResId(preset.nameRes))
+    val message = TextResource.fromResId(
+        R.string.home_onboarding_preset_applied,
+        TextResource.fromResId(preset.nameRes)
+    )
     undoController.show(message) { undoPreset(before, placement) }
     syncUndoState()
 }

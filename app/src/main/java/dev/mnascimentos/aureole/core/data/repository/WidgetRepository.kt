@@ -89,15 +89,7 @@ class WidgetRepository(private val context: Context) {
     var cachedAvailableWidgets: List<WidgetAppGroup>? = null
         private set
 
-    /** Reads the providers ahead of time (the onboarding checklist opened), only when nothing is cached yet. */
-    suspend fun preloadAvailableWidgets() {
-        if (cachedAvailableWidgets == null) getAvailableWidgets()
-    }
-
-    suspend fun getAvailableWidgets(): List<WidgetAppGroup> =
-        readAvailableWidgets().also { cachedAvailableWidgets = it }
-
-    private suspend fun readAvailableWidgets(): List<WidgetAppGroup> = withContext(Dispatchers.IO) {
+    suspend fun getAvailableWidgets(): List<WidgetAppGroup> = withContext(Dispatchers.IO) {
         val appWidgetManager = AppWidgetManager.getInstance(context) ?: return@withContext emptyList()
         val installed = appWidgetManager.installedProviders
         val pm = context.packageManager
@@ -154,7 +146,7 @@ class WidgetRepository(private val context: Context) {
                 null
             }
         }.sortedBy { it.appName }
-    }
+    }.also { cachedAvailableWidgets = it }
 
     companion object {
         private const val TAG = "WidgetRepository"

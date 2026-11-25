@@ -35,6 +35,7 @@
 - **Título em sentence case, nas strings:** só a primeira palavra em maiúscula ("Customize clock", "Widget group"); nomes próprios ficam ("Aureole settings"). Corrige-se na string de `values/` e `values-pt-rBR/`, nunca com `lowercase()` no código.
 - **Abas embaixo:** sheets com abas têm a barra de abas fixa **no rodapé**, nunca no topo.
 - **Margem da barra de abas:** `hasTabBottomBar = true` no config da sheet dá `xSmall` (8 dp) acima e abaixo da barra, em vez do respiro de uma fileira de botões; o inset de navegação do sistema continua. Vale para toda sheet com a barra no rodapé.
+- **Sem botão: fechar salva.** Sheet de ajuste não tem botão Salvar, Pronto nem Cancelar: fechar (arrastar, tocar fora, Voltar) aplica o que o usuário tocou, e o `AureoleSheetSavedHint` acima das abas avisa que salva ao fechar. Fechar sem mexer não altera nada; sem conteúdo que conte (nenhum favorito, nenhum widget) a sheet fecha sem concluir a etapa do onboarding (`onboarding-redesenho` D-05, D-12).
 - **Fading edge:** o conteúdo que rola sob a barra fixa some num fading edge onde encontra a barra, em vez de ser cortado seco.
 
 ## 8. Seletor de cor

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.core.data.model.CATEGORY_ACCESSIBILITY_VALUE
 import dev.mnascimentos.aureole.core.data.model.PresetApp
 import dev.mnascimentos.aureole.core.data.model.PresetCatalog
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.systemShortcutPackage
@@ -24,7 +25,7 @@ private val PRESET_CATEGORY_NAMES: Map<Int, Int> = mapOf(
     ApplicationInfo.CATEGORY_MAPS to R.string.home_onboarding_preset_category_maps,
     ApplicationInfo.CATEGORY_IMAGE to R.string.home_onboarding_preset_category_image,
     ApplicationInfo.CATEGORY_GAME to R.string.home_onboarding_preset_category_game,
-    ApplicationInfo.CATEGORY_ACCESSIBILITY to R.string.home_onboarding_preset_category_accessibility
+    CATEGORY_ACCESSIBILITY_VALUE to R.string.home_onboarding_preset_category_accessibility
 )
 
 /**

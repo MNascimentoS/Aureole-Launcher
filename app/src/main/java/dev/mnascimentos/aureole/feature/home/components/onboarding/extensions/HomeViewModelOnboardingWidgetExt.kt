@@ -22,5 +22,8 @@ internal fun shouldPreloadWidgets(previous: OnboardingUiState, current: Onboardi
 /** Reads the widget providers in the background when [shouldPreloadWidgets]; the repository keeps them. */
 internal fun HomeViewModel.preloadWidgetsOnChecklist(previous: MainUiState) {
     if (!shouldPreloadWidgets(previous.onboarding, uiState.value.onboarding)) return
-    viewModelScope.launch { widgetRepository.preloadAvailableWidgets() }
+    viewModelScope.launch {
+        // Ahead of time (the checklist opened), only when nothing is cached yet.
+        if (widgetRepository.cachedAvailableWidgets == null) widgetRepository.getAvailableWidgets()
+    }
 }

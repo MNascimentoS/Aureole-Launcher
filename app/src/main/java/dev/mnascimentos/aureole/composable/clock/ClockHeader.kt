@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -58,8 +59,6 @@ fun ClockHeader(
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
     val isHazeEnabled = hazeConfig.isHazeEnabled
     val hazeOpacity = hazeConfig.hazeOpacity
-    val isBgEnabled = hazeConfig.isBackgroundEnabled
-
     val defaultTextColor = AureoleDS.colors.onSurfaceHigh
     val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor.toArgb()
     val colorPrimaryCompose = if (resolvedConfig.textColor != 0) Color(resolvedConfig.textColor) else defaultTextColor
@@ -72,17 +71,13 @@ fun ClockHeader(
     val sidePadding = AureoleDS.dimens.large
     val hourGreeting = stringResource(greetingRes(hourOfDay()))
     val fontScale = LocalDensity.current.fontScale
-    val isTwelveHour = ClockHeaderUtils.resolveClockTimePattern(
-        resolvedConfig.timeFormat,
-        DateFormat.is24HourFormat(LocalContext.current)
-    ) == CLOCK_TIME_PATTERN_12H
 
     // A style saved by an older version reads as its layout and message, so the look never changes.
     val layoutChoice = resolveClockLayout(resolvedConfig.style, resolvedConfig.message)
     val greeting = clockGreeting(layoutChoice.message, resolvedConfig.customGreeting, hourGreeting)
 
     val containerBgColor = resolveClockBgColor(
-        isBgEnabled = isBgEnabled,
+        isBgEnabled = hazeConfig.isBackgroundEnabled,
         isHazeEnabled = isHazeEnabled,
         bgColorInt = resolvedConfig.backgroundColor,
         hazeOpacity = hazeOpacity,
@@ -95,7 +90,7 @@ fun ClockHeader(
             maxTextWidthDp = (maxWidth - sidePadding * 2).value,
             maxHeightDp = maxHeight.value,
             fontScale = fontScale,
-            isTwelveHour = isTwelveHour
+            isTwelveHour = isTwelveHourClock(resolvedConfig.timeFormat)
         )
         val edge = sizing.metrics.edgeDp.dp
         Box(
@@ -127,6 +122,14 @@ fun ClockHeader(
         }
     }
 }
+
+/** The clock shows "h:mm a": the saved format asks for it, or follows the system and the system is on 12 h. */
+@Composable
+@ReadOnlyComposable
+private fun isTwelveHourClock(timeFormat: String): Boolean = ClockHeaderUtils.resolveClockTimePattern(
+    timeFormat,
+    DateFormat.is24HourFormat(LocalContext.current)
+) == CLOCK_TIME_PATTERN_12H
 
 /** The custom message when the layout asks for it and it is not blank; the greeting of the hour otherwise. */
 private fun clockGreeting(message: ClockMessage, customGreeting: String, hourGreeting: String): String =

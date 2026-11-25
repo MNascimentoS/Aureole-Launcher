@@ -121,7 +121,6 @@ private fun ChecklistCardContent(
     actions: OnboardingActions,
     shared: ChecklistSharedModifiers
 ) {
-    val next = onboarding.nextPendingTask
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
@@ -129,7 +128,7 @@ private fun ChecklistCardContent(
         ChecklistHeader(onboarding = onboarding, shared = shared)
         ChecklistSectionLabel(text = stringResource(R.string.home_onboarding_checklist_section_home), shared = shared)
         onboardingHomeTasks.forEachIndexed { index, task ->
-            ChecklistRow(onboarding, task, next, actions, stagger = index, shared = shared)
+            ChecklistRow(onboarding, task, actions, stagger = index, shared = shared)
         }
         val extrasLabel = if (onboarding.isHomeBuilt) {
             R.string.home_onboarding_checklist_section_extras
@@ -139,7 +138,7 @@ private fun ChecklistCardContent(
         ChecklistSectionLabel(text = stringResource(extrasLabel), shared = shared)
         onboardingExtraTasks.forEachIndexed { index, task ->
             val stagger = onboardingHomeTasks.size + index
-            ChecklistRow(onboarding, task, next, actions, stagger = stagger, shared = shared)
+            ChecklistRow(onboarding, task, actions, stagger = stagger, shared = shared)
         }
         ChecklistFooter(actions = actions, modifier = shared.fading)
     }
@@ -149,16 +148,14 @@ private fun ChecklistCardContent(
 private fun ChecklistRow(
     onboarding: OnboardingUiState,
     task: OnboardingTask,
-    next: OnboardingTask?,
     actions: OnboardingActions,
     stagger: Int,
     shared: ChecklistSharedModifiers
 ) {
     OnboardingChecklistItemComponent(
         task = task,
-        status = onboarding.statusOf(task, next),
-        onClick = actions.onTaskClick,
-        onSkip = actions.onSkipTask,
+        status = onboarding.statusOf(task, onboarding.nextPendingTask),
+        actions = actions,
         presetLabelRes = onboarding.presetAppliedTo(task)?.appliedLabelRes,
         modifier = Modifier
             .checklistItemEntrance(staggerIndex = stagger)

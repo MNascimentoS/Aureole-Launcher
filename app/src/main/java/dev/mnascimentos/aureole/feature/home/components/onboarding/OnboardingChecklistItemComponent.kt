@@ -49,6 +49,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.titleRes
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingTaskStatus
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isClickable
@@ -66,9 +67,8 @@ private const val LOCKED_ALPHA = 0.4f
 fun OnboardingChecklistItemComponent(
     task: OnboardingTask,
     status: OnboardingTaskStatus,
-    onClick: (OnboardingTask) -> Unit,
+    actions: OnboardingActions,
     modifier: Modifier = Modifier,
-    onSkip: (OnboardingTask) -> Unit = {},
     @StringRes presetLabelRes: Int? = null
 ) {
     val isDone = status == OnboardingTaskStatus.DONE
@@ -76,18 +76,10 @@ fun OnboardingChecklistItemComponent(
     val isNext = status == OnboardingTaskStatus.NEXT
     val isLocked = status == OnboardingTaskStatus.LOCKED
     val title = AnnotatedString.fromHtml(stringResource(task.titleRes()))
-    val description = stringResource(
-        when {
-            isDone -> R.string.home_onboarding_task_done_a11y
-            isLocked -> R.string.home_onboarding_task_locked_a11y
-            isSkipped -> R.string.home_onboarding_task_skipped_a11y
-            else -> R.string.home_onboarding_task_pending_a11y
-        },
-        title.text
-    )
+    val description = stringResource(status.a11yRes(), title.text)
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-    val showSkip = isNext
     val isClickable = status.isClickable(task)
+    val onClick = actions.onTaskClick
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -110,21 +102,12 @@ fun OnboardingChecklistItemComponent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RowIcon(task = task, isDone = isDone, isSkipped = isSkipped)
-            Column(modifier = Modifier.weight(1f, fill = false)) {
-                AureoleText(
-                    text = title,
-                    color = if (isDone || isSkipped) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
-                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-                )
-                // "LAYOUT <NAME> APPLIED" on the steps the ready-made layout did (RF-F4).
-                if (presetLabelRes != null) {
-                    AureoleText(
-                        text = stringResource(presetLabelRes),
-                        color = AureoleDS.colors.onSurfaceLow,
-                        format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)
-                    )
-                }
-            }
+            ChecklistRowText(
+                title = title,
+                isResolved = isDone || isSkipped,
+                presetLabelRes = presetLabelRes,
+                modifier = Modifier.weight(1f, fill = false)
+            )
             if (isSkipped) {
                 AureoleText(
                     text = stringResource(R.string.home_onboarding_task_skipped_label),
@@ -133,10 +116,42 @@ fun OnboardingChecklistItemComponent(
                 )
             }
         }
-        if (showSkip) {
+        if (isNext) {
             OnboardingTextButton(
                 text = stringResource(R.string.home_onboarding_task_skip),
-                onClick = { onSkip(task) }
+                onClick = { actions.onSkipTask(task) }
+            )
+        }
+    }
+}
+
+@StringRes
+private fun OnboardingTaskStatus.a11yRes(): Int = when (this) {
+    OnboardingTaskStatus.DONE -> R.string.home_onboarding_task_done_a11y
+    OnboardingTaskStatus.LOCKED -> R.string.home_onboarding_task_locked_a11y
+    OnboardingTaskStatus.SKIPPED -> R.string.home_onboarding_task_skipped_a11y
+    else -> R.string.home_onboarding_task_pending_a11y
+}
+
+/** Title of the row and, under it, the "LAYOUT <NAME> APPLIED" line (RF-F4). */
+@Composable
+private fun ChecklistRowText(
+    title: AnnotatedString,
+    isResolved: Boolean,
+    @StringRes presetLabelRes: Int?,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        AureoleText(
+            text = title,
+            color = if (isResolved) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
+        )
+        if (presetLabelRes != null) {
+            AureoleText(
+                text = stringResource(presetLabelRes),
+                color = AureoleDS.colors.onSurfaceLow,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)
             )
         }
     }
@@ -189,7 +204,7 @@ private fun OnboardingChecklistItemLockedPreview() {
         OnboardingChecklistItemComponent(
             task = OnboardingTask.ADJUST_LAYOUT,
             status = OnboardingTaskStatus.LOCKED,
-            onClick = {}
+            actions = OnboardingActions()
         )
     }
 }
@@ -201,7 +216,7 @@ private fun OnboardingChecklistItemPreview() {
         OnboardingChecklistItemComponent(
             task = OnboardingTask.CHOOSE_VISUAL,
             status = OnboardingTaskStatus.NEXT,
-            onClick = {}
+            actions = OnboardingActions()
         )
     }
 }

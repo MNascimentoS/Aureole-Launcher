@@ -21,8 +21,8 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.withClo
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.preloadWidgetsOnChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.preloadWidgetsOnChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow

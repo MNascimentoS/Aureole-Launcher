@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.model
 
 import android.content.pm.ApplicationInfo
+import dev.mnascimentos.aureole.core.data.model.CATEGORY_ACCESSIBILITY_VALUE
 import dev.mnascimentos.aureole.core.data.model.LayoutPreset
 import dev.mnascimentos.aureole.core.data.model.PresetApp
 import dev.mnascimentos.aureole.core.data.model.PresetCatalog
@@ -24,7 +25,7 @@ val presetCategoryOrder: List<Int> = listOf(
     ApplicationInfo.CATEGORY_MAPS,
     ApplicationInfo.CATEGORY_IMAGE,
     ApplicationInfo.CATEGORY_GAME,
-    ApplicationInfo.CATEGORY_ACCESSIBILITY
+    CATEGORY_ACCESSIBILITY_VALUE
 )
 
 private val alphabetical: Comparator<PresetApp> = compareBy<PresetApp>({ it.label.lowercase() }, { it.packageName })
