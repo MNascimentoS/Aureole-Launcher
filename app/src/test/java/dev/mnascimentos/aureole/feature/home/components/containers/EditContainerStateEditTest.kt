@@ -9,7 +9,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.model.Contain
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-/** The in-place editors of "Manage items" write to the draft through these (RF-07); plain JVM. */
+/** The in-place editors of the group sheet write to the draft through these (RF-07); plain JVM. */
 class EditContainerStateEditTest {
 
     private fun state(folders: List<AppFolder> = emptyList()) = EditContainerState(

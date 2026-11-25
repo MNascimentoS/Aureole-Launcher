@@ -1,4 +1,4 @@
-package dev.mnascimentos.aureole.feature.home.components.clock
+package dev.mnascimentos.aureole.composable.sheets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,15 +20,16 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
- * Onboarding notice of the clock editor (RF-D2, D-07): one quiet line saying the sheet has no save button because
- * every change is already saved. A tap on it ([onDismiss]) hides it for good.
+ * One quiet line above the tab bar of a sheet with no save button: "✓ Your changes are saved automatically when you
+ * close" (the clock editor, the group editor). [onClick], when given, makes the line a button (the clock hides it
+ * for good on tap).
  */
 @Composable
-internal fun EditClockSaveHint(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+fun AureoleSheetSavedHint(modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onDismiss)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = AureoleDS.dimens.xSmall, vertical = AureoleDS.dimens.xxSmall),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
@@ -38,7 +39,7 @@ internal fun EditClockSaveHint(onDismiss: () -> Unit, modifier: Modifier = Modif
             modifier = Modifier.size(AureoleDS.dimens.iconSmall)
         )
         AureoleText(
-            text = stringResource(R.string.home_clock_save_hint),
+            text = stringResource(R.string.overlay_sheet_saved_hint),
             color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall)
         )
@@ -47,10 +48,9 @@ internal fun EditClockSaveHint(onDismiss: () -> Unit, modifier: Modifier = Modif
 
 @AureolePreview
 @Composable
-private fun EditClockSaveHintPreview() {
+private fun AureoleSheetSavedHintPreview() {
     AureoleLauncherTheme {
-        EditClockSaveHint(
-            onDismiss = {},
+        AureoleSheetSavedHint(
             modifier = Modifier
                 .background(AureoleDS.colors.surface)
                 .padding(AureoleDS.dimens.medium)

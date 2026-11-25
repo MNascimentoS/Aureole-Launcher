@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.clock.model
 
+import dev.mnascimentos.aureole.composable.colorpage.model.ColorPageTile
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorEntry
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.data.model.CLOCK_CARD_THEME_REF
@@ -14,15 +15,15 @@ import org.junit.Test
 /** Tiles of the clock's color page: "None" first for the card, "Theme" for the theme card (RF-E2, RF-E4). */
 class ClockColorTilesTest {
 
-    private val theme = ClockColorTile.Entry(ComponentColorEntry.Theme)
+    private val theme = ColorPageTile.Entry(ComponentColorEntry.Theme)
 
     @Test
     fun `when the card has no color, should mark None, first of the card tiles`() {
         val tiles = clockColorTiles(saved = null, role = ComponentColorRole.CARD, isDarkTheme = true)
 
-        assertEquals(ClockColorTile.None, tiles.first())
+        assertEquals(ColorPageTile.None, tiles.first())
         assertEquals(theme, tiles[1])
-        assertEquals(ClockColorTile.None, selectedClockColorTile(null, ComponentColorRole.CARD, isDarkTheme = true))
+        assertEquals(ColorPageTile.None, selectedClockColorTile(null, ComponentColorRole.CARD, isDarkTheme = true))
     }
 
     @Test
@@ -30,7 +31,7 @@ class ClockColorTilesTest {
         val tiles = clockColorTiles(CLOCK_CARD_THEME_REF, ComponentColorRole.CARD, isDarkTheme = true)
 
         assertEquals(theme, selectedClockColorTile(CLOCK_CARD_THEME_REF, ComponentColorRole.CARD, isDarkTheme = true))
-        assertTrue(tiles.none { it is ClockColorTile.Entry && it.entry is ComponentColorEntry.Current })
+        assertTrue(tiles.none { it is ColorPageTile.Entry && it.entry is ComponentColorEntry.Current })
         assertEquals(1 + 1 + allPalettes.distinctBy { it.name }.size, tiles.size)
     }
 
@@ -39,13 +40,13 @@ class ClockColorTilesTest {
         val tiles = clockColorTiles(saved = null, role = ComponentColorRole.TEXT, isDarkTheme = false)
 
         assertEquals(theme, tiles.first())
-        assertTrue(ClockColorTile.None !in tiles)
+        assertTrue(ColorPageTile.None !in tiles)
         assertEquals(theme, selectedClockColorTile(null, ComponentColorRole.TEXT, isDarkTheme = false))
     }
 
     @Test
     fun `when a tile is picked, should save None and text Theme as null and the card Theme as the theme card`() {
-        assertNull(ClockColorTile.None.toClockColorRef(ComponentColorRole.CARD))
+        assertNull(ColorPageTile.None.toClockColorRef(ComponentColorRole.CARD))
         assertNull(theme.toClockColorRef(ComponentColorRole.TEXT))
         assertEquals(CLOCK_CARD_THEME_REF, theme.toClockColorRef(ComponentColorRole.CARD))
     }
@@ -56,6 +57,6 @@ class ClockColorTilesTest {
 
         val tile = selectedClockColorTile(other, ComponentColorRole.CARD, isDarkTheme = true)
 
-        assertEquals(ClockColorTile.Entry(ComponentColorEntry.Current(other)), tile)
+        assertEquals(ColorPageTile.Entry(ComponentColorEntry.Current(other)), tile)
     }
 }

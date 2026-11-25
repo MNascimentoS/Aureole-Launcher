@@ -11,8 +11,8 @@ import dev.mnascimentos.aureole.core.data.model.QuickButtonModel
 import dev.mnascimentos.aureole.core.data.model.QuickButtonShortcuts
 import dev.mnascimentos.aureole.core.data.model.ShortcutAction
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
-import dev.mnascimentos.aureole.feature.home.components.containers.ManageItemRow
-import dev.mnascimentos.aureole.feature.home.components.containers.model.ManageItemRowParams
+import dev.mnascimentos.aureole.feature.home.components.containers.GroupItemRow
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupItemRowParams
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.displayTitle
 import org.junit.Rule
 import org.junit.Test
@@ -67,7 +67,7 @@ class QuickButtonNameTest {
     }
 
     @Test
-    fun `when the manage items row shows a quick button, should show the typed name as its title`() {
+    fun `when the group item row shows a quick button, should show the typed name as its title`() {
         val item = ContainerItemEntity(
             id = "row",
             panelId = "panel",
@@ -77,7 +77,7 @@ class QuickButtonNameTest {
 
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                ManageItemRow(ManageItemRowParams(item = item, folders = emptyList(), allApps = emptyList()))
+                GroupItemRow(GroupItemRowParams(item = item, folders = emptyList(), allApps = emptyList(), onRemove = {}))
             }
         }
 

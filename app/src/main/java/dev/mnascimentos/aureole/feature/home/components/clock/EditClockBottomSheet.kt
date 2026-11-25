@@ -28,6 +28,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.scaledLayout
+import dev.mnascimentos.aureole.composable.preview.model.previewFitScale
 import dev.mnascimentos.aureole.composable.showsHomeSheetLogo
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleEditOverlay
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
@@ -46,7 +47,6 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockGre
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockOverlayOptions
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPickerOpeners
-import dev.mnascimentos.aureole.feature.home.components.clock.model.clockPreviewScale
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import kotlinx.coroutines.delay
@@ -226,7 +226,7 @@ private fun EditClockPreviewCard(
         contentAlignment = Alignment.Center
     ) {
         val clockModifier = homeSize?.let { size ->
-            val scale = clockPreviewScale(size.width.value, size.height.value, maxWidth.value, maxHeight.value)
+            val scale = previewFitScale(size.width.value, size.height.value, maxWidth.value, maxHeight.value)
             Modifier
                 .scaledLayout(scale)
                 .width(size.width)

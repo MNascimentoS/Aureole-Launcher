@@ -162,7 +162,7 @@ class OnboardingChecklistComponentTest {
             OnboardingTask.CHOOSE_PALETTE to "Pick a color palette",
             OnboardingTask.CHOOSE_FONT to "Pick a font",
             OnboardingTask.ADD_FAVORITE_APPS to "Choose your favorites",
-            OnboardingTask.FILL_CONTAINER to "Fill the container",
+            OnboardingTask.FILL_CONTAINER to "Fill the group",
             OnboardingTask.ADD_WIDGET to "Add some widgets",
             OnboardingTask.ADJUST_LAYOUT to "Adjust your layout",
             OnboardingTask.EXPLORE_SETTINGS to "Check more settings"

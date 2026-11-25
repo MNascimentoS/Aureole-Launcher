@@ -7,6 +7,7 @@ import androidx.core.graphics.drawable.toDrawable
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.CONTAINER_BACKGROUND_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
@@ -62,6 +63,7 @@ private fun PreviewContainerScreen(panelId: String, title: String, orientation: 
         title = title,
         orientation = orientation,
         isBackgroundEnabled = true,
+        backgroundColorRef = CONTAINER_BACKGROUND_THEME_REF,
         isGridFolderEnabled = true,
         folders = folders,
         appPackageNames = apps.map { it.packageName },

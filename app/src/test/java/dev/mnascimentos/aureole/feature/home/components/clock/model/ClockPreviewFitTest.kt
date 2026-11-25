@@ -2,6 +2,7 @@ package dev.mnascimentos.aureole.feature.home.components.clock.model
 
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import dev.mnascimentos.aureole.composable.preview.model.previewFitScale
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.HEADER_CLOCK_SIZE_KEY
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.clockSizeOf
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.editingClockSize
@@ -15,24 +16,24 @@ class ClockPreviewFitTest {
 
     @Test
     fun `when the clock fits above the sheet, should draw it at its real size`() {
-        assertEquals(1f, clockPreviewScale(300f, 120f, 360f, 400f))
+        assertEquals(1f, previewFitScale(300f, 120f, 360f, 400f))
     }
 
     @Test
     fun `when the clock is wider or taller than the room, should shrink it just enough`() {
-        assertEquals(0.5f, clockPreviewScale(400f, 100f, 200f, 400f))
-        assertEquals(0.75f, clockPreviewScale(200f, 200f, 360f, 150f))
+        assertEquals(0.5f, previewFitScale(400f, 100f, 200f, 400f))
+        assertEquals(0.75f, previewFitScale(200f, 200f, 360f, 150f))
     }
 
     @Test
     fun `when the room has no bound, should not limit the clock`() {
-        assertEquals(1f, clockPreviewScale(300f, 120f, 360f, Float.POSITIVE_INFINITY))
-        assertEquals(0.5f, clockPreviewScale(400f, 120f, 200f, Float.POSITIVE_INFINITY))
+        assertEquals(1f, previewFitScale(300f, 120f, 360f, Float.POSITIVE_INFINITY))
+        assertEquals(0.5f, previewFitScale(400f, 120f, 200f, Float.POSITIVE_INFINITY))
     }
 
     @Test
     fun `when the measure is empty, should keep the real size`() {
-        assertEquals(1f, clockPreviewScale(0f, 0f, 200f, 200f))
+        assertEquals(1f, previewFitScale(0f, 0f, 200f, 200f))
     }
 
     @Test

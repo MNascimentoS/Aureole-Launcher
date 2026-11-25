@@ -3,6 +3,8 @@ package dev.mnascimentos.aureole.core.data.db
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.CONTAINER_BACKGROUND_THEME_REF
+import dev.mnascimentos.aureole.core.data.model.CONTAINER_ITEM_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ContainerEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
@@ -124,6 +126,32 @@ class AppDatabaseMigrationTest {
         assertEquals(listOf(FolderIconType.ICON), folders.map { it.folder.iconType })
     }
 
+    @Test
+    fun `when upgrading from version 4, should turn the background switch into the group colors`() {
+        val database = AppDatabase.buildDatabase(context, TEST_DATABASE)
+        runBlocking {
+            val dao = database.containerDao()
+            dao.insertOrUpdateContainer(ContainerEntity(id = "off", isBackgroundEnabled = false))
+            dao.insertOrUpdateContainer(ContainerEntity(id = "on", isBackgroundEnabled = true))
+            dao.insertOrUpdateContainer(
+                ContainerEntity(id = "own", isBackgroundEnabled = true, backgroundColor = LEGACY_BACKGROUND)
+            )
+        }
+        database.close()
+        rollBackToVersion4()
+
+        val upgraded = AppDatabase.buildDatabase(context, TEST_DATABASE)
+        val rows = runBlocking { listOf("off", "on", "own").map { upgraded.containerDao().getContainer(it) } }
+        upgraded.close()
+
+        val (off, on, own) = rows.map { requireNotNull(it) }
+        assertNull(off.backgroundColorRef)
+        assertEquals(CONTAINER_BACKGROUND_THEME_REF.toJson(), on.backgroundColorRef)
+        assertEquals(ThemeColorRef.Fixed(LEGACY_BACKGROUND.toInt()).toJson(), own.backgroundColorRef)
+        rows.forEach { assertEquals(CONTAINER_ITEM_THEME_REF.toJson(), it?.itemColorRef) }
+        assertEquals("NORMAL", on.itemSpacing)
+    }
+
     /** A 0.9.x install: the current schema rolled back to version 3, with one folder in it. */
     private fun seedVersion3Database() {
         val database = AppDatabase.buildDatabase(context, TEST_DATABASE)
@@ -179,8 +207,18 @@ class AppDatabaseMigrationTest {
         }
     }
 
+    /** Drops the columns version 5 added to `containers` and stamps the file as version 4. */
+    private fun rollBackToVersion4() {
+        val path = context.getDatabasePath(TEST_DATABASE).path
+        SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE).use { raw ->
+            raw.rebuildWithoutColumns("containers", VERSION_5_COLUMNS, VERSION_4_CONTAINER_COLUMNS)
+            raw.version = 4
+        }
+    }
+
     /** Drops the columns version 4 added to `folders` and stamps the file as version 3. */
     private fun rollBackToVersion3() {
+        rollBackToVersion4()
         val path = context.getDatabasePath(TEST_DATABASE).path
         SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE).use { raw ->
             raw.rebuildWithoutColumns("folders", VERSION_4_COLUMNS, VERSION_3_FOLDER_COLUMNS)
@@ -233,5 +271,15 @@ class AppDatabaseMigrationTest {
             "id, panel_id, name, color, icon_fallback, icon, display_as_grid, created_at"
         val VERSION_3_COLUMNS = listOf("`quick_button_id` TEXT, ", "`quick_button_json` TEXT, ")
         val VERSION_4_COLUMNS = listOf("`icon_type` TEXT NOT NULL DEFAULT 'ICON', ", "`emoji` TEXT, ")
+        val VERSION_5_COLUMNS = listOf(
+            "`background_color_ref` TEXT, ",
+            "`item_color_ref` TEXT, ",
+            "`item_spacing` TEXT NOT NULL DEFAULT 'NORMAL', "
+        )
+        const val VERSION_4_CONTAINER_COLUMNS = "id, title, position, orientation, is_background_enabled, " +
+            "is_expand_cell, show_add_folder_button, show_folder_labels, is_grid_folder_enabled, hide_text, " +
+            "text_color, background_color, stroke_enabled, stroke_color, folder_color, folder_stroke_enabled, " +
+            "scroll_up_shortcut, scroll_down_shortcut, created_at"
+        const val LEGACY_BACKGROUND = 0xFF336699L
     }
 }

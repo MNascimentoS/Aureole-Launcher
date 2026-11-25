@@ -295,6 +295,6 @@ class HomeScreenFolderOverlaysTest {
         }
 
         composeTestRule.onNodeWithText("App info").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Container settings").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Customize group").assertIsDisplayed()
     }
 }

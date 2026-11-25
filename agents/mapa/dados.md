@@ -6,7 +6,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Não 
 | Arquivo | Guarda / faz |
 |---|---|
 | AppRepository | Apps instalados (Room `app_info`, DAO e `IconCache` injetados pelo Koin; defaults só para testes); `appsFlow`, `syncApps`, `syncPackage`, `launchApp` |
-| ContainerRepository | Containers e itens (apps, pastas, quick buttons) no Room |
+| ContainerRepository | Containers ("Grupo de apps e pastas" na UI) e itens (apps, pastas, quick buttons) no Room; mapeamento entidade ↔ modelo em `ContainerEntityMapping.kt`; grupo novo nasce com `newContainerColors` |
 | FavoriteContainerRepository | Favoritos por container no Room |
 | FolderRepository | Pastas no Room; migra o JSON legado das prefs |
 | GridRepository | Layout da grade em JSON por orientação (prefs) |
@@ -20,7 +20,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Não 
 - Fluxo de preferência: o ViewModel lê o repositório e põe no UiState (não há Flow direto da pref).
 
 ## Room (`core/data/db/`)
-- `AppDatabase`: version 4, `exportSchema = true`, arquivo `aureole_app_database.db`, `RoomConverters`. Schemas em `app/schemas/` (só `3.json` e `4.json`).
+- `AppDatabase`: version 5, `exportSchema = true`, arquivo `aureole_app_database.db`, `RoomConverters`. Schemas em `app/schemas/` (`3.json`, `4.json`, `5.json`).
 - Entities: `AppInfoEntity`, `FavoriteContainerEntity`, `ContainerFavoriteItemEntity` (em db/); `ContainerEntity`, `ContainerItemEntity`, `FolderEntity`, `FolderItemEntity` (em `core/data/model/`).
 - Tabelas: `app_info`, `containers`, `container_items`, `favorite_containers`, `container_favorite_items`, `folders`, `folder_items`.
 - DAOs: `AppInfoDao`, `ContainerDao`, `FavoriteContainerDao`, `FolderDao`.
@@ -28,12 +28,13 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Não 
 |---|---|
 | 2→3 | `container_items` ganha `quick_button_id` e `quick_button_json` |
 | 3→4 | `folders` ganha `icon_type` (padrão 'ICON') e `emoji` |
+| 4→5 | `containers` ganha `background_color_ref`, `item_color_ref` (`ThemeColorRef` JSON, nulo = "Nenhuma") e `item_spacing` (padrão 'NORMAL', `ContainerItemSpacing`); o switch antigo vira cor por `migratedContainerColors` (`core/data/model/ContainerColors.kt`: `CONTAINER_BACKGROUND_THEME_REF` = SURFACE, `CONTAINER_ITEM_THEME_REF` = VARIANT). `is_background_enabled` segue gravado = fundo não nulo |
 - Sem 1→2: versões abaixo de 2 caem em `fallbackToDestructiveMigration(dropAllTables = true)`.
 
 ## Preferências (constantes `KEY_*` no `companion object` de cada repositório)
 | Arquivo de prefs | Dono | Chaves (resumo) |
 |---|---|---|
-| aureole_settings_prefs | SettingsRepository | left_handed_mode, container_*, clock_* (style = chave de `ClockLayout`, message, greeting, alignment, font_family (chave do catálogo ou `Launcher`; antiga migra na leitura), font_bold, time/date_format, text_color, text_color_ref, background_color, background_color_ref; sem cartão = ref nula; `clock_background_enabled` só é lido uma vez por `migrateClockCard` em `ClockSheetPreferences.kt` e apagado), show_folder_labels, favorite_apps (CSV), home_opens_all_apps, widget_row_enabled, wallpaper (is_custom_wallpaper_set, custom_wallpaper_path, wallpaper_scale_type, wallpaper_adjustments JSON, apply_to_lock_screen, lock_screen_notice_seen), tema (use_wallpaper_colors, manual_seed_color, selected_theme, selected_font), haze_enabled/opacity/blur_level, corner_radius_dp, use_themed_app_icons, disable_alphabet_scrubber, swipe_down_notifications, swipe_up_all_apps (padrão false desde gestos-swipe; quem já salvou mantém o valor; deslizar para baixo abre as notificações, para cima puxa a gaveta), settings_button_position, search_icon_position, show_*_in_all_apps, in_app_update_enabled, header_offset_percent, secret_game_best_score, secret_game_played (padrão: recorde > 0), secret_game_sound_on (padrão true), last_seen_version_code, clock_save_hint_dismissed ("Entendi" do aviso da sheet do relógio; `ClockSheetPreferences.kt`) |
+| aureole_settings_prefs | SettingsRepository | left_handed_mode, container_*, clock_* (style = chave de `ClockLayout`, message, greeting, alignment, font_family (chave do catálogo ou `Launcher`; antiga migra na leitura), font_bold, time/date_format, text_color, text_color_ref, background_color, background_color_ref; sem cartão = ref nula; `clock_background_enabled` só é lido uma vez por `migrateClockCard` em `ClockSheetPreferences.kt` e apagado), show_folder_labels, favorite_apps (CSV), home_opens_all_apps, widget_row_enabled, wallpaper (is_custom_wallpaper_set, custom_wallpaper_path, wallpaper_scale_type, wallpaper_adjustments JSON, apply_to_lock_screen, lock_screen_notice_seen), tema (use_wallpaper_colors, manual_seed_color, selected_theme, selected_font), haze_enabled/opacity/blur_level, corner_radius_dp, use_themed_app_icons, disable_alphabet_scrubber, swipe_down_notifications, swipe_up_all_apps (padrão false desde gestos-swipe; quem já salvou mantém o valor; deslizar para baixo abre as notificações, para cima puxa a gaveta), settings_button_position, search_icon_position, show_*_in_all_apps, in_app_update_enabled, header_offset_percent, secret_game_best_score, secret_game_played (padrão: recorde > 0), secret_game_sound_on (padrão true), last_seen_version_code, clock_save_hint_dismissed ("Entendi" do aviso da sheet do relógio; `ClockSheetPreferences.kt`), container_tips_seen (dicas do primeiro grupo vistas/puladas; `ContainerTipsPreferences.kt`, `MainUiState.isContainerTipsSeen`) |
 | aureole_settings_prefs | OnboardingPreferences | onboarding_stage, onboarding_completed_steps/tasks, onboarding_skipped_tasks (CSV), onboarding_checklist_collapsed |
 | aureole_settings_prefs | migrações | show_all_apps_on_home, show_widget_dots, vivid_background_migrated |
 | aureole_grid_prefs | GridRepository | grid_items_json (legado), grid_items_portrait_json, grid_items_landscape_json |

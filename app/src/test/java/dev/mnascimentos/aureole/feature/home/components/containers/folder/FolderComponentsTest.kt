@@ -203,7 +203,7 @@ class FolderComponentsTest {
         composeTestRule.onNodeWithText("Remove folder").performScrollTo().performClick()
         assertTrue(removeFolderClicked)
 
-        composeTestRule.onNodeWithText("Container settings").performScrollTo().performClick()
+        composeTestRule.onNodeWithText("Customize group").performScrollTo().performClick()
         assertTrue(openSettingsClicked)
     }
 

@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.AureoleSheetSavedHint
+import dev.mnascimentos.aureole.composable.sheets.asSheetPage
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
@@ -28,13 +30,11 @@ internal fun AureoleEditOverlayConfig.withColorPage(
     onClose: () -> Unit
 ): AureoleEditOverlayConfig {
     if (role == null) return this
-    return copy(
+    return asSheetPage(
         title = stringResource(clockColorTitleRes(role)),
         subtitle = stringResource(R.string.home_clock_picker_subtitle),
-        onBackPress = onBack,
-        onDismiss = onClose,
-        headerLeadingAction = { EditClockColorPageBack(onBack = onBack) },
-        hasTabBottomBar = false
+        onBack = onBack,
+        onClose = onClose
     )
 }
 
@@ -79,9 +79,7 @@ internal fun ColumnScope.EditClockBottomBar(
     pagerState: PagerState
 ) {
     if (showsClockSaveHint(clockState.onboarding.stage, clockState.isClockSaveHintDismissed)) {
-        EditClockSaveHint(
-            onDismiss = actions.onDismissClockSaveHint
-        )
+        AureoleSheetSavedHint(onClick = actions.onDismissClockSaveHint)
     }
     EditClockFooter(pagerState = pagerState)
 }

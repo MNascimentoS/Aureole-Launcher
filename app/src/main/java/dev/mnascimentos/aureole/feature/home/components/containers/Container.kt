@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -14,6 +15,9 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
+import dev.mnascimentos.aureole.core.data.model.CONTAINER_BACKGROUND_THEME_REF
+import dev.mnascimentos.aureole.core.data.model.ContainerItemSpacing
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -99,13 +103,15 @@ fun Container(
     modifier: Modifier = Modifier,
 ) {
     val uiState = LocalHomeUiState.current
-    val surfaceColor = AureoleDS.colors.surface
-    val hasHaze = config.isBackgroundEnabled && uiState.isHazeEnabled && (config.hazeState != null)
+    // The group background (RF-E3): "Theme" is the theme surface of before; null draws no background and no glass.
+    val hasBackground = config.backgroundColorRef != null
+    val surfaceColor = config.backgroundColorRef?.resolve(AureoleDS.colors) ?: AureoleDS.colors.surface
+    val hasHaze = hasBackground && uiState.isHazeEnabled && (config.hazeState != null)
 
     val blurRadius = glassBlurRadius(FolderPopupMetrics.HazeBlurRadius)
 
     val hazeModifier = Modifier.hazeModifier(hasHaze, config.hazeState, uiState.hazeOpacity, surfaceColor, blurRadius)
-    val backgroundColor = getBackgroundColor(config.isBackgroundEnabled, hasHaze, uiState.hazeOpacity, surfaceColor)
+    val backgroundColor = getBackgroundColor(hasBackground, hasHaze, uiState.hazeOpacity, surfaceColor)
     val shouldExpand = config.isExpandCell
 
     val boxModifier = modifier.then(if (shouldExpand) Modifier.fillMaxSize() else Modifier)
@@ -123,7 +129,7 @@ fun Container(
                     onFolderClick = onFolderClick,
                     shouldExpand = shouldExpand
                 ),
-                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier
+                modifier = if (hasBackground) hazeModifier else Modifier
             )
         } else {
             val verticalArrangement = getVerticalArrangement(config.position)
@@ -135,11 +141,28 @@ fun Container(
                     onFolderClick = onFolderClick,
                     shouldExpand = shouldExpand
                 ),
-                modifier = if (config.isBackgroundEnabled) hazeModifier else Modifier
+                modifier = if (hasBackground) hazeModifier else Modifier
             )
         }
     }
 }
+
+/** Room around each item for the group's [ContainerItemSpacing] (RF-D3): [ContainerItemSpacing.NORMAL] is the old one. */
+@Composable
+@ReadOnlyComposable
+internal fun ContainerItemSpacing.itemPadding(): Dp = when (this) {
+    ContainerItemSpacing.TIGHT -> AureoleDS.dimens.zero
+    ContainerItemSpacing.NORMAL -> AureoleDS.dimens.xxSmall
+    ContainerItemSpacing.WIDE -> AureoleDS.dimens.xSmall
+}
+
+/** The background of each item of the group: its color with the old translucency; transparent for "None". */
+@Composable
+@ReadOnlyComposable
+internal fun containerItemColor(ref: ThemeColorRef?): Color =
+    ref?.resolve(AureoleDS.colors)?.copy(alpha = CONTAINER_ITEM_ALPHA) ?: Color.Transparent
+
+private const val CONTAINER_ITEM_ALPHA = 0.85f
 
 @AureolePreview
 @Composable
@@ -154,7 +177,8 @@ private fun ContainerPreview() {
                     panelId = "preview_container",
                     position = "Center",
                     orientation = "Horizontal",
-                    isBackgroundEnabled = true
+                    isBackgroundEnabled = true,
+                    backgroundColorRef = CONTAINER_BACKGROUND_THEME_REF
                 ),
                 onFolderClick = { _, _ -> }
             )

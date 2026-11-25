@@ -41,6 +41,15 @@ data class ContainerEntity(
     val scrollUpShortcut: String? = null,
     @ColumnInfo(name = "scroll_down_shortcut")
     val scrollDownShortcut: String? = null,
+    /** Group background as a `ThemeColorRef` JSON; null is "None" (version 5, RF-E3). */
+    @ColumnInfo(name = "background_color_ref")
+    val backgroundColorRef: String? = null,
+    /** Background of each item as a `ThemeColorRef` JSON; null is "None" (version 5, RF-E3). */
+    @ColumnInfo(name = "item_color_ref")
+    val itemColorRef: String? = null,
+    /** [ContainerItemSpacing] name (version 5, RF-D3). */
+    @ColumnInfo(name = "item_spacing", defaultValue = "NORMAL")
+    val itemSpacing: String = ContainerItemSpacing.NORMAL.name,
 
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis()

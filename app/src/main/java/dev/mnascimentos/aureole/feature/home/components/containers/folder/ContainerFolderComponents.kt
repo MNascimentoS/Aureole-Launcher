@@ -45,10 +45,12 @@ import dev.mnascimentos.aureole.core.designsystem.icons.AddNew
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.containers.containerItemColor
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerAppItemParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderButtonParams
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.model.ContainerFolderItemParams
+import dev.mnascimentos.aureole.feature.home.components.containers.itemPadding
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.QuickButtonGridItem
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.QuickButtonGridItemCallbacks
@@ -110,11 +112,7 @@ fun ContainerFolderItem(
     var itemYInWindow by remember { mutableFloatStateOf(0f) }
 
     val containerColor by animateColorAsState(
-        targetValue = if (isOpened) {
-            AureoleDS.colors.onSurfaceHigh
-        } else {
-            AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA)
-        },
+        targetValue = if (isOpened) AureoleDS.colors.onSurfaceHigh else containerItemColor(config.itemColorRef),
         label = "folder_bg"
     )
     val textColor = if (isOpened) {
@@ -126,7 +124,7 @@ fun ContainerFolderItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(vertical = AureoleDS.dimens.xxSmall)
+            .padding(vertical = config.itemSpacing.itemPadding())
             .widthIn(max = FolderButtonMetrics.ContainerMaxWidth),
     ) {
         ContainerFolderButton(
@@ -271,14 +269,14 @@ fun ContainerAppItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(vertical = AureoleDS.dimens.xxSmall)
+            .padding(vertical = params.itemSpacing.itemPadding())
             .widthIn(max = FolderButtonMetrics.ContainerMaxWidth),
     ) {
         Box(
             modifier = Modifier
                 .size(buttonSize)
                 .clip(RoundedCornerShape(cornerRadius))
-                .background(AureoleDS.colors.surfaceVariant.copy(alpha = FOLDER_BG_INACTIVE_ALPHA))
+                .background(containerItemColor(params.itemColorRef))
                 .combinedClickable(
                     onClick = { onAppClick(app) },
                     onLongClick = onLongClick,
@@ -334,7 +332,7 @@ fun ContainerQuickButtonItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(vertical = AureoleDS.dimens.xxSmall)
+            .padding(vertical = config.itemSpacing.itemPadding())
             .widthIn(max = FolderButtonMetrics.ContainerMaxWidth),
     ) {
         Box(

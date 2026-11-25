@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.core.data.model.ContainerEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
 import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.data.model.newContainerColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -27,80 +28,23 @@ class ContainerRepository(
     suspend fun getAllContainers(): List<ContainerModel> = withContext(Dispatchers.IO) {
         val entities = containerDao.getAllContainers()
         val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
-
         entities.map { entity ->
-            val rawItems = containerDao.getItemsForPanel(entity.id)
-            val items = rawItems.map { itemMapper.mapItemQuickButton(it) }
-            val panelFolders = allFolders.filter { it.panelId == entity.id }
-            val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
-                .mapNotNull { it.packageName }
-            val quickButtons = items.filter { it.itemType == ContainerItemType.QUICK_BUTTON }
-                .mapNotNull { it.quickButtonModel }
-
-            ContainerModel(
-                id = entity.id,
-                title = entity.title,
-                position = entity.position,
-                orientation = entity.orientation,
-                isBackgroundEnabled = entity.isBackgroundEnabled,
-                isExpandCell = entity.isExpandCell,
-                showAddFolderButton = entity.showAddFolderButton,
-                showFolderLabels = entity.showFolderLabels,
-                isGridFolderEnabled = entity.isGridFolderEnabled,
-                hideText = entity.hideText,
-                textColor = entity.textColor,
-                backgroundColor = entity.backgroundColor,
-                strokeEnabled = entity.strokeEnabled,
-                strokeColor = entity.strokeColor,
-                folderColor = entity.folderColor,
-                folderStrokeEnabled = entity.folderStrokeEnabled,
-                scrollUpShortcut = entity.scrollUpShortcut,
-                scrollDownShortcut = entity.scrollDownShortcut,
-                items = items,
-                folders = panelFolders,
-                appPackageNames = appPackageNames,
-                quickButtons = quickButtons
-            )
+            val items = containerDao.getItemsForPanel(entity.id).map { itemMapper.mapItemQuickButton(it) }
+            entity.toContainerModel(items, allFolders.filter { it.panelId == entity.id })
         }
     }
 
     suspend fun getContainer(panelId: String): ContainerModel? = withContext(Dispatchers.IO) {
         val entity = containerDao.getContainer(panelId) ?: return@withContext null
-        val rawItems = containerDao.getItemsForPanel(panelId)
-        val items = rawItems.map { itemMapper.mapItemQuickButton(it) }
+        val items = containerDao.getItemsForPanel(panelId).map { itemMapper.mapItemQuickButton(it) }
         val allFolders = folderDao.getAllFoldersWithItems().map { it.toAppFolder() }
-        val panelFolders = allFolders.filter { it.panelId == panelId }
-        val appPackageNames = items.filter { it.itemType == ContainerItemType.APP && it.packageName != null }
-            .mapNotNull { it.packageName }
-        val quickButtons = items.filter { it.itemType == ContainerItemType.QUICK_BUTTON }
-            .mapNotNull { it.quickButtonModel }
-
-        ContainerModel(
-            id = entity.id,
-            title = entity.title,
-            position = entity.position,
-            orientation = entity.orientation,
-            isBackgroundEnabled = entity.isBackgroundEnabled,
-            isExpandCell = entity.isExpandCell,
-            showAddFolderButton = entity.showAddFolderButton,
-            showFolderLabels = entity.showFolderLabels,
-            isGridFolderEnabled = entity.isGridFolderEnabled,
-            hideText = entity.hideText,
-            textColor = entity.textColor,
-            backgroundColor = entity.backgroundColor,
-            strokeEnabled = entity.strokeEnabled,
-            strokeColor = entity.strokeColor,
-            folderColor = entity.folderColor,
-            folderStrokeEnabled = entity.folderStrokeEnabled,
-            scrollUpShortcut = entity.scrollUpShortcut,
-            scrollDownShortcut = entity.scrollDownShortcut,
-            items = items,
-            folders = panelFolders,
-            appPackageNames = appPackageNames,
-            quickButtons = quickButtons
-        )
+        entity.toContainerModel(items, allFolders.filter { it.panelId == panelId })
     }
 
+    /**
+     * The group [panelId], created with the initial values when it does not exist yet: with [isBackgroundEnabled]
+     * it starts with the theme background, and its items with the theme item background (D-12).
+     */
     suspend fun ensureContainerExists(
         panelId: String,
         defaultTitle: String = "Painel Lateral",
@@ -112,12 +56,15 @@ class ContainerRepository(
             val existing = getContainer(panelId)
             if (existing != null) return@withContext existing
 
+            val colors = newContainerColors(hasBackground = isBackgroundEnabled)
             val newEntity = ContainerEntity(
                 id = panelId,
                 title = defaultTitle,
                 position = position,
                 isBackgroundEnabled = isBackgroundEnabled,
-                isExpandCell = isExpandCell
+                isExpandCell = isExpandCell,
+                backgroundColorRef = colors.background?.toJson(),
+                itemColorRef = colors.item?.toJson()
             )
             containerDao.insertOrUpdateContainer(newEntity)
 
@@ -125,27 +72,7 @@ class ContainerRepository(
         }
 
     suspend fun saveContainer(panel: ContainerModel) = withContext(Dispatchers.IO) {
-        val entity = ContainerEntity(
-            id = panel.id,
-            title = panel.title,
-            position = panel.position,
-            orientation = panel.orientation,
-            isBackgroundEnabled = panel.isBackgroundEnabled,
-            isExpandCell = panel.isExpandCell,
-            showAddFolderButton = panel.showAddFolderButton,
-            showFolderLabels = panel.showFolderLabels,
-            isGridFolderEnabled = panel.isGridFolderEnabled,
-            hideText = panel.hideText,
-            textColor = panel.textColor,
-            backgroundColor = panel.backgroundColor,
-            strokeEnabled = panel.strokeEnabled,
-            strokeColor = panel.strokeColor,
-            folderColor = panel.folderColor,
-            folderStrokeEnabled = panel.folderStrokeEnabled,
-            scrollUpShortcut = panel.scrollUpShortcut,
-            scrollDownShortcut = panel.scrollDownShortcut
-        )
-        containerDao.insertOrUpdateContainer(entity)
+        containerDao.insertOrUpdateContainer(panel.toContainerEntity())
 
         val itemEntities = itemMapper.buildItemEntities(panel)
 

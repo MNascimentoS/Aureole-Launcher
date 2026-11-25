@@ -305,7 +305,8 @@ private fun HomeOverlaysDialogsAndErrors(config: HomeOverlaysConfig) {
                     config.actions.onAddGridItem(type, null, null)
                 }
             },
-            isNested = (config.uiState.targetParentContainerId != null)
+            isNested = (config.uiState.targetParentContainerId != null),
+            showsGroupStartHere = !config.uiState.isContainerTipsSeen
         )
     }
 
@@ -365,7 +366,11 @@ private fun HomeEditContainerOverlay(config: HomeOverlaysConfig) {
                     allApps = config.uiState.apps,
                     hazeState = if (config.uiState.isHazeEnabled) config.hazeState else null,
                     onDismiss = { config.actions.onCloseEditContainerDialog(editingPanel.id) },
-                    onSave = config.actions.onSaveContainerModel
+                    onSave = config.actions.onSaveContainerModel,
+                    isNew = config.uiState.editingContainerIsNew,
+                    areTipsSeen = config.uiState.isContainerTipsSeen,
+                    onTipsSeen = config.actions.onContainerTipsSeen,
+                    homeSize = config.uiState.containerSizes[editingPanel.id]
                 )
             )
         }

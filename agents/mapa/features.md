@@ -23,7 +23,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | appsdrawer | Lista/drawer de apps, `appitem/`, busca |
 | clock | `ClockContainer`, `HomeClockHeader`, `EditClockBottomSheet` (pager, abas, estilos, fontes, cores) |
 | common | Overlays de pasta e de sheets de app, `WallpaperBackground`, `WallpaperFramedImage` |
-| containers | `Container`, `EditContainerScreen`; `folder/` com `OpenedFolderPopup` |
+| containers | `Container`, `EditContainerScreen` ("Personalizar grupo": abas Itens/Layout/Aparência no rodapé, páginas na mesma sheet via `GroupSheetNav`/`GroupSheetPage`, prévia no tamanho da home por `containerSizes`/`onContainerMeasured`, dicas `GroupTipFlow`, fechar decide por `groupCloseOutcome`); `folder/` com `OpenedFolderPopup` |
 | content | `GridItemContent` (despacha o tipo do item), `HomeScreenScrollContent` |
 | favorites | `AppsList`, `FavoritesListRow` |
 | onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep`. Etapas do coach (`GestureCoachStep`, ordem em `visibleGestureSteps`): todos os apps → alfabeto → tocar e segurar; o passo das notificações foi removido. Paisagem do onboarding: `onboardingLandscapeLayout` + `withOwnLandscapeContent` (container e widgets com id próprio, vazios) |
@@ -45,8 +45,8 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | 7 | `AppItemBottomSheet` (container/pasta), `ContainerFolderBottomSheet`, `WidgetStackBottomSheet` | `activeContainerAppBottomSheet`, `activeFolderAppBottomSheet`, `activeContainerFolderBottomSheet`, `activeWidgetStackBottomSheet` | HomeScreenFolderOverlayComponents.kt |
 | 8 | `QuickButtonSettings/Appearance` e `ShortcutSelection` sheets | `showQuickButton*`, `showShortcutSelectionBottomSheet` | components/quickbutton/HomeScreenQuickButtonOverlays.kt |
 | 9 | `CustomizeBottomSheet`, `EditClockBottomSheet` | `showCustomizeBottomSheet`, `showEditClockBottomSheet` | HomeScreen.kt (`HomeOverlaysDialogsAndErrors`) |
-| 10 | `EditWidgetGroupScreen`/`EditGridItemDialog`, `EditContainerScreen` | `editingGridItem`, `isEditContainerDialogVisible` | idem |
-| 11 | `AddContainerDialog` (por último, sobre as sheets de edição) | `showAddContainerDialog` | idem |
+| 10 | `EditWidgetGroupScreen`/`EditGridItemDialog`, `EditContainerScreen` (sheet do grupo; abre sozinha ao adicionar um grupo, `editingContainerIsNew`) | `editingGridItem`, `isEditContainerDialogVisible` | idem |
+| 11 | `AddContainerDialog` ("Adicionar componente", subtítulos, "Comece aqui" com `!isContainerTipsSeen`; por último, sobre as sheets de edição) | `showAddContainerDialog` | idem |
 | 12 | `HomeUndoSnackbar` | `undoSnackbar` | HomeScreen.kt |
 | 13 | `WidgetPickerScreen` | `showWidgetPicker` | MainScaffold.kt |
 | 14 | `FavoriteAppsDialog` | `showFavoritePickerDialog` | idem |

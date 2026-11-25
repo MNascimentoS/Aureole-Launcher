@@ -3,11 +3,17 @@ package dev.mnascimentos.aureole.feature.home.components.containers.folder.model
 import androidx.compose.ui.graphics.Color
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.CONTAINER_ITEM_THEME_REF
+import dev.mnascimentos.aureole.core.data.model.ContainerItemSpacing
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 
 data class ContainerFolderConfig(
     val showFolderLabels: Boolean,
     val isGridFolderEnabled: Boolean,
     val isBackgroundEnabled: Boolean = false,
+    /** Background of the folder button when it has no color of its own; null: none. */
+    val itemColorRef: ThemeColorRef? = CONTAINER_ITEM_THEME_REF,
+    val itemSpacing: ContainerItemSpacing = ContainerItemSpacing.NORMAL,
 )
 
 data class ContainerFolderButtonParams(
@@ -34,7 +40,10 @@ data class ContainerAppItemParams(
     val showLabels: Boolean,
     val onAppClick: (AppInfo) -> Unit,
     val isBackgroundEnabled: Boolean = false,
-    val onLongClick: () -> Unit = {}
+    val onLongClick: () -> Unit = {},
+    /** Background of the app tile; null: none. */
+    val itemColorRef: ThemeColorRef? = CONTAINER_ITEM_THEME_REF,
+    val itemSpacing: ContainerItemSpacing = ContainerItemSpacing.NORMAL,
 )
 
 data class ContainerFolderBottomSheetParams(

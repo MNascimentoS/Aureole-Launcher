@@ -28,7 +28,9 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateC
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.updateClockTimeFormat
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.closeEditContainerDialog
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.deleteContainerInstance
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.markContainerTipsSeen
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.openEditContainerDialog
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.recordContainerSize
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.removeAppFromContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.saveContainerModel
 import dev.mnascimentos.aureole.feature.home.components.containers.folder.extensions.onFolderIntent
@@ -203,7 +205,9 @@ class HomeActionsFactory(
             onOpenEditContainerDialog = { id -> viewModel.openEditContainerDialog(id) },
             onCloseEditContainerDialog = { panelId -> viewModel.closeEditContainerDialog(panelId) },
             onSaveContainerModel = { model -> viewModel.saveContainerModel(model) },
-            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) }
+            onDeleteContainerInstance = { id -> viewModel.deleteContainerInstance(id) },
+            onContainerTipsSeen = { viewModel.markContainerTipsSeen() },
+            onContainerMeasured = { id, size -> viewModel.recordContainerSize(id, size) }
         )
         return attachContainerAndSheetActions(gridBase)
     }

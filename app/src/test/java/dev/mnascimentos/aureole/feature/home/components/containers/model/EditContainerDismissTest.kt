@@ -13,13 +13,10 @@ class EditContainerDismissTest {
     private val closer = EditContainerCloser(save = { log += "save" }, close = { log += "close" })
 
     @Test
-    fun `when dismissed on any screen, should save and close once`() {
-        EditContainerScreenMode.entries.forEach { _ ->
-            val modeCloser = EditContainerCloser(save = { log += "save" }, close = { log += "close" })
-            modeCloser.closeOnce()
-        }
+    fun `when dismissed, should save and close once`() {
+        closer.closeOnce()
 
-        assertEquals(List(EditContainerScreenMode.entries.size) { listOf("save", "close") }.flatten(), log)
+        assertEquals(listOf("save", "close"), log)
     }
 
     @Test
@@ -43,30 +40,11 @@ class EditContainerDismissTest {
     }
 
     @Test
-    fun `when back from a sub screen, should go to the main screen without closing`() {
-        listOf(
-            EditContainerScreenMode.APPEARANCE,
-            EditContainerScreenMode.BEHAVIOR,
-            EditContainerScreenMode.MANAGE_ITEMS
-        ).forEach { mode ->
-            var target: EditContainerScreenMode? = null
+    fun `when a new group is opened, should mark it new until it closes`() {
+        val opened = MainUiState().withEditContainerOpened("panel_new", isNew = true)
 
-            mode.handleBack(closer) { target = it }
-
-            assertEquals(EditContainerScreenMode.MAIN, target)
-        }
-        assertTrue(log.isEmpty())
-        assertFalse(closer.isClosing)
-    }
-
-    @Test
-    fun `when back from the main screen, should save and close`() {
-        var target: EditContainerScreenMode? = null
-
-        EditContainerScreenMode.MAIN.handleBack(closer) { target = it }
-
-        assertNull(target)
-        assertEquals(listOf("save", "close"), log)
+        assertTrue(opened.editingContainerIsNew)
+        assertFalse(opened.withEditContainerClosed("panel_new").editingContainerIsNew)
     }
 
     @Test

@@ -142,7 +142,7 @@
     <string name="home_customize_adjust_font">Fonte</string>
     <string name="home_customize_item_clock">Relógio</string>
     <string name="home_customize_item_apps_list">Lista de apps</string>
-    <string name="home_customize_item_container">Container</string>
+    <string name="home_customize_item_container">Grupo de apps e pastas</string>
     <string name="home_customize_item_widget_group">Grupo de widgets</string>
     <string name="home_customize_item_scrollview">Grupo rolável</string>
     <string name="home_customize_item_quick_button">Botão rápido</string>
@@ -172,7 +172,7 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Personalizar relógio</string>
-    <string name="home_clock_save_hint">Suas mudanças são salvas automaticamente ao fechar</string>
+    <string name="overlay_sheet_saved_hint">Suas mudanças são salvas automaticamente ao fechar</string>
     <string name="home_clock_undo_updated">Relógio atualizado</string>
     <string name="home_clock_greeting_text">Texto da Saudação</string>
     <string name="home_clock_greeting_placeholder">Ex: Bem-vindo(a) de volta!</string>
@@ -229,34 +229,9 @@
     <string name="home_widget_remove">Remover</string>
 
     <!-- Edit Container -->
-    <string name="home_container_edit_title">Container</string>
-    <string name="home_container_edit_appearance">Aparência</string>
-    <string name="home_container_edit_behavior">Comportamento</string>
-    <string name="home_container_edit_manage_items">Gerenciar itens</string>
-    <string name="home_container_edit_expand_cells">Expandir células</string>
-    <string name="home_container_edit_grid_folders">Pastas em grid</string>
-    <string name="home_container_edit_bg_enabled">Fundo ativado</string>
-    <string name="home_container_edit_show_folder_labels">Exibir rótulos das pastas</string>
-    <string name="home_container_edit_back">Voltar</string>
-    <string name="home_container_edit_orientation">Orientação do Container</string>
-    <string name="home_container_edit_space_between">Espaçamento Entre (Separados)</string>
-    <string name="home_container_edit_space_evenly">Espaçamento Igual (Igualitário)</string>
-    <string name="home_container_edit_align_start">Início (Topo / Esquerda)</string>
-    <string name="home_container_edit_align_center">Centro</string>
-    <string name="home_container_edit_align_end">Fim (Base / Direita)</string>
-    <string name="home_container_edit_item_alignment">Alinhamento dos Itens</string>
-    <string name="home_container_edit_appearance_behavior_options">Opções de Aparência e Comportamento</string>
-    <string name="home_container_edit_bg_label">Fundo do Container</string>
-    <string name="home_container_edit_expand_cell_label">Expandir célula</string>
-    <string name="home_container_edit_create_folder_btn">Botão de Criar Pasta</string>
-    <string name="home_container_edit_folder_labels">Exibir Rótulos das Pastas</string>
-    <string name="home_container_edit_grid_folder_mode">Modo de Pasta Expansiva (Grid)</string>
-    <string name="home_container_edit_child_components">ITENS</string>
-    <string name="home_container_edit_section_add">ADICIONAR</string>
+    <string name="home_container_edit_title">Personalizar grupo</string>
     <string name="home_container_edit_none_added">Adicione apps, pastas ou botões rápidos acima.</string>
     <string name="home_container_edit_app_label">App</string>
-    <string name="home_container_edit_folder_label">Pasta</string>
-    <string name="home_container_edit_add_app">Adicionar App&#8230;</string>
 
     <!-- Folders (Additional) -->
     <string name="home_folder_edit_shortcuts">Editar itens da pasta</string>
@@ -264,17 +239,17 @@
     <string name="home_folder_remove">Remover pasta</string>
     <string name="home_menu_customize_home">Personalizar home</string>
     <string name="home_menu_customize_home_subtitle">Ajustar, adicionar componentes…</string>
-    <string name="home_folder_container_settings">Configurações do Container</string>
+    <string name="home_folder_container_settings">Personalizar grupo</string>
     <string name="home_folder_settings">Configurações da Pasta</string>
-    <string name="home_container_saved">Configurações do container salvas</string>
+    <string name="home_container_saved">Grupo atualizado</string>
 
     <!-- Reusable -->
 
     <!-- Grid & Containers -->
-    <string name="home_container_add_title">Adicionar container</string>
+    <string name="home_container_add_title">Adicionar componente</string>
     <string name="home_container_add_nested_title">Adicionar ao grupo rolável</string>
     <string name="home_container_add_clock">Relógio</string>
-    <string name="home_container_add_shortcuts_container">Container</string>
+    <string name="home_container_add_shortcuts_container">Grupo de apps e pastas</string>
     <string name="home_container_add_widget_list">Grupo de Widgets do Android</string>
     <string name="home_container_add_quick_button">Botão rápido</string>
     <string name="home_container_add_scroll_view">Grupo rolável</string>
@@ -336,7 +311,7 @@
     <string name="home_grid_item_widget_group">Grupo de Widgets</string>
     <string name="home_grid_item_scroll_view">Grupo rolável</string>
     <string name="home_grid_item_quick_button">Botão rápido</string>
-    <string name="home_grid_item_container">Container</string>
+    <string name="home_grid_item_container">Grupo de apps e pastas</string>
     <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Tamanho atual: %1$d x %2$s células</string>
     <string name="settings_cards_glass_title">Cartões e vidro</string>
     <string name="settings_cards_glass_corners_label">Cantos</string>
@@ -400,7 +375,7 @@
     <string name="home_onboarding_edit_hint">Arraste para mover, puxe a borda para redimensionar.</string>
     <string name="home_onboarding_edit_save">Salvar</string>
     <string name="home_onboarding_task_favorites">Escolha seus &lt;b&gt;favoritos&lt;/b&gt;</string>
-    <string name="home_onboarding_task_container">Preencha o &lt;b&gt;container&lt;/b&gt;</string>
+    <string name="home_onboarding_task_container">Preencha o &lt;b&gt;grupo&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Adicione &lt;b&gt;widgets&lt;/b&gt;</string>
     <string name="home_onboarding_task_layout">Ajuste o &lt;b&gt;layout&lt;/b&gt;</string>
     <string name="home_onboarding_layout_needs_item">Adicione um item primeiro.</string>
@@ -484,14 +459,6 @@
     <string name="home_app_menu_section_shortcuts">Atalhos do app</string>
     <string name="home_undo_widget_removed">Widget removido</string>
     <string name="home_undo_widget_order_changed">Ordem alterada</string>
-    <string name="home_container_edit_options_label">Opções</string>
-    <string name="home_container_edit_appearance_subtitle">Células, pastas e fundo</string>
-    <string name="home_container_edit_behavior_subtitle">Orientação e alinhamento</string>
-    <plurals name="home_container_edit_components_count">
-        <item quantity="one">%1$d componente</item>
-        <item quantity="many">%1$d componentes</item>
-        <item quantity="other">%1$d componentes</item>
-    </plurals>
     <string name="home_favorites_chip_labels">Rótulos</string>
     <string name="home_favorites_section_title">Favoritos · %1$d</string>
     <string name="home_favorites_section_all_title">Todos os apps · %1$d</string>
@@ -535,7 +502,7 @@
     <string name="folder_icon_cat_travel">Viagem</string>
     <string name="folder_icon_cat_tools">Ferramentas</string>
     <string name="folder_icon_cat_actions">Ações</string>
-    <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este container.</string>
+    <string name="home_grid_no_space_error">Não há espaço livre suficiente na grade para este componente.</string>
     <string name="settings_reset_grid_success">Layout da tela inicial resetado para o padrão</string>
     <string name="settings_wallpaper_load_error">Não foi possível carregar a imagem selecionada</string>
     <string name="settings_lock_screen_title">Usar também na tela de bloqueio</string>
@@ -637,7 +604,93 @@
     <string name="home_clock_color_text_title">Cor do texto</string>
     <string name="home_clock_color_card_title">Cor do cartão</string>
     <string name="home_clock_color_none">Nenhuma</string>
-    <string name="home_clock_color_back">Voltar</string>
+    <string name="overlay_sheet_page_back">Voltar</string>
     <string name="theme_color_option_current">Atual</string>
     <string name="theme_color_swatch_default">Tema</string>
+    <string name="home_container_add_subtitle">Escolha o que vai para a home</string>
+    <string name="home_container_add_clock_subtitle">Hora, data e uma mensagem</string>
+    <string name="home_container_add_apps_list_subtitle">Todos os apps, de A a Z</string>
+    <string name="home_container_add_group_subtitle">Seus apps, pastas e atalhos juntos</string>
+    <string name="home_container_add_widget_list_subtitle">Widgets do Android empilhados</string>
+    <string name="home_container_add_quick_button_subtitle">Uma ação do sistema num toque</string>
+    <string name="home_container_add_scroll_view_subtitle">Componentes que rolam de lado</string>
+    <string name="home_container_add_start_here">Comece aqui</string>
+    <string name="home_container_added">Grupo adicionado à home</string>
+    <string name="home_container_group_tab_items">Itens</string>
+    <string name="home_container_group_tab_layout">Layout</string>
+    <string name="home_container_group_tab_appearance">Aparência</string>
+    <string name="home_container_group_tab_bar_description">Abas do grupo</string>
+    <string name="home_container_group_color_background">Fundo do grupo</string>
+    <string name="home_container_group_color_item">Fundo de cada item</string>
+    <string name="home_container_group_color_subtitle">Só para este grupo</string>
+    <string name="home_container_group_align_top">Topo</string>
+    <string name="home_container_group_align_center">Centro</string>
+    <string name="home_container_group_align_bottom">Base</string>
+    <string name="home_container_group_align_left">Esquerda</string>
+    <string name="home_container_group_align_right">Direita</string>
+    <string name="home_container_group_add_label">ADICIONAR</string>
+    <string name="home_container_group_in_group_label">NO GRUPO</string>
+    <string name="home_container_group_add_app">App</string>
+    <string name="home_container_group_add_app_line">Abre com um toque</string>
+    <string name="home_container_group_add_folder">Pasta</string>
+    <string name="home_container_group_add_folder_line">Vários apps num lugar só</string>
+    <string name="home_container_group_add_quick_button">Botão rápido</string>
+    <string name="home_container_group_add_quick_button_line">Lanterna, Wi-Fi e mais</string>
+    <string name="home_container_group_type_app">App</string>
+    <string name="home_container_group_type_quick_button">Botão rápido</string>
+    <string name="home_container_group_remove">Remover %1$s</string>
+    <string name="home_container_group_reorder_hint">Segure ⠿ e arraste para mudar a ordem</string>
+    <string name="home_container_group_empty">Nada aqui ainda. O que você adicionar aparece nesta lista e na prévia lá em cima.</string>
+    <string name="home_container_group_removed">%1$s removido</string>
+    <string name="home_container_group_add_apps_title">Adicionar apps</string>
+    <string name="home_container_group_add_apps_empty">Toque para pôr no grupo</string>
+    <string name="home_container_group_search">Buscar apps</string>
+    <string name="home_container_group_new_folder_title">Nova pasta</string>
+    <string name="home_container_group_new_folder_subtitle">Escolha pelo menos 2 apps</string>
+    <string name="home_container_group_folder_name_label">NOME DA PASTA</string>
+    <string name="home_container_group_folder_default_name">Pasta</string>
+    <string name="home_container_group_create_folder_min">Escolha 2 apps ou mais</string>
+    <string name="home_container_group_position_label">POSIÇÃO</string>
+    <string name="home_container_group_upright">Em pé</string>
+    <string name="home_container_group_upright_line">Na lateral da tela</string>
+    <string name="home_container_group_lying">Deitado</string>
+    <string name="home_container_group_lying_line">Uma fileira, como um dock</string>
+    <string name="home_container_group_alignment_label">ALINHAMENTO</string>
+    <string name="home_container_group_alignment_help">Onde os itens ficam dentro do espaço do grupo</string>
+    <string name="home_container_group_spacing_label">ESPAÇO ENTRE ITENS</string>
+    <string name="home_container_group_spacing_tight">Justo</string>
+    <string name="home_container_group_spacing_normal">Normal</string>
+    <string name="home_container_group_spacing_wide">Amplo</string>
+    <string name="home_container_group_folders_label">PASTAS NO GRUPO</string>
+    <string name="home_container_group_folders_help">Como uma pasta aparece fechada</string>
+    <string name="home_container_group_folders_preview">Prévia dos apps</string>
+    <string name="home_container_group_folders_icon">Ícone de pasta</string>
+    <string name="home_container_group_show_names">Mostrar nomes</string>
+    <string name="home_container_group_expand_cell">Ocupar a célula inteira</string>
+    <string name="home_container_tip_step">Dica %1$d de %2$d</string>
+    <string name="home_container_tip_skip">Pular dicas</string>
+    <string name="home_container_tip_first_title">Este é seu grupo de apps e pastas</string>
+    <string name="home_container_tip_first_text">Ele fica na home e junta apps, pastas e botões rápidos num lugar só. Comece pelo primeiro app.</string>
+    <string name="home_container_tip_first_action">Adicionar app</string>
+    <string name="home_container_tip_second_title">Pronto, o grupo já aparece na home</string>
+    <string name="home_container_tip_second_text">Veja a prévia lá em cima. Agora escolha se ele fica em pé, na lateral, ou deitado, como um dock.</string>
+    <string name="home_container_tip_second_action">Escolher posição</string>
+    <string name="home_container_tip_third_title">Em pé ou deitado?</string>
+    <string name="home_container_tip_third_text">Toque numa opção e a prévia muda na hora. Dá para trocar quando quiser.</string>
+    <plurals name="home_container_group_item_count">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d itens</item>
+    </plurals>
+    <plurals name="home_container_group_type_folder">
+        <item quantity="one">Pasta · %1$d app</item>
+        <item quantity="other">Pasta · %1$d apps</item>
+    </plurals>
+    <plurals name="home_container_group_add_apps_count">
+        <item quantity="one">%1$d item no grupo</item>
+        <item quantity="other">%1$d itens no grupo</item>
+    </plurals>
+    <plurals name="home_container_group_create_folder">
+        <item quantity="one">Criar pasta com %1$d app</item>
+        <item quantity="other">Criar pasta com %1$d apps</item>
+    </plurals>
 </resources>
