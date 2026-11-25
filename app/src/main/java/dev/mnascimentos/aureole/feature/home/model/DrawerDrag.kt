@@ -129,11 +129,17 @@ class VerticalGestureState {
     var isDrawerDrag = false
     var progress = 0f
 
+    /** A swipe down is under way: the shade opens when the finger lets go, if it is still [shadeDownPx] or more down. */
+    var isShadeSwipe = false
+    var shadeDownPx = 0f
+
     fun reset() {
         lock = GestureLock.UNDECIDED
         hasTriggered = false
         isDrawerDrag = false
         progress = 0f
+        isShadeSwipe = false
+        shadeDownPx = 0f
     }
 }
 

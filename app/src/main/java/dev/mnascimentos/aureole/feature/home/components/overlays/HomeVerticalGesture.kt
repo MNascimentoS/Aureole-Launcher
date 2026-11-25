@@ -38,12 +38,16 @@ private fun followVerticalGesture(
     params: HomeDragParams
 ) {
     change.consume()
+    if (gesture.isShadeSwipe) gesture.shadeDownPx = total.y
     if (!gesture.isDrawerDrag) return
     gesture.progress = drawerProgressOf(-total.y, params.screenHeightPx)
     params.drawerDrag?.onProgress?.invoke(gesture.progress)
 }
 
-/** The shade opens past [SWIPE_DOWN_OPEN_DP] while the finger is still down, once per gesture (D-05). */
+/**
+ * A swipe down past [SWIPE_DOWN_OPEN_DP] arms the shade, which opens when the finger lets go (see
+ * [finishVerticalGesture]); the system draws the shade by itself, so it cannot follow the finger.
+ */
 private fun startVerticalGesture(
     change: PointerInputChange,
     total: Offset,
@@ -58,7 +62,10 @@ private fun startVerticalGesture(
     gesture.hasTriggered = true
     change.consume()
     when {
-        !isUp -> params.onExpandNotificationShade()
+        !isUp -> {
+            gesture.isShadeSwipe = true
+            gesture.shadeDownPx = total.y
+        }
         params.drawerDrag != null -> {
             gesture.isDrawerDrag = true
             gesture.progress = drawerProgressOf(-total.y, params.screenHeightPx)
@@ -66,4 +73,10 @@ private fun startVerticalGesture(
         }
         else -> params.onAllAppsDrawerOpen()
     }
+}
+
+/** The finger let go: the shade opens if a swipe down armed it and the finger is still past the limit. */
+internal fun finishVerticalGesture(gesture: VerticalGestureState, params: HomeDragParams, isCancelled: Boolean) {
+    val downOpenPx = with(params.density) { SWIPE_DOWN_OPEN_DP.dp.toPx() }
+    if (!isCancelled && gesture.isShadeSwipe && gesture.shadeDownPx >= downOpenPx) params.onExpandNotificationShade()
 }

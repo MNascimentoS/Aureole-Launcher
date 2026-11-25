@@ -100,7 +100,8 @@ private fun Modifier.verticalDetector(params: HomeDragParams): Modifier = pointe
     var isEdgeGesture = false
     var totalDragOffset = Offset.Zero
 
-    fun finish() {
+    fun finish(isCancelled: Boolean = false) {
+        finishVerticalGesture(gesture, params, isCancelled)
         if (gesture.isDrawerDrag) {
             val upDpPerSec = -velocity.calculateVelocity().y / params.density.density
             params.drawerDrag?.onEnd?.invoke(gesture.progress, upDpPerSec)
@@ -126,7 +127,7 @@ private fun Modifier.verticalDetector(params: HomeDragParams): Modifier = pointe
             }
         },
         onDragEnd = { finish() },
-        onDragCancel = { finish() }
+        onDragCancel = { finish(isCancelled = true) }
     )
 }
 
