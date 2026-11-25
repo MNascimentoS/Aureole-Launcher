@@ -67,12 +67,13 @@ private fun HomeViewModel.scheduleEndOfHomePeek() {
 }
 
 /**
- * The container editor's Save: the container task counts as saved even with the container empty, and is judged
- * when the editor closes. The layout is saved in the same action in case it was being edited.
+ * The container editor saved (it saves on every close): the container task counts only with at least one item in
+ * the group (RF-C6), and is judged when the editor closes. The layout is saved in the same action in case it was
+ * being edited.
  */
-fun HomeViewModel.confirmContainerTaskOnSave() {
+fun HomeViewModel.confirmContainerTaskOnSave(hasItems: Boolean) {
     if (uiState.value.onboarding.pendingTask != OnboardingTask.FILL_CONTAINER) return
-    updateUiState { it.copy(onboarding = it.onboarding.copy(isPendingTaskSaved = true)) }
+    updateUiState { it.copy(onboarding = it.onboarding.savingContainerTask(hasItems)) }
     if (uiState.value.isGridEditMode) persistGridEditMode()
 }
 
@@ -81,25 +82,15 @@ fun HomeViewModel.onHomeHidden() {
     updateUiState { it.copy(onboarding = it.onboarding.copy(isHomeInForeground = false)) }
 }
 
-/** Back on the home: completes a Settings visit and plays a celebration that waited for the home. */
+/**
+ * Back on the home: completes a Settings visit at once, and plays a celebration that waited for the home only once
+ * the window transition back is over, so "All set" never shows over the closing Settings (RF-D5).
+ */
 fun HomeViewModel.onReturnedToHome() {
-    updateUiState { state ->
-        val shown = state.onboarding.copy(isHomeInForeground = true)
-        val visited = if (shown.pendingTask == OnboardingTask.EXPLORE_SETTINGS) {
-            shown.copy(
-                completedTasks = shown.completedTasks + OnboardingTask.EXPLORE_SETTINGS,
-                pendingTask = null,
-                isChecklistExpanded = true
-            )
-        } else {
-            shown
-        }
-        val celebrated = if (visited.isCelebrationPending) {
-            visited.copy(isCelebrating = true, isCelebrationPending = false)
-        } else {
-            visited
-        }
-        state.copy(onboarding = celebrated)
+    updateUiState { it.copy(onboarding = it.onboarding.returningToHome()) }
+    viewModelScope.launch {
+        delay(homeReturnSettleMillis())
+        updateUiState { it.copy(onboarding = it.onboarding.showingHome()) }
     }
 }
 

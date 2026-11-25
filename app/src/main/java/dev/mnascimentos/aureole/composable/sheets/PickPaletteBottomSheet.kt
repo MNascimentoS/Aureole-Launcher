@@ -102,15 +102,16 @@ fun PickPaletteBottomSheet(
 
 /**
  * Body of the palette picker without its sheet: the label and the grid of palettes, [shownName] marked. [onSelect]
- * gets the palette as displayed (the light variant on a light system). The Appearance sheet of the settings shows it
- * inside itself.
+ * gets the palette as displayed (the light variant on a light system). The Appearance sheet of the settings and the
+ * Visual sheet of the onboarding show it inside themselves; [fadesEdges] when it sits above a tab bar.
  */
 @Composable
 internal fun PalettePickerGrid(
     shownName: String,
     onSelect: (ThemePalette) -> Unit,
     modifier: Modifier = Modifier,
-    footer: (@Composable () -> Unit)? = null
+    footer: (@Composable () -> Unit)? = null,
+    fadesEdges: Boolean = false
 ) {
     val isDarkTheme = isSystemInDarkTheme()
     val shownBase = shownName.basePaletteName()
@@ -118,7 +119,8 @@ internal fun PalettePickerGrid(
         params = ThemePickerGridParams(
             label = stringResource(R.string.settings_appearance_palette_section_label),
             columns = PALETTE_COLUMNS,
-            footer = footer
+            footer = footer,
+            fadesEdges = fadesEdges
         ),
         modifier = modifier
     ) {

@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.clock
 
+import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -25,6 +27,7 @@ import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.clock.model.CLOCK_TIME_PATTERN_12H
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
@@ -69,6 +72,10 @@ fun ClockHeader(
     val sidePadding = AureoleDS.dimens.large
     val hourGreeting = stringResource(greetingRes(hourOfDay()))
     val fontScale = LocalDensity.current.fontScale
+    val isTwelveHour = ClockHeaderUtils.resolveClockTimePattern(
+        resolvedConfig.timeFormat,
+        DateFormat.is24HourFormat(LocalContext.current)
+    ) == CLOCK_TIME_PATTERN_12H
 
     // A style saved by an older version reads as its layout and message, so the look never changes.
     val layoutChoice = resolveClockLayout(resolvedConfig.style, resolvedConfig.message)
@@ -87,7 +94,8 @@ fun ClockHeader(
             lines = layoutChoice.layout.lines,
             maxTextWidthDp = (maxWidth - sidePadding * 2).value,
             maxHeightDp = maxHeight.value,
-            fontScale = fontScale
+            fontScale = fontScale,
+            isTwelveHour = isTwelveHour
         )
         val edge = sizing.metrics.edgeDp.dp
         Box(

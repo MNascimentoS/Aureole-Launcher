@@ -12,7 +12,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Não 
 | GridRepository | Layout da grade em JSON por orientação (prefs) |
 | ClockConfigRepository | Config de relógio por item (JSON por `itemId`); `configs` é StateFlow |
 | SettingsRepository | ~50 configurações (`var` com getter/setter), wallpaper custom, reset de fábrica, `updateSecretBestScore` |
-| WidgetRepository | IDs de widgets, altura da linha, dots por stack |
+| WidgetRepository | IDs de widgets, altura da linha, dots por stack; `cachedAvailableWidgets` em memória (`preloadAvailableWidgets`), o seletor abre nela e atualiza por trás |
 | OnboardingPreferences | Progresso do onboarding (recebe `prefsProvider`; mesmo arquivo das configurações) |
 | ReleaseNotesRepository | `object` com notas de versão (`ReleaseNotesData*.kt`) |
 | WallpaperUndoStash, LockScreenWallpaper, SystemWallpaper | Desfazer de wallpaper, wallpaper da tela de bloqueio, interface sobre `WallpaperManager` |

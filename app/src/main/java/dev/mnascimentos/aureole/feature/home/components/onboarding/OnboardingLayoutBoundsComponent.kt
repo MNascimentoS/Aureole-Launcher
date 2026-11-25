@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.preview.aureoleDashedBorder
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
@@ -24,9 +23,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 
 /**
- * While the onboarding adds the home components, the limits of the layout show as a dashed frame and a line says
- * the sizes can be adjusted later, in the "Adjust your layout" step. Draws no pointer input, so the home underneath
- * keeps every touch.
+ * While the onboarding adds the home components, a line says the sizes can be adjusted later, in the "Adjust your
+ * layout" step (D-03). The dashed frame around the whole screen is gone: only the new item is outlined now
+ * (onboarding-redesenho RF-D2). It only fades, never slides (RF-D6), and draws no pointer input, so the home
+ * underneath keeps every touch.
  */
 @Composable
 fun OnboardingLayoutBoundsComponent(isVisible: Boolean, modifier: Modifier = Modifier) {
@@ -37,7 +37,6 @@ fun OnboardingLayoutBoundsComponent(isVisible: Boolean, modifier: Modifier = Mod
                 .statusBarsPadding()
                 .navigationBarsPadding()
                 .padding(AureoleDS.dimens.small)
-                .aureoleDashedBorder(color = AureoleDS.colors.onSurfaceLow)
         ) {
             AureoleText(
                 text = stringResource(R.string.home_onboarding_layout_bounds_hint),

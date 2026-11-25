@@ -33,8 +33,10 @@ internal fun EditClockFontPicker(
     nowMillis: Long = System.currentTimeMillis()
 ) {
     val font = resolveClockFont(uiState.clockFontFamily, uiState.clockFontBold)
-    val (format12, format24) = ClockHeaderUtils.resolveClockTimeFormats(uiState.clockTimeFormat)
-    val pattern = if (DateFormat.is24HourFormat(LocalContext.current)) format24 else format12
+    val pattern = ClockHeaderUtils.resolveClockTimePattern(
+        uiState.clockTimeFormat,
+        DateFormat.is24HourFormat(LocalContext.current)
+    )
     val title = stringResource(R.string.home_clock_font_title)
     PickFontBottomSheet(
         selectedFontName = font.fontKey,

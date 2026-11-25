@@ -65,6 +65,7 @@ class GroupSheetModelsTest {
         assertFalse(canCreateFolder(0))
         assertFalse(canCreateFolder(1))
         assertTrue(canCreateFolder(2))
+        assertEquals(listOf(2, 1, 0, 0), listOf(0, 1, 2, 5).map { appsMissingForFolder(it) })
         assertEquals(listOf("a", "b"), toggledSelection(listOf("a"), "b"))
         assertEquals(listOf("b"), toggledSelection(listOf("a", "b"), "a"))
     }

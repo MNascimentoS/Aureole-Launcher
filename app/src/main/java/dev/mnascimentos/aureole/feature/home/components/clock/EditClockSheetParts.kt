@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
@@ -64,10 +65,12 @@ internal fun EditClockSheetBody(
     params: EditClockPagerParams,
     onColorPicked: (ComponentColorRole, ThemeColorRef?) -> Unit
 ) {
+    // Outlives the color page, so coming back to the tabs keeps the height of the session (RF-C2).
+    val sessionTallest = remember { IntArray(1) }
     if (colorRole != null) {
         EditClockColorPage(uiState = params.uiState, role = colorRole) { onColorPicked(colorRole, it) }
     } else {
-        EditClockPager(pagerState = pagerState, params = params)
+        EditClockPager(pagerState = pagerState, params = params, sessionTallest = sessionTallest)
     }
 }
 

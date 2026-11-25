@@ -57,10 +57,10 @@ class OnboardingHostComponentTest {
     }
 
     @Test
-    fun `when a picker is open, should show it instead of the list`() {
+    fun `when the Visual sheet is open, should show it instead of the list`() {
         render(OnboardingUiState(stage = OnboardingStage.CHECKLIST, activePicker = AppearancePicker.PALETTE))
 
-        composeTestRule.onNodeWithText("Pick a palette").assertExists()
+        composeTestRule.onNodeWithText("Look").assertExists()
         composeTestRule.onNodeWithText("First steps").assertDoesNotExist()
     }
 

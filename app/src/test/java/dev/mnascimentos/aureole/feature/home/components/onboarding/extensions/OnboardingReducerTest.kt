@@ -379,17 +379,18 @@ class OnboardingReducerTest {
     }
 
     @Test
-    fun `when the palette picker is confirmed, should move on to the font picker without completing`() {
+    fun `when the Visual sheet closes on the palette tab, should complete the visual step`() {
         val state = stateAt(OnboardingStage.CHECKLIST, OnboardingUiState(activePicker = AppearancePicker.PALETTE))
 
         val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding
 
-        assertTrue(result.completedTasks.isEmpty())
-        assertEquals(AppearancePicker.FONT, result.activePicker)
+        assertEquals(setOf(OnboardingTask.CHOOSE_VISUAL), result.completedTasks)
+        assertNull(result.activePicker)
+        assertTrue(result.isChecklistExpanded)
     }
 
     @Test
-    fun `when the font picker is confirmed, should complete the visual step and close the picker`() {
+    fun `when the Visual sheet closes on the font tab, should complete the visual step and close the sheet`() {
         val state = stateAt(
             OnboardingStage.CHECKLIST,
             OnboardingUiState(activePicker = AppearancePicker.FONT, skippedTasks = setOf(OnboardingTask.CHOOSE_VISUAL))

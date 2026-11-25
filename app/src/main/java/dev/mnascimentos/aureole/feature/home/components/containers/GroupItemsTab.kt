@@ -86,7 +86,11 @@ internal fun ColumnScope.GroupItemsTab(params: GroupItemsTabParams) {
     val count = groupItemCount(state.itemsList)
     GroupSectionLabel(
         text = stringResource(R.string.home_container_group_in_group_label),
-        trailing = pluralStringResource(R.plurals.home_container_group_item_count, count, count),
+        trailing = if (count == 0) {
+            stringResource(R.string.home_container_group_item_count_empty)
+        } else {
+            pluralStringResource(R.plurals.home_container_group_item_count, count, count)
+        },
         modifier = Modifier.padding(top = AureoleDS.dimens.large)
     )
     if (state.itemsList.isEmpty()) {

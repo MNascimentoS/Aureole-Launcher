@@ -94,7 +94,8 @@ fun PickFontBottomSheet(
 
 /**
  * Body of the font picker without its sheet: the label and the grid of fonts, [shownFont] always marked
- * ([markedFontKey]). The Appearance sheet of the settings shows it inside itself. With [component] it lists
+ * ([markedFontKey]). The Appearance sheet of the settings and the Visual sheet of the onboarding show it inside
+ * themselves; [fadesEdges] when it sits above a tab bar. With [component] it lists
  * "Launcher font" first, takes the component's label and writes its sample in each font.
  */
 @Composable
@@ -103,7 +104,8 @@ internal fun FontPickerGrid(
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
     footer: (@Composable () -> Unit)? = null,
-    component: ComponentFontOptions? = null
+    component: ComponentFontOptions? = null,
+    fadesEdges: Boolean = false
 ) {
     val look = FontChipLook(
         text = component?.sample,
@@ -116,7 +118,8 @@ internal fun FontPickerGrid(
         params = ThemePickerGridParams(
             label = component?.sectionLabel ?: stringResource(R.string.settings_appearance_font_section_label),
             columns = FONT_COLUMNS,
-            footer = footer
+            footer = footer,
+            fadesEdges = fadesEdges
         ),
         modifier = modifier
     ) {

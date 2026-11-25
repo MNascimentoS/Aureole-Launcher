@@ -98,14 +98,13 @@ class OnboardingChecklistMorphComponentTest {
     }
 
     @Test
-    fun `when the home peeks, should show the ring bubble with nothing to tap, then open the list`() {
+    fun `when the home peeks, should show the pill in place of the old bubble, then open the list`() {
         onboarding = onboarding.copy(isChecklistExpanded = false, isHomePeeking = true)
         render()
 
         composeTestRule.onNode(isRing).assertExists()
-        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(0)
         composeTestRule.onNodeWithText(TITLE).assertDoesNotExist()
-        composeTestRule.onNodeWithText(PILL_TEXT).assertDoesNotExist()
+        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(1)
 
         composeTestRule.mainClock.autoAdvance = false
         onboarding = onboarding.copy(isHomePeeking = false, isChecklistExpanded = true)

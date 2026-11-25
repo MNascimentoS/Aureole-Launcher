@@ -17,19 +17,19 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * The home peek after a task screen (RF-41; 1,4 s, bubble and outline in RF-13/14) and "Apply" on the appearance
- * pickers (RF-39), in plain JVM.
+ * The home peek after a task screen (RF-41; 2 s with the pill and the new item highlighted, onboarding-redesenho
+ * RF-D1/D2) and the close of the Visual sheet (RF-C1), in plain JVM.
  */
 class OnboardingHomePeekTest {
 
     private val checklist = OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = false)
 
     @Test
-    fun `when animations are on, should peek for 1,4 s, else for 300 ms`() {
+    fun `when animations are on, should peek for 2 s, else for 1 s`() {
         assertEquals(ONBOARDING_HOME_PEEK_MS, onboardingHomePeekMillis(areAnimatorsEnabled = true))
-        assertEquals(1_400L, ONBOARDING_HOME_PEEK_MS)
+        assertEquals(2_000L, ONBOARDING_HOME_PEEK_MS)
         assertEquals(ONBOARDING_HOME_PEEK_REDUCED_MS, onboardingHomePeekMillis(areAnimatorsEnabled = false))
-        assertEquals(300L, ONBOARDING_HOME_PEEK_REDUCED_MS)
+        assertEquals(1_000L, ONBOARDING_HOME_PEEK_REDUCED_MS)
     }
 
     @Test
@@ -84,10 +84,10 @@ class OnboardingHomePeekTest {
     }
 
     @Test
-    fun `when the home peeks, should show the bubble and leave the home free to touch`() {
+    fun `when the home peeks, should show the pill and leave the home free to touch`() {
         val peeking = MainUiState(onboarding = checklist.peekingHome(itemId = "clock"))
 
-        assertTrue(peeking.onboarding.isPeekBubbleShown)
+        assertTrue(peeking.onboarding.isHomePeekShown)
         assertFalse(peeking.onboarding.blocksHome)
         assertFalse(peeking.onboarding.isChecklistMinimized)
     }
@@ -110,18 +110,7 @@ class OnboardingHomePeekTest {
     }
 
     @Test
-    fun `when Apply confirms the palette, should open the font picker next`() {
-        val picking = checklist.copy(activePicker = AppearancePicker.PALETTE, skippedTasks = emptySet())
-        val state = MainUiState(onboarding = picking)
-
-        val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding
-
-        assertTrue(result.completedTasks.isEmpty())
-        assertEquals(AppearancePicker.FONT, result.activePicker)
-    }
-
-    @Test
-    fun `when Apply confirms the font, should complete the visual step and reopen the list`() {
+    fun `when the Visual sheet closes, should complete the visual step and reopen the list`() {
         val state = MainUiState(onboarding = checklist.copy(activePicker = AppearancePicker.FONT))
 
         val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding

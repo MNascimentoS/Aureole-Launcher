@@ -24,12 +24,13 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
  * Overlay shared by the palette and font sheets: a mini-home above the sheet and nothing below it. The mini-home
  * and the sheet are drawn in a local theme resolved from [params], so a pending choice shows at once without being
  * persisted. Closing the sheet (tap outside, back, swipe down) calls `onCommit` when the choice differs from the
- * current theme.
+ * current theme. [bottomBar] sits fixed under the content (the tab bar of the onboarding Visual sheet).
  */
 @Composable
 internal fun ThemePreviewOverlay(
     params: ThemePreviewOverlayParams,
     modifier: Modifier = Modifier,
+    bottomBar: (@Composable ColumnScope.() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val isLeftHanded = LocalLeftHanded.current
@@ -42,16 +43,18 @@ internal fun ThemePreviewOverlay(
                 onDismissRequest = params.onDismissRequest,
                 isLeftHanded = isLeftHanded,
                 onSettingsClick = params.onSettingsClick,
-                hasExternalBackdrop = params.hasExternalBackdrop
+                hasExternalBackdrop = params.hasExternalBackdrop,
+                hasTabBottomBar = params.hasTabBottomBar
             ),
             modifier = modifier,
             preview = {
                 AureoleMiniHome(
-                    content = sampleMiniHomeContent(),
+                    content = params.miniHome ?: sampleMiniHomeContent(),
                     layout = MiniHomeFavoritesLayout(isLeftHanded = isLeftHanded),
                     modifier = Modifier.align(Alignment.Center)
                 )
             },
+            bottomExtra = bottomBar,
             content = content
         )
     }

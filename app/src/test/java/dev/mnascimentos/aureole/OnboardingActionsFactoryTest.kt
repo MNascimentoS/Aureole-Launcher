@@ -21,6 +21,7 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.VisualChoice
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
@@ -289,7 +290,7 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when the visual task is tapped, should open the palette picker without other editors`() {
+    fun `when the visual task is tapped, should open the Visual sheet on the palette tab without other editors`() {
         actions().onTaskClick(OnboardingTask.CHOOSE_VISUAL)
 
         assertTrue(calls.isEmpty())
@@ -343,14 +344,12 @@ class OnboardingActionsFactoryTest {
         assertFalse(viewModel.uiState.value.onboarding.isChecklistExpanded)
 
         actions.onTaskClick(OnboardingTask.CHOOSE_VISUAL)
-        actions.onSelectPalette("Abyss")
-        actions.onDismissAppearancePicker(true)
+        assertEquals(AppearancePicker.PALETTE, viewModel.uiState.value.onboarding.activePicker)
+        actions.onCloseVisual(VisualChoice(paletteName = "Abyss"))
         assertEquals("Abyss", viewModel.uiState.value.selectedThemeName)
-        assertEquals(AppearancePicker.FONT, viewModel.uiState.value.onboarding.activePicker)
-        assertFalse(OnboardingTask.CHOOSE_VISUAL in viewModel.uiState.value.onboarding.completedTasks)
-
-        actions.onSelectFont("Space Grotesk")
-        actions.onConfirmAppearancePicker()
+        // First visit: the untouched font tab gets the default.
+        assertEquals("Istok Web", viewModel.uiState.value.selectedFontName)
+        assertNull(viewModel.uiState.value.onboarding.activePicker)
         assertTrue(OnboardingTask.CHOOSE_VISUAL in viewModel.uiState.value.onboarding.completedTasks)
 
         actions.onDismissChecklist()

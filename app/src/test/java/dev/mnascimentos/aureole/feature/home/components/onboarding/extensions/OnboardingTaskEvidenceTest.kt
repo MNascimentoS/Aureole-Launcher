@@ -91,12 +91,12 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
-    fun `when the apps list shows every app without favorites, should meet the favorites task`() {
+    fun `when the apps list shows every app without favorites, should not meet the favorites task (RF-C5)`() {
         val showingAll = appsList.copy(showAllApps = true)
         val legacy = appsList.copy(showAllApps = null)
 
-        assertTrue(MainUiState(gridItems = listOf(showingAll)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
-        assertTrue(MainUiState(gridItems = listOf(legacy)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(MainUiState(gridItems = listOf(showingAll)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
+        assertFalse(MainUiState(gridItems = listOf(legacy)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
         assertFalse(MainUiState(gridItems = listOf(appsList)).meetsRequirement(OnboardingTask.ADD_FAVORITE_APPS))
     }
 
@@ -111,7 +111,7 @@ class OnboardingTaskEvidenceTest {
     }
 
     @Test
-    fun `when the container editor saved, should meet the container task even empty, else not`() {
+    fun `when the container editor saved the group with items, should meet the container task, else not`() {
         val saved = MainUiState(
             gridItems = listOf(container),
             onboarding = OnboardingUiState(pendingTask = OnboardingTask.FILL_CONTAINER, isPendingTaskSaved = true)

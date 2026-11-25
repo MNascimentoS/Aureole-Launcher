@@ -30,7 +30,6 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.appitem.AureoleAppIcon
@@ -48,6 +47,7 @@ import dev.mnascimentos.aureole.feature.home.components.containers.folder.Folder
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupAppListParams
 import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupSheetMetrics
 import dev.mnascimentos.aureole.feature.home.components.containers.model.NewFolderDraft
+import dev.mnascimentos.aureole.feature.home.components.containers.model.appsMissingForFolder
 import dev.mnascimentos.aureole.feature.home.components.containers.model.canCreateFolder
 
 /**
@@ -83,7 +83,10 @@ internal fun ColumnScope.GroupNewFolderPage(
     )
 }
 
-/** "Create folder with N apps", off with "Choose 2 apps or more" below it while fewer are picked (D-09). */
+/**
+ * "Create folder with N apps"; while fewer than 2 are picked it is off and says how many are missing ("Choose 2 apps
+ * to create", D-09, onboarding-redesenho RF-C7), never "with 0 app".
+ */
 @Composable
 internal fun ColumnScope.GroupNewFolderFooter(selectedCount: Int, onCreate: () -> Unit) {
     val isEnabled = canCreateFolder(selectedCount)
@@ -97,18 +100,15 @@ internal fun ColumnScope.GroupNewFolderFooter(selectedCount: Int, onCreate: () -
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusFull))
             .background(AureoleDS.colors.onSurfaceHigh)
     ) {
+        val missing = appsMissingForFolder(selectedCount)
         AureoleText(
-            text = pluralStringResource(R.plurals.home_container_group_create_folder, selectedCount, selectedCount),
+            text = if (isEnabled) {
+                pluralStringResource(R.plurals.home_container_group_create_folder, selectedCount, selectedCount)
+            } else {
+                pluralStringResource(R.plurals.home_container_group_create_folder_missing, missing, missing)
+            },
             color = AureoleDS.colors.surface,
             format = AureoleTextFormatParams(style = AureoleDS.typography.labelLarge, fontWeight = FontWeight.Bold)
-        )
-    }
-    if (!isEnabled) {
-        AureoleText(
-            text = stringResource(R.string.home_container_group_create_folder_min),
-            color = AureoleDS.colors.onSurfaceMedium,
-            modifier = Modifier.fillMaxWidth().padding(top = AureoleDS.dimens.xxSmall),
-            format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, textAlign = TextAlign.Center)
         )
     }
 }

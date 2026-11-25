@@ -393,6 +393,14 @@
     <string name="home_onboarding_done_subtitle">Your Aureole is shining. Enjoy!</string>
     <string name="home_onboarding_task_done_a11y">%1$s, done</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, not done yet</string>
+    <string name="home_onboarding_visual_title">Look</string>
+    <string name="home_onboarding_visual_tab_palette">Palette</string>
+    <string name="home_onboarding_visual_tab_font">Font</string>
+    <string name="home_onboarding_visual_tab_bar_description">Look tabs</string>
+    <string name="home_onboarding_new_clock">New · Clock</string>
+    <string name="home_onboarding_new_widget">New · Widget</string>
+    <string name="home_onboarding_new_favorites">New · Favorites</string>
+    <string name="home_onboarding_new_group">New · Group</string>
     <string name="overlay_sheet_handle_close">Close</string>
     <string name="overlay_sheet_action_expand">Expand</string>
     <string name="overlay_sheet_action_collapse">Collapse</string>
@@ -650,7 +658,8 @@
     <string name="home_container_group_new_folder_subtitle">Choose at least 2 apps</string>
     <string name="home_container_group_folder_name_label">FOLDER NAME</string>
     <string name="home_container_group_folder_default_name">Folder</string>
-    <string name="home_container_group_create_folder_min">Choose 2 apps or more</string>
+    <string name="home_container_group_item_count_empty">empty</string>
+    <string name="home_container_group_type_folder_empty">Folder · empty</string>
     <string name="home_container_group_position_label">POSITION</string>
     <string name="home_container_group_upright">Upright</string>
     <string name="home_container_group_upright_line">On the side of the screen</string>
@@ -689,6 +698,10 @@
     <plurals name="home_container_group_add_apps_count">
         <item quantity="one">%1$d item in the group</item>
         <item quantity="other">%1$d items in the group</item>
+    </plurals>
+    <plurals name="home_container_group_create_folder_missing">
+        <item quantity="one">Choose %1$d app to create</item>
+        <item quantity="other">Choose %1$d apps to create</item>
     </plurals>
     <plurals name="home_container_group_create_folder">
         <item quantity="one">Create folder with %1$d app</item>

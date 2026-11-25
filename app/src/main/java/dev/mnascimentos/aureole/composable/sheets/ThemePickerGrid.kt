@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +26,7 @@ import dev.mnascimentos.aureole.core.designsystem.palette.allPalettes
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 
 /**
  * Sheet body of the palette and font pickers: a small uppercase section label above a grid with
@@ -51,11 +53,15 @@ internal fun ThemePickerGrid(
                 textAlign = TextAlign.Start
             )
         )
+        val gridState = rememberLazyGridState()
         LazyVerticalGrid(
             columns = GridCells.Fixed(params.columns),
+            state = gridState,
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
             verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
-            modifier = Modifier.weight(1f, fill = false),
+            modifier = Modifier
+                .weight(1f, fill = false)
+                .then(if (params.fadesEdges) Modifier.fadingEdges(gridState, AureoleDS.dimens.xSmall) else Modifier),
             content = items
         )
         params.footer?.invoke()

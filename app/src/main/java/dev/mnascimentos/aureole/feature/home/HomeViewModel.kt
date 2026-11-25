@@ -21,6 +21,7 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.withClo
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.preloadWidgetsOnChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
@@ -62,6 +63,7 @@ class HomeViewModel(
         if (after != before) settingsRepository.onboarding.write(after)
         confirmPendingTask(previous)
         ensureAppsOnCompletion(previous)
+        preloadWidgetsOnChecklist(previous)
     }
 
     /** Publishes the controller's current offer (or none) to [uiState]. */

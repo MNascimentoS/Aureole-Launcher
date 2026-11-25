@@ -80,7 +80,24 @@ class WidgetRepository(private val context: Context) {
         }
     }
 
-    suspend fun getAvailableWidgets(): List<WidgetAppGroup> = withContext(Dispatchers.IO) {
+    /**
+     * The last list [getAvailableWidgets] read, or null before the first read: the widget picker opens on it at once
+     * and refreshes behind it, so it never shows an empty screen while the providers load (onboarding-redesenho
+     * RF-C4, D-20).
+     */
+    @Volatile
+    var cachedAvailableWidgets: List<WidgetAppGroup>? = null
+        private set
+
+    /** Reads the providers ahead of time (the onboarding checklist opened), only when nothing is cached yet. */
+    suspend fun preloadAvailableWidgets() {
+        if (cachedAvailableWidgets == null) getAvailableWidgets()
+    }
+
+    suspend fun getAvailableWidgets(): List<WidgetAppGroup> =
+        readAvailableWidgets().also { cachedAvailableWidgets = it }
+
+    private suspend fun readAvailableWidgets(): List<WidgetAppGroup> = withContext(Dispatchers.IO) {
         val appWidgetManager = AppWidgetManager.getInstance(context) ?: return@withContext emptyList()
         val installed = appWidgetManager.installedProviders
         val pm = context.packageManager

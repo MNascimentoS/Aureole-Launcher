@@ -27,9 +27,11 @@ data class ThemePickerSheetOptions(
  * @property label Small section label above the grid.
  * @property columns Number of grid columns.
  * @property footer Content below the grid.
+ * @property fadesEdges The grid fades where it meets a fixed tab bar instead of being cut (sheets with tabs).
  */
 data class ThemePickerGridParams(
     val label: String,
     val columns: Int,
-    val footer: (@Composable () -> Unit)? = null
+    val footer: (@Composable () -> Unit)? = null,
+    val fadesEdges: Boolean = false
 )

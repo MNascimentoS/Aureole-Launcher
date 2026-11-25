@@ -110,7 +110,7 @@ fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
         discardContainer(panel.id)
         return
     }
-    confirmContainerTaskOnSave()
+    confirmContainerTaskOnSave(hasItems = panel.items.isNotEmpty())
     viewModelScope.launch {
         containerRepository.saveContainer(panel)
         refreshContainersClosing(panel.id)

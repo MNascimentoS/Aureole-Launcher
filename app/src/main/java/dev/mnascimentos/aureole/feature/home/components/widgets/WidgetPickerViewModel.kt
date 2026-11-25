@@ -55,9 +55,15 @@ class WidgetPickerViewModel(
         }
     }
 
+    /** Opens on the list read ahead (RF-C4) when there is one, and refreshes it behind; else shows the skeleton. */
     private fun loadWidgets() {
+        val cached = widgetRepository.cachedAvailableWidgets
+        if (cached != null && allGroups.isEmpty()) {
+            allGroups = cached
+            _state.update { it.copy(isLoading = false, widgetGroups = cached) }
+        }
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            if (allGroups.isEmpty()) _state.update { it.copy(isLoading = true) }
             val groups = widgetRepository.getAvailableWidgets()
             allGroups = groups
             _state.update { it.copy(isLoading = false, widgetGroups = groups) }

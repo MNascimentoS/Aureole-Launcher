@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
+import dev.mnascimentos.aureole.composable.clock.model.CLOCK_TIME_PATTERN_12H
 import dev.mnascimentos.aureole.composable.clock.model.ClockDateFormat
 import dev.mnascimentos.aureole.composable.clock.model.ClockTimeFormat
 import dev.mnascimentos.aureole.composable.clock.model.formatClockSample
@@ -33,8 +34,6 @@ import dev.mnascimentos.aureole.feature.home.components.clock.model.CLOCK_DATE_C
 import dev.mnascimentos.aureole.feature.home.components.clock.model.CLOCK_TIME_COLUMNS
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockDateOption
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTimeOption
-
-private const val TIME_SAMPLE_PATTERN_12H = "h:mm a"
 
 /** Hour picker: System, 12 h and 24 h, each showing [nowMillis] written that way. */
 @Composable
@@ -54,7 +53,7 @@ internal fun EditClockTimeTiles(
     ) { option, tileModifier ->
         val (_, format24) = ClockHeaderUtils.resolveClockTimeFormats(option.format.key)
         val uses12Hour = option.format == ClockTimeFormat.H12 || (option.format == ClockTimeFormat.SYSTEM && !is24Hour)
-        val pattern = if (uses12Hour) TIME_SAMPLE_PATTERN_12H else format24
+        val pattern = if (uses12Hour) CLOCK_TIME_PATTERN_12H else format24
         AureoleCenteredOptionTile(
             sample = { TileSample(formatClockSample(pattern, locale, nowMillis)) },
             label = stringResource(option.labelRes),

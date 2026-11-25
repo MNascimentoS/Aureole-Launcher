@@ -396,6 +396,14 @@
     <string name="home_onboarding_done_subtitle">Seu Aureole está brilhando. Bom proveito!</string>
     <string name="home_onboarding_task_done_a11y">%1$s, concluído</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, pendente</string>
+    <string name="home_onboarding_visual_title">Visual</string>
+    <string name="home_onboarding_visual_tab_palette">Paleta</string>
+    <string name="home_onboarding_visual_tab_font">Fonte</string>
+    <string name="home_onboarding_visual_tab_bar_description">Abas do visual</string>
+    <string name="home_onboarding_new_clock">Novo · Relógio</string>
+    <string name="home_onboarding_new_widget">Novo · Widget</string>
+    <string name="home_onboarding_new_favorites">Novo · Favoritos</string>
+    <string name="home_onboarding_new_group">Novo · Grupo</string>
     <string name="overlay_sheet_handle_close">Fechar</string>
     <string name="overlay_sheet_action_expand">Expandir</string>
     <string name="overlay_sheet_action_collapse">Recolher</string>
@@ -655,7 +663,8 @@
     <string name="home_container_group_new_folder_subtitle">Escolha pelo menos 2 apps</string>
     <string name="home_container_group_folder_name_label">NOME DA PASTA</string>
     <string name="home_container_group_folder_default_name">Pasta</string>
-    <string name="home_container_group_create_folder_min">Escolha 2 apps ou mais</string>
+    <string name="home_container_group_item_count_empty">vazio</string>
+    <string name="home_container_group_type_folder_empty">Pasta · vazia</string>
     <string name="home_container_group_position_label">POSIÇÃO</string>
     <string name="home_container_group_upright">Em pé</string>
     <string name="home_container_group_upright_line">Na lateral da tela</string>
@@ -697,6 +706,11 @@
         <item quantity="one">%1$d item no grupo</item>
         <item quantity="many">%1$d itens no grupo</item>
         <item quantity="other">%1$d itens no grupo</item>
+    </plurals>
+    <plurals name="home_container_group_create_folder_missing">
+        <item quantity="one">Escolha %1$d app para criar</item>
+        <item quantity="many">Escolha %1$d apps para criar</item>
+        <item quantity="other">Escolha %1$d apps para criar</item>
     </plurals>
     <plurals name="home_container_group_create_folder">
         <item quantity="one">Criar pasta com %1$d app</item>

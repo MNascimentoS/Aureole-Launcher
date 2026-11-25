@@ -38,10 +38,10 @@ class ChecklistMorphTest {
     }
 
     @Test
-    fun `when the home peeks, should show the bubble unless something else is open`() {
+    fun `when the home peeks, should show the pill unless something else is open`() {
         val peeking = checklist.copy(isChecklistExpanded = false, isHomePeeking = true)
 
-        assertEquals(ChecklistMorph.PEEK, peeking.checklistMorph(isOtherOverlayActive = false))
+        assertEquals(ChecklistMorph.MINIMIZED, peeking.checklistMorph(isOtherOverlayActive = false))
         assertEquals(ChecklistMorph.HIDDEN, peeking.checklistMorph(isOtherOverlayActive = true))
         assertEquals(
             ChecklistMorph.HIDDEN,
@@ -54,17 +54,13 @@ class ChecklistMorphTest {
     }
 
     @Test
-    fun `when the bubble opens into the list or the pill, should use the bubble motion`() {
-        val bubble = nextMorphTarget(previous = null, morph = ChecklistMorph.PEEK)
+    fun `when the peek ends, the list should grow out of the pill`() {
+        val pill = nextMorphTarget(previous = null, morph = ChecklistMorph.MINIMIZED)
 
-        val list = nextMorphTarget(previous = bubble, morph = ChecklistMorph.EXPANDED)
-        val pill = nextMorphTarget(previous = bubble, morph = ChecklistMorph.MINIMIZED)
+        val list = nextMorphTarget(previous = pill, morph = ChecklistMorph.EXPANDED)
 
-        assertTrue(bubble.usesBubbleMotion)
-        assertTrue(list.cameFromBubble && list.usesBubbleMotion)
-        assertFalse(list.cameFromPill)
-        assertTrue(pill.cameFromBubble)
-        assertFalse(nextMorphTarget(previous = pill, morph = ChecklistMorph.EXPANDED).usesBubbleMotion)
+        assertTrue(list.cameFromPill)
+        assertFalse(pill.cameFromPill)
     }
 
     @Test

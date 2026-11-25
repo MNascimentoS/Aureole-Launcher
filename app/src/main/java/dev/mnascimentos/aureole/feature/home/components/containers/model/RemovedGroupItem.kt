@@ -23,6 +23,10 @@ fun groupItemCount(items: List<ContainerItemEntity>): Int = items.size
 /** Whether a new folder with [selectedCount] apps can be created (D-09). */
 fun canCreateFolder(selectedCount: Int): Boolean = selectedCount >= GroupSheetMetrics.MIN_FOLDER_APPS
 
+/** How many more apps a new folder needs before it can be created: "Choose N apps to create" (RF-C7). */
+fun appsMissingForFolder(selectedCount: Int): Int =
+    (GroupSheetMetrics.MIN_FOLDER_APPS - selectedCount).coerceAtLeast(0)
+
 /** [selected] with [packageName] added at the end, or taken out when it is there (RF-C4). */
 fun toggledSelection(selected: List<String>, packageName: String): List<String> =
     if (packageName in selected) selected - packageName else selected + packageName

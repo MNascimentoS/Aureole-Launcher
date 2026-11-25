@@ -143,7 +143,11 @@ private fun groupItemType(itemType: ContainerItemType, folder: AppFolder?): Stri
     ContainerItemType.APP -> stringResource(R.string.home_container_group_type_app)
     ContainerItemType.FOLDER -> {
         val count = folder?.appPackageNames?.size ?: 0
-        pluralStringResource(R.plurals.home_container_group_type_folder, count, count)
+        if (count == 0) {
+            stringResource(R.string.home_container_group_type_folder_empty)
+        } else {
+            pluralStringResource(R.plurals.home_container_group_type_folder, count, count)
+        }
     }
     ContainerItemType.QUICK_BUTTON -> stringResource(R.string.home_container_group_type_quick_button)
 }

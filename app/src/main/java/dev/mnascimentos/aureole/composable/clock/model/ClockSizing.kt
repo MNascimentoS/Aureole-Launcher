@@ -22,6 +22,9 @@ private const val GREETING_LINE_EM = 23f / 15f * (1f - GREETING_TRIM_TOP - GREET
 /** Width of the time ("00:00") in ems of its size, with room for the wider fonts of the catalog. */
 private const val TIME_WIDTH_EM = 2.8f
 
+/** Width of a 12 h time with AM/PM ("12:59 PM"), same room for the wider fonts (onboarding-redesenho RF-C3). */
+private const val TIME_WIDTH_12H_EM = 4.3f
+
 /** Ceiling (the large size of `seletores-relogio`) and floor of the time size, in sp. */
 const val CLOCK_MAX_TIME_SP = 68f
 const val CLOCK_MIN_TIME_SP = 12f
@@ -47,15 +50,18 @@ data class ClockSizing(
  * [maxHeightDp] tall for the whole card (edges included): the time takes the biggest size, from
  * [CLOCK_MIN_TIME_SP] to [CLOCK_MAX_TIME_SP], whose card fits both (RF-B2), and every other size follows it
  * (D-08). Time and date come first: the message shows when the layout has one and it still fits with the time at
- * that size; otherwise it is dropped, so a taller card never makes the time smaller.
+ * that size; otherwise it is dropped, so a taller card never makes the time smaller. [isTwelveHour] leaves room
+ * for the AM/PM of the 12 h time.
  */
 fun resolveClockSizing(
     lines: List<ClockLine>,
     maxTextWidthDp: Float,
     maxHeightDp: Float,
-    fontScale: Float = 1f
+    fontScale: Float = 1f,
+    isTwelveHour: Boolean = false
 ): ClockSizing {
-    val ceiling = (maxTextWidthDp / (fontScale * TIME_WIDTH_EM)).coerceIn(CLOCK_MIN_TIME_SP, CLOCK_MAX_TIME_SP)
+    val widthEm = if (isTwelveHour) TIME_WIDTH_12H_EM else TIME_WIDTH_EM
+    val ceiling = (maxTextWidthDp / (fontScale * widthEm)).coerceIn(CLOCK_MIN_TIME_SP, CLOCK_MAX_TIME_SP)
     val withoutMessage = lines.filter { it != ClockLine.MESSAGE }
     val size = fittedTimeSize(withoutMessage, ceiling, maxHeightDp, fontScale)
     val showGreeting = withoutMessage.size != lines.size &&

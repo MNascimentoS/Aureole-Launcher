@@ -14,11 +14,8 @@ data class OnboardingActions(
     /** The swipe down success card stayed on the focused home long enough to be read. */
     val onTaskClick: (OnboardingTask) -> Unit = {},
     val onSkipTask: (OnboardingTask) -> Unit = {},
-    val onSelectPalette: (String) -> Unit = {},
-    val onSelectFont: (String) -> Unit = {},
-    val onConfirmAppearancePicker: () -> Unit = {},
-    /** The picker closed without applying; the flag tells whether the user had tapped an option. */
-    val onDismissAppearancePicker: (hadPreview: Boolean) -> Unit = {},
+    /** The Visual sheet closed: save what was tapped (null = untouched) and complete the step (RF-C1). */
+    val onCloseVisual: (VisualChoice) -> Unit = {},
     val onSetChecklistExpanded: (Boolean) -> Unit = {},
     val onDismissChecklist: () -> Unit = {},
     val onFinishCelebration: () -> Unit = {},

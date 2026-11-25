@@ -4,15 +4,12 @@ import android.content.Context
 import android.content.Intent
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmAppearancePicker
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissAppearancePicker
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.closeVisualSheet
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.finishCelebration
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onTaskClick
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.postponeDefaultHome
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectFont
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectPalette
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.setChecklistExpanded
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.showMeGesture
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.skipGestures
@@ -48,10 +45,7 @@ class OnboardingActionsFactory(
         onAlphabetScrubbed = { viewModel.onOnboardingSignal(OnboardingSignal.ALPHABET_SCRUBBED) },
         onTaskClick = { task -> handleTaskClick(task) },
         onSkipTask = { task -> viewModel.skipTask(task) },
-        onSelectPalette = { name -> viewModel.selectPalette(name) },
-        onSelectFont = { name -> viewModel.selectFont(name) },
-        onConfirmAppearancePicker = { viewModel.confirmAppearancePicker() },
-        onDismissAppearancePicker = { hadPreview -> viewModel.dismissAppearancePicker(hadPreview) },
+        onCloseVisual = { choice -> viewModel.closeVisualSheet(choice) },
         onSetChecklistExpanded = { expanded -> viewModel.setChecklistExpanded(expanded) },
         onDismissChecklist = { viewModel.dismissChecklist() },
         onFinishCelebration = { viewModel.finishCelebration() },

@@ -76,7 +76,7 @@ fun OnboardingHostComponent(
             ),
             onSave = actions.onSaveGridEdit
         )
-        OnboardingAppearancePickerComponent(
+        OnboardingVisualSheetComponent(
             picker = onboarding.activePicker,
             selection = params.selection,
             actions = actions
