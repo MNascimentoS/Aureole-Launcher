@@ -4,9 +4,19 @@ import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.coachNeedsSwipeUp
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.currentGestureStep
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
+
+/** Switches the swipe-up setting on when the tour reaches the gesture coach, so the first gesture it teaches works. */
+internal fun HomeViewModel.enableSwipeUpForCoach(previous: MainUiState) {
+    val state = uiState.value
+    if (!coachNeedsSwipeUp(previous.onboarding.stage, state.onboarding.stage, state.isSwipeUpAllAppsEnabled)) return
+    settingsRepository.isSwipeUpAllAppsEnabled = true
+    updateUiState { it.copy(isSwipeUpAllAppsEnabled = true) }
+}
 
 fun HomeViewModel.startOnboarding() {
     updateOnboarding(OnboardingStage.WELCOME) {

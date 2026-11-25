@@ -21,6 +21,7 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.withClo
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.enableSwipeUpForCoach
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.preloadWidgetsOnChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
@@ -62,6 +63,7 @@ class HomeViewModel(
         // Persisted outside update {}, whose lambda may run more than once.
         if (after != before) settingsRepository.onboarding.write(after)
         confirmPendingTask(previous)
+        enableSwipeUpForCoach(previous)
         ensureAppsOnCompletion(previous)
         preloadWidgetsOnChecklist(previous)
     }
