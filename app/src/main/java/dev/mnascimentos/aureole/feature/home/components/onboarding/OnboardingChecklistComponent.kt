@@ -39,6 +39,7 @@ import dev.mnascimentos.aureole.core.designsystem.model.LOGO_RING_LOGO_FRACTION_
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.appliedLabelRes
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.nextPendingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistSharedModifiers
@@ -49,6 +50,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isHomeBuilt
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.onboardingExtraTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.onboardingHomeTasks
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.presetAppliedTo
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.statusOf
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
@@ -157,6 +159,7 @@ private fun ChecklistRow(
         status = onboarding.statusOf(task, next),
         onClick = actions.onTaskClick,
         onSkip = actions.onSkipTask,
+        presetLabelRes = onboarding.presetAppliedTo(task)?.appliedLabelRes,
         modifier = Modifier
             .checklistItemEntrance(staggerIndex = stagger)
             .then(shared.fading)

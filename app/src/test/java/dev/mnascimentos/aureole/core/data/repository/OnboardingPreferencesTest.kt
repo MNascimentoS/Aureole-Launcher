@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.content.Context
 import androidx.core.content.edit
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
+import dev.mnascimentos.aureole.core.data.model.LayoutPreset
 import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
@@ -46,6 +47,17 @@ class OnboardingPreferencesTest {
         preferences.write(progress)
 
         assertEquals(progress, preferences.read())
+    }
+
+    @Test
+    fun `when a preset was applied, should read it back and forget it once cleared`() {
+        val progress = OnboardingProgress(stage = OnboardingStage.GESTURES, appliedPreset = LayoutPreset.WIDGETS)
+
+        preferences.write(progress)
+        assertEquals(progress, preferences.read())
+
+        preferences.write(progress.copy(appliedPreset = null))
+        assertNull(preferences.read()?.appliedPreset)
     }
 
     @Test

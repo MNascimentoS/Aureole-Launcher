@@ -42,6 +42,7 @@ import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.composable.undo.AureoleUndoSnackbar
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.LauncherItemType
+import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.designsystem.model.asString
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -207,7 +208,8 @@ private fun rememberWidgetRowHeightPx(height: Dp, density: Density): Float {
 @Composable
 private fun BoxScope.HomeUndoSnackbar(uiState: MainUiState, actions: HomeScreenActions) {
     AureoleUndoSnackbar(
-        state = uiState.undoSnackbar,
+        // During the onboarding its layer draws the offer above itself (the preset's undo, RF-F5).
+        state = uiState.undoSnackbar.takeIf { uiState.onboarding.stage == OnboardingStage.COMPLETED },
         isLeftHanded = uiState.isLeftHandedMode,
         onUndo = actions.onUndo,
         onTimeout = actions.onUndoExpired,

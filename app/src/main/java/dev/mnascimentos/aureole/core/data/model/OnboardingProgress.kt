@@ -37,7 +37,9 @@ data class OnboardingProgress(
     val completedTasks: Set<OnboardingTask> = emptySet(),
     /** Tasks the user skipped: they stop blocking the checklist but are not done. */
     val skippedTasks: Set<OnboardingTask> = emptySet(),
-    val isChecklistCollapsed: Boolean = false
+    val isChecklistCollapsed: Boolean = false,
+    /** The ready-made layout the welcome applied, which the checklist names on the steps it did; null for none. */
+    val appliedPreset: LayoutPreset? = null
 )
 
 /** Done or skipped: the tasks that no longer block the checklist or its celebration. */

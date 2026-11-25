@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.model
 
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
+import dev.mnascimentos.aureole.core.data.model.LayoutPreset
 import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
@@ -54,7 +55,15 @@ data class OnboardingUiState(
     /** The item the finished task left on the home, outlined while the home peeks. Never persisted. */
     val peekItemId: String? = null,
     /** The pending task's own screen saved what the task asks for (the container editor's Save). Never persisted. */
-    val isPendingTaskSaved: Boolean = false
+    val isPendingTaskSaved: Boolean = false,
+    /** The welcome shows the ready-made layouts ("Use a ready-made layout", RF-F1). Never persisted. */
+    val isChoosingPreset: Boolean = false,
+    /** The presets worked out for this device, empty while the apps are read. Never persisted. */
+    val presetPlans: List<LayoutPresetPlan> = emptyList(),
+    /** The card selected on the presets screen. Never persisted. */
+    val selectedPreset: LayoutPreset = LayoutPreset.MINIMAL,
+    /** The preset the welcome applied; the checklist names it on the steps it did (RF-F4). */
+    val appliedPreset: LayoutPreset? = null
 )
 
 val OnboardingUiState.isBlocking: Boolean
@@ -96,7 +105,8 @@ fun OnboardingUiState.toProgress(): OnboardingProgress = OnboardingProgress(
     completedSteps = completedSteps,
     completedTasks = completedTasks,
     skippedTasks = skippedTasks,
-    isChecklistCollapsed = !isChecklistExpanded
+    isChecklistCollapsed = !isChecklistExpanded,
+    appliedPreset = appliedPreset
 )
 
 fun OnboardingProgress.toUiState(isDefaultLauncher: Boolean): OnboardingUiState = OnboardingUiState(
@@ -105,7 +115,8 @@ fun OnboardingProgress.toUiState(isDefaultLauncher: Boolean): OnboardingUiState 
     completedTasks = completedTasks,
     skippedTasks = skippedTasks,
     isDefaultLauncher = isDefaultLauncher,
-    isChecklistExpanded = !isChecklistCollapsed
+    isChecklistExpanded = !isChecklistCollapsed,
+    appliedPreset = appliedPreset
 )
 
 /** The "Your home" section of the checklist, in list order (RF-A1). */
@@ -131,3 +142,22 @@ fun OnboardingTaskStatus.isClickable(task: OnboardingTask): Boolean = when (this
     OnboardingTaskStatus.DONE -> task != OnboardingTask.SET_DEFAULT_HOME
     else -> true
 }
+
+/** The preset whose name a done step shows below its title ("Layout <name> applied"), or null (RF-F4). */
+fun OnboardingUiState.presetAppliedTo(task: OnboardingTask): LayoutPreset? =
+    appliedPreset?.takeIf { task in presetLayoutTasks && task in completedTasks }
+
+/**
+ * The welcome applied [plan] (RF-F4): the tour goes on to the gestures (through the home app step when needed, as
+ * "Start from scratch"), with the steps the preset did already done.
+ */
+fun OnboardingUiState.applyingPreset(plan: LayoutPresetPlan): OnboardingUiState = copy(
+    stage = if (isDefaultLauncher) OnboardingStage.GESTURES else OnboardingStage.DEFAULT_HOME,
+    completedTasks = completedTasks + plan.completedTasks(),
+    appliedPreset = plan.preset,
+    isChoosingPreset = false
+)
+
+/** "Undo" on the applied preset (RF-F5): back to the welcome as it was before, with its buttons, not the list. */
+fun OnboardingUiState.undoingPreset(before: OnboardingUiState): OnboardingUiState =
+    before.copy(isChoosingPreset = false, presetPlans = presetPlans, isDefaultLauncher = isDefaultLauncher)

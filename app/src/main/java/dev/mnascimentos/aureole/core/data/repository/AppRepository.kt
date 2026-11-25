@@ -8,6 +8,7 @@ import dev.mnascimentos.aureole.core.data.db.AppDatabase
 import dev.mnascimentos.aureole.core.data.db.AppInfoDao
 import dev.mnascimentos.aureole.core.data.db.AppInfoEntity
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.PresetCatalog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -126,6 +127,9 @@ class AppRepository(
             removePackage(packageName)
         }
     }
+
+    /** The installed apps, system roles and category names the ready-made layouts are built from (RF-F2, F3). */
+    suspend fun readPresetCatalog(): PresetCatalog = withContext(Dispatchers.IO) { context.readPresetCatalog() }
 
     suspend fun removePackage(packageName: String) = withContext(Dispatchers.IO) {
         iconCache.removeIcon(packageName)

@@ -18,20 +18,42 @@ class WelcomeScreenTest {
 
     private var starts = 0
     private var skips = 0
+    private var presets = 0
 
-    private fun render() {
+    private fun render(canUsePreset: Boolean = false) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
-                WelcomeScreen(onStart = { starts++ }, onSkipIntro = { skips++ })
+                WelcomeScreen(
+                    onStart = { starts++ },
+                    onSkipIntro = { skips++ },
+                    onUsePreset = if (canUsePreset) ({ presets++ }) else null
+                )
             }
         }
+    }
+
+    @Test
+    fun `when the home is empty, should offer a ready-made layout`() {
+        render(canUsePreset = true)
+
+        composeTestRule.onNodeWithText("Use a ready-made layout").performClick()
+
+        assertEquals(1, presets)
+        assertEquals(0, starts)
+    }
+
+    @Test
+    fun `when the home already has items, should not offer a ready-made layout`() {
+        render(canUsePreset = false)
+
+        composeTestRule.onNodeWithText("Use a ready-made layout").assertDoesNotExist()
     }
 
     @Test
     fun `when start is tapped, should play the exit and then start`() {
         render()
 
-        composeTestRule.onNodeWithText("Let's begin").performClick()
+        composeTestRule.onNodeWithText("Start from scratch").performClick()
         composeTestRule.mainClock.advanceTimeBy(EXIT_WAIT_MS)
         composeTestRule.waitForIdle()
 

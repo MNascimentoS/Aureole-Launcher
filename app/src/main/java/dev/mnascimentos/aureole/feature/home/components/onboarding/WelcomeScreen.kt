@@ -42,13 +42,15 @@ private const val BACKDROP_GLOW_ALPHA = 0.35f
 
 /**
  * "Halo ignition": the first screen of a fresh install. It covers the first app sync, so the
- * home never shows a bare spinner. Starting plays the exit burst before moving on.
+ * home never shows a bare spinner. "Start from scratch" plays the exit burst before moving on; "Use a ready-made
+ * layout" ([onUsePreset], null hides it) opens the presets (RF-E1).
  */
 @Composable
 fun WelcomeScreen(
     onStart: () -> Unit,
     onSkipIntro: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUsePreset: (() -> Unit)? = null
 ) {
     val loopsEnabled = rememberOnboardingLoopsEnabled()
     val motion = remember { WelcomeMotion(isSettled = !loopsEnabled) }
@@ -90,7 +92,8 @@ fun WelcomeScreen(
                     }
                 }
             },
-            onSkipIntro = onSkipIntro
+            onSkipIntro = onSkipIntro,
+            onUsePreset = onUsePreset
         )
     }
 }
@@ -99,7 +102,8 @@ fun WelcomeScreen(
 private fun WelcomeContent(
     motion: WelcomeMotion,
     onStart: () -> Unit,
-    onSkipIntro: () -> Unit
+    onSkipIntro: () -> Unit,
+    onUsePreset: (() -> Unit)?
 ) {
     val offsetPx = with(LocalDensity.current) { OnboardingMotionSpec.TEXT_ENTER_OFFSET.toPx() }
     val entering: (Int) -> Modifier = { index ->
@@ -140,6 +144,14 @@ private fun WelcomeContent(
         Spacer(modifier = Modifier.height(AureoleDS.dimens.xxLarge))
         Column(modifier = entering(2), horizontalAlignment = Alignment.CenterHorizontally) {
             OnboardingPrimaryButton(text = stringResource(R.string.home_onboarding_welcome_start), onClick = onStart)
+            // Only an empty home takes a preset (D-22): otherwise the button is not there.
+            if (onUsePreset != null) {
+                Spacer(modifier = Modifier.height(AureoleDS.dimens.small))
+                OnboardingOutlinedButton(
+                    text = stringResource(R.string.home_onboarding_welcome_preset),
+                    onClick = onUsePreset
+                )
+            }
             Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
             OnboardingTextButton(text = stringResource(R.string.home_onboarding_welcome_skip), onClick = onSkipIntro)
         }
@@ -150,6 +162,6 @@ private fun WelcomeContent(
 @Composable
 private fun WelcomeScreenPreview() {
     AureoleLauncherTheme {
-        WelcomeScreen(onStart = {}, onSkipIntro = {})
+        WelcomeScreen(onStart = {}, onSkipIntro = {}, onUsePreset = {})
     }
 }

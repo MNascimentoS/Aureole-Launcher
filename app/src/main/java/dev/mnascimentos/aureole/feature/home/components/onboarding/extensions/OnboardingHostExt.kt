@@ -19,7 +19,7 @@ import dev.mnascimentos.aureole.feature.home.model.isHomeOverlayActive
 /** The expanded list steps aside while a picker is open, so the home re-themes in full view. */
 val OnboardingUiState.visibleSurface: OnboardingSurface
     get() = when (stage) {
-        OnboardingStage.WELCOME -> OnboardingSurface.WELCOME
+        OnboardingStage.WELCOME -> if (isChoosingPreset) OnboardingSurface.PRESETS else OnboardingSurface.WELCOME
         OnboardingStage.DEFAULT_HOME -> OnboardingSurface.DEFAULT_HOME
         OnboardingStage.GESTURES -> OnboardingSurface.GESTURE_COACH
         OnboardingStage.CHECKLIST -> if (isChecklistExpanded && activePicker == null) {
@@ -98,7 +98,10 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
         editHintGrid = editHintItems().toEditHintGrid(
             maxRows = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_ROWS else GridEngineUtils.PORTRAIT_MAX_ROWS,
             maxCols = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_COLS else GridEngineUtils.PORTRAIT_MAX_COLS
-        )
+        ),
+        canUsePreset = canTakeLayoutPreset(portraitGridItems, landscapeGridItems),
+        undoSnackbar = undoSnackbar.takeIf { onboarding.stage != OnboardingStage.COMPLETED },
+        isLeftHanded = isLeftHandedMode
     )
 
 /**

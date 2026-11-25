@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.Intent
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.applyPreset
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.closePresets
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.closeVisualSheet
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.dismissChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.finishCelebration
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onOnboardingSignal
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onTaskClick
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.openPresets
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.postponeDefaultHome
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.selectPreset
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.setChecklistExpanded
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.showMeGesture
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.skipGestures
@@ -20,6 +24,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.st
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.startOnboarding
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
+import dev.mnascimentos.aureole.feature.home.extensions.onUndo
+import dev.mnascimentos.aureole.feature.home.extensions.onUndoExpired
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.settings.extensions.SettingsIntentUtils
 import dev.mnascimentos.aureole.util.DefaultHomeRoleUtils
@@ -37,6 +43,12 @@ class OnboardingActionsFactory(
     fun createOnboardingActions(): OnboardingActions = OnboardingActions(
         onStart = { viewModel.startOnboarding() },
         onSkipIntro = { viewModel.skipIntro() },
+        onUsePreset = { viewModel.openPresets() },
+        onClosePresets = { viewModel.closePresets() },
+        onSelectPreset = { preset -> viewModel.selectPreset(preset) },
+        onApplyPreset = { preset -> viewModel.applyPreset(preset) },
+        onUndo = { viewModel.onUndo() },
+        onUndoExpired = { id -> viewModel.onUndoExpired(id) },
         onRequestDefaultHome = { requestDefaultHome() },
         onOpenSystemHomeSettings = { openSystemHomeSettings() },
         onPostponeDefaultHome = { viewModel.postponeDefaultHome() },

@@ -96,4 +96,4 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 | SettingsToggleItem, SettingsMenuItem, SettingsActionItem, SettingsHugeTitle | composable/SettingsComponents.kt | Itens da tela de Configurações |
 
 ## Só de uma feature (não reutilizar)
-onboarding (`Onboarding*`, `WelcomeScreen`, `GestureCoach*`), containers (`Container*`, `EditContainerScreen`, `Group*` da sheet do grupo), quickbutton (`QuickButton*Sheet`, `ShortcutSelectionBottomSheet`), `CustomizeBottomSheet`, settings (`CardsGlassBottomSheet`, `ContributorsBottomSheet`, `LicenseDetailBottomSheet`, `WallpaperEditorOverlay`), secretgame.
+onboarding (`Onboarding*`, `WelcomeScreen`, `OnboardingPresetScreen`, `GestureCoach*`), containers (`Container*`, `EditContainerScreen`, `Group*` da sheet do grupo), quickbutton (`QuickButton*Sheet`, `ShortcutSelectionBottomSheet`), `CustomizeBottomSheet`, settings (`CardsGlassBottomSheet`, `ContributorsBottomSheet`, `LicenseDetailBottomSheet`, `WallpaperEditorOverlay`), secretgame.

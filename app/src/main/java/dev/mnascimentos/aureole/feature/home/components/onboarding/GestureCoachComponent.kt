@@ -1,5 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
@@ -47,6 +54,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.visible
 import kotlinx.coroutines.delay
 
 private const val PENDING_DOT_ALPHA = 0.35f
+private const val CHIP_SHRINK_SCALE = 0.3f
+private val CHIP_ORIGIN = TransformOrigin(1f, 0f)
 
 /**
  * Teaches the home gestures on the live home. Only the card's buttons take touches: the layer itself
@@ -68,10 +77,44 @@ fun GestureCoachComponent(
         ?: return
     if (config.isHiddenOverDrawer(step)) return
     val succeeded = onboarding.succeededStep != null
+    // "Nice!" stays a moment, then shrinks into the chip so the list behind it is free again (RF-E2, D-04).
+    var isChip by remember(step, succeeded) { mutableStateOf(false) }
+    if (succeeded && !isChip) {
+        LaunchedEffect(step) {
+            delay(OnboardingMotionSpec.COACH_SUCCESS_CARD_MS)
+            isChip = true
+        }
+    }
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         if (!succeeded && !config.isWaitingForAlphabet(step)) {
             GestureCoachHandComponent(step = step, isLeftHandedMode = config.isLeftHandedMode)
         }
+        AnimatedContent(
+            targetState = isChip,
+            transitionSpec = {
+                (fadeIn() + scaleIn(transformOrigin = CHIP_ORIGIN)) togetherWith
+                    (fadeOut() + scaleOut(targetScale = CHIP_SHRINK_SCALE, transformOrigin = CHIP_ORIGIN))
+            },
+            label = "coachChip"
+        ) { chip ->
+            if (chip) {
+                GestureCoachBackChip(glass = glass)
+            } else {
+                GestureCoachCard(onboarding = onboarding, step = step, actions = actions, glass = glass, config = config)
+            }
+        }
+    }
+}
+
+@Composable
+private fun GestureCoachCard(
+    onboarding: OnboardingUiState,
+    step: GestureCoachStep,
+    actions: OnboardingActions,
+    glass: OnboardingGlass,
+    config: GestureCoachConfig
+) {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
         OnboardingCardEntrance(
             fromTop = true,
             modifier = Modifier
@@ -87,6 +130,27 @@ fun GestureCoachComponent(
             ) {
                 GestureCoachCardContent(onboarding = onboarding, step = step, actions = actions, config = config)
             }
+        }
+    }
+}
+
+/** "◁ Go back to continue", in the top end corner once "Nice!" shrank (RF-E2). */
+@Composable
+private fun GestureCoachBackChip(glass: OnboardingGlass) {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.TopEnd) {
+        OnboardingGlassCard(
+            glass = glass,
+            contentPadding = AureoleDS.dimens.small,
+            modifier = Modifier
+                .statusBarsPadding()
+                .padding(AureoleDS.dimens.medium)
+                .semantics { liveRegion = LiveRegionMode.Polite }
+        ) {
+            AureoleText(
+                text = stringResource(R.string.home_onboarding_coach_back_chip),
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodySmall, maxLines = 1)
+            )
         }
     }
 }
@@ -127,30 +191,19 @@ private fun GestureCoachCardContent(
         )
         if (!succeeded) {
             GestureCoachButtons(
-                step = step,
                 actions = actions,
-                showMeAtOnce = config.isTouchExplorationEnabled,
                 canShowMe = !config.isWaitingForAlphabet(step)
             )
         }
     }
 }
 
-/** "Show me" waits [OnboardingMotionSpec.SHOW_ME_DELAY_MS] on each step, unless TalkBack is on. */
+/** "Show me" is there from the start, so the card never changes its layout while the step is taught (RF-E2). */
 @Composable
 private fun GestureCoachButtons(
-    step: GestureCoachStep,
     actions: OnboardingActions,
-    showMeAtOnce: Boolean,
     canShowMe: Boolean
 ) {
-    var showMe by remember(step) { mutableStateOf(showMeAtOnce) }
-    if (!showMe) {
-        LaunchedEffect(step) {
-            delay(OnboardingMotionSpec.SHOW_ME_DELAY_MS)
-            showMe = true
-        }
-    }
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
@@ -160,7 +213,7 @@ private fun GestureCoachButtons(
             text = stringResource(R.string.home_onboarding_coach_skip),
             onClick = actions.onSkipGestures
         )
-        if (showMe && canShowMe) {
+        if (canShowMe) {
             OnboardingTextButton(
                 text = stringResource(R.string.home_onboarding_coach_show_me),
                 onClick = actions.onShowMeGesture

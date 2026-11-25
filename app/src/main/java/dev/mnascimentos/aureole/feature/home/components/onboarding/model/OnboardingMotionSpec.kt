@@ -38,7 +38,8 @@ object OnboardingMotionSpec {
     const val HAND_EDGE_SLIDE_END = 0.83f
     const val HAND_PRESS_LOOP_MS = 1800
     const val HAND_PRESS_FILL_MS = 600
-    const val SHOW_ME_DELAY_MS = 8_000L
+    // After the right gesture, "Nice!" stays this long and then shrinks into the "Go back" chip (RF-E2, D-04).
+    const val COACH_SUCCESS_CARD_MS = 2_000L
     val HAND_FINGER_RADIUS = 18.dp
     val HAND_EDGE_PULL_TRAVEL = 56.dp
     val HAND_PRESS_RING_GAP = 10.dp

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalInspectionMode
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSurface
 
 /**
  * How long the home shows alone after a task screen closes, before the checklist comes back: time for the new
@@ -34,6 +35,13 @@ fun homeReturnSettleMillis(areAnimatorsEnabled: Boolean = ValueAnimator.areAnima
  */
 fun checklistCollapseDelayMillis(areAnimatorsEnabled: Boolean = ValueAnimator.areAnimatorsEnabled()): Long =
     if (areAnimatorsEnabled) OnboardingMotionSpec.CHECKLIST_MORPH_MS.toLong() else 0L
+
+/**
+ * How long a surface fades out when the next one takes over. The coach leaves at once when the gestures end, so no
+ * frame shows its card over a bare home before the list is there (onboarding-redesenho RF-E3).
+ */
+fun surfaceExitMillis(from: OnboardingSurface): Int =
+    if (from == OnboardingSurface.GESTURE_COACH) 0 else OnboardingMotionSpec.WELCOME_EXIT_MS
 
 /**
  * False in previews and when the system turned animations off. Compose animations already follow the

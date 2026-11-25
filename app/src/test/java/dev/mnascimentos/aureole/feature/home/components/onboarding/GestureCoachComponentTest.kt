@@ -97,14 +97,30 @@ class GestureCoachComponentTest {
     }
 
     @Test
-    fun `when the user waits without progress, should offer show me`() {
+    fun `when a step starts, should offer show me right away`() {
         render()
-        composeTestRule.onNodeWithText("Show me").assertDoesNotExist()
 
-        composeTestRule.mainClock.advanceTimeBy(OnboardingMotionSpec.SHOW_ME_DELAY_MS)
         composeTestRule.onNodeWithText("Show me").performClick()
 
         assertEquals(listOf("showMe"), calls)
+    }
+
+    @Test
+    fun `when nice has been read, should shrink into the go back chip`() {
+        render(
+            onboarding = OnboardingUiState(
+                completedSteps = setOf(GestureCoachStep.OPEN_APPS),
+                succeededStep = GestureCoachStep.OPEN_APPS
+            )
+        )
+        composeTestRule.onNodeWithText("Nice!").assertExists()
+        composeTestRule.onNodeWithText("◁ Go back to continue").assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(OnboardingMotionSpec.COACH_SUCCESS_CARD_MS + CHIP_SETTLE_MS)
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("◁ Go back to continue").assertExists()
+        composeTestRule.onNodeWithText("Nice!").assertDoesNotExist()
     }
 
     @Test
@@ -159,6 +175,7 @@ class GestureCoachComponentTest {
 
     private companion object {
         const val HOME_TAG = "home"
+        const val CHIP_SETTLE_MS = 1_000L
     }
 
     @Test

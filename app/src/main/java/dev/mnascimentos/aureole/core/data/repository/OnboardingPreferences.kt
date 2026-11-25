@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
+import dev.mnascimentos.aureole.core.data.model.LayoutPreset
 import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.migrateOnboardingTasks
@@ -26,7 +27,9 @@ class OnboardingPreferences(private val prefsProvider: () -> SharedPreferences) 
             completedSteps = readEnumSet(KEY_COMPLETED_STEPS, GestureCoachStep.entries),
             completedTasks = tasks.completed,
             skippedTasks = tasks.skipped,
-            isChecklistCollapsed = prefs.getBoolean(KEY_CHECKLIST_COLLAPSED, false)
+            isChecklistCollapsed = prefs.getBoolean(KEY_CHECKLIST_COLLAPSED, false),
+            appliedPreset = prefs.getString(KEY_APPLIED_PRESET, null)
+                ?.let { name -> LayoutPreset.entries.firstOrNull { it.name == name } }
         )
     }
 
@@ -37,6 +40,8 @@ class OnboardingPreferences(private val prefsProvider: () -> SharedPreferences) 
             putString(KEY_COMPLETED_TASKS, progress.completedTasks.toCsv())
             putString(KEY_SKIPPED_TASKS, progress.skippedTasks.toCsv())
             putBoolean(KEY_CHECKLIST_COLLAPSED, progress.isChecklistCollapsed)
+            val preset = progress.appliedPreset
+            if (preset == null) remove(KEY_APPLIED_PRESET) else putString(KEY_APPLIED_PRESET, preset.name)
         }
     }
 
@@ -68,5 +73,6 @@ class OnboardingPreferences(private val prefsProvider: () -> SharedPreferences) 
         private const val KEY_COMPLETED_TASKS = "onboarding_completed_tasks"
         private const val KEY_SKIPPED_TASKS = "onboarding_skipped_tasks"
         private const val KEY_CHECKLIST_COLLAPSED = "onboarding_checklist_collapsed"
+        private const val KEY_APPLIED_PRESET = "onboarding_applied_preset"
     }
 }

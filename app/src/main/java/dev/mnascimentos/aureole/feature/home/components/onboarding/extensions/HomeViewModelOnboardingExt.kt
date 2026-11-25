@@ -69,6 +69,7 @@ private fun OnboardingUiState.withDefaultLauncher(isDefaultLauncher: Boolean): O
 
 private fun OnboardingUiState.backTransition(): OnboardingUiState? = when {
     activePicker != null -> copy(activePicker = null)
+    stage == OnboardingStage.WELCOME && isChoosingPreset -> copy(isChoosingPreset = false)
     stage == OnboardingStage.WELCOME -> this
     stage == OnboardingStage.DEFAULT_HOME -> copy(stage = OnboardingStage.WELCOME)
     stage == OnboardingStage.CHECKLIST && isChecklistExpanded -> copy(isChecklistExpanded = false)

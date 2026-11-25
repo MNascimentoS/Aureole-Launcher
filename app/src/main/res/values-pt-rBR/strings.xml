@@ -332,8 +332,54 @@
     <!-- First user experience -->
     <string name="home_onboarding_welcome_title">Bem-vindo ao Aureole</string>
     <string name="home_onboarding_welcome_subtitle">Uma tela inicial leve, bonita e do seu jeito. Leva menos de um minuto para começar.</string>
-    <string name="home_onboarding_welcome_start">Começar</string>
+    <string name="home_onboarding_welcome_start">Começar do zero</string>
     <string name="home_onboarding_welcome_skip">Pular introdução</string>
+    <string name="home_onboarding_welcome_preset">Usar um layout pronto</string>
+    <string name="home_onboarding_coach_back_chip">◁ Volte para continuar</string>
+    <string name="home_onboarding_preset_title">Escolha um ponto de partida</string>
+    <string name="home_onboarding_preset_subtitle">Montado com apps que já estão no seu aparelho. Pastas criadas pelas categorias dos seus apps, renomeie quando quiser.</string>
+    <string name="home_onboarding_preset_back">Voltar</string>
+    <string name="home_onboarding_preset_name_minimal">Minimal</string>
+    <string name="home_onboarding_preset_name_productive">Produtivo</string>
+    <string name="home_onboarding_preset_name_widgets">Widgets</string>
+    <string name="home_onboarding_preset_line_minimal">Só o essencial.</string>
+    <string name="home_onboarding_preset_line_productive">Seu dia e suas pastas à mão.</string>
+    <string name="home_onboarding_preset_line_widgets">Informação num relance.</string>
+    <string name="home_onboarding_preset_clock_time_only">Relógio: só a hora</string>
+    <string name="home_onboarding_preset_clock_date_on_top">Relógio: data em cima</string>
+    <string name="home_onboarding_preset_clock_time_on_top">Relógio: hora em cima</string>
+    <string name="home_onboarding_preset_no_widget">Sem widget</string>
+    <string name="home_onboarding_preset_widget_next">Widget: você escolhe no checklist</string>
+    <string name="home_onboarding_preset_no_group">Sem grupo</string>
+    <plurals name="home_onboarding_preset_favorites">
+        <item quantity="one">%1$d favorito</item>
+        <item quantity="many">%1$d favoritos</item>
+        <item quantity="other">%1$d favoritos</item>
+    </plurals>
+    <plurals name="home_onboarding_preset_group_folders">
+        <item quantity="one">Grupo com até %1$d pasta por categoria + 1 app</item>
+        <item quantity="many">Grupo com até %1$d pastas por categoria + 1 app</item>
+        <item quantity="other">Grupo com até %1$d pastas por categoria + 1 app</item>
+    </plurals>
+    <plurals name="home_onboarding_preset_dock">
+        <item quantity="one">Dock com até %1$d item</item>
+        <item quantity="many">Dock com até %1$d itens</item>
+        <item quantity="other">Dock com até %1$d itens</item>
+    </plurals>
+    <string name="home_onboarding_preset_use">Usar %1$s</string>
+    <string name="home_onboarding_preset_applied">Layout %1$s aplicado</string>
+    <string name="home_onboarding_preset_applied_label_minimal">LAYOUT MINIMAL APLICADO</string>
+    <string name="home_onboarding_preset_applied_label_productive">LAYOUT PRODUTIVO APLICADO</string>
+    <string name="home_onboarding_preset_applied_label_widgets">LAYOUT WIDGETS APLICADO</string>
+    <string name="home_onboarding_preset_category_social">Social</string>
+    <string name="home_onboarding_preset_category_productivity">Produtividade</string>
+    <string name="home_onboarding_preset_category_audio">Áudio</string>
+    <string name="home_onboarding_preset_category_video">Vídeo</string>
+    <string name="home_onboarding_preset_category_news">Notícias</string>
+    <string name="home_onboarding_preset_category_maps">Mapas</string>
+    <string name="home_onboarding_preset_category_image">Imagens</string>
+    <string name="home_onboarding_preset_category_game">Jogos</string>
+    <string name="home_onboarding_preset_category_accessibility">Acessibilidade</string>
     <string name="home_onboarding_default_title">Faça do Aureole sua casa</string>
     <string name="home_onboarding_default_body">Para o botão Início abrir o Aureole, escolha-o como app de tela inicial. Você pode trocar quando quiser.</string>
     <string name="home_onboarding_default_confirm">Definir como tela inicial</string>

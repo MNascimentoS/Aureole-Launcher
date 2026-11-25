@@ -331,8 +331,51 @@
     <!-- First user experience -->
     <string name="home_onboarding_welcome_title">Welcome to Aureole</string>
     <string name="home_onboarding_welcome_subtitle">A light, beautiful home screen, made your way. Getting started takes less than a minute.</string>
-    <string name="home_onboarding_welcome_start">Let\'s begin</string>
+    <string name="home_onboarding_welcome_start">Start from scratch</string>
     <string name="home_onboarding_welcome_skip">Skip intro</string>
+    <string name="home_onboarding_welcome_preset">Use a ready-made layout</string>
+    <string name="home_onboarding_coach_back_chip">◁ Go back to continue</string>
+    <string name="home_onboarding_preset_title">Pick a starting point</string>
+    <string name="home_onboarding_preset_subtitle">Built with apps already on your phone. Folders come from your apps\' categories; rename them anytime.</string>
+    <string name="home_onboarding_preset_back">Back</string>
+    <string name="home_onboarding_preset_name_minimal">Minimal</string>
+    <string name="home_onboarding_preset_name_productive">Productive</string>
+    <string name="home_onboarding_preset_name_widgets">Widgets</string>
+    <string name="home_onboarding_preset_line_minimal">Just the essentials.</string>
+    <string name="home_onboarding_preset_line_productive">Your day and your folders at hand.</string>
+    <string name="home_onboarding_preset_line_widgets">Information at a glance.</string>
+    <string name="home_onboarding_preset_clock_time_only">Clock: time only</string>
+    <string name="home_onboarding_preset_clock_date_on_top">Clock: date on top</string>
+    <string name="home_onboarding_preset_clock_time_on_top">Clock: time on top</string>
+    <string name="home_onboarding_preset_no_widget">No widget</string>
+    <string name="home_onboarding_preset_widget_next">Widget: you pick it in the checklist</string>
+    <string name="home_onboarding_preset_no_group">No group</string>
+    <plurals name="home_onboarding_preset_favorites">
+        <item quantity="one">%1$d favorite</item>
+        <item quantity="other">%1$d favorites</item>
+    </plurals>
+    <plurals name="home_onboarding_preset_group_folders">
+        <item quantity="one">Group with up to %1$d folder by category + 1 app</item>
+        <item quantity="other">Group with up to %1$d folders by category + 1 app</item>
+    </plurals>
+    <plurals name="home_onboarding_preset_dock">
+        <item quantity="one">Dock with up to %1$d item</item>
+        <item quantity="other">Dock with up to %1$d items</item>
+    </plurals>
+    <string name="home_onboarding_preset_use">Use %1$s</string>
+    <string name="home_onboarding_preset_applied">%1$s layout applied</string>
+    <string name="home_onboarding_preset_applied_label_minimal">MINIMAL LAYOUT APPLIED</string>
+    <string name="home_onboarding_preset_applied_label_productive">PRODUCTIVE LAYOUT APPLIED</string>
+    <string name="home_onboarding_preset_applied_label_widgets">WIDGETS LAYOUT APPLIED</string>
+    <string name="home_onboarding_preset_category_social">Social</string>
+    <string name="home_onboarding_preset_category_productivity">Productivity</string>
+    <string name="home_onboarding_preset_category_audio">Audio</string>
+    <string name="home_onboarding_preset_category_video">Video</string>
+    <string name="home_onboarding_preset_category_news">News</string>
+    <string name="home_onboarding_preset_category_maps">Maps</string>
+    <string name="home_onboarding_preset_category_image">Images</string>
+    <string name="home_onboarding_preset_category_game">Games</string>
+    <string name="home_onboarding_preset_category_accessibility">Accessibility</string>
     <string name="home_onboarding_default_title">Make Aureole your home</string>
     <string name="home_onboarding_default_body">So the Home button opens Aureole, pick it as your home app. You can switch back anytime.</string>
     <string name="home_onboarding_default_confirm">Set as home app</string>

@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -9,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,7 +59,8 @@ private const val LOCKED_ALPHA = 0.4f
 /**
  * One "First steps" row. Pending rows are buttons; done rows show a check and tap back into their screen (RF-A3).
  * The next row has "Skip" at its end (D-11); a skipped row shows "– · skipped" and taps back into a pending one.
- * A locked extra is dimmed, does not react and reads as disabled (RF-A4).
+ * A locked extra is dimmed, does not react and reads as disabled (RF-A4). [presetLabelRes] names the ready-made
+ * layout that did the step (RF-F4).
  */
 @Composable
 fun OnboardingChecklistItemComponent(
@@ -65,7 +68,8 @@ fun OnboardingChecklistItemComponent(
     status: OnboardingTaskStatus,
     onClick: (OnboardingTask) -> Unit,
     modifier: Modifier = Modifier,
-    onSkip: (OnboardingTask) -> Unit = {}
+    onSkip: (OnboardingTask) -> Unit = {},
+    @StringRes presetLabelRes: Int? = null
 ) {
     val isDone = status == OnboardingTaskStatus.DONE
     val isSkipped = status == OnboardingTaskStatus.SKIPPED
@@ -106,12 +110,21 @@ fun OnboardingChecklistItemComponent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             RowIcon(task = task, isDone = isDone, isSkipped = isSkipped)
-            AureoleText(
-                text = title,
-                modifier = Modifier.weight(1f, fill = false),
-                color = if (isDone || isSkipped) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
-            )
+            Column(modifier = Modifier.weight(1f, fill = false)) {
+                AureoleText(
+                    text = title,
+                    color = if (isDone || isSkipped) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
+                )
+                // "LAYOUT <NAME> APPLIED" on the steps the ready-made layout did (RF-F4).
+                if (presetLabelRes != null) {
+                    AureoleText(
+                        text = stringResource(presetLabelRes),
+                        color = AureoleDS.colors.onSurfaceLow,
+                        format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)
+                    )
+                }
+            }
             if (isSkipped) {
                 AureoleText(
                     text = stringResource(R.string.home_onboarding_task_skipped_label),
