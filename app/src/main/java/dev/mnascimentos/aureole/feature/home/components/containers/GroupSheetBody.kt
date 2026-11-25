@@ -61,7 +61,7 @@ internal fun ColumnScope.GroupSheetBody(params: GroupSheetBodyParams) {
             state.setColor(page.target, picked)
             nav.back()
         }
-        is GroupSheetPage.FolderEditor -> GroupScrollingPage { GroupFolderEditorPage(nav, state, page.folderId) }
+        is GroupSheetPage.FolderEditor -> GroupFolderEditorPage(nav, state, page.folderId)
         is GroupSheetPage.QuickButtonEditor -> GroupQuickButtonEditorPage(state, page.quickButtonId)
     }
 }

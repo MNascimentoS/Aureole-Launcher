@@ -10,7 +10,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
+import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemType
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -39,13 +42,18 @@ class GroupSheetScreenTest {
     private var tipsSeen = 0
     private val saved = mutableListOf<ContainerModel>()
 
-    private fun setSheet(isNew: Boolean, areTipsSeen: Boolean = false, uiState: MainUiState = MainUiState()) {
+    private fun setSheet(
+        isNew: Boolean,
+        areTipsSeen: Boolean = false,
+        uiState: MainUiState = MainUiState(),
+        panel: ContainerModel = ContainerModel(id = "group")
+    ) {
         composeTestRule.setContent {
             AureoleLauncherTheme {
                 ProvideHomeUiState(uiState) {
                     EditContainerScreen(
                         params = EditContainerScreenParams(
-                            panel = ContainerModel(id = "group"),
+                            panel = panel,
                             allApps = listOf(app),
                             onDismiss = {},
                             onSave = { saved += it },
@@ -129,6 +137,23 @@ class GroupSheetScreenTest {
         composeTestRule.onNodeWithText("Group background").performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("Only for this group").assertIsDisplayed()
+    }
+
+    @Test
+    fun `when a folder of the group is tapped, should open its form in the sheet`() {
+        val folder = AppFolder(id = "folder", panelId = "group", name = "Misc", appPackageNames = listOf(APP_PACKAGE))
+        val item = ContainerItemEntity(
+            id = "item",
+            panelId = "group",
+            itemType = ContainerItemType.FOLDER,
+            folderId = folder.id
+        )
+        setSheet(isNew = false, panel = ContainerModel(id = "group", folders = listOf(folder), items = listOf(item)))
+
+        composeTestRule.onNodeWithText("Misc").performSemanticsAction(SemanticsActions.OnClick)
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Folder color").assertExists()
     }
 
     private companion object {
