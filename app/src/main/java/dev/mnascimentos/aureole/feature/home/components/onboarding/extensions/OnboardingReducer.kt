@@ -4,6 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isHomeBuilt
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.visibleGestureSteps
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -63,12 +64,13 @@ internal object OnboardingReducer {
             )
         }
         // Tasks restored from disk are not news: only reopen for completions seen on the checklist.
-        val hasNewTask = previous.onboarding.stage == OnboardingStage.CHECKLIST &&
-            !previous.onboarding.completedTasks.containsAll(tasks)
-        val updated = onboarding.copy(
-            completedTasks = tasks,
-            isChecklistExpanded = onboarding.isChecklistExpanded || (hasNewTask && !onboarding.isHomePeeking)
-        )
+        val wasOnChecklist = previous.onboarding.stage == OnboardingStage.CHECKLIST
+        val hasNewTask = wasOnChecklist && !previous.onboarding.completedTasks.containsAll(tasks)
+        val withTasks = onboarding.copy(completedTasks = tasks)
+        // The last home step resolved, done or skipped: the list opens on the unlocked extras (D-10).
+        val unlocksExtras = wasOnChecklist && !previous.onboarding.isHomeBuilt && withTasks.isHomeBuilt
+        val opens = (hasNewTask || unlocksExtras) && !onboarding.isHomePeeking
+        val updated = withTasks.copy(isChecklistExpanded = onboarding.isChecklistExpanded || opens)
         return if (updated == onboarding) next else next.copy(onboarding = updated)
     }
 

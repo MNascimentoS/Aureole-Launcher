@@ -24,10 +24,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
-import androidx.compose.ui.text.style.TextDecoration
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -41,7 +41,6 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
 import dev.mnascimentos.aureole.core.designsystem.icons.RoundCheck
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
-import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -50,13 +49,15 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.re
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.titleRes
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingTaskStatus
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isClickable
 
 private const val BREATH_MIN_ALPHA = 0.25f
 private const val LOCKED_ALPHA = 0.4f
 
 /**
- * One "First steps" row. Pending rows are buttons; done rows show a check and no longer react. The next row of a
- * skippable task also has "Skip" at its end; a skipped row is struck through and taps back into a pending one.
+ * One "First steps" row. Pending rows are buttons; done rows show a check and tap back into their screen (RF-A3).
+ * The next row has "Skip" at its end (D-11); a skipped row shows "– · skipped" and taps back into a pending one.
+ * A locked extra is dimmed, does not react and reads as disabled (RF-A4).
  */
 @Composable
 fun OnboardingChecklistItemComponent(
@@ -81,7 +82,8 @@ fun OnboardingChecklistItemComponent(
         title.text
     )
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-    val showSkip = isNext && task.isSkippable
+    val showSkip = isNext
+    val isClickable = status.isClickable(task)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -94,8 +96,11 @@ fun OnboardingChecklistItemComponent(
         Row(
             modifier = Modifier
                 .weight(1f)
-                .then(if (isDone || isLocked) Modifier else Modifier.clickable(role = Role.Button) { onClick(task) })
-                .semantics(mergeDescendants = true) { contentDescription = description }
+                .then(if (isClickable) Modifier.clickable(role = Role.Button) { onClick(task) } else Modifier)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = description
+                    if (isLocked) disabled()
+                }
                 .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
@@ -103,12 +108,17 @@ fun OnboardingChecklistItemComponent(
             RowIcon(task = task, isDone = isDone, isSkipped = isSkipped)
             AureoleText(
                 text = title,
+                modifier = Modifier.weight(1f, fill = false),
                 color = if (isDone || isSkipped) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyLarge,
-                    textDecoration = if (isSkipped) TextDecoration.LineThrough else null
-                )
+                format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
             )
+            if (isSkipped) {
+                AureoleText(
+                    text = stringResource(R.string.home_onboarding_task_skipped_label),
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.text, maxLines = 1)
+                )
+            }
         }
         if (showSkip) {
             OnboardingTextButton(
@@ -137,8 +147,7 @@ private fun OnboardingTaskIcon(task: OnboardingTask) {
     val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
     when (task) {
         OnboardingTask.SET_DEFAULT_HOME -> AureoleDS.icons.Home(iconModifier, tint)
-        OnboardingTask.CHOOSE_PALETTE -> AureoleDS.icons.ColorFill(iconModifier, tint)
-        OnboardingTask.CHOOSE_FONT -> AureoleDS.icons.Text(iconModifier, tint)
+        OnboardingTask.CHOOSE_VISUAL -> AureoleDS.icons.ColorFill(iconModifier, tint)
         OnboardingTask.ADD_CLOCK -> AureoleDS.icons.Calendar(iconModifier, tint)
         OnboardingTask.ADD_FAVORITE_APPS -> AureoleDS.icons.Favorite(iconModifier, tint)
         OnboardingTask.FILL_CONTAINER -> AureoleDS.icons.VerticalContainer(iconModifier, tint)
@@ -177,7 +186,7 @@ private fun OnboardingChecklistItemLockedPreview() {
 private fun OnboardingChecklistItemPreview() {
     AureoleLauncherTheme {
         OnboardingChecklistItemComponent(
-            task = OnboardingTask.CHOOSE_PALETTE,
+            task = OnboardingTask.CHOOSE_VISUAL,
             status = OnboardingTaskStatus.NEXT,
             onClick = {}
         )

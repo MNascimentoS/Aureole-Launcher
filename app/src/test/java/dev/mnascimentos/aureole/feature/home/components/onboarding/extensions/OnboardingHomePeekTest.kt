@@ -80,7 +80,7 @@ class OnboardingHomePeekTest {
         assertEquals("list", home.taskItemId(OnboardingTask.ADD_FAVORITE_APPS))
         assertEquals("new", created.taskItemId(OnboardingTask.ADD_CLOCK))
         assertNull(home.taskItemId(OnboardingTask.ADD_WIDGET))
-        assertNull(home.taskItemId(OnboardingTask.CHOOSE_FONT))
+        assertNull(home.taskItemId(OnboardingTask.CHOOSE_VISUAL))
     }
 
     @Test
@@ -110,24 +110,24 @@ class OnboardingHomePeekTest {
     }
 
     @Test
-    fun `when Apply confirms the palette, should complete the task, close the picker and reopen the list`() {
+    fun `when Apply confirms the palette, should open the font picker next`() {
         val picking = checklist.copy(activePicker = AppearancePicker.PALETTE, skippedTasks = emptySet())
         val state = MainUiState(onboarding = picking)
 
         val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding
 
-        assertEquals(setOf(OnboardingTask.CHOOSE_PALETTE), result.completedTasks)
-        assertEquals(null, result.activePicker)
-        assertTrue(result.isChecklistExpanded)
+        assertTrue(result.completedTasks.isEmpty())
+        assertEquals(AppearancePicker.FONT, result.activePicker)
     }
 
     @Test
-    fun `when Apply confirms the font, should complete the font task`() {
+    fun `when Apply confirms the font, should complete the visual step and reopen the list`() {
         val state = MainUiState(onboarding = checklist.copy(activePicker = AppearancePicker.FONT))
 
         val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding
 
-        assertEquals(setOf(OnboardingTask.CHOOSE_FONT), result.completedTasks)
+        assertEquals(setOf(OnboardingTask.CHOOSE_VISUAL), result.completedTasks)
+        assertEquals(null, result.activePicker)
         assertTrue(result.isChecklistExpanded)
     }
 

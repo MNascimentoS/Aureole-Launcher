@@ -3,8 +3,10 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
@@ -27,6 +32,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.isChecklistMinimized
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.nextPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.titleRes
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistSharedModifiers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
@@ -35,7 +42,8 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolve
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
 
 /**
- * Minimized checklist: a pill at the bottom with the progress halo; tapping it reopens the list.
+ * Minimized checklist: a pill at the bottom with the progress halo, the next step and "Continue"; tapping anywhere on
+ * it reopens the list.
  * It hides while [isOtherOverlayActive], so it never covers an editor the list itself opened.
  */
 @Composable
@@ -67,6 +75,7 @@ internal fun OnboardingChecklistPill(
             glass = glass,
             modifier = Modifier
                 .widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH)
+                .fillMaxWidth()
                 .navigationBarsPadding()
                 .padding(AureoleDS.dimens.medium)
                 .then(shared.card)
@@ -78,9 +87,14 @@ internal fun OnboardingChecklistPill(
     }
 }
 
+/** Halo, "First steps · N/8" over "Next: <step>", and "Continue" at the end (RF-B1, D-08). */
 @Composable
 private fun PillContent(onboarding: OnboardingUiState, shared: ChecklistSharedModifiers) {
+    val resolved = onboarding.resolvedTasks.size
     Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(end = AureoleDS.dimens.small),
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -88,20 +102,43 @@ private fun PillContent(onboarding: OnboardingUiState, shared: ChecklistSharedMo
             progress = onboarding.taskProgress,
             modifier = shared.halo.size(AureoleDS.dimens.iconLarge)
         )
-        AureoleText(
-            text = pluralStringResource(
-                R.plurals.home_onboarding_checklist_pill,
-                onboarding.resolvedTasks.size,
-                onboarding.resolvedTasks.size,
-                OnboardingTask.entries.size
-            ),
-            modifier = shared.progressText,
-            color = AureoleDS.colors.onSurfaceHigh,
-            format = AureoleTextFormatParams(
-                style = AureoleDS.typography.text,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+        Column(modifier = Modifier.weight(1f)) {
+            AureoleText(
+                text = pluralStringResource(
+                    R.plurals.home_onboarding_checklist_pill,
+                    resolved,
+                    resolved,
+                    OnboardingTask.entries.size
+                ),
+                modifier = shared.progressText,
+                color = AureoleDS.colors.onSurfaceHigh,
+                format = AureoleTextFormatParams(
+                    style = AureoleDS.typography.text,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             )
+            onboarding.nextPendingTask?.let { next ->
+                AureoleText(
+                    text = stringResource(
+                        R.string.home_onboarding_checklist_pill_next,
+                        AnnotatedString.fromHtml(stringResource(next.titleRes())).text
+                    ),
+                    modifier = shared.fading,
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(
+                        style = AureoleDS.typography.text,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                )
+            }
+        }
+        AureoleText(
+            text = stringResource(R.string.home_onboarding_checklist_pill_continue),
+            modifier = shared.fading,
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.text, maxLines = 1)
         )
     }
 }
@@ -114,7 +151,7 @@ private fun OnboardingChecklistPillPreview() {
             onboarding = OnboardingUiState(
                 stage = OnboardingStage.CHECKLIST,
                 isChecklistExpanded = false,
-                completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_FONT)
+                completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_VISUAL)
             ),
             isOtherOverlayActive = false,
             glass = OnboardingGlass(),

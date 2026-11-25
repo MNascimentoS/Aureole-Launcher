@@ -20,7 +20,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -43,7 +46,9 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
-import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isTaskLocked
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isHomeBuilt
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.onboardingExtraTasks
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.onboardingHomeTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolvedTasks
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.statusOf
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.taskProgress
@@ -120,39 +125,66 @@ private fun ChecklistCardContent(
         verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         ChecklistHeader(onboarding = onboarding, shared = shared)
-        if (OnboardingTask.entries.any(onboarding::isTaskLocked)) {
-            AureoleText(
-                text = stringResource(R.string.home_onboarding_checklist_locked_notice),
-                modifier = shared.fading.padding(bottom = AureoleDS.dimens.xSmall),
-                color = AureoleDS.colors.onSurfaceMedium,
-                format = AureoleTextFormatParams(style = AureoleDS.typography.text)
-            )
+        ChecklistSectionLabel(text = stringResource(R.string.home_onboarding_checklist_section_home), shared = shared)
+        onboardingHomeTasks.forEachIndexed { index, task ->
+            ChecklistRow(onboarding, task, next, actions, stagger = index, shared = shared)
         }
-        OnboardingTask.entries.forEachIndexed { index, task ->
-            OnboardingChecklistItemComponent(
-                task = task,
-                status = onboarding.statusOf(task, next),
-                onClick = actions.onTaskClick,
-                onSkip = actions.onSkipTask,
-                modifier = Modifier
-                    .checklistItemEntrance(staggerIndex = index)
-                    .then(shared.fading)
-            )
+        val extrasLabel = if (onboarding.isHomeBuilt) {
+            R.string.home_onboarding_checklist_section_extras
+        } else {
+            R.string.home_onboarding_checklist_section_extras_locked
+        }
+        ChecklistSectionLabel(text = stringResource(extrasLabel), shared = shared)
+        onboardingExtraTasks.forEachIndexed { index, task ->
+            val stagger = onboardingHomeTasks.size + index
+            ChecklistRow(onboarding, task, next, actions, stagger = stagger, shared = shared)
         }
         ChecklistFooter(actions = actions, modifier = shared.fading)
     }
 }
 
 @Composable
+private fun ChecklistRow(
+    onboarding: OnboardingUiState,
+    task: OnboardingTask,
+    next: OnboardingTask?,
+    actions: OnboardingActions,
+    stagger: Int,
+    shared: ChecklistSharedModifiers
+) {
+    OnboardingChecklistItemComponent(
+        task = task,
+        status = onboarding.statusOf(task, next),
+        onClick = actions.onTaskClick,
+        onSkip = actions.onSkipTask,
+        modifier = Modifier
+            .checklistItemEntrance(staggerIndex = stagger)
+            .then(shared.fading)
+    )
+}
+
+/** "YOUR HOME" / "EXTRAS" above each section (RF-A1); the extras label says when they unlock (RF-A4). */
+@Composable
+private fun ChecklistSectionLabel(text: String, shared: ChecklistSharedModifiers) {
+    AureoleText(
+        text = text,
+        modifier = shared.fading.padding(top = AureoleDS.dimens.xSmall, start = AureoleDS.dimens.small),
+        color = AureoleDS.colors.onSurfaceMedium,
+        format = AureoleTextFormatParams(style = AureoleDS.typography.text)
+    )
+}
+
+@Composable
 private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistSharedModifiers) {
     val total = OnboardingTask.entries.size
-    val progressText =
-        pluralStringResource(
-            R.plurals.home_onboarding_checklist_progress,
-            onboarding.resolvedTasks.size,
-            onboarding.resolvedTasks.size,
-            total
-        )
+    val resolved = onboarding.resolvedTasks.size
+    val progressText = pluralStringResource(R.plurals.home_onboarding_checklist_progress, resolved, resolved, total)
+    // Once the home is built only the extras are left, and the subtitle says so (RF-A4).
+    val subtitle = if (onboarding.isHomeBuilt) {
+        stringResource(R.string.home_onboarding_checklist_home_built)
+    } else {
+        progressText
+    }
     Row(
         horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
         verticalAlignment = Alignment.CenterVertically,
@@ -173,7 +205,7 @@ private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistShar
                 format = AureoleTextFormatParams(style = AureoleDS.typography.titleLarge)
             )
             AureoleText(
-                text = progressText,
+                text = subtitle,
                 modifier = shared.progressText,
                 color = AureoleDS.colors.onSurfaceMedium,
                 format = AureoleTextFormatParams(style = AureoleDS.typography.text)
@@ -182,17 +214,29 @@ private fun ChecklistHeader(onboarding: OnboardingUiState, shared: ChecklistShar
     }
 }
 
+/** "Dismiss guide" asks for a second tap ("Tap again to dismiss") before it ends the tour (RF-A7, D-17). */
 @Composable
 private fun ChecklistFooter(actions: OnboardingActions, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val dismissedMessage = stringResource(R.string.home_onboarding_checklist_dismissed)
+    var isDismissArmed by remember { mutableStateOf(false) }
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         OnboardingTextButton(
-            text = stringResource(R.string.home_onboarding_checklist_dismiss),
+            text = stringResource(
+                if (isDismissArmed) {
+                    R.string.home_onboarding_checklist_dismiss_confirm
+                } else {
+                    R.string.home_onboarding_checklist_dismiss
+                }
+            ),
             modifier = Modifier.weight(1f, fill = false),
             onClick = {
-                actions.onDismissChecklist()
-                Toast.makeText(context, dismissedMessage, Toast.LENGTH_LONG).show()
+                if (!isDismissArmed) {
+                    isDismissArmed = true
+                } else {
+                    actions.onDismissChecklist()
+                    Toast.makeText(context, dismissedMessage, Toast.LENGTH_LONG).show()
+                }
             }
         )
         OnboardingTextButton(
@@ -224,7 +268,7 @@ private fun OnboardingChecklistPreview() {
     AureoleLauncherTheme {
         OnboardingChecklistComponent(
             onboarding = OnboardingUiState(
-                completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_PALETTE)
+                completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_VISUAL)
             ),
             actions = OnboardingActions(),
             glass = OnboardingGlass()

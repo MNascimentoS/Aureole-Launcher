@@ -55,7 +55,7 @@ private fun coach(vararg done: GestureCoachStep) =
 private fun checklist(expanded: Boolean = true, pendingTask: OnboardingTask? = null) = OnboardingUiState(
     stage = OnboardingStage.CHECKLIST,
     isChecklistExpanded = expanded,
-    completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_PALETTE),
+    completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_VISUAL),
     pendingTask = pendingTask
 )
 

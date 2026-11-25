@@ -24,7 +24,7 @@ class OnboardingTaskEvidenceTest {
         assertEquals(LauncherItemType.APPS_LIST, OnboardingTask.ADD_FAVORITE_APPS.gridItemType)
         assertEquals(LauncherItemType.SHORTCUTS_CONTAINER, OnboardingTask.FILL_CONTAINER.gridItemType)
         assertEquals(LauncherItemType.WIDGET_LIST, OnboardingTask.ADD_WIDGET.gridItemType)
-        assertNull(OnboardingTask.CHOOSE_FONT.gridItemType)
+        assertNull(OnboardingTask.CHOOSE_VISUAL.gridItemType)
     }
 
     @Test
@@ -141,6 +141,6 @@ class OnboardingTaskEvidenceTest {
         val state = MainUiState(gridItems = listOf(widgetList, unbound), widgetStacks = mapOf("stack" to emptyList()))
 
         assertFalse(state.meetsRequirement(OnboardingTask.ADD_WIDGET))
-        assertFalse(state.meetsRequirement(OnboardingTask.CHOOSE_FONT))
+        assertFalse(state.meetsRequirement(OnboardingTask.CHOOSE_VISUAL))
     }
 }

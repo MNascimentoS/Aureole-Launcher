@@ -14,17 +14,21 @@ enum class GestureCoachStep {
     CUSTOMIZE
 }
 
-/** [isSkippable] tasks (the home items and the layout) get a "Skip" button on the checklist. */
-enum class OnboardingTask(val isSkippable: Boolean = false) {
+/**
+ * The 8 checklist steps, in list order (onboarding-redesenho RF-A1): the "Your home" section, then the [isExtra]
+ * ones, which stay locked until the home section is done or skipped. Every step can be skipped while it is the
+ * current one. The names are persisted: never rename (the old `CHOOSE_PALETTE`/`CHOOSE_FONT` migrate to
+ * [CHOOSE_VISUAL], see [migrateOnboardingTasks]).
+ */
+enum class OnboardingTask(val isExtra: Boolean = false) {
     SET_DEFAULT_HOME,
-    CHOOSE_PALETTE,
-    CHOOSE_FONT,
-    ADD_CLOCK(isSkippable = true),
-    ADD_WIDGET(isSkippable = true),
-    ADD_FAVORITE_APPS(isSkippable = true),
-    FILL_CONTAINER(isSkippable = true),
-    ADJUST_LAYOUT(isSkippable = true),
-    EXPLORE_SETTINGS
+    CHOOSE_VISUAL,
+    ADD_CLOCK,
+    ADD_WIDGET,
+    ADD_FAVORITE_APPS,
+    FILL_CONTAINER,
+    ADJUST_LAYOUT(isExtra = true),
+    EXPLORE_SETTINGS(isExtra = true)
 }
 
 data class OnboardingProgress(

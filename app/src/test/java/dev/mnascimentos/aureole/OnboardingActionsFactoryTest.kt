@@ -289,8 +289,8 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when an appearance task is tapped, should open its picker without other editors`() {
-        actions().onTaskClick(OnboardingTask.CHOOSE_PALETTE)
+    fun `when the visual task is tapped, should open the palette picker without other editors`() {
+        actions().onTaskClick(OnboardingTask.CHOOSE_VISUAL)
 
         assertTrue(calls.isEmpty())
         assertEquals(AppearancePicker.PALETTE, viewModel.uiState.value.onboarding.activePicker)
@@ -342,16 +342,16 @@ class OnboardingActionsFactoryTest {
         actions.onSetChecklistExpanded(false)
         assertFalse(viewModel.uiState.value.onboarding.isChecklistExpanded)
 
-        actions.onTaskClick(OnboardingTask.CHOOSE_FONT)
-        actions.onSelectFont("Space Grotesk")
-        actions.onConfirmAppearancePicker()
-        assertTrue(OnboardingTask.CHOOSE_FONT in viewModel.uiState.value.onboarding.completedTasks)
-
-        actions.onTaskClick(OnboardingTask.CHOOSE_PALETTE)
+        actions.onTaskClick(OnboardingTask.CHOOSE_VISUAL)
         actions.onSelectPalette("Abyss")
         actions.onDismissAppearancePicker(true)
         assertEquals("Abyss", viewModel.uiState.value.selectedThemeName)
-        assertTrue(OnboardingTask.CHOOSE_PALETTE in viewModel.uiState.value.onboarding.completedTasks)
+        assertEquals(AppearancePicker.FONT, viewModel.uiState.value.onboarding.activePicker)
+        assertFalse(OnboardingTask.CHOOSE_VISUAL in viewModel.uiState.value.onboarding.completedTasks)
+
+        actions.onSelectFont("Space Grotesk")
+        actions.onConfirmAppearancePicker()
+        assertTrue(OnboardingTask.CHOOSE_VISUAL in viewModel.uiState.value.onboarding.completedTasks)
 
         actions.onDismissChecklist()
         assertEquals(OnboardingStage.COMPLETED, viewModel.uiState.value.onboarding.stage)

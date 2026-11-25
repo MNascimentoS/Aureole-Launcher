@@ -14,13 +14,18 @@ internal fun OnboardingUiState.onAlphabetScrubbed(): OnboardingUiState {
     )
 }
 
+/**
+ * The Visual step runs the palette picker, then the font picker: confirming the palette moves on to the font, and
+ * confirming the font completes the step (until the tabbed Visual sheet of fase 2 replaces both).
+ */
 internal fun OnboardingUiState.onPickerConfirmed(): OnboardingUiState {
     if (stage != OnboardingStage.CHECKLIST) return this
-    val task = when (activePicker) {
-        AppearancePicker.PALETTE -> OnboardingTask.CHOOSE_PALETTE
-        AppearancePicker.FONT -> OnboardingTask.CHOOSE_FONT
+    when (activePicker) {
+        AppearancePicker.PALETTE -> return copy(activePicker = AppearancePicker.FONT)
+        AppearancePicker.FONT -> Unit
         null -> return this
     }
+    val task = OnboardingTask.CHOOSE_VISUAL
     return copy(
         completedTasks = completedTasks + task,
         skippedTasks = skippedTasks - task,

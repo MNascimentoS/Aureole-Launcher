@@ -27,8 +27,7 @@ class OnboardingChecklistPillComponentTest {
         isChecklistExpanded = false,
         completedTasks = setOf(
             OnboardingTask.SET_DEFAULT_HOME,
-            OnboardingTask.CHOOSE_PALETTE,
-            OnboardingTask.CHOOSE_FONT
+            OnboardingTask.CHOOSE_VISUAL
         )
     )
 
@@ -50,6 +49,16 @@ class OnboardingChecklistPillComponentTest {
         render(minimized)
 
         composeTestRule.onNodeWithText(PILL_TEXT).performClick()
+
+        assertEquals(1, expandCount)
+    }
+
+    @Test
+    fun `when minimized, should name the next step and offer to continue`() {
+        render(minimized)
+
+        composeTestRule.onNodeWithText("Next: Add a clock").assertExists()
+        composeTestRule.onNodeWithText("Continue").performClick()
 
         assertEquals(1, expandCount)
     }
@@ -83,6 +92,6 @@ class OnboardingChecklistPillComponentTest {
     }
 
     private companion object {
-        const val PILL_TEXT = "3/9 first steps"
+        const val PILL_TEXT = "First steps · 2/8"
     }
 }

@@ -10,8 +10,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolve
 @StringRes
 fun OnboardingTask.titleRes(): Int = when (this) {
     OnboardingTask.SET_DEFAULT_HOME -> R.string.home_onboarding_task_default_home
-    OnboardingTask.CHOOSE_PALETTE -> R.string.home_onboarding_task_palette
-    OnboardingTask.CHOOSE_FONT -> R.string.home_onboarding_task_font
+    OnboardingTask.CHOOSE_VISUAL -> R.string.home_onboarding_task_visual
     OnboardingTask.ADD_CLOCK -> R.string.home_onboarding_task_clock
     OnboardingTask.ADD_FAVORITE_APPS -> R.string.home_onboarding_task_favorites
     OnboardingTask.FILL_CONTAINER -> R.string.home_onboarding_task_container

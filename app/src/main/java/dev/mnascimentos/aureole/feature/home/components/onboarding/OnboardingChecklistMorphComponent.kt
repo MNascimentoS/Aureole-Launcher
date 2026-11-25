@@ -19,11 +19,13 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.checklistCollapseDelayMillis
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.checklistMorph
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistMorph
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.ChecklistMorphHistory
@@ -33,8 +35,11 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.model.Onboard
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.atRest
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.nextMorphTarget
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.usesBubbleMotion
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val CARD_KEY = "onboarding-checklist"
 private const val HALO_KEY = "onboarding-halo"
@@ -47,6 +52,8 @@ private const val PROGRESS_TEXT_KEY = "onboarding-progress-text"
  * pill) the same way, a container transform of ~550 ms with the logo travelling to the list's halo and the rows
  * fading in late (RF-13). Showing or hiding the layer for anything else (a picker, another overlay, the end of the
  * tour) keeps the plain crossfade of the other onboarding surfaces. With animations off the swap is immediate.
+ * Pill ↔ list is a ~300 ms emphasized tween with the blur off while it moves (D-19); a tapped step first shrinks
+ * the list into the pill and only then opens its screen (RF-B5).
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -60,6 +67,19 @@ fun OnboardingChecklistMorphComponent(
     val morph = onboarding.checklistMorph(isOtherOverlayActive)
     val history = remember { ChecklistMorphHistory() }
     val target = remember(morph) { nextMorphTarget(history.last, morph).also { history.last = it } }
+    // Out here, not in the list: the list leaves the composition while it shrinks, and the launch must survive it.
+    val scope = rememberCoroutineScope()
+    val listActions = remember(actions) {
+        actions.copy(
+            onTaskClick = { task ->
+                actions.onSetChecklistExpanded(false)
+                scope.launch {
+                    delay(checklistCollapseDelayMillis())
+                    actions.onTaskClick(task)
+                }
+            }
+        )
+    }
     SharedTransitionLayout(modifier = modifier.fillMaxSize()) {
         AnimatedContent(
             targetState = target,
@@ -68,16 +88,17 @@ fun OnboardingChecklistMorphComponent(
             label = "checklistMorph"
         ) { state ->
             val shared = checklistSharedModifiers(this, state)
+            val stateGlass = glass.atRest(isMoving = transition.isRunning)
             when (state.morph) {
                 ChecklistMorph.EXPANDED -> OnboardingChecklistComponent(
                     onboarding = onboarding,
-                    actions = actions,
-                    glass = glass,
+                    actions = listActions,
+                    glass = stateGlass,
                     shared = shared
                 )
                 ChecklistMorph.MINIMIZED -> OnboardingChecklistPill(
                     onboarding = onboarding,
-                    glass = glass,
+                    glass = stateGlass,
                     onExpand = { actions.onSetChecklistExpanded(true) },
                     shared = shared
                 )
@@ -116,10 +137,7 @@ private fun SharedTransitionScope.checklistSharedModifiers(
         if (isBubbleMotion) {
             tween(OnboardingMotionSpec.BUBBLE_MORPH_MS, easing = FastOutSlowInEasing)
         } else {
-            spring(
-                dampingRatio = OnboardingMotionSpec.PILL_DAMPING,
-                stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS
-            )
+            tween(OnboardingMotionSpec.CHECKLIST_MORPH_MS, easing = OnboardingMotionSpec.CHECKLIST_MORPH_EASING)
         }
     }
     val fadeSpring = spring<Float>(stiffness = OnboardingMotionSpec.CHECKLIST_STIFFNESS)

@@ -12,3 +12,6 @@ data class OnboardingGlass(
         const val DEFAULT_HAZE_OPACITY = 0.5f
     }
 }
+
+/** The glass while the pill and the card morph: no blur in motion, only at rest (D-19, RF-B3). */
+fun OnboardingGlass.atRest(isMoving: Boolean): OnboardingGlass = if (isMoving) copy(isHazeEnabled = false) else this

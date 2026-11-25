@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.model
 
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.ui.unit.dp
 
 /** Onboarding animation values. Layout tokens are never used for motion, so these stay as named constants. */
@@ -51,7 +52,10 @@ object OnboardingMotionSpec {
     const val CHECKLIST_STAGGER_MS = 60
     val CHECKLIST_ITEM_OFFSET = 16.dp
     const val NEXT_ITEM_BREATH_MS = 2200
-    const val PILL_DAMPING = 0.8f
+    // Pill ↔ card (D-19): one container transform of ~300 ms with the emphasized easing; the glass blur is off while
+    // it moves and the task's screen only rises once it is over (RF-B3, RF-B5).
+    const val CHECKLIST_MORPH_MS = 300
+    val CHECKLIST_MORPH_EASING = CubicBezierEasing(0.2f, 0f, 0f, 1f)
     val CHECKLIST_MAX_WIDTH = 420.dp
 
     // Peek bubble (RF-13): it opens into the list (or the pill) in one FastOutSlowIn movement, and the rows fade in

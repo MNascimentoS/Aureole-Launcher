@@ -17,7 +17,7 @@ enum class OnboardingTaskStatus {
     DONE,
     SKIPPED,
 
-    /** Waits for the other tasks to be done or skipped (RF-01 of telas-ajustesfundo). */
+    /** An extra waiting for the home section to be done or skipped (onboarding-redesenho RF-A4). */
     LOCKED
 }
 
@@ -108,11 +108,26 @@ fun OnboardingProgress.toUiState(isDefaultLauncher: Boolean): OnboardingUiState 
     isChecklistExpanded = !isChecklistCollapsed
 )
 
-/** Tasks that only open once every other task is done or skipped: the home can be adjusted after the components. */
-private val LOCKED_UNTIL_REST_RESOLVED = setOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS)
+/** The "Your home" section of the checklist, in list order (RF-A1). */
+val onboardingHomeTasks: List<OnboardingTask> = OnboardingTask.entries.filterNot { it.isExtra }
 
-/** True while [task] is waiting for the other tasks to be done or skipped (RF-01 of telas-ajustesfundo). */
+/** The "Extras" section, locked until the home section is resolved (RF-A4, D-09). */
+val onboardingExtraTasks: List<OnboardingTask> = OnboardingTask.entries.filter { it.isExtra }
+
+/** Every step of "Your home" is done or skipped: the extras unlock. */
+val OnboardingUiState.isHomeBuilt: Boolean
+    get() = resolvedTasks.containsAll(onboardingHomeTasks)
+
+/** True while the extra [task] waits for the home section to be done or skipped (RF-A4). */
 fun OnboardingUiState.isTaskLocked(task: OnboardingTask): Boolean =
-    task in LOCKED_UNTIL_REST_RESOLVED &&
-        task !in resolvedTasks &&
-        OnboardingTask.entries.any { it !in LOCKED_UNTIL_REST_RESOLVED && it !in resolvedTasks }
+    task.isExtra && task !in resolvedTasks && !isHomeBuilt
+
+/**
+ * A done step taps back into its screen to redo it (RF-A3); the home app has nothing to redo once it is set.
+ * Skipped and pending steps always react, locked ones never.
+ */
+fun OnboardingTaskStatus.isClickable(task: OnboardingTask): Boolean = when (this) {
+    OnboardingTaskStatus.LOCKED -> false
+    OnboardingTaskStatus.DONE -> task != OnboardingTask.SET_DEFAULT_HOME
+    else -> true
+}

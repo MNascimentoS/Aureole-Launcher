@@ -57,9 +57,9 @@ class OnboardingUiStateTest {
 
     @Test
     fun `when tasks are done, should report the fraction of all tasks`() {
-        val state = OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_FONT))
+        val state = OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL))
 
-        assertEquals(1f / OnboardingTask.entries.size, state.taskProgress, 0.0001f)
+        assertEquals(1f / 8, state.taskProgress, 0.0001f)
         assertEquals(1f, OnboardingUiState(completedTasks = OnboardingTask.entries.toSet()).taskProgress, 0.0001f)
     }
 
