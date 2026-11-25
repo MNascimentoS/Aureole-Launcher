@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home
 
+import android.animation.ValueAnimator
 import android.appwidget.AppWidgetHost
 import android.content.res.Configuration
 import android.widget.Toast
@@ -24,17 +25,17 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
@@ -54,10 +55,11 @@ import dev.mnascimentos.aureole.feature.home.components.containers.EditContainer
 import dev.mnascimentos.aureole.feature.home.components.containers.model.EditContainerScreenParams
 import dev.mnascimentos.aureole.feature.home.components.overlays.CustomizeBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
+import dev.mnascimentos.aureole.feature.home.components.overlays.drawerPullEffect
 import dev.mnascimentos.aureole.feature.home.components.overlays.homeDragGestures
-import dev.mnascimentos.aureole.feature.home.components.overlays.homeSwipeNestedScroll
 import dev.mnascimentos.aureole.feature.home.components.overlays.model.isCustomizeShowcase
-import dev.mnascimentos.aureole.feature.home.components.overlays.swipeNestedConnection
+import dev.mnascimentos.aureole.feature.home.components.overlays.rememberSwipeDownNested
+import dev.mnascimentos.aureole.feature.home.components.overlays.rememberSwipeUpNested
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.isHomeDragAttached
 import dev.mnascimentos.aureole.feature.home.components.widgets.EditWidgetGroupScreen
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.EditWidgetGroupActions
@@ -66,22 +68,16 @@ import dev.mnascimentos.aureole.feature.home.components.widgets.model.isWidgetDo
 import dev.mnascimentos.aureole.feature.home.extensions.rememberHomeScreenExclusion
 import dev.mnascimentos.aureole.feature.home.grid.AddContainerDialog
 import dev.mnascimentos.aureole.feature.home.grid.EditGridItemDialog
+import dev.mnascimentos.aureole.feature.home.model.DrawerDragState
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenActions
 import dev.mnascimentos.aureole.feature.home.model.HomeScreenBodyConfig
 import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
-import dev.mnascimentos.aureole.feature.home.model.SwipeDownConditions
-import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
-import dev.mnascimentos.aureole.feature.home.model.SwipeUpConditions
-import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
-import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
-import dev.mnascimentos.aureole.feature.home.model.activeHomeGestures
 import dev.mnascimentos.aureole.feature.home.model.getWidgetIdsForStack
 import dev.mnascimentos.aureole.feature.home.model.isOverlayActive
-import dev.mnascimentos.aureole.feature.home.model.opensAllApps
-import dev.mnascimentos.aureole.feature.home.model.opensNotifications
+import dev.mnascimentos.aureole.feature.home.model.toCallbacks
 
 private const val DEFAULT_APP_WIDGET_HOST_ID = 1024
 
@@ -104,11 +100,14 @@ fun HomeScreen(
     var screenHeightPx by remember { mutableFloatStateOf(0f) }
     var screenWidthPx by remember { mutableFloatStateOf(0f) }
 
+    // With the system animations removed the drawer ends a drag at its final state, with no animation (RF-08).
+    val drawerDrag = remember { DrawerDragState(isAnimated = ValueAnimator.areAnimatorsEnabled()) }
     val dragModifier = Modifier.homeDragModifier(
         screenWidthPx = screenWidthPx,
         screenHeightPx = screenHeightPx,
         onExternalTouchYChange = { externalTouchY = it },
-        onEdgeScrubChange = { isEdgeScrubbing = it }
+        onEdgeScrubChange = { isEdgeScrubbing = it },
+        drawerDrag = drawerDrag
     )
 
     val hazeState = LocalHazeState.current ?: rememberHazeState()
@@ -139,7 +138,8 @@ fun HomeScreen(
                         externalTouchY = externalTouchY,
                         coroutineScope = coroutineScope,
                         screenHeightPx = screenHeightPx,
-                        onExternalTouchYReset = { externalTouchY = -1f }
+                        onExternalTouchYReset = { externalTouchY = -1f },
+                        drawerDrag = drawerDrag
                     )
                 )
                 HomeUndoSnackbar(uiState = uiState, actions = actions)
@@ -154,46 +154,19 @@ private fun Modifier.homeDragModifier(
     screenWidthPx: Float,
     screenHeightPx: Float,
     onExternalTouchYChange: (Float) -> Unit,
-    onEdgeScrubChange: (Boolean) -> Unit
+    onEdgeScrubChange: (Boolean) -> Unit,
+    drawerDrag: DrawerDragState
 ): Modifier {
     val uiState = LocalHomeUiState.current
     val actions = LocalHomeActions.current
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
     val density = LocalDensity.current
-    val canSwipeDown = SwipeDownConditions(
-        isEnabled = uiState.isSwipeDownNotificationsEnabled,
-        isOverlayActive = uiState.isOverlayActive,
-        isEditing = uiState.isGridEditMode
-    ).opensNotifications()
-    val currentCanSwipeDown by rememberUpdatedState(canSwipeDown)
-    val currentOnExpand by rememberUpdatedState(actions.onExpandNotificationShade)
-    val tracker = remember(density) {
-        SwipeScrollTracker(thresholdPx = with(density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() })
-    }
-    val connection = remember(tracker) {
-        swipeNestedConnection(tracker, canOpen = { currentCanSwipeDown }, onOpen = { currentOnExpand() })
-    }
-    val canSwipeUp = SwipeUpConditions(
-        isEnabled = uiState.isSwipeUpAllAppsEnabled,
-        isOverlayActive = uiState.isOverlayActive,
-        isEditing = uiState.isGridEditMode
-    ).opensAllApps()
-    val currentCanSwipeUp by rememberUpdatedState(canSwipeUp)
-    val currentOnOpenDrawer by rememberUpdatedState(actions.onAllAppsDrawerOpen)
-    val upTracker = remember(density) {
-        SwipeScrollTracker(
-            thresholdPx = with(density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() },
-            direction = VerticalSwipe.UP
-        )
-    }
-    val upConnection = remember(upTracker) {
-        swipeNestedConnection(upTracker, canOpen = { currentCanSwipeUp }, onOpen = { currentOnOpenDrawer() })
-    }
-    val active = uiState.activeHomeGestures()
+    val scope = rememberCoroutineScope()
+    val haptics = LocalHapticFeedback.current
+    val down = rememberSwipeDownNested(uiState, actions)
+    val up = rememberSwipeUpNested(uiState, actions)
     // A swipe that is off installs nothing: the home and what is on it keep every touch (RF-02).
-    val nested = this
-        .then(if (active.isSwipeDownOn) Modifier.homeSwipeNestedScroll(tracker, connection) else Modifier)
-        .then(if (active.isSwipeUpOn) Modifier.homeSwipeNestedScroll(upTracker, upConnection) else Modifier)
+    val nested = this.then(down.modifier).then(up.modifier)
     return nested.homeDragGestures(
         HomeDragParams(
             isLeftHandedMode = uiState.isLeftHandedMode,
@@ -203,13 +176,18 @@ private fun Modifier.homeDragModifier(
             screenWidthPx = screenWidthPx,
             isAllAppsDrawerOpen = uiState.isAllAppsDrawerOpen,
             density = density,
-            isSwipeDownEnabled = canSwipeDown,
-            isSwipeUpEnabled = canSwipeUp,
+            isSwipeDownEnabled = down.canOpen,
+            isSwipeUpEnabled = up.canOpen,
             onAllAppsDrawerOpen = actions.onAllAppsDrawerOpen,
             onAllAppsDrawerOpenFromEdge = actions.onAllAppsDrawerOpenFromEdge,
             onExpandNotificationShade = actions.onExpandNotificationShade,
             onExternalTouchYChange = onExternalTouchYChange,
-            onEdgeScrubChange = onEdgeScrubChange
+            onEdgeScrubChange = onEdgeScrubChange,
+            drawerDrag = drawerDrag.toCallbacks(
+                scope = scope,
+                onOpen = actions.onAllAppsDrawerOpen,
+                onConfirm = { haptics.performHapticFeedback(HapticFeedbackType.Confirm) }
+            )
         )
     )
 }
@@ -245,6 +223,7 @@ private fun BoxScope.HomeScreenBody(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .drawerPullEffect(config.drawerDrag)
             .then(homeContentHazeModifier)
     ) {
         WallpaperBackground(
@@ -273,7 +252,8 @@ private fun BoxScope.HomeScreenBody(
         coroutineScope = config.coroutineScope,
         screenHeightPx = config.screenHeightPx,
         appWidgetHost = config.appWidgetHost,
-        onExternalTouchYReset = config.onExternalTouchYReset
+        onExternalTouchYReset = config.onExternalTouchYReset,
+        drawerDrag = config.drawerDrag
     )
 
     HomeOverlaysContent(overlaysConfig)

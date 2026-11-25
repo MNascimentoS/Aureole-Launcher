@@ -13,6 +13,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.EDGE_HOLD_MS
@@ -26,7 +27,9 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberB
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
 import dev.mnascimentos.aureole.feature.home.model.SwipeScrollTracker
 import dev.mnascimentos.aureole.feature.home.model.VERTICAL_INTENT_THRESHOLD_DP
+import dev.mnascimentos.aureole.feature.home.model.VerticalGestureState
 import dev.mnascimentos.aureole.feature.home.model.VerticalSwipe
+import dev.mnascimentos.aureole.feature.home.model.drawerProgressOf
 import dev.mnascimentos.aureole.feature.home.model.isInSystemZone
 import dev.mnascimentos.aureole.feature.home.model.opensHome
 import dev.mnascimentos.aureole.feature.home.model.verticalSwipeOf
@@ -98,30 +101,36 @@ private fun Modifier.verticalDetector(params: HomeDragParams): Modifier = pointe
     params.screenWidthPx
 ) {
     val edgeZone = params.scrubberEdgeZone()
+    val gesture = VerticalGestureState()
+    val velocity = VelocityTracker()
     var isEdgeGesture = false
-    var hasTriggeredGesture = false
     var totalDragOffset = Offset.Zero
+
+    fun finish() {
+        if (gesture.isDrawerDrag) {
+            val upDpPerSec = -velocity.calculateVelocity().y / params.density.density
+            params.drawerDrag?.onEnd?.invoke(gesture.progress, upDpPerSec)
+        }
+        gesture.reset()
+    }
 
     detectDragGestures(
         orientationLock = null,
         onDragStart = { down, _, _ ->
             totalDragOffset = Offset.Zero
-            hasTriggeredGesture = false
+            gesture.reset()
+            velocity.resetTracking()
+            velocity.addPosition(down.uptimeMillis, down.position)
             isEdgeGesture = edgeZone?.contains(down.position.x, down.position.y) == true ||
                 params.isInSystemZone(down.position)
         },
         onDrag = { change, dragAmount ->
             totalDragOffset += dragAmount
-            if (!isEdgeGesture) {
-                hasTriggeredGesture = handleVerticalGesture(
-                    change = change,
-                    totalDx = totalDragOffset.x,
-                    totalDy = totalDragOffset.y,
-                    hasTriggered = hasTriggeredGesture,
-                    params = params
-                )
-            }
-        }
+            velocity.addPosition(change.uptimeMillis, change.position)
+            if (!isEdgeGesture) handleVerticalGesture(change, totalDragOffset, gesture, params)
+        },
+        onDragEnd = { finish() },
+        onDragCancel = { finish() }
     )
 }
 
@@ -197,33 +206,32 @@ private suspend fun AwaitPointerEventScope.runEdgeScrub(
 
 private fun handleVerticalGesture(
     change: PointerInputChange,
-    totalDx: Float,
-    totalDy: Float,
-    hasTriggered: Boolean,
+    total: Offset,
+    gesture: VerticalGestureState,
     params: HomeDragParams
-): Boolean {
-    if (params.isAllAppsDrawerOpen || change.isConsumed) {
-        return hasTriggered
-    }
-
-    var triggered = hasTriggered
-    if (!triggered) {
-        val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
-        val swipe = verticalSwipeOf(totalDx, totalDy, verticalIntentThresholdPx)
-        // With a swipe off, it does nothing and leaves the finger to the home.
-        val opens = swipe.opensHome(isUpEnabled = params.isSwipeUpEnabled, isDownEnabled = params.isSwipeDownEnabled)
-        if (opens) {
-            triggered = true
-            change.consume()
-            if (swipe == VerticalSwipe.DOWN) {
-                params.onExpandNotificationShade()
-            } else {
-                params.onAllAppsDrawerOpen()
-            }
-        }
-    } else {
+) {
+    if (params.isAllAppsDrawerOpen || change.isConsumed) return
+    if (gesture.hasTriggered) {
         change.consume()
+        if (gesture.isDrawerDrag) {
+            gesture.progress = drawerProgressOf(-total.y, params.screenHeightPx)
+            params.drawerDrag?.onProgress?.invoke(gesture.progress)
+        }
+        return
     }
-
-    return triggered
+    val verticalIntentThresholdPx = with(params.density) { VERTICAL_INTENT_THRESHOLD_DP.dp.toPx() }
+    val swipe = verticalSwipeOf(total.x, total.y, verticalIntentThresholdPx)
+    // With a swipe off, it does nothing and leaves the finger to the home.
+    if (!swipe.opensHome(isUpEnabled = params.isSwipeUpEnabled, isDownEnabled = params.isSwipeDownEnabled)) return
+    gesture.hasTriggered = true
+    change.consume()
+    when {
+        swipe == VerticalSwipe.DOWN -> params.onExpandNotificationShade()
+        params.drawerDrag != null -> {
+            gesture.isDrawerDrag = true
+            gesture.progress = drawerProgressOf(-total.y, params.screenHeightPx)
+            params.drawerDrag.onProgress(gesture.progress)
+        }
+        else -> params.onAllAppsDrawerOpen()
+    }
 }

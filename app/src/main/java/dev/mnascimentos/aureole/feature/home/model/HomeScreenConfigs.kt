@@ -30,6 +30,8 @@ data class HomeDragParams(
     val onExternalTouchYChange: (Float) -> Unit,
     /** An edge scrub started (true) or ended (false): the home keeps this modifier on while it runs. */
     val onEdgeScrubChange: (Boolean) -> Unit = {},
+    /** The swipe up pulls the drawer with the finger; null opens it at once, as a nested scroll does. */
+    val drawerDrag: DrawerDragCallbacks? = null
 )
 
 data class ScrubberOverlayConfig(
@@ -50,7 +52,8 @@ data class HomeOverlaysConfig(
     val coroutineScope: CoroutineScope,
     val screenHeightPx: Float,
     val appWidgetHost: AppWidgetHost? = null,
-    val onExternalTouchYReset: () -> Unit
+    val onExternalTouchYReset: () -> Unit,
+    val drawerDrag: DrawerDragState? = null
 )
 
 data class HomeScreenBodyConfig(
@@ -64,7 +67,8 @@ data class HomeScreenBodyConfig(
     val externalTouchY: Float,
     val coroutineScope: CoroutineScope,
     val screenHeightPx: Float,
-    val onExternalTouchYReset: () -> Unit
+    val onExternalTouchYReset: () -> Unit,
+    val drawerDrag: DrawerDragState? = null
 )
 
 data class AppsDrawerOverlayConfig(
@@ -74,6 +78,7 @@ data class AppsDrawerOverlayConfig(
     val listState: LazyListState,
     val hazeState: HazeState,
     val onClose: () -> Unit,
+    val drawerDrag: DrawerDragState? = null
 )
 
 data class GridItemContentParams(

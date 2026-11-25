@@ -69,6 +69,8 @@ class MainScaffoldOnboardingTest {
         composeTestRule.onNodeWithText("Swipe up").assertExists()
 
         composeTestRule.onRoot().performTouchInput { swipeUp(startY = centerY, endY = 0f) }
+        // The drawer follows the finger and settles in an animation before it opens.
+        composeTestRule.waitForIdle()
 
         assertTrue(drawerOpened)
     }

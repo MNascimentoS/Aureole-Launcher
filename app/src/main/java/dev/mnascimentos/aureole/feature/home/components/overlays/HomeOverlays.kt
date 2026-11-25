@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.overlays
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -35,6 +38,7 @@ import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberC
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberOptions
 import dev.mnascimentos.aureole.feature.home.model.AllAppsOpenSource
 import dev.mnascimentos.aureole.feature.home.model.AppsDrawerOverlayConfig
+import dev.mnascimentos.aureole.feature.home.model.DrawerDragState
 import dev.mnascimentos.aureole.feature.home.model.DrawerMotion
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.ScrubberOverlayConfig
@@ -55,6 +59,7 @@ fun BoxScope.HomeOverlaysContent(
             listState = config.listState,
             hazeState = config.hazeState,
             onClose = config.actions.onAllAppsDrawerClose,
+            drawerDrag = config.drawerDrag
         ),
         modifier = modifier
     )
@@ -85,10 +90,19 @@ fun AppsDrawerOverlay(
     config: AppsDrawerOverlayConfig,
     modifier: Modifier = Modifier,
 ) {
-    val enterTransition = when (drawerMotionFor(config.openSource, config.isLeftHandedMode)) {
-        DrawerMotion.FROM_BOTTOM -> fadeIn() + slideInVertically { it }
-        DrawerMotion.FROM_RIGHT -> fadeIn() + slideInHorizontally { it }
-        DrawerMotion.FROM_LEFT -> fadeIn() + slideInHorizontally { -it }
+    val drag = config.drawerDrag
+    LaunchedEffect(config.isAllAppsDrawerOpen) {
+        if (!config.isAllAppsDrawerOpen) drag?.onDrawerClosed()
+    }
+    // A drawer a swipe up already brought on screen appears in place: no slide of its own on top of the pull.
+    val enterTransition = if (drag?.isEnterSkipped == true) {
+        EnterTransition.None
+    } else {
+        when (drawerMotionFor(config.openSource, config.isLeftHandedMode)) {
+            DrawerMotion.FROM_BOTTOM -> fadeIn() + slideInVertically { it }
+            DrawerMotion.FROM_RIGHT -> fadeIn() + slideInHorizontally { it }
+            DrawerMotion.FROM_LEFT -> fadeIn() + slideInHorizontally { -it }
+        }
     }
 
     val exitTransition = when (drawerMotionFor(config.openSource, config.isLeftHandedMode)) {
@@ -117,11 +131,35 @@ fun AppsDrawerOverlay(
             AppsListDrawer(
                 listState = config.listState,
                 hazeState = config.hazeState,
-                modifier = Modifier.align(drawerAlign),
+                modifier = Modifier.align(drawerAlign).drawerCloseDrag(config.listState, config.onClose),
             )
         }
     }
+    if (drag != null && drag.isActive && !config.isAllAppsDrawerOpen) {
+        PulledDrawer(config = config, drag = drag)
+    }
 }
+
+/** The drawer while a swipe up pulls it: it rises with the finger, and the real one takes its place when it opens. */
+@Composable
+private fun PulledDrawer(config: AppsDrawerOverlayConfig, drag: DrawerDragState) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .graphicsLayer {
+                translationY = (1f - drag.progress.value) * size.height
+                alpha = (drag.progress.value * PULL_FADE_IN).coerceAtMost(1f)
+            }
+    ) {
+        AppsListDrawer(
+            listState = config.listState,
+            hazeState = config.hazeState,
+            modifier = Modifier.align(if (config.isLeftHandedMode) Alignment.CenterStart else Alignment.CenterEnd)
+        )
+    }
+}
+
+private const val PULL_FADE_IN = 4f
 
 @Composable
 fun ScrubberOverlay(
