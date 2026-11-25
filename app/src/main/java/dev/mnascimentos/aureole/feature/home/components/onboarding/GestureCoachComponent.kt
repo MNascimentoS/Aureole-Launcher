@@ -63,8 +63,7 @@ fun GestureCoachComponent(
     val step = onboarding.succeededStep
         ?: onboarding.currentGestureStep(
             config.isAlphabetScrubberDisabled,
-            config.isLandscape,
-            config.isSwipeUpEnabled
+            config.isLandscape
         )
         ?: return
     if (config.isHiddenOverDrawer(step)) return
@@ -109,8 +108,7 @@ private fun GestureCoachCardContent(
         GestureCoachStepIndicator(
             steps = visibleGestureSteps(
                 config.isAlphabetScrubberDisabled,
-                config.isLandscape,
-                config.isSwipeUpEnabled
+                config.isLandscape
             ),
             completed = onboarding.completedSteps,
             current = step

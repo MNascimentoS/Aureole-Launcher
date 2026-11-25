@@ -26,7 +26,7 @@ Caminhos relativos a `app/src/main/java/dev/mnascimentos/aureole/` (`M/`). Só e
 | containers | `Container`, `EditContainerScreen`; `folder/` com `OpenedFolderPopup` |
 | content | `GridItemContent` (despacha o tipo do item), `HomeScreenScrollContent` |
 | favorites | `AppsList`, `FavoritesListRow` |
-| onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep`. Etapas do coach (`GestureCoachStep`, ordem em `visibleGestureSteps`): todos os apps (só com o swipe up ligado) → alfabeto → tocar e segurar; o passo das notificações foi removido. Paisagem do onboarding: `onboardingLandscapeLayout` + `withOwnLandscapeContent` (container e widgets com id próprio, vazios) |
+| onboarding | `OnboardingHostComponent`, checklist, `WelcomeScreen`, `GestureCoach`, `DefaultHomeStep`. Etapas do coach (`GestureCoachStep`, ordem em `visibleGestureSteps`): todos os apps → alfabeto → tocar e segurar; o passo das notificações foi removido. Paisagem do onboarding: `onboardingLandscapeLayout` + `withOwnLandscapeContent` (container e widgets com id próprio, vazios) |
 | overlays | `HomeOverlays`, `CustomizeBottomSheet`, `HomeDragGestures` e `HomeVerticalGesture` (detector vertical só com o gesto ligado; a gaveta acompanha o dedo), `AppsDrawerPull` (efeito na home e fechar arrastando), `HomeNestedSwipes` (o delta que sobra de uma lista no topo abre as notificações ou a gaveta), `InAppUpdateDialog` |
 | quickbutton | Sheets de Settings, Appearance e ShortcutSelection |
 | scrubber | `CurvedAlphabetScrubber` |

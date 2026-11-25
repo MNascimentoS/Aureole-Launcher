@@ -34,8 +34,7 @@ internal object OnboardingReducer {
         }
         val visibleSteps = visibleGestureSteps(
             next.isAlphabetScrubberDisabled,
-            next.isLandscape,
-            next.isSwipeUpAllAppsEnabled
+            next.isLandscape
         )
         val isFinished = updated.succeededStep == null && updated.completedSteps.containsAll(visibleSteps)
         // Finishing can also come from the step list shrinking, as when the screen turns to landscape.

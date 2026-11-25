@@ -78,7 +78,6 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
             isLeftHandedMode = isLeftHandedMode,
             isTouchExplorationEnabled = isTouchExplorationEnabled,
             isLandscape = isLandscape,
-            isSwipeUpEnabled = isSwipeUpAllAppsEnabled,
             isAlphabetLoading = alphabet.isEmpty(),
             isAllAppsOpen = isAllAppsDrawerOpen
         ),
@@ -108,6 +107,5 @@ val MainUiState.isScrubberHintVisible: Boolean
         onboarding.succeededStep == null &&
         onboarding.currentGestureStep(
             isAlphabetScrubberDisabled,
-            isLandscape,
-            isSwipeUpAllAppsEnabled
+            isLandscape
         ) == GestureCoachStep.ALPHABET_SCRUB

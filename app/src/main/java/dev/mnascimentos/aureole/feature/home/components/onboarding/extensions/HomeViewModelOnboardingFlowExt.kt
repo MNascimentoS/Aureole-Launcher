@@ -43,8 +43,7 @@ fun HomeViewModel.showMeGesture() {
     if (state.onboarding.stage != OnboardingStage.GESTURES) return
     val step = state.onboarding.currentGestureStep(
         state.isAlphabetScrubberDisabled,
-        state.isLandscape,
-        state.isSwipeUpAllAppsEnabled
+        state.isLandscape
     )
     when (step) {
         GestureCoachStep.OPEN_APPS -> setAllAppsDrawerOpen(true)
