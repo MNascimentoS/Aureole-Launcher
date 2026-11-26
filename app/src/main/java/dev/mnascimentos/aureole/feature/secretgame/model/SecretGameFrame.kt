@@ -54,6 +54,7 @@ data class SecretGameFrame(
     val levelLabel: Int = 1,
     val rockets: List<FireworkRocket> = emptyList(),
     val sparks: List<FireworkSpark> = emptyList(),
+    val fireworksAlpha: Float = 1f,
     val isPaused: Boolean = false,
     val result: SecretResultFrame? = null,
 )
@@ -65,6 +66,7 @@ fun SecretGameState.toFrame(): SecretGameFrame {
         particles = particles,
         rockets = fireworks.rockets,
         sparks = fireworks.sparks,
+        fireworksAlpha = fireworksAlpha(),
         stars = starSprites(),
         streaksAlpha = streaksAlpha(),
     )
@@ -80,6 +82,10 @@ fun SecretGameState.toFrame(): SecretGameFrame {
         SecretGamePhase.EXIT, SecretGamePhase.DONE -> base
     }
 }
+
+/** Na saída os fogos se apagam enquanto o Settings aparece (o inverso de [settingsAlpha]). */
+private fun SecretGameState.fireworksAlpha(): Float =
+    if (phase == SecretGamePhase.EXIT || phase == SecretGamePhase.DONE) 1f - settingsAlpha() else 1f
 
 private fun SecretGameState.settingsAlpha(): Float = when (phase) {
     SecretGamePhase.ENTER -> 1f - progress(phaseMs, 0L, T.HIDE_MS)

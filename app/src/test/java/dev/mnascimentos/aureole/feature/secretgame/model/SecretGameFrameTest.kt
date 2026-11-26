@@ -128,6 +128,16 @@ class SecretGameFrameTest {
     }
 
     @Test
+    fun `fireworks fade out while settings fades in on exit`() {
+        assertEquals(1f, at(SecretGamePhase.RESULT, T.RESULT_IN_MS + 1, base).fireworksAlpha, EPS)
+        assertEquals(1f, at(SecretGamePhase.EXIT, 0L, base).fireworksAlpha, EPS)
+        val mid = at(SecretGamePhase.EXIT, T.EXIT_MS / 2, base)
+        assertEquals(1f - mid.settingsAlpha, mid.fireworksAlpha, EPS)
+        assertEquals(0f, at(SecretGamePhase.EXIT, T.EXIT_MS, base).fireworksAlpha, EPS)
+        assertEquals(0f, at(SecretGamePhase.DONE, 0L, base).fireworksAlpha, EPS)
+    }
+
+    @Test
     fun `exit brings settings and its logo back`() {
         val half = at(SecretGamePhase.EXIT, T.EXIT_MS / 2)
         assertTrue(half.settingsLogoVisible)

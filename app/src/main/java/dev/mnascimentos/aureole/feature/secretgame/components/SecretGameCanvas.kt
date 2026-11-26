@@ -91,7 +91,7 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
         drawCircle(color.copy(alpha = it.life.coerceIn(0f, 1f)), it.radius * u, Offset(it.x * u, it.y * u))
     }
     val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
-    drawFireworks(frame.rockets, frame.sparks, fireworkColors)
+    drawFireworks(frame.rockets, frame.sparks, fireworkColors, frame.fireworksAlpha)
     frame.buttons?.let { drawButtons(it, colors.ship) }
 }
 
