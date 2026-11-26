@@ -95,7 +95,10 @@ private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretG
     drawCentered(pen, SecretText(texts.backToExit, mid + u * D.BACK_HINT_GAP, D.SUB_TEXT, backColor, true))
 }
 
-/** Your Score (big), Best Score (small, darker, only when it was not just beaten) and the message. */
+/**
+ * Best score (small, darker, above; only when it was not just beaten), Your score (big) and the message. After a
+ * new record the title moves up and the message takes the old center, with a wider gap.
+ */
 private fun DrawScope.drawResult(
     pen: TextPen,
     texts: ResultTexts,
@@ -105,15 +108,15 @@ private fun DrawScope.drawResult(
 ) {
     val u = size.width
     val color = colors.ship.copy(alpha = result.alpha)
-    val dim = colors.ship.copy(alpha = result.alpha * D.BACK_HINT_ALPHA)
-    drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
-    var line = 1f
-    if (!result.isNewRecord) {
-        drawCentered(pen, SecretText(texts.best, mid + u * D.RESULT_LINE_GAP, D.BEST_TEXT, dim, true))
-        line = D.RESULT_SUB_LINES
+    if (result.isNewRecord) {
+        drawCentered(pen, SecretText(texts.title, mid - u * D.RECORD_TITLE_ABOVE, D.TITLE_TEXT, color, true))
+        drawCentered(pen, SecretText(texts.sub, mid, D.SUB_TEXT, color, true))
+        return
     }
-    val sub = mid + u * D.RESULT_LINE_GAP * line
-    drawCentered(pen, SecretText(texts.sub, sub, D.SUB_TEXT, color, true))
+    val dim = colors.ship.copy(alpha = result.alpha * D.BACK_HINT_ALPHA)
+    drawCentered(pen, SecretText(texts.best, mid - u * D.RESULT_BEST_ABOVE, D.BEST_TEXT, dim, true))
+    drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
+    drawCentered(pen, SecretText(texts.sub, mid + u * D.RESULT_SUB_BELOW, D.SUB_TEXT, color, true))
 }
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)
