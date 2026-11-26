@@ -21,7 +21,9 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.withClo
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.loadContainers
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.OnboardingReducer
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmPendingTask
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.enableSwipeUpForCoach
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ensureAppsOnCompletion
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.preloadWidgetsOnChecklist
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.toProgress
 import dev.mnascimentos.aureole.feature.home.components.widgets.extensions.loadWidgetSettings
 import dev.mnascimentos.aureole.feature.home.grid.extensions.loadGridItemsNow
@@ -61,7 +63,9 @@ class HomeViewModel(
         // Persisted outside update {}, whose lambda may run more than once.
         if (after != before) settingsRepository.onboarding.write(after)
         confirmPendingTask(previous)
+        enableSwipeUpForCoach(previous)
         ensureAppsOnCompletion(previous)
+        preloadWidgetsOnChecklist(previous)
     }
 
     /** Publishes the controller's current offer (or none) to [uiState]. */
@@ -154,6 +158,7 @@ class HomeViewModel(
                     glassLevel = glassLevelOf(settingsRepository.hazeBlurLevel),
                     isInAppUpdateEnabled = settingsRepository.isInAppUpdateEnabled,
                     isThemedAppIconsEnabled = settingsRepository.isThemedAppIconsEnabled,
+                    isSheetHandleHidden = settingsRepository.isSheetHandleHidden,
                     isAlphabetScrubberDisabled = settingsRepository.isAlphabetScrubberDisabled,
                     isSwipeDownNotificationsEnabled = settingsRepository.isSwipeDownNotificationsEnabled,
                     isSwipeUpAllAppsEnabled = settingsRepository.isSwipeUpAllAppsEnabled,

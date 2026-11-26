@@ -66,7 +66,7 @@ class SecretGameCanvasTest {
             }
         }
 
-        rule.onNodeWithText("290").assertExists()
+        rule.onNodeWithText("290", substring = true).assertExists()
     }
 
     private companion object {
@@ -102,6 +102,7 @@ private fun sampleFrames(): List<SecretGameFrame> = listOf(
     sampleState(SecretGamePhase.PLAY, PLAY_MS, score = 120).toFrame(),
     sampleState(SecretGamePhase.PAUSED, PLAY_MS, score = 120).toFrame(),
     sampleState(SecretGamePhase.RESULT, RESULT_MS, score = 290, record = true).toFrame(),
+    sampleState(SecretGamePhase.RESULT, RESULT_MS, score = LONG_SCORE, record = true).toFrame(),
     sampleState(SecretGamePhase.PLAY, PLAY_MS, score = 300).copy(levelFlashMs = LEVEL_FLASH_SAMPLE_MS).toFrame(),
     sampleState(SecretGamePhase.RESULT, RESULT_MS, score = 290, record = true)
         .copy(fireworks = fireworksSample()).toFrame(),
@@ -114,6 +115,7 @@ private fun sampleFrames(): List<SecretGameFrame> = listOf(
 )
 
 private const val SAMPLE_ASPECT = 2.1f
+private const val LONG_SCORE = 1234567
 private const val WARP_MID_MS = 450L
 private const val ENTER_MID_MS = 1400L
 private const val COUNTDOWN_MS = 800L

@@ -26,6 +26,18 @@ class SecretSoundsTest {
     }
 
     @Test
+    fun `lane, go, crash and record are softer but audible, the rest is at full gain`() {
+        val softer = setOf(SecretSound.LANE, SecretSound.GO, SecretSound.CRASH, SecretSound.RECORD)
+        SecretSound.entries.forEach {
+            if (it in softer) {
+                assertTrue(it.gain() < 1f && it.gain() >= MIN_AUDIBLE_GAIN)
+            } else {
+                assertEquals(1f, it.gain(), 0f)
+            }
+        }
+    }
+
+    @Test
     fun `mute plays nothing`() {
         val events = listOf(SecretGameEvent.LaneTick, SecretGameEvent.Crash, SecretGameEvent.GameOver(0))
         assertEquals(listOf(SecretSound.LANE, SecretSound.CRASH), secretSoundsFor(events, isSoundOn = true))
@@ -71,6 +83,7 @@ class SecretSoundsTest {
 
     private companion object {
         const val SEED = 3
+        const val MIN_AUDIBLE_GAIN = 0.4f
         const val STEP = 16L
         const val BIG = 1_000_000f
     }

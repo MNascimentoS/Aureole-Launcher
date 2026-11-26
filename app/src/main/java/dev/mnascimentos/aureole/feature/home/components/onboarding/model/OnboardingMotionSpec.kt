@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding.model
 
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.ui.unit.dp
 
 /** Onboarding animation values. Layout tokens are never used for motion, so these stay as named constants. */
@@ -37,7 +38,9 @@ object OnboardingMotionSpec {
     const val HAND_EDGE_SLIDE_END = 0.83f
     const val HAND_PRESS_LOOP_MS = 1800
     const val HAND_PRESS_FILL_MS = 600
-    const val SHOW_ME_DELAY_MS = 8_000L
+
+    // After the right gesture, "Nice!" stays this long and then shrinks into the "Go back" chip (RF-E2, D-04).
+    const val COACH_SUCCESS_CARD_MS = 2_000L
     val HAND_FINGER_RADIUS = 18.dp
     val HAND_EDGE_PULL_TRAVEL = 56.dp
     val HAND_PRESS_RING_GAP = 10.dp
@@ -51,27 +54,28 @@ object OnboardingMotionSpec {
     const val CHECKLIST_STAGGER_MS = 60
     val CHECKLIST_ITEM_OFFSET = 16.dp
     const val NEXT_ITEM_BREATH_MS = 2200
-    const val PILL_DAMPING = 0.8f
+
+    // Pill ↔ card (D-19): one container transform of ~300 ms with the emphasized easing; the glass blur is off while
+    // it moves and the task's screen only rises once it is over (RF-B3, RF-B5).
+    const val CHECKLIST_MORPH_MS = 300
+    private const val CHECKLIST_MORPH_EASE_X1 = 0.2f
+    val CHECKLIST_MORPH_EASING = CubicBezierEasing(CHECKLIST_MORPH_EASE_X1, 0f, 0f, 1f)
     val CHECKLIST_MAX_WIDTH = 420.dp
 
-    // Peek bubble (RF-13): it opens into the list (or the pill) in one FastOutSlowIn movement, and the rows fade in
-    // once ~45% of it has run. The item the task left is outlined, and the outline fades with the peek.
-    const val BUBBLE_MORPH_MS = 550
-    const val BUBBLE_LIST_FADE_DELAY_MS = 250
-    const val BUBBLE_LIST_FADE_MS = 300
-    const val PEEK_OUTLINE_FADE_MS = 400
-    const val PEEK_OUTLINE_ALPHA = 0.6f
+    // New item highlight (onboarding-redesenho RF-D1, D-01): a dashed outline ~6 dp outside the item draws itself in
+    // ~500 ms and then marches (one dash cycle per second); the chip sits on its top-start corner.
+    const val NEW_ITEM_DRAW_MS = 500
+    const val NEW_ITEM_MARCH_MS = 1000
+    val NEW_ITEM_MARGIN = 6.dp
 
-    // Celebration
-    const val CELEBRATION_MS = 4500L
-    const val CELEBRATION_BURST_MS = 2600
+    // Celebration ("All set", RF-D5, D-18): ~2.4 s on a light scrim, then a fade.
+    const val CELEBRATION_MS = 2400L
+    const val CELEBRATION_SCRIM_ALPHA = 0.25f
+    const val CELEBRATION_BURST_MS = 2000
     const val HALO_CLOSE_MS = 700
     const val MAX_PARTICLES = 40
     val PARTICLE_RADIUS = 3.dp
 
     // Default home success message before moving on
     const val DEFAULT_HOME_SUCCESS_MS = 1400L
-
-    // Swipe down success message, counted once the shade is closed and the home has the focus again
-    const val NOTIFICATIONS_SUCCESS_MS = 3_000L
 }

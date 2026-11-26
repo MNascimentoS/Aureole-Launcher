@@ -117,13 +117,24 @@ class SecretGameFrameTest {
 
     @Test
     fun `result fades in, holds and fades out`() {
-        val s = base.copy(score = 150, isNewRecord = true)
+        val s = base.copy(score = 150, bestScore = 150, isNewRecord = true)
         assertEquals(0f, assertNotNullAndGet(at(SecretGamePhase.RESULT, 0L, s).result).alpha, EPS)
         val hold = assertNotNullAndGet(at(SecretGamePhase.RESULT, T.RESULT_IN_MS + 1, s).result)
         assertEquals(1f, hold.alpha, EPS)
         assertEquals(150, hold.score)
+        assertEquals(150, hold.bestScore)
         assertTrue(hold.isNewRecord)
         assertEquals(0f, assertNotNullAndGet(at(SecretGamePhase.RESULT, T.RESULT_TOTAL_MS, s).result).alpha, EPS)
+    }
+
+    @Test
+    fun `fireworks fade out while settings fades in on exit`() {
+        assertEquals(1f, at(SecretGamePhase.RESULT, T.RESULT_IN_MS + 1, base).fireworksAlpha, EPS)
+        assertEquals(1f, at(SecretGamePhase.EXIT, 0L, base).fireworksAlpha, EPS)
+        val mid = at(SecretGamePhase.EXIT, T.EXIT_MS / 2, base)
+        assertEquals(1f - mid.settingsAlpha, mid.fireworksAlpha, EPS)
+        assertEquals(0f, at(SecretGamePhase.EXIT, T.EXIT_MS, base).fireworksAlpha, EPS)
+        assertEquals(0f, at(SecretGamePhase.DONE, 0L, base).fireworksAlpha, EPS)
     }
 
     @Test

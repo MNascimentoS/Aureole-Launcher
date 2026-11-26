@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import dev.chrisbanes.haze.HazeState
@@ -20,7 +22,10 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.HomeTopGrabZone
 import dev.mnascimentos.aureole.feature.home.components.content.GridItemContent
 import dev.mnascimentos.aureole.feature.home.components.favorites.model.FavoritesListConfig
-import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onboardingPeekOutline
+import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingNewItemChip
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.highlightedItemId
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.onboardingNewItemOutline
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.locksHomeItems
 import dev.mnascimentos.aureole.feature.home.components.widgets.model.StackedWidgetConfig
 import dev.mnascimentos.aureole.feature.home.grid.DynamicGridContainer
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
@@ -101,8 +106,10 @@ internal fun MainHomeLayout(
                 .padding(horizontal = AureoleDS.dimens.xSmall)
                 .padding(top = AureoleDS.dimens.homeTopGrabZone, bottom = AureoleDS.dimens.xSmall)
         ) { item ->
-            // The item a checklist task just left gets a soft outline while the home peeks (RF-13).
-            Box(modifier = Modifier.fillMaxSize().onboardingPeekOutline(item.id == uiState.onboarding.peekItemId)) {
+            // Only the item a step just added gets the dashed highlight and its chip, until the next step or the
+            // list opens (onboarding-redesenho RF-D1, RF-D3).
+            val isNewItem = item.id == uiState.onboarding.highlightedItemId
+            Box(modifier = Modifier.fillMaxSize().onboardingNewItemOutline(isNewItem)) {
                 GridItemContent(
                     GridItemContentParams(
                         item = item,
@@ -112,6 +119,14 @@ internal fun MainHomeLayout(
                         hazeState = hazeState
                     )
                 )
+                // Inert until the tour is over: the overlay takes the touch away from the item (its list, widget or
+                // button) and leaves it unconsumed, so the home's own gestures and the coach still see it.
+                if (uiState.onboarding.locksHomeItems && !uiState.isGridEditMode) {
+                    Box(modifier = Modifier.matchParentSize().pointerInput(Unit) {})
+                }
+                if (isNewItem) {
+                    OnboardingNewItemChip(type = item.safeType, modifier = Modifier.align(Alignment.TopStart))
+                }
             }
         }
         HomeTopGrabZone(enabled = !uiState.isGridEditMode, onLongPress = actions.onOpenCustomizeBottomSheet)

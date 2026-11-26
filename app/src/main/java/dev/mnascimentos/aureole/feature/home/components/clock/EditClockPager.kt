@@ -27,6 +27,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.fadingEdges
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.pagerMinHeight
+import dev.mnascimentos.aureole.feature.home.components.clock.model.sessionTallestPage
 
 /** Pages kept composed beside the visible one, so every tab is measured and the height can follow the tabs. */
 private const val OFFSCREEN_PAGES = 2
@@ -34,13 +35,15 @@ private const val OFFSCREEN_PAGES = 2
 /**
  * Sheet content of the clock editor: one vertically scrollable page per [ClockTab], swiped sideways.
  * The pager is as tall as the active page and eases to the height of the next one while it slides,
- * so the Style tab has no empty gap below it.
+ * so the Style tab has no empty gap below it. [sessionTallest] keeps the tallest page of the session; it is read
+ * and written at measure time only (a plain holder, so growing it never recomposes).
  */
 @Composable
 internal fun EditClockPager(
     pagerState: PagerState,
     params: EditClockPagerParams,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    sessionTallest: IntArray = remember { IntArray(1) }
 ) {
     val pageHeights = remember { mutableStateListOf<Int>().apply { repeat(ClockTab.pageCount) { add(0) } } }
 
@@ -50,7 +53,7 @@ internal fun EditClockPager(
             .fillMaxWidth()
             // No animateContentSize: its spring lagged behind the sheet while it grew, so the content was
             // revealed from the bottom up instead of moving 1:1 with the finger (ajustes-review-aislan-2 RF-F1).
-            .followActivePage(pagerState, pageHeights, params.isExpanded),
+            .followActivePage(pagerState, pageHeights, params.isExpanded, sessionTallest),
         verticalAlignment = Alignment.Top,
         beyondViewportPageCount = OFFSCREEN_PAGES,
         key = { it }
@@ -79,26 +82,27 @@ internal fun EditClockPager(
                     ClockTab.FORMAT -> EditClockFormatPage(params)
                     ClockTab.COLORS -> EditClockColorsPage(params)
                 }
-                // Room under the last control so it is not cut in half at the edge of the scroll; the
-                // expanded sheet does not scroll, so the divider sits right after the content instead.
-                if (!params.isExpanded) Spacer(modifier = Modifier.height(AureoleDS.dimens.xSmall))
+                // No room under the last control: the fading edge itself meets the notice and the tab bar, almost
+                // without margin (telas-ajustesfundo RF-05).
             }
         }
     }
 }
 
 /**
- * Sizes the pager from the measured page heights (at least the tallest page at rest, see [pagerMinHeight]);
- * read at measure time, so a swipe does not recompose.
+ * Sizes the pager from the measured page heights (at rest, at least the tallest page of the session, see
+ * [pagerMinHeight] and [sessionTallestPage]); read at measure time, so a swipe does not recompose.
  */
 private fun Modifier.followActivePage(
     pagerState: PagerState,
     pageHeights: List<Int>,
-    isExpanded: Boolean
+    isExpanded: Boolean,
+    sessionTallest: IntArray
 ): Modifier =
     layout { measurable, constraints ->
         val followed = ClockTab.pagerHeight(pageHeights, pagerState.currentPage, pagerState.currentPageOffsetFraction)
-        val wanted = maxOf(followed, pagerMinHeight(isExpanded, pageHeights.maxOrNull() ?: 0))
+        sessionTallest[0] = sessionTallestPage(sessionTallest[0], pageHeights)
+        val wanted = maxOf(followed, pagerMinHeight(isExpanded, sessionTallest[0]))
         val height = constraints.constrainHeight(wanted)
         val fixed = if (wanted > 0) constraints.copy(minHeight = height, maxHeight = height) else constraints
         val placeable = measurable.measure(fixed)

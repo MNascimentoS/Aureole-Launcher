@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretCountdownLabel
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretResultFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretText
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
@@ -31,13 +32,20 @@ internal fun SecretGameTexts(
 ) {
     val pen = TextPen(rememberTextMeasurer(), AureoleDS.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
     val go = stringResource(R.string.secret_game_go)
-    val paused = stringResource(R.string.secret_game_paused)
-    val resume = stringResource(R.string.secret_game_tap_to_resume)
-    val backToExit = stringResource(R.string.secret_game_back_to_exit)
     val level = stringResource(R.string.secret_game_level, frame.levelLabel)
-    val resultTitle = frame.result?.let { stringResource(R.string.secret_game_score, it.score) }
-    val resultSub = frame.result?.let {
-        stringResource(if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck)
+    val pause = PauseTexts(
+        paused = stringResource(R.string.secret_game_paused),
+        resume = stringResource(R.string.secret_game_tap_to_resume),
+        backToExit = stringResource(R.string.secret_game_back_to_exit)
+    )
+    val result = frame.result?.let {
+        ResultTexts(
+            title = stringResource(R.string.secret_game_score, it.score),
+            best = stringResource(R.string.secret_game_best_score, it.bestScore),
+            sub = stringResource(
+                if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck
+            )
+        )
     }
     val veil = AureoleDS.colors.surface
     Canvas(modifier = modifier) {
@@ -66,29 +74,61 @@ internal fun SecretGameTexts(
                 )
             drawCentered(pen, spec)
         }
+        val mid = u * aspect * T.CENTER_Y_FRACTION
         if (frame.isPaused) {
             drawRect(veil.copy(alpha = D.PAUSE_VEIL_ALPHA))
-            val mid = u * aspect * T.CENTER_Y_FRACTION
-            drawCentered(pen, SecretText(paused, mid, D.TITLE_TEXT, colors.ship, true))
-            drawCentered(pen, SecretText(resume, mid + u * D.RESULT_LINE_GAP, D.SUB_TEXT, colors.ship, true))
-            val backColor = colors.ship.copy(alpha = D.BACK_HINT_ALPHA)
-            drawCentered(pen, SecretText(backToExit, mid + u * D.BACK_HINT_GAP, D.SUB_TEXT, backColor, true))
+            drawPause(pen, pause, colors, mid)
         }
-        frame.result?.let {
-            val mid = u * aspect * T.CENTER_Y_FRACTION
-            val color = colors.ship.copy(alpha = it.alpha)
-            drawCentered(pen, SecretText(resultTitle.orEmpty(), mid, D.TITLE_TEXT, color, true))
-            drawCentered(pen, SecretText(resultSub.orEmpty(), mid + u * D.RESULT_LINE_GAP, D.SUB_TEXT, color, true))
-        }
+        frame.result?.let { shown -> result?.let { drawResult(pen, it, shown, colors, mid) } }
     }
+}
+
+private class PauseTexts(val paused: String, val resume: String, val backToExit: String)
+
+private class ResultTexts(val title: String, val best: String, val sub: String)
+
+private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretGameColors, mid: Float) {
+    val u = size.width
+    drawCentered(pen, SecretText(texts.paused, mid, D.TITLE_TEXT, colors.ship, true))
+    drawCentered(pen, SecretText(texts.resume, mid + u * D.RESULT_LINE_GAP, D.SUB_TEXT, colors.ship, true))
+    val backColor = colors.ship.copy(alpha = D.BACK_HINT_ALPHA)
+    drawCentered(pen, SecretText(texts.backToExit, mid + u * D.BACK_HINT_GAP, D.SUB_TEXT, backColor, true))
+}
+
+/** Your Score (big), Best Score (small, darker, only when it was not just beaten) and the message. */
+private fun DrawScope.drawResult(
+    pen: TextPen,
+    texts: ResultTexts,
+    result: SecretResultFrame,
+    colors: SecretGameColors,
+    mid: Float
+) {
+    val u = size.width
+    val color = colors.ship.copy(alpha = result.alpha)
+    val dim = colors.ship.copy(alpha = result.alpha * D.BACK_HINT_ALPHA)
+    drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
+    var line = 1f
+    if (!result.isNewRecord) {
+        drawCentered(pen, SecretText(texts.best, mid + u * D.RESULT_LINE_GAP, D.BEST_TEXT, dim, true))
+        line = D.RESULT_SUB_LINES
+    }
+    val sub = mid + u * D.RESULT_LINE_GAP * line
+    drawCentered(pen, SecretText(texts.sub, sub, D.SUB_TEXT, color, true))
 }
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)
 
-/** Draws [spec] horizontally centered on the canvas. */
+/** Draws [spec] horizontally centered on the canvas, shrunk to fit when it is wider (a long score). */
 private fun DrawScope.drawCentered(pen: TextPen, spec: SecretText) {
-    val style = pen.style.copy(color = spec.color, fontSize = (size.width * spec.size).toSp())
-    val layout: TextLayoutResult = pen.measurer.measure(spec.text, style)
+    val fontSize = size.width * spec.size
+    fun measure(px: Float): TextLayoutResult =
+        pen.measurer.measure(spec.text, pen.style.copy(color = spec.color, fontSize = px.toSp()))
+    var layout = measure(fontSize)
+    val maxWidth = size.width * MAX_TEXT_WIDTH_FRACTION
+    if (layout.size.width > maxWidth) layout = measure(fontSize * maxWidth / layout.size.width)
     val top = if (spec.middle) spec.y - layout.size.height * D.HALF else spec.y
     drawText(layout, topLeft = Offset((size.width - layout.size.width) * D.HALF, top))
 }
+
+/** A text never takes more than this share of the width: it shrinks instead. */
+private const val MAX_TEXT_WIDTH_FRACTION = 0.92f

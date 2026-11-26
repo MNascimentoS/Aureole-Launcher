@@ -99,7 +99,7 @@ class QuickButtonAppearanceBottomSheetTest {
 
         composeTestRule.onNodeWithText("Colors").performClick()
         composeTestRule.onNodeWithText("Stroke").performScrollTo().performClick()
-        composeTestRule.onNodeWithText("STROKE COLOR").assertExists()
+        composeTestRule.onNodeWithText("Stroke color").assertExists()
         assertNull(saved)
 
         composeTestRule.closeOverlayWithBack()

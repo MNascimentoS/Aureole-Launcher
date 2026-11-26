@@ -13,7 +13,8 @@ import org.junit.Test
 /** FUE-24 A: the coach teaches the scrub inside the band the alphabet really takes. */
 class GestureCoachGeometryTest {
 
-    private val gestures = MainUiState(onboarding = OnboardingUiState(stage = OnboardingStage.GESTURES))
+    private val gestures =
+        MainUiState(isSwipeUpAllAppsEnabled = true, onboarding = OnboardingUiState(stage = OnboardingStage.GESTURES))
     private val atScrub = gestures.copy(
         onboarding = gestures.onboarding.copy(completedSteps = setOf(GestureCoachStep.OPEN_APPS))
     )
@@ -78,7 +79,6 @@ class GestureCoachGeometryTest {
             onboarding = atScrub.onboarding.copy(
                 completedSteps = setOf(
                     GestureCoachStep.OPEN_APPS,
-                    GestureCoachStep.NOTIFICATIONS,
                     GestureCoachStep.CUSTOMIZE
                 )
             )

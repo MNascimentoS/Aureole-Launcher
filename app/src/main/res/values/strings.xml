@@ -56,7 +56,6 @@
     <string name="home_quickbutton_tab_icon">Icon</string>
     <string name="home_quickbutton_tab_colors">Colors</string>
     <string name="home_quickbutton_tabs_label">What to edit</string>
-    <string name="home_quickbutton_color_target_label">Which color to change</string>
     <string name="home_quickbutton_show_name">Show name on the home</string>
     <string name="home_quickbutton_low_contrast">Low contrast: the icon may be hard to see</string>
 
@@ -105,6 +104,7 @@
     <string name="settings_appearance_change_font">Change font</string>
     <string name="settings_appearance_pick_font">Pick font</string>
     <string name="settings_appearance_color_palette">Color palette</string>
+    <string name="settings_appearance_hide_sheet_handle">Hide sheet drag handle</string>
     <string name="settings_appearance_themed_icons">Themed icons</string>
     <string name="settings_appearance_image_scale">Image scale</string>
     <string name="settings_appearance_custom_framing">Custom framing</string>
@@ -142,7 +142,7 @@
     <string name="home_customize_adjust_font">Font</string>
     <string name="home_customize_item_clock">Clock</string>
     <string name="home_customize_item_apps_list">Apps list</string>
-    <string name="home_customize_item_container">Container</string>
+    <string name="home_customize_item_container">App &amp; folder group</string>
     <string name="home_customize_item_widget_group">Widget group</string>
     <string name="home_customize_item_scrollview">Scrolling group</string>
     <string name="home_customize_item_quick_button">Quick button</string>
@@ -172,9 +172,7 @@
 
     <!-- Clock Customization -->
     <string name="home_clock_customize_title">Customize clock</string>
-    <string name="home_clock_save_hint_title">Drag down to close</string>
-    <string name="home_clock_save_hint_body">Everything you change here is already saved</string>
-    <string name="home_clock_save_hint_got_it">Got it</string>
+    <string name="overlay_sheet_saved_hint">Your changes are saved automatically when you close</string>
     <string name="home_clock_undo_updated">Clock updated</string>
     <string name="home_clock_greeting_text">Greeting text</string>
     <string name="home_clock_greeting_placeholder">E.g: Welcome back!</string>
@@ -230,34 +228,9 @@
     <string name="home_widget_remove">Remove</string>
 
     <!-- Edit Container -->
-    <string name="home_container_edit_title">Container</string>
-    <string name="home_container_edit_appearance">Appearance</string>
-    <string name="home_container_edit_behavior">Behavior</string>
-    <string name="home_container_edit_manage_items">Manage items</string>
-    <string name="home_container_edit_expand_cells">Expand cells</string>
-    <string name="home_container_edit_grid_folders">Grid folders</string>
-    <string name="home_container_edit_bg_enabled">Background enabled</string>
-    <string name="home_container_edit_show_folder_labels">Show folder labels</string>
-    <string name="home_container_edit_back">Back</string>
-    <string name="home_container_edit_orientation">Container orientation</string>
-    <string name="home_container_edit_space_between">Space between</string>
-    <string name="home_container_edit_space_evenly">Space evenly</string>
-    <string name="home_container_edit_align_start">Start (Top / Left)</string>
-    <string name="home_container_edit_align_center">Center</string>
-    <string name="home_container_edit_align_end">End (Bottom / Right)</string>
-    <string name="home_container_edit_item_alignment">Item alignment</string>
-    <string name="home_container_edit_appearance_behavior_options">Appearance and Behavior Options</string>
-    <string name="home_container_edit_bg_label">Container background</string>
-    <string name="home_container_edit_expand_cell_label">Expand cell</string>
-    <string name="home_container_edit_create_folder_btn">Create folder button</string>
-    <string name="home_container_edit_folder_labels">Show folder labels</string>
-    <string name="home_container_edit_grid_folder_mode">Grid folder mode</string>
-    <string name="home_container_edit_child_components">ITEMS</string>
-    <string name="home_container_edit_section_add">ADD</string>
+    <string name="home_container_edit_title">Customize group</string>
     <string name="home_container_edit_none_added">Add apps, folders or quick buttons above.</string>
     <string name="home_container_edit_app_label">App</string>
-    <string name="home_container_edit_folder_label">Folder</string>
-    <string name="home_container_edit_add_app">Add App&#8230;</string>
 
     <!-- Folders (Additional) -->
     <string name="home_folder_edit_shortcuts">Edit folder items</string>
@@ -265,17 +238,17 @@
     <string name="home_folder_remove">Remove folder</string>
     <string name="home_menu_customize_home">Customize home</string>
     <string name="home_menu_customize_home_subtitle">Adjust, add components…</string>
-    <string name="home_folder_container_settings">Container settings</string>
+    <string name="home_folder_container_settings">Customize group</string>
     <string name="home_folder_settings">Folder settings</string>
-    <string name="home_container_saved">Container settings saved</string>
+    <string name="home_container_saved">Group updated</string>
 
     <!-- Reusable -->
 
     <!-- Grid & Containers -->
-    <string name="home_container_add_title">Add container</string>
+    <string name="home_container_add_title">Add component</string>
     <string name="home_container_add_nested_title">Add to scrolling group</string>
     <string name="home_container_add_clock">Clock</string>
-    <string name="home_container_add_shortcuts_container">Container</string>
+    <string name="home_container_add_shortcuts_container">App &amp; folder group</string>
     <string name="home_container_add_widget_list">Android widget group</string>
     <string name="home_container_add_quick_button">Quick button</string>
     <string name="home_container_add_scroll_view">Scrolling group</string>
@@ -337,7 +310,7 @@
     <string name="home_grid_item_widget_group">Widget group</string>
     <string name="home_grid_item_scroll_view">Scrolling group</string>
     <string name="home_grid_item_quick_button">Quick button</string>
-    <string name="home_grid_item_container">Container</string>
+    <string name="home_grid_item_container">App &amp; folder group</string>
     <string name="home_grid_current_size" tools:ignore="PluralsCandidate">Current size: %1$d x %2$s cells</string>
     <string name="settings_cards_glass_title">Cards and glass</string>
     <string name="settings_cards_glass_corners_label">Corners</string>
@@ -358,8 +331,51 @@
     <!-- First user experience -->
     <string name="home_onboarding_welcome_title">Welcome to Aureole</string>
     <string name="home_onboarding_welcome_subtitle">A light, beautiful home screen, made your way. Getting started takes less than a minute.</string>
-    <string name="home_onboarding_welcome_start">Let\'s begin</string>
+    <string name="home_onboarding_welcome_start">Start from scratch</string>
     <string name="home_onboarding_welcome_skip">Skip intro</string>
+    <string name="home_onboarding_welcome_preset">Use a ready-made layout</string>
+    <string name="home_onboarding_coach_back_chip">◁ Go back to continue</string>
+    <string name="home_onboarding_preset_title">Pick a starting point</string>
+    <string name="home_onboarding_preset_subtitle">Built with apps already on your phone. Folders come from your apps\' categories; rename them anytime.</string>
+    <string name="home_onboarding_preset_back">Back</string>
+    <string name="home_onboarding_preset_name_minimal">Minimal</string>
+    <string name="home_onboarding_preset_name_productive">Productive</string>
+    <string name="home_onboarding_preset_name_widgets">Widgets</string>
+    <string name="home_onboarding_preset_line_minimal">Just the essentials.</string>
+    <string name="home_onboarding_preset_line_productive">Your day and your folders at hand.</string>
+    <string name="home_onboarding_preset_line_widgets">Information at a glance.</string>
+    <string name="home_onboarding_preset_clock_time_only">Clock: time only</string>
+    <string name="home_onboarding_preset_clock_date_on_top">Clock: date on top</string>
+    <string name="home_onboarding_preset_clock_time_on_top">Clock: time on top</string>
+    <string name="home_onboarding_preset_no_widget">No widget</string>
+    <string name="home_onboarding_preset_widget_next">Widget: you pick it in the checklist</string>
+    <string name="home_onboarding_preset_no_group">No group</string>
+    <plurals name="home_onboarding_preset_favorites">
+        <item quantity="one">%1$d favorite</item>
+        <item quantity="other">%1$d favorites</item>
+    </plurals>
+    <plurals name="home_onboarding_preset_group_folders">
+        <item quantity="one">Group with up to %1$d folder by category + 1 app</item>
+        <item quantity="other">Group with up to %1$d folders by category + 1 app</item>
+    </plurals>
+    <plurals name="home_onboarding_preset_dock">
+        <item quantity="one">Dock with up to %1$d item</item>
+        <item quantity="other">Dock with up to %1$d items</item>
+    </plurals>
+    <string name="home_onboarding_preset_use">Use %1$s</string>
+    <string name="home_onboarding_preset_applied">%1$s layout applied</string>
+    <string name="home_onboarding_preset_applied_label_minimal">Minimal layout applied</string>
+    <string name="home_onboarding_preset_applied_label_productive">Productive layout applied</string>
+    <string name="home_onboarding_preset_applied_label_widgets">Widgets layout applied</string>
+    <string name="home_onboarding_preset_category_social">Social</string>
+    <string name="home_onboarding_preset_category_productivity">Productivity</string>
+    <string name="home_onboarding_preset_category_audio">Audio</string>
+    <string name="home_onboarding_preset_category_video">Video</string>
+    <string name="home_onboarding_preset_category_news">News</string>
+    <string name="home_onboarding_preset_category_maps">Maps</string>
+    <string name="home_onboarding_preset_category_image">Images</string>
+    <string name="home_onboarding_preset_category_game">Games</string>
+    <string name="home_onboarding_preset_category_accessibility">Accessibility</string>
     <string name="home_onboarding_default_title">Make Aureole your home</string>
     <string name="home_onboarding_default_body">So the Home button opens Aureole, pick it as your home app. You can switch back anytime.</string>
     <string name="home_onboarding_default_confirm">Set as home app</string>
@@ -375,36 +391,44 @@
     <string name="home_onboarding_coach_scrub_title_right">Swipe along the right edge</string>
     <string name="home_onboarding_coach_scrub_title_left">Swipe along the left edge</string>
     <string name="home_onboarding_coach_scrub_body">Then slide down to jump straight to a letter.</string>
-    <string name="home_onboarding_coach_scrub_done">Quick, right? Let go to close.</string>
+    <string name="home_onboarding_coach_scrub_done">Quick, right? Go back to close.</string>
     <string name="home_onboarding_coach_customize_title">Touch and hold</string>
     <string name="home_onboarding_coach_customize_body">An empty spot on the screen to customize what shows up there.</string>
     <string name="home_onboarding_coach_customize_done">This is where you build your screen.</string>
-    <string name="home_onboarding_coach_notifications_title">Swipe down</string>
-    <string name="home_onboarding_coach_notifications_body">On the home screen to see your notifications.</string>
-    <string name="home_onboarding_coach_notifications_done">Nice! You can turn this off in Settings › Behavior.</string>
     <string name="home_onboarding_checklist_title">First steps</string>
     <plurals name="home_onboarding_checklist_progress">
-        <item quantity="one">%1$d of %2$s steps</item>
-        <item quantity="other">%1$d of %2$s steps</item>
+        <item quantity="one">%1$d of %2$d · takes about a minute</item>
+        <item quantity="other">%1$d of %2$d · takes about a minute</item>
     </plurals>
     <plurals name="home_onboarding_checklist_pill">
-        <item quantity="one">%1$d/%2$s first steps</item>
-        <item quantity="other">%1$d/%2$s first steps</item>
+        <item quantity="one">First steps · %1$d/%2$d</item>
+        <item quantity="other">First steps · %1$d/%2$d</item>
     </plurals>
+    <string name="home_onboarding_layout_bounds_hint">You can adjust sizes later, in the Adjust your layout step.</string>
     <string name="home_onboarding_checklist_minimize">Minimize</string>
-    <string name="home_onboarding_checklist_dismiss">Don\'t show again</string>
+    <string name="home_onboarding_checklist_dismiss">Dismiss guide</string>
     <string name="home_onboarding_checklist_dismissed">You can replay it in Settings › Advanced.</string>
     <string name="home_onboarding_task_default_home">Set as &lt;b&gt;home app&lt;/b&gt;</string>
-    <string name="home_onboarding_task_palette">Pick a &lt;b&gt;color palette&lt;/b&gt;</string>
-    <string name="home_onboarding_task_font">Pick a &lt;b&gt;font&lt;/b&gt;</string>
+    <string name="home_onboarding_task_visual">&lt;b&gt;Look&lt;/b&gt;: palette and font</string>
+    <string name="home_onboarding_checklist_dismiss_confirm">Tap again to dismiss</string>
+    <string name="home_onboarding_checklist_home_built">Home built. Only the extras left: do them or skip.</string>
+    <string name="home_onboarding_checklist_section_home">Your home</string>
+    <string name="home_onboarding_checklist_section_extras">Extras</string>
+    <string name="home_onboarding_checklist_section_extras_hint">Unlock once your home is built</string>
+    <string name="home_onboarding_checklist_pill_next">Next: %1$s</string>
+    <string name="home_onboarding_checklist_pill_continue">Continue</string>
+    <string name="home_onboarding_task_skipped_label">– · skipped</string>
     <string name="home_onboarding_task_clock">Add a &lt;b&gt;clock&lt;/b&gt;</string>
     <string name="home_onboarding_edit_hint">Drag to move, pull the edge to resize.</string>
     <string name="home_onboarding_edit_save">Save</string>
     <string name="home_onboarding_task_favorites">Choose your &lt;b&gt;favorites&lt;/b&gt;</string>
-    <string name="home_onboarding_task_container">Fill the &lt;b&gt;container&lt;/b&gt;</string>
+    <string name="home_onboarding_task_container">Fill the &lt;b&gt;group&lt;/b&gt;</string>
     <string name="home_onboarding_task_widget">Add some &lt;b&gt;widgets&lt;/b&gt;</string>
     <string name="home_onboarding_task_layout">Adjust your &lt;b&gt;layout&lt;/b&gt;</string>
     <string name="home_onboarding_layout_needs_item">Add an item first.</string>
+    <string name="home_onboarding_task_locked_a11y">%1$s, locked until your home is built</string>
+    <string name="overlay_preview_label">Preview</string>
+    <string name="settings_background_color">Color</string>
     <string name="home_onboarding_task_skip">Skip</string>
     <string name="home_onboarding_task_skipped_a11y">%1$s, skipped. Tap to do it now</string>
     <string name="home_onboarding_task_settings">Check more &lt;b&gt;settings&lt;/b&gt;</string>
@@ -412,6 +436,14 @@
     <string name="home_onboarding_done_subtitle">Your Aureole is shining. Enjoy!</string>
     <string name="home_onboarding_task_done_a11y">%1$s, done</string>
     <string name="home_onboarding_task_pending_a11y">%1$s, not done yet</string>
+    <string name="home_onboarding_visual_title">Look</string>
+    <string name="home_onboarding_visual_tab_palette">Palette</string>
+    <string name="home_onboarding_visual_tab_font">Font</string>
+    <string name="home_onboarding_visual_tab_bar_description">Look tabs</string>
+    <string name="home_onboarding_new_clock">New · Clock</string>
+    <string name="home_onboarding_new_widget">New · Widget</string>
+    <string name="home_onboarding_new_favorites">New · Favorites</string>
+    <string name="home_onboarding_new_group">New · Group</string>
     <string name="overlay_sheet_handle_close">Close</string>
     <string name="overlay_sheet_action_expand">Expand</string>
     <string name="overlay_sheet_action_collapse">Collapse</string>
@@ -423,7 +455,6 @@
     <string name="undo_cards_glass_changed">Cards and glass updated</string>
     <string name="undo_folder_changed">Folder updated</string>
     <string name="settings_background_section_theme">From your theme</string>
-    <string name="settings_background_section_palettes">Palettes</string>
     <string name="settings_background_section_tones">Tones</string>
     <string name="settings_background_category_cold">Cold</string>
     <string name="settings_background_category_cool">Cool</string>
@@ -482,13 +513,6 @@
     <string name="home_app_menu_section_shortcuts">App shortcuts</string>
     <string name="home_undo_widget_removed">Widget removed</string>
     <string name="home_undo_widget_order_changed">Order changed</string>
-    <string name="home_container_edit_options_label">Options</string>
-    <string name="home_container_edit_appearance_subtitle">Cells, folders and background</string>
-    <string name="home_container_edit_behavior_subtitle">Orientation and alignment</string>
-    <plurals name="home_container_edit_components_count">
-        <item quantity="one">%1$d component</item>
-        <item quantity="other">%1$d components</item>
-    </plurals>
     <string name="home_favorites_chip_labels">Labels</string>
     <string name="home_favorites_section_title">Favorites · %1$d</string>
     <string name="home_favorites_section_all_title">All apps · %1$d</string>
@@ -531,7 +555,7 @@
     <string name="folder_icon_cat_travel">Travel</string>
     <string name="folder_icon_cat_tools">Tools</string>
     <string name="folder_icon_cat_actions">Actions</string>
-    <string name="home_grid_no_space_error">Not enough free space on the grid for this container.</string>
+    <string name="home_grid_no_space_error">Not enough free space on the grid for this component.</string>
     <string name="settings_reset_grid_success">Home screen layout reset to default</string>
     <string name="settings_wallpaper_load_error">Could not load the selected image</string>
     <string name="settings_lock_screen_title">Also use on lock screen</string>
@@ -614,10 +638,12 @@
     <string name="home_scrollgroup_remove_item">Remove %1$s</string>
     <string name="home_scrollgroup_decrease">Decrease %1$s</string>
     <string name="home_scrollgroup_increase">Increase %1$s</string>
-<string name="secret_game_best_title">High score</string>
-    <string name="secret_game_best_hint">Tap “%1$s” %2$s times to play.</string>
-    <string name="secret_game_score">Score: %1$d</string>
-    <string name="secret_game_new_record">New high score!</string>
+<string name="secret_game_best_score">Best Score: %1$d</string>
+    <string name="secret_game_best_hint">Or tap %2$sx on “%1$s”</string>
+    <string name="secret_game_play_prompt">Press here to play</string>
+    <string name="secret_game_play">Play</string>
+    <string name="secret_game_score">Your Score: %1$d</string>
+    <string name="secret_game_new_record">New best score!</string>
     <string name="secret_game_better_luck">Better luck next time…</string>
     <string name="secret_game_go">GO!!</string>
     <string name="secret_game_paused">Paused</string>
@@ -632,7 +658,98 @@
     <string name="home_clock_color_text_title">Text color</string>
     <string name="home_clock_color_card_title">Card color</string>
     <string name="home_clock_color_none">None</string>
-    <string name="home_clock_color_back">Back</string>
+    <string name="overlay_sheet_page_back">Back</string>
     <string name="theme_color_option_current">Current</string>
     <string name="theme_color_swatch_default">Theme</string>
+    <string name="home_container_add_subtitle">Choose what goes on the home</string>
+    <string name="home_container_add_clock_subtitle">Time, date and a message</string>
+    <string name="home_container_add_apps_list_subtitle">All your apps, A to Z</string>
+    <string name="home_container_add_group_subtitle">Your apps, folders and shortcuts together</string>
+    <string name="home_container_add_widget_list_subtitle">Android widgets, stacked</string>
+    <string name="home_container_add_quick_button_subtitle">A system action in one tap</string>
+    <string name="home_container_add_scroll_view_subtitle">Components that scroll sideways</string>
+    <string name="home_container_add_start_here">Start here</string>
+    <string name="home_container_added">Group added to the home</string>
+    <string name="home_container_group_tab_items">Items</string>
+    <string name="home_container_group_tab_layout">Layout</string>
+    <string name="home_container_group_tab_appearance">Appearance</string>
+    <string name="home_container_group_tab_bar_description">Group tabs</string>
+    <string name="home_container_group_color_background">Group background</string>
+    <string name="home_container_group_color_item">Background of each item</string>
+    <string name="home_container_group_color_subtitle">Only for this group</string>
+    <string name="home_container_group_align_top">Top</string>
+    <string name="home_container_group_align_center">Center</string>
+    <string name="home_container_group_align_bottom">Bottom</string>
+    <string name="home_container_group_align_left">Left</string>
+    <string name="home_container_group_align_right">Right</string>
+    <string name="home_container_group_add_label">ADD</string>
+    <string name="home_container_group_in_group_label">IN THE GROUP</string>
+    <string name="home_container_group_add_app">App</string>
+    <string name="home_container_group_add_app_line">Opens with one tap</string>
+    <string name="home_container_group_add_folder">Folder</string>
+    <string name="home_container_group_add_folder_line">Several apps in one place</string>
+    <string name="home_container_group_add_quick_button">Quick button</string>
+    <string name="home_container_group_add_quick_button_line">Flashlight, Wi-Fi and more</string>
+    <string name="home_container_group_type_app">App</string>
+    <string name="home_container_group_type_quick_button">Quick button</string>
+    <string name="home_container_group_remove">Remove %1$s</string>
+    <string name="home_container_group_reorder_hint">Hold ⠿ and drag to change the order</string>
+    <string name="home_container_group_empty">Nothing here yet. What you add shows in this list and in the preview above.</string>
+    <string name="home_container_group_removed">%1$s removed</string>
+    <string name="home_container_group_add_apps_title">Add apps</string>
+    <string name="home_container_group_add_apps_empty">Tap to put in the group</string>
+    <string name="home_container_group_search">Search apps</string>
+    <string name="home_container_group_new_folder_title">New folder</string>
+    <string name="home_container_group_new_folder_subtitle">Choose at least 2 apps</string>
+    <string name="home_container_group_folder_name_label">FOLDER NAME</string>
+    <string name="home_container_group_folder_default_name">Folder</string>
+    <string name="home_container_group_item_count_empty">empty</string>
+    <string name="home_container_group_type_folder_empty">Folder · empty</string>
+    <string name="home_container_group_position_label">POSITION</string>
+    <string name="home_container_group_upright">Upright</string>
+    <string name="home_container_group_upright_line">On the side of the screen</string>
+    <string name="home_container_group_lying">Lying down</string>
+    <string name="home_container_group_lying_line">A row, like a dock</string>
+    <string name="home_container_group_alignment_label">ALIGNMENT</string>
+    <string name="home_container_group_alignment_help">Where the items sit inside the group\'s space</string>
+    <string name="home_container_group_spacing_label">SPACE BETWEEN ITEMS</string>
+    <string name="home_container_group_spacing_tight">Tight</string>
+    <string name="home_container_group_spacing_normal">Normal</string>
+    <string name="home_container_group_spacing_wide">Wide</string>
+    <string name="home_container_group_folders_label">FOLDERS IN THE GROUP</string>
+    <string name="home_container_group_folders_help">How a folder looks when closed</string>
+    <string name="home_container_group_folders_preview">App preview</string>
+    <string name="home_container_group_folders_icon">Folder icon</string>
+    <string name="home_container_group_show_names">Show names</string>
+    <string name="home_container_group_expand_cell">Fill the whole cell</string>
+    <string name="home_container_tip_step">Tip %1$d of %2$d</string>
+    <string name="home_container_tip_skip">Skip tips</string>
+    <string name="home_container_tip_first_title">This is your app &amp; folder group</string>
+    <string name="home_container_tip_first_text">It sits on the home and brings apps, folders and quick buttons together. Start with the first app.</string>
+    <string name="home_container_tip_first_action">Add app</string>
+    <string name="home_container_tip_second_title">Done, the group is already on the home</string>
+    <string name="home_container_tip_second_text">See the preview up there. Now choose whether it stands on the side or lies down, like a dock.</string>
+    <string name="home_container_tip_second_action">Choose position</string>
+    <string name="home_container_tip_third_title">Standing or lying down?</string>
+    <string name="home_container_tip_third_text">Tap an option and the preview changes at once. You can switch any time.</string>
+    <plurals name="home_container_group_item_count">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
+    </plurals>
+    <plurals name="home_container_group_type_folder">
+        <item quantity="one">Folder · %1$d app</item>
+        <item quantity="other">Folder · %1$d apps</item>
+    </plurals>
+    <plurals name="home_container_group_add_apps_count">
+        <item quantity="one">%1$d item in the group</item>
+        <item quantity="other">%1$d items in the group</item>
+    </plurals>
+    <plurals name="home_container_group_create_folder_missing">
+        <item quantity="one">Choose %1$d app to create</item>
+        <item quantity="other">Choose %1$d apps to create</item>
+    </plurals>
+    <plurals name="home_container_group_create_folder">
+        <item quantity="one">Create folder with %1$d app</item>
+        <item quantity="other">Create folder with %1$d apps</item>
+    </plurals>
 </resources>

@@ -1,29 +1,40 @@
 package dev.mnascimentos.aureole.feature.home.components.containers.model
 
+import androidx.compose.ui.unit.DpSize
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.core.data.model.AppFolder
 import dev.mnascimentos.aureole.core.data.model.AppInfo
+import dev.mnascimentos.aureole.core.data.model.CONTAINER_ITEM_THEME_REF
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
+import dev.mnascimentos.aureole.core.data.model.ContainerItemSpacing
 import dev.mnascimentos.aureole.core.data.model.ContainerModel
+import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
 
 /**
- * Parameters for [EditContainerScreen].
+ * Parameters for [dev.mnascimentos.aureole.feature.home.components.containers.EditContainerScreen].
+ *
+ * @property isNew The group was just added from "Add component" (RF-A4): closing it empty removes it.
+ * @property areTipsSeen The first group's tips were already seen (RF-F1).
+ * @property onTipsSeen Saves that the tips were seen (skipped or finished).
+ * @property homeSize Size the group has on the home, for the preview (RF-B3); null when never measured.
+ * @property initialTab Tab the sheet opens on.
+ * @property initialPage Page the sheet opens on, in place of the tabs.
+ * @property startTip Tip the sheet opens with, in place of the one [isNew] and [areTipsSeen] give.
  */
 data class EditContainerScreenParams(
     val panel: ContainerModel,
     val allApps: List<AppInfo>,
     val onDismiss: () -> Unit,
     val onSave: (ContainerModel) -> Unit,
-    val hazeState: HazeState? = null
+    val hazeState: HazeState? = null,
+    val isNew: Boolean = false,
+    val areTipsSeen: Boolean = true,
+    val onTipsSeen: () -> Unit = {},
+    val homeSize: DpSize? = null,
+    val initialTab: GroupTab = GroupTab.ITEMS,
+    val initialPage: GroupSheetPage = GroupSheetPage.Tabs,
+    val startTip: GroupTip? = null
 )
-
-enum class EditContainerScreenMode {
-    MAIN, APPEARANCE, BEHAVIOR, MANAGE_ITEMS
-}
-
-/** Where the back key goes from this screen: the main one from a sub screen, or null (close) from the main one. */
-fun EditContainerScreenMode.backTarget(): EditContainerScreenMode? =
-    if (this == EditContainerScreenMode.MAIN) null else EditContainerScreenMode.MAIN
 
 data class ContainerOptionsState(
     val position: String,
@@ -41,39 +52,20 @@ data class ContainerOptionsState(
     val folderColor: Long?,
     val folderStrokeEnabled: Boolean,
     val scrollUpShortcut: String?,
-    val scrollDownShortcut: String?
+    val scrollDownShortcut: String?,
+    val backgroundColorRef: ThemeColorRef? = null,
+    val itemColorRef: ThemeColorRef? = CONTAINER_ITEM_THEME_REF,
+    val itemSpacing: ContainerItemSpacing = ContainerItemSpacing.NORMAL
 )
 
-data class EditContainerFormState(
-    val position: String,
-    val orientation: String = "Vertical",
-    val isBackgroundEnabled: Boolean,
-    val isExpandCell: Boolean,
-    val showAddFolderButton: Boolean,
-    val showFolderLabels: Boolean,
-    val isGridFolderEnabled: Boolean
-)
-
-data class EditContainerFormCallbacks(
-    val onPositionChange: (String) -> Unit,
-    val onOrientationChange: (String) -> Unit = {},
-    val onBgChange: (Boolean) -> Unit,
-    val onExpandChange: (Boolean) -> Unit,
-    val onAddFolderBtnChange: (Boolean) -> Unit,
-    val onFolderLabelsChange: (Boolean) -> Unit,
-    val onGridFolderChange: (Boolean) -> Unit
-)
-
-data class EditContainerItemRowParams(
-    val title: String,
-    val iconName: String?,
-    val isFolder: Boolean,
-)
-
-data class ManageItemRowParams(
+/**
+ * One row of "In the group" (RF-C2): the [item], what it needs to show its icon and name, [onOpen] for the editor
+ * of a folder or a quick button (null for apps) and [onRemove] for its ×.
+ */
+data class GroupItemRowParams(
     val item: ContainerItemEntity,
     val folders: List<AppFolder>,
     val allApps: List<AppInfo>,
-    /** Opens the item's editor in place (folder, quick button); null for apps, which show no chevron. */
+    val onRemove: () -> Unit,
     val onOpen: (() -> Unit)? = null
 )

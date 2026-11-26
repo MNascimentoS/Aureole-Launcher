@@ -5,7 +5,6 @@ enum class OnboardingSignal {
     ALPHABET_SCRUBBED,
 
     /** The home swipe down opened the notification shade. */
-    NOTIFICATIONS_OPENED,
     PICKER_CONFIRMED,
     SETTINGS_OPENED,
     DEFAULT_HOME_RESULT

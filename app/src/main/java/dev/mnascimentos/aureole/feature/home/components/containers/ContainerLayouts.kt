@@ -20,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.LocalHomeUiState
 import dev.mnascimentos.aureole.core.data.model.AppInfo
 import dev.mnascimentos.aureole.core.data.model.ContainerItemEntity
@@ -95,6 +97,8 @@ internal fun ContainerColumn(
     val scrollState = rememberScrollState()
 
     val renderItems = resolveContainerRenderItems(config, uiState.apps)
+    // Holding the group opens "Customize group" (RF-B9); TalkBack reads it as the long press action.
+    val customizeLabel = stringResource(R.string.home_container_edit_title)
 
     val paddingHorizontal = if (config.isBackgroundEnabled) AureoleDS.dimens.smallCompact else AureoleDS.dimens.minimal
     val paddingVertical = if (config.isBackgroundEnabled) AureoleDS.dimens.xSmall else AureoleDS.dimens.xxSmall
@@ -111,6 +115,7 @@ internal fun ContainerColumn(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {},
+                onLongClickLabel = customizeLabel,
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
             .semantics(mergeDescendants = true) {}
@@ -118,7 +123,7 @@ internal fun ContainerColumn(
             .verticalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
     ) {
-        if (renderItems.isEmpty()) {
+        if (renderItems.isEmpty() && config.addSlotCount == 0) {
             if (config.showAddFolderButton) {
                 ContainerAddFolderButton(
                     onClick = { actions.onOpenEditContainerDialog(config.panelId) },
@@ -129,6 +134,7 @@ internal fun ContainerColumn(
             renderItems.forEach { renderItem ->
                 ColumnRenderItem(renderItem, config, columnConfig)
             }
+            ContainerAddSlots(config = config)
         }
     }
 }
@@ -153,7 +159,9 @@ private fun ColumnRenderItem(
                     config = ContainerFolderConfig(
                         showFolderLabels = config.showFolderLabels,
                         isGridFolderEnabled = config.isGridFolderEnabled,
-                        isBackgroundEnabled = config.isBackgroundEnabled
+                        isBackgroundEnabled = config.isBackgroundEnabled,
+                        itemColorRef = config.itemColorRef,
+                        itemSpacing = config.itemSpacing
                     ),
                     onFolderClick = { _, y -> columnConfig.onFolderClick(updatedFolder, y) },
                     onLongClick = { actions.onOpenContainerFolderBottomSheet(renderItem.folder, config.panelId) }
@@ -167,7 +175,9 @@ private fun ColumnRenderItem(
                     showLabels = config.showFolderLabels,
                     isBackgroundEnabled = config.isBackgroundEnabled,
                     onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                    onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+                    onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) },
+                    itemColorRef = config.itemColorRef,
+                    itemSpacing = config.itemSpacing
                 )
             )
         }
@@ -192,6 +202,8 @@ internal fun ContainerRow(
     val scrollState = rememberScrollState()
 
     val renderItems = resolveContainerRenderItems(config, uiState.apps)
+    // Holding the group opens "Customize group" (RF-B9); TalkBack reads it as the long press action.
+    val customizeLabel = stringResource(R.string.home_container_edit_title)
 
     val paddingHorizontal = if (config.isBackgroundEnabled) AureoleDS.dimens.xSmall else AureoleDS.dimens.xxSmall
     val paddingVertical = if (config.isBackgroundEnabled) AureoleDS.dimens.smallCompact else AureoleDS.dimens.minimal
@@ -208,6 +220,7 @@ internal fun ContainerRow(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = {},
+                onLongClickLabel = customizeLabel,
                 onLongClick = { actions.onOpenEditContainerDialog(config.panelId) }
             )
             .semantics(mergeDescendants = true) {}
@@ -215,7 +228,7 @@ internal fun ContainerRow(
             .horizontalScroll(scrollState)
             .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
     ) {
-        if (renderItems.isEmpty()) {
+        if (renderItems.isEmpty() && config.addSlotCount == 0) {
             if (config.showAddFolderButton) {
                 ContainerAddFolderButton(
                     onClick = { actions.onOpenEditContainerDialog(config.panelId) },
@@ -226,6 +239,7 @@ internal fun ContainerRow(
             renderItems.forEach { renderItem ->
                 RowRenderItem(renderItem, config, rowConfig)
             }
+            ContainerAddSlots(config = config)
         }
     }
 }
@@ -243,7 +257,7 @@ private fun RowRenderItem(
                 panelId = config.panelId,
                 displayAsGrid = config.isGridFolderEnabled || renderItem.folder.displayAsGrid
             )
-            Box(modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)) {
+            Box(modifier = Modifier.padding(horizontal = config.itemSpacing.itemPadding())) {
                 ContainerFolderItem(
                     params = ContainerFolderItemParams(
                         folder = renderItem.folder,
@@ -251,7 +265,9 @@ private fun RowRenderItem(
                         config = ContainerFolderConfig(
                             showFolderLabels = config.showFolderLabels,
                             isGridFolderEnabled = config.isGridFolderEnabled,
-                            isBackgroundEnabled = config.isBackgroundEnabled
+                            isBackgroundEnabled = config.isBackgroundEnabled,
+                            itemColorRef = config.itemColorRef,
+                            itemSpacing = config.itemSpacing
                         ),
                         onFolderClick = { _, y -> rowConfig.onFolderClick(updatedFolder, y) },
                         onLongClick = { actions.onOpenContainerFolderBottomSheet(renderItem.folder, config.panelId) }
@@ -260,20 +276,22 @@ private fun RowRenderItem(
             }
         }
         is ContainerRenderItem.App -> {
-            Box(modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)) {
+            Box(modifier = Modifier.padding(horizontal = config.itemSpacing.itemPadding())) {
                 ContainerAppItem(
                     params = ContainerAppItemParams(
                         app = renderItem.appInfo,
                         showLabels = config.showFolderLabels,
                         isBackgroundEnabled = config.isBackgroundEnabled,
                         onAppClick = { appInfo -> actions.onAppClick(appInfo) },
-                        onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) }
+                        onLongClick = { actions.onOpenContainerAppBottomSheet(renderItem.appInfo, config.panelId) },
+                        itemColorRef = config.itemColorRef,
+                        itemSpacing = config.itemSpacing
                     )
                 )
             }
         }
         is ContainerRenderItem.QuickButton -> {
-            Box(modifier = Modifier.padding(horizontal = AureoleDS.dimens.xxSmall)) {
+            Box(modifier = Modifier.padding(horizontal = config.itemSpacing.itemPadding())) {
                 ContainerQuickButtonItem(
                     quickButtonModel = renderItem.quickButtonModel,
                     config = config

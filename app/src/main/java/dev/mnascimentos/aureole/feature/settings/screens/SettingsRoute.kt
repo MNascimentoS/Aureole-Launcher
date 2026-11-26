@@ -130,6 +130,7 @@ private fun applyToggleActions(viewModel: SettingsViewModel, base: SettingsScree
         onToggleHaze = { viewModel.toggleSetting(SettingToggle.HAZE) },
         onToggleInAppUpdate = { viewModel.toggleSetting(SettingToggle.IN_APP_UPDATE) },
         onToggleThemedAppIcons = { viewModel.toggleSetting(SettingToggle.THEMED_APP_ICONS) },
+        onToggleHideSheetHandle = { viewModel.toggleSetting(SettingToggle.HIDE_SHEET_HANDLE) },
         onToggleDisableAlphabetScrubber = { viewModel.toggleSetting(SettingToggle.DISABLE_ALPHABET_SCRUBBER) },
         onToggleSwipeDownNotifications = { viewModel.toggleSetting(SettingToggle.SWIPE_DOWN_NOTIFICATIONS) },
         onToggleSwipeUpAllApps = { viewModel.toggleSetting(SettingToggle.SWIPE_UP_ALL_APPS) },

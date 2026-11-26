@@ -290,9 +290,10 @@ private fun BoxScope.ScrubberContent(
 
     val selectedChar = alphabet.getOrNull(params.selectedIndex)?.takeIf { params.isDragging }
     if (params.isProminentSelection) {
+        // Centered on the selected letter of the strip, not on the raw finger, so the two letters line up.
         ScrubberProminentBadge(
             selectedChar = selectedChar,
-            touchYPx = params.touchYPx,
+            touchYPx = letterCenterY(params.selectedIndex, containerHeightPx, alphabet.size),
             alignment = params.alignment,
             isLeftHandedMode = uiState.isLeftHandedMode
         )

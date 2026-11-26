@@ -19,4 +19,11 @@ class PagerMinHeightTest {
     fun `when at rest with a negative height, should not go below zero`() {
         assertEquals(0, pagerMinHeight(isExpanded = false, tallestPx = -5))
     }
+
+    @Test
+    fun `session tallest page only grows`() {
+        assertEquals(900, sessionTallestPage(previousPx = 900, pageHeights = listOf(300, 500)))
+        assertEquals(700, sessionTallestPage(previousPx = 400, pageHeights = listOf(300, 700)))
+        assertEquals(0, sessionTallestPage(previousPx = 0, pageHeights = emptyList()))
+    }
 }

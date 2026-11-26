@@ -7,12 +7,14 @@ import dev.mnascimentos.aureole.core.data.model.LauncherItemState
 import dev.mnascimentos.aureole.core.designsystem.model.TextResource
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.hasItemOnAnyLayout
+import dev.mnascimentos.aureole.feature.home.components.containers.model.GroupCloseOutcome
+import dev.mnascimentos.aureole.feature.home.components.containers.model.groupCloseOutcome
 import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerClosed
 import dev.mnascimentos.aureole.feature.home.components.containers.model.withEditContainerOpened
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.confirmContainerTaskOnSave
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
-import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.grid.extensions.containerIds
+import dev.mnascimentos.aureole.feature.home.grid.extensions.deleteGridItem
 import dev.mnascimentos.aureole.feature.home.grid.extensions.missingContainerIds
 import kotlinx.coroutines.launch
 
@@ -32,12 +34,11 @@ fun HomeViewModel.loadContainers() {
 
 /**
  * Makes sure the container [id] exists, with the initial values: position and expand cell come from the settings
- * (they only seed a new container), and the default layout's container starts without a background.
+ * (they only seed a new container), and every new container starts without a background (D-19).
  */
 internal suspend fun HomeViewModel.ensureContainer(id: String): ContainerModel =
     containerRepository.ensureContainerExists(
         panelId = id,
-        isBackgroundEnabled = id != GridDefaults.CONTAINER_ITEM_ID,
         position = settingsRepository.containerPosition,
         isExpandCell = settingsRepository.isContainerExpandCell
     )
@@ -96,54 +97,52 @@ fun HomeViewModel.closeEditContainerDialog(panelId: String? = null) {
     updateUiState { it.withEditContainerClosed(panelId) }
 }
 
+/**
+ * Saves the group closed in the editor, or any change to it, and offers what fits (RF-B7, RF-B8): "Group updated"
+ * with an Undo that puts back how it was, "Group added to the home" with an Undo that removes a group just added, or,
+ * for a group just added and closed empty, takes it off the grid with no snackbar (D-11).
+ */
 fun HomeViewModel.saveContainerModel(panel: ContainerModel) {
-    val previousPanel = uiState.value.containers[panel.id]
-    confirmContainerTaskOnSave()
+    val state = uiState.value
+    val isNew = state.editingContainerIsNew && state.editingContainerId == panel.id
+    val outcome = groupCloseOutcome(previous = state.containers[panel.id], saved = panel, isNew = isNew)
+    if (outcome == GroupCloseOutcome.DiscardedEmpty) {
+        discardContainer(panel.id)
+        return
+    }
+    confirmContainerTaskOnSave(hasItems = panel.items.isNotEmpty())
     viewModelScope.launch {
         containerRepository.saveContainer(panel)
-        val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
-        val updatedFolders = folderRepository.getFolders()
-
-        updateUiState {
-            it.copy(containers = updatedPanels, folders = updatedFolders).withEditContainerClosed(panel.id)
-        }
-
-        if (previousPanel != null && previousPanel != panel) {
-            showUndo(TextResource.fromResId(R.string.home_container_saved)) {
+        refreshContainersClosing(panel.id)
+        when (outcome) {
+            is GroupCloseOutcome.Updated -> showUndo(TextResource.fromResId(R.string.home_container_saved)) {
                 viewModelScope.launch {
-                    containerRepository.saveContainer(previousPanel)
+                    containerRepository.saveContainer(outcome.previous)
                     val restoredPanels = containerRepository.getAllContainers().associateBy { it.id }
-                    updateUiState { state -> state.copy(containers = restoredPanels) }
+                    updateUiState { current -> current.copy(containers = restoredPanels) }
                 }
             }
+            GroupCloseOutcome.Added -> showUndo(TextResource.fromResId(R.string.home_container_added)) {
+                discardContainer(panel.id)
+            }
+            else -> Unit
         }
     }
 }
 
-fun HomeViewModel.deleteContainerInstance(panelId: String) {
+/** Takes the group [panelId] off the grid and erases it (a new group closed empty, or the Undo of "added"). */
+private fun HomeViewModel.discardContainer(panelId: String) {
+    deleteGridItem(panelId)
     viewModelScope.launch {
         containerRepository.deleteContainer(panelId)
-        val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
-        val updatedFolders = folderRepository.getFolders()
-
-        updateUiState {
-            it.copy(
-                containers = updatedPanels,
-                folders = updatedFolders,
-                isEditContainerDialogVisible = false,
-                editingContainerId = null
-            )
-        }
+        refreshContainersClosing(panelId)
     }
 }
 
-fun HomeViewModel.removeAppFromContainer(panelId: String, packageName: String) {
-    val currentContainer = uiState.value.containers[panelId] ?: return
-    val updatedItems = currentContainer.items.filterNot { it.packageName == packageName }
-    val updatedAppPackages = currentContainer.appPackageNames.filterNot { it == packageName }
-    val updatedContainer = currentContainer.copy(
-        items = updatedItems,
-        appPackageNames = updatedAppPackages
-    )
-    saveContainerModel(updatedContainer)
+private suspend fun HomeViewModel.refreshContainersClosing(panelId: String) {
+    val updatedPanels = containerRepository.getAllContainers().associateBy { it.id }
+    val updatedFolders = folderRepository.getFolders()
+    updateUiState {
+        it.copy(containers = updatedPanels, folders = updatedFolders).withEditContainerClosed(panelId)
+    }
 }

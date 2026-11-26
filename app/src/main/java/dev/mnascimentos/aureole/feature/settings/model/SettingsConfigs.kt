@@ -57,6 +57,7 @@ data class SettingsScreenActions(
     val onToggleInAppUpdate: () -> Unit = {},
     val onHeaderOffsetChanged: (Int) -> Unit = {},
     val onToggleThemedAppIcons: () -> Unit = {},
+    val onToggleHideSheetHandle: () -> Unit = {},
     val onToggleDisableAlphabetScrubber: () -> Unit = {},
     val onToggleSwipeDownNotifications: () -> Unit = {},
     val onToggleSwipeUpAllApps: () -> Unit = {},

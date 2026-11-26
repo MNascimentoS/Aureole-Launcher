@@ -24,7 +24,7 @@ internal fun MainUiState.containerConfigFor(item: LauncherItemState, hazeState: 
         orientation = model.orientation,
         showFolderLabels = model.showFolderLabels,
         showAddFolderButton = model.showAddFolderButton,
-        isBackgroundEnabled = model.isBackgroundEnabled,
+        isBackgroundEnabled = model.backgroundColorRef != null,
         isExpandCell = model.isExpandCell,
         isGridFolderEnabled = model.isGridFolderEnabled,
         hideText = model.hideText,
@@ -36,6 +36,9 @@ internal fun MainUiState.containerConfigFor(item: LauncherItemState, hazeState: 
         folderStrokeEnabled = model.folderStrokeEnabled,
         scrollUpShortcut = model.scrollUpShortcut,
         scrollDownShortcut = model.scrollDownShortcut,
-        hazeState = hazeState
+        hazeState = hazeState,
+        backgroundColorRef = model.backgroundColorRef,
+        itemColorRef = model.itemColorRef,
+        itemSpacing = model.itemSpacing
     )
 }

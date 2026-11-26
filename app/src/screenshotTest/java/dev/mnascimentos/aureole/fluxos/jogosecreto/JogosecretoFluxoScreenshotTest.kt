@@ -136,6 +136,7 @@ private fun sampleState(phase: SecretGamePhase, phaseMs: Long, score: Int = 0, r
         particles = listOf(SecretParticle(0.5f, 1.0f, 0f, 0f, 0.8f, 0.01f, SecretParticleKind.SHIP)),
         score = score,
         isNewRecord = record,
+        bestScore = if (record) score else score + 1,
     )
 
 private fun fireworksSample() = FireworksState(

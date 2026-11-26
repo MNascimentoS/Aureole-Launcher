@@ -84,4 +84,45 @@ class AddContainerDialogTest {
         assertEquals(LauncherItemType.APPS_LIST, selectedType)
         assertTrue(dismissed)
     }
+
+    @Test
+    fun `when rendering dialog, should explain each option and the sheet`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        composeTestRule.setContent {
+            AureoleLauncherTheme { AddContainerDialog(onDismissRequest = {}, onSelectType = {}) }
+        }
+
+        listOf(
+            R.string.home_container_add_subtitle,
+            R.string.home_container_add_clock_subtitle,
+            R.string.home_container_add_apps_list_subtitle,
+            R.string.home_container_add_group_subtitle,
+            R.string.home_container_add_widget_list_subtitle,
+            R.string.home_container_add_quick_button_subtitle,
+            R.string.home_container_add_scroll_view_subtitle
+        ).forEach { composeTestRule.onNodeWithText(context.getString(it)).assertExists() }
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_start_here)).assertDoesNotExist()
+    }
+
+    @Test
+    fun `when the group tips were not seen, should mark the group with Start here`() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        var selectedType: LauncherItemType? = null
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                AddContainerDialog(
+                    onDismissRequest = {},
+                    onSelectType = { selectedType = it },
+                    showsGroupStartHere = true
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithText(context.getString(R.string.home_container_add_start_here)).assertExists()
+        composeTestRule.onNodeWithText(
+            context.getString(R.string.home_container_add_shortcuts_container)
+        ).performClick()
+
+        assertEquals(LauncherItemType.SHORTCUTS_CONTAINER, selectedType)
+    }
 }

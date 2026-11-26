@@ -97,14 +97,30 @@ class GestureCoachComponentTest {
     }
 
     @Test
-    fun `when the user waits without progress, should offer show me`() {
+    fun `when a step starts, should offer show me right away`() {
         render()
-        composeTestRule.onNodeWithText("Show me").assertDoesNotExist()
 
-        composeTestRule.mainClock.advanceTimeBy(OnboardingMotionSpec.SHOW_ME_DELAY_MS)
         composeTestRule.onNodeWithText("Show me").performClick()
 
         assertEquals(listOf("showMe"), calls)
+    }
+
+    @Test
+    fun `when nice has been read, should shrink into the go back chip`() {
+        render(
+            onboarding = OnboardingUiState(
+                completedSteps = setOf(GestureCoachStep.OPEN_APPS),
+                succeededStep = GestureCoachStep.OPEN_APPS
+            )
+        )
+        composeTestRule.onNodeWithText("Nice!").assertExists()
+        composeTestRule.onNodeWithText("◁ Go back to continue").assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(OnboardingMotionSpec.COACH_SUCCESS_CARD_MS + CHIP_SETTLE_MS)
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("◁ Go back to continue").assertExists()
+        composeTestRule.onNodeWithText("Nice!").assertDoesNotExist()
     }
 
     @Test
@@ -125,22 +141,10 @@ class GestureCoachComponentTest {
     }
 
     @Test
-    fun `when the alphabet is disabled, should go from apps to swipe down`() {
+    fun `when the alphabet is disabled, should go from apps to touch and hold`() {
         render(
             onboarding = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS)),
             config = GestureCoachConfig(isAlphabetScrubberDisabled = true)
-        )
-
-        composeTestRule.onNodeWithText("Swipe down").assertExists()
-    }
-
-    @Test
-    fun `when the swipe down is off, should go from the alphabet to customize`() {
-        render(
-            onboarding = OnboardingUiState(
-                completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB)
-            ),
-            config = GestureCoachConfig(isSwipeDownEnabled = false)
         )
 
         composeTestRule.onNodeWithText("Touch and hold").assertExists()
@@ -171,6 +175,7 @@ class GestureCoachComponentTest {
 
     private companion object {
         const val HOME_TAG = "home"
+        const val CHIP_SETTLE_MS = 1_000L
     }
 
     @Test
@@ -191,6 +196,6 @@ class GestureCoachComponentTest {
             config = GestureCoachConfig(isLandscape = true)
         )
 
-        composeTestRule.onNodeWithText("Swipe down", substring = true).assertExists()
+        composeTestRule.onNodeWithText("Touch and hold", substring = true).assertExists()
     }
 }

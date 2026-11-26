@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentFontOptions
 import dev.mnascimentos.aureole.composable.sheets.model.FontChipLook
+import dev.mnascimentos.aureole.composable.sheets.model.PickerGridExtras
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerGridParams
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePickerSheetOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ThemePreviewOverlayParams
@@ -87,14 +88,15 @@ fun PickFontBottomSheet(
                 options.onPreview()
                 pending = pending.copy(fontName = fontName)
             },
-            footer = options.footer
+            extras = PickerGridExtras(footer = options.footer)
         )
     }
 }
 
 /**
  * Body of the font picker without its sheet: the label and the grid of fonts, [shownFont] always marked
- * ([markedFontKey]). The Appearance sheet of the settings shows it inside itself. With [component] it lists
+ * ([markedFontKey]). The Appearance sheet of the settings and the Visual sheet of the onboarding show it inside
+ * themselves; [PickerGridExtras.fadesEdges] when it sits above a tab bar. With [component] it lists
  * "Launcher font" first, takes the component's label and writes its sample in each font.
  */
 @Composable
@@ -102,8 +104,8 @@ internal fun FontPickerGrid(
     shownFont: String,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier,
-    footer: (@Composable () -> Unit)? = null,
-    component: ComponentFontOptions? = null
+    component: ComponentFontOptions? = null,
+    extras: PickerGridExtras = PickerGridExtras()
 ) {
     val look = FontChipLook(
         text = component?.sample,
@@ -116,7 +118,8 @@ internal fun FontPickerGrid(
         params = ThemePickerGridParams(
             label = component?.sectionLabel ?: stringResource(R.string.settings_appearance_font_section_label),
             columns = FONT_COLUMNS,
-            footer = footer
+            footer = extras.footer,
+            fadesEdges = extras.fadesEdges
         ),
         modifier = modifier
     ) {

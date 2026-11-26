@@ -14,12 +14,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.EDGE_HOLD_MS
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.ScrubberBounds
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.letterCenterY
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.letterIndexAt
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberBoundsFor
 import dev.mnascimentos.aureole.feature.home.model.HomeDragParams
+import dev.mnascimentos.aureole.feature.home.model.SYSTEM_GESTURE_EDGE_DP
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -217,7 +219,8 @@ class HomeEdgeScrubGestureTest {
         setHome()
 
         composeTestRule.onNodeWithTag(TAG).performTouchInput {
-            down(Offset(width - EDGE_X_PX, bounds(height.toFloat()).topPx / 4f))
+            // Just inside the strip the system back gesture owns, still within the alphabet edge zone.
+            down(Offset(width - (SYSTEM_GESTURE_EDGE_DP + 2).dp.toPx(), bounds(height.toFloat()).topPx / 4f))
             repeat(4) { moveBy(Offset(0f, 60f)) }
             up()
         }

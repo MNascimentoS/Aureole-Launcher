@@ -39,7 +39,7 @@ internal fun SettingsSectionGroup(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
                 .background(AureoleDS.colors.surfaceVariant.copy(alpha = GROUP_FILL_ALPHA))
-                .padding(horizontal = AureoleDS.dimens.xxSmall, vertical = AureoleDS.dimens.minimal)
+                .padding(AureoleDS.dimens.xxSmall)
         ) {
             content()
         }

@@ -41,12 +41,10 @@ import kotlinx.coroutines.delay
 private const val HALO_START_PROGRESS = 0.86f
 private const val TEXT_FADE_PORTION = 0.15f
 
-private const val SCRIM_ALPHA = 0.45f
-
 /**
- * "All set": over a scrim, the halo closes its circle inside a glass card with the message, and particles burst
- * from the center. The card keeps the text readable over any home. Leaves after
- * [OnboardingMotionSpec.CELEBRATION_MS], or at a tap anywhere.
+ * "All set" (onboarding-redesenho RF-D5, D-18): over a light scrim with no strong blur, the halo closes its circle
+ * inside a solid card with the message, and particles burst from the center. Leaves after
+ * [OnboardingMotionSpec.CELEBRATION_MS] (~2.4 s), or at a tap anywhere; the host fades it out.
  */
 @Composable
 fun OnboardingCelebrationComponent(
@@ -72,7 +70,7 @@ fun OnboardingCelebrationComponent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(AureoleDS.colors.background.copy(alpha = SCRIM_ALPHA))
+            .background(AureoleDS.colors.background.copy(alpha = OnboardingMotionSpec.CELEBRATION_SCRIM_ALPHA))
             .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
                 onFinished()
             },
@@ -82,7 +80,8 @@ fun OnboardingCelebrationComponent(
             Canvas(modifier = Modifier.fillMaxSize()) { drawParticles(burst.value, particleColor) }
         }
         OnboardingGlassCard(
-            glass = glass,
+            // No blur behind the card (D-18): the solid surface keeps the text readable over any home.
+            glass = glass.copy(isHazeEnabled = false),
             modifier = Modifier
                 .widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH)
                 .padding(horizontal = AureoleDS.dimens.xLarge)

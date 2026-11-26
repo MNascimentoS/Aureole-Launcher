@@ -35,15 +35,16 @@ import kotlin.random.Random
 private const val NANOS_PER_MS = 1_000_000L
 private const val ROCKET_STROKE_DP = 1.6f
 
-/** Desenha foguetes (linha com gradiente) e faíscas (círculos); distâncias em larguras de tela. */
+/** Desenha foguetes (linha com gradiente) e faíscas (círculos); distâncias em larguras de tela; [alpha] apaga tudo. */
 fun DrawScope.drawFireworks(
     rockets: List<FireworkRocket>,
     sparks: List<FireworkSpark>,
-    colors: FireworkColors
+    colors: FireworkColors,
+    alpha: Float = 1f
 ) {
     val u = size.width
     rockets.forEach {
-        val color = colors.of(it.tone)
+        val color = colors.of(it.tone).copy(alpha = alpha)
         val top = Offset(it.x * u, it.y * u)
         val bottom = Offset(it.x * u, (it.y + FireworksTuning.TAIL_LENGTH) * u)
         drawLine(
@@ -59,7 +60,7 @@ fun DrawScope.drawFireworks(
     }
     sparks.forEach {
         drawCircle(
-            color = colors.of(it.tone).copy(alpha = minOf(it.life, 1f)),
+            color = colors.of(it.tone).copy(alpha = minOf(it.life, 1f) * alpha),
             radius = it.radius * u,
             center = Offset(it.x * u, it.y * u)
         )

@@ -17,6 +17,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerConfig
 import dev.mnascimentos.aureole.feature.home.components.containers.model.ContainerOptionsState
+import dev.mnascimentos.aureole.feature.home.components.containers.model.RemovedGroupItem
 import dev.mnascimentos.aureole.feature.home.components.quickbutton.model.normalized
 import java.util.UUID
 
@@ -43,6 +44,9 @@ internal class EditContainerState(
     var folderStrokeEnabled by mutableStateOf(options.folderStrokeEnabled)
     var scrollUpShortcut by mutableStateOf(options.scrollUpShortcut)
     var scrollDownShortcut by mutableStateOf(options.scrollDownShortcut)
+    var backgroundColorRef by mutableStateOf(options.backgroundColorRef)
+    var itemColorRef by mutableStateOf(options.itemColorRef)
+    var itemSpacing by mutableStateOf(options.itemSpacing)
     var itemsList by mutableStateOf(itemsList)
     var folders by mutableStateOf(folders)
     var quickButtons by mutableStateOf(quickButtons)
@@ -66,7 +70,11 @@ internal class EditContainerState(
         return panel.copy(
             position = position,
             orientation = orientation,
-            isBackgroundEnabled = isBackgroundEnabled,
+            // The old switch follows the color, for what still reads it (sizes of the items, RF-E3).
+            isBackgroundEnabled = backgroundColorRef != null,
+            backgroundColorRef = backgroundColorRef,
+            itemColorRef = itemColorRef,
+            itemSpacing = itemSpacing,
             isExpandCell = isExpandCell,
             showAddFolderButton = showAddFolderButton,
             showFolderLabels = showFolderLabels,
@@ -107,12 +115,13 @@ internal class EditContainerState(
 
     fun addFolder(name: String) = addFolder(FolderDetails(name = name))
 
-    /** Adds a new folder with the name and look chosen in the folder form. */
-    fun addFolder(details: FolderDetails) {
+    /** Adds a new folder with the name and look chosen in the folder form, holding [apps] (RF-C4). */
+    fun addFolder(details: FolderDetails, apps: List<String> = emptyList()) {
         val newFolder = AppFolder(
             id = UUID.randomUUID().toString(),
             panelId = panel.id,
             name = details.name,
+            appPackageNames = apps,
             displayAsGrid = isGridFolderEnabled
         ).withDetails(details)
         folders = folders + newFolder
@@ -137,39 +146,43 @@ internal class EditContainerState(
         }
     }
 
-    /** Adds a quick button and returns its id, so the sheet can open its editor right away (RF-07). */
-    fun addQuickButton(model: QuickButtonModel = QuickButtonModel()): String {
-        val qbId = if (model.id.isNotEmpty()) model.id else UUID.randomUUID().toString()
-        val newQuickButton = model.copy(id = qbId)
-        quickButtons = quickButtons + newQuickButton
-        itemsList = itemsList + ContainerItemEntity(
-            id = UUID.randomUUID().toString(),
-            panelId = panel.id,
-            itemType = ContainerItemType.QUICK_BUTTON,
-            quickButtonId = newQuickButton.id,
-            orderIndex = itemsList.size
-        ).also { it.quickButtonModel = newQuickButton }
-        return qbId
-    }
+    /** Whether the app [pkg] is an item of the group (the mark of "Add apps", RF-C3). */
+    fun hasApp(pkg: String): Boolean = itemsList.any { it.itemType == ContainerItemType.APP && it.packageName == pkg }
 
-    /** Writes the name and look chosen in the in-place folder editor to the folder [folderId]. */
-    fun updateFolder(folderId: String, details: FolderDetails) {
-        folders = folders.map { if (it.id == folderId) it.withDetails(details) else it }
+    /** "Add apps": a tap puts the app [pkg] at the end of the group, or takes it out when it is there (RF-C3). */
+    fun toggleApp(pkg: String) {
+        val index = itemsList.indexOfFirst { it.itemType == ContainerItemType.APP && it.packageName == pkg }
+        if (index >= 0) removeItem(index) else addApp(pkg)
     }
 
     /**
-     * Writes the change [change] made in the in-place quick button editor (the look or the shortcuts) to the button
-     * [quickButtonId].
+     * Removes the item at [index] (×, RF-C6) and returns what puts it back ([restore]): the item, where it was, and
+     * the folder or quick button it took along; null out of range. [name] is what the snackbar calls it.
      */
-    fun updateQuickButton(quickButtonId: String, change: (QuickButtonModel) -> QuickButtonModel) {
-        val updated = quickButtons.find { it.id == quickButtonId }?.let(change) ?: return
-        quickButtons = quickButtons.map { if (it.id == quickButtonId) updated else it }
-        // The entity keeps its model outside equals(), so a new list would compare equal and not be stored:
-        // the item's model is updated where it is (the save reads it before the quick button list).
-        itemsList.filter { item ->
-            item.itemType == ContainerItemType.QUICK_BUTTON &&
-                (item.quickButtonId == quickButtonId || item.id == quickButtonId)
-        }.forEach { it.quickButtonModel = updated }
+    fun removeItemAt(index: Int, id: Long, name: String): RemovedGroupItem? {
+        val item = itemsList.getOrNull(index) ?: return null
+        val removed = RemovedGroupItem(
+            id = id,
+            index = index,
+            item = item,
+            name = name,
+            folder = folders.find { item.itemType == ContainerItemType.FOLDER && it.id == item.folderId },
+            quickButton = quickButtons.find {
+                item.itemType == ContainerItemType.QUICK_BUTTON && (it.id == item.quickButtonId || it.id == item.id)
+            }
+        )
+        removeItem(index)
+        return removed
+    }
+
+    /** Puts a removed item back where it was (Undo, RF-C6), with its folder or quick button. */
+    fun restore(removed: RemovedGroupItem) {
+        if (itemsList.any { it.id == removed.item.id }) return
+        val list = itemsList.toMutableList()
+        list.add(removed.index.coerceIn(0, list.size), removed.item)
+        itemsList = list
+        removed.folder?.let { folder -> if (folders.none { it.id == folder.id }) folders = folders + folder }
+        removed.quickButton?.let { qb -> if (quickButtons.none { it.id == qb.id }) quickButtons = quickButtons + qb }
     }
 }
 
@@ -182,7 +195,7 @@ internal fun EditContainerState.toConfig(): ContainerConfig = ContainerConfig(
     quickButtons = quickButtons,
     position = position,
     orientation = orientation,
-    isBackgroundEnabled = isBackgroundEnabled,
+    isBackgroundEnabled = backgroundColorRef != null,
     isExpandCell = isExpandCell,
     showAddFolderButton = showAddFolderButton,
     showFolderLabels = showFolderLabels,
@@ -195,7 +208,10 @@ internal fun EditContainerState.toConfig(): ContainerConfig = ContainerConfig(
     folderColor = folderColor,
     folderStrokeEnabled = folderStrokeEnabled,
     scrollUpShortcut = scrollUpShortcut,
-    scrollDownShortcut = scrollDownShortcut
+    scrollDownShortcut = scrollDownShortcut,
+    backgroundColorRef = backgroundColorRef,
+    itemColorRef = itemColorRef,
+    itemSpacing = itemSpacing
 )
 
 private fun buildInitialItemsList(panel: ContainerModel): List<ContainerItemEntity> {
@@ -261,7 +277,10 @@ internal fun rememberEditContainerState(panel: ContainerModel): EditContainerSta
                 folderColor = panel.folderColor,
                 folderStrokeEnabled = panel.folderStrokeEnabled,
                 scrollUpShortcut = panel.scrollUpShortcut,
-                scrollDownShortcut = panel.scrollDownShortcut
+                scrollDownShortcut = panel.scrollDownShortcut,
+                backgroundColorRef = panel.backgroundColorRef,
+                itemColorRef = panel.itemColorRef,
+                itemSpacing = panel.itemSpacing
             ),
             itemsList = initialItemsList,
             folders = panel.folders

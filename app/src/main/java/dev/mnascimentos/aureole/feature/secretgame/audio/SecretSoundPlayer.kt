@@ -5,9 +5,9 @@ import android.media.AudioAttributes
 import android.media.SoundPool
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSound
+import dev.mnascimentos.aureole.feature.secretgame.model.gain
 
 private const val MAX_STREAMS = 6
-private const val FULL_VOLUME = 1f
 private const val PRIORITY = 1
 private const val NO_LOOP = 0
 private const val NORMAL_RATE = 1f
@@ -25,7 +25,8 @@ class SecretSoundPlayer(context: Context, isEnabled: Boolean = true) {
 
     fun play(sound: SecretSound) {
         val id = ids[sound] ?: return
-        pool?.play(id, FULL_VOLUME, FULL_VOLUME, PRIORITY, NO_LOOP, NORMAL_RATE)
+        val volume = sound.gain()
+        pool?.play(id, volume, volume, PRIORITY, NO_LOOP, NORMAL_RATE)
     }
 
     fun release() {

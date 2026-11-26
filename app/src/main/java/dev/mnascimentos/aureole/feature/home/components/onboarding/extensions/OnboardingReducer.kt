@@ -4,6 +4,7 @@ import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isHomeBuilt
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.visibleGestureSteps
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 
@@ -34,8 +35,7 @@ internal object OnboardingReducer {
         }
         val visibleSteps = visibleGestureSteps(
             next.isAlphabetScrubberDisabled,
-            next.isLandscape,
-            next.isSwipeDownNotificationsEnabled
+            next.isLandscape
         )
         val isFinished = updated.succeededStep == null && updated.completedSteps.containsAll(visibleSteps)
         // Finishing can also come from the step list shrinking, as when the screen turns to landscape.
@@ -64,12 +64,13 @@ internal object OnboardingReducer {
             )
         }
         // Tasks restored from disk are not news: only reopen for completions seen on the checklist.
-        val hasNewTask = previous.onboarding.stage == OnboardingStage.CHECKLIST &&
-            !previous.onboarding.completedTasks.containsAll(tasks)
-        val updated = onboarding.copy(
-            completedTasks = tasks,
-            isChecklistExpanded = onboarding.isChecklistExpanded || (hasNewTask && !onboarding.isHomePeeking)
-        )
+        val wasOnChecklist = previous.onboarding.stage == OnboardingStage.CHECKLIST
+        val hasNewTask = wasOnChecklist && !previous.onboarding.completedTasks.containsAll(tasks)
+        val withTasks = onboarding.copy(completedTasks = tasks)
+        // The last home step resolved, done or skipped: the list opens on the unlocked extras (D-10).
+        val unlocksExtras = wasOnChecklist && !previous.onboarding.isHomeBuilt && withTasks.isHomeBuilt
+        val opens = (hasNewTask || unlocksExtras) && !onboarding.isHomePeeking
+        val updated = withTasks.copy(isChecklistExpanded = onboarding.isChecklistExpanded || opens)
         return if (updated == onboarding) next else next.copy(onboarding = updated)
     }
 
@@ -84,7 +85,6 @@ internal object OnboardingReducer {
         val onboarding = state.onboarding
         val updated = when (signal) {
             OnboardingSignal.ALPHABET_SCRUBBED -> onboarding.onAlphabetScrubbed()
-            OnboardingSignal.NOTIFICATIONS_OPENED -> onboarding.onNotificationsOpened()
             OnboardingSignal.PICKER_CONFIRMED -> onboarding.onPickerConfirmed()
             OnboardingSignal.SETTINGS_OPENED -> onboarding.onSettingsOpened()
             OnboardingSignal.DEFAULT_HOME_RESULT -> onboarding.onDefaultHomeResult()

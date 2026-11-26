@@ -3,11 +3,13 @@ package dev.mnascimentos.aureole.feature.home.components.clock
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
 import dev.mnascimentos.aureole.composable.clock.ClockHeaderUtils
+import dev.mnascimentos.aureole.composable.clock.model.formatClockSample
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.util.Calendar
 import java.util.Locale
 
 @RunWith(RobolectricTestRunner::class)
@@ -22,8 +24,8 @@ class ClockHeaderUtilsTest {
         val result = ClockHeaderUtils.resolveClockTimeFormats(input)
 
         // Assert
-        assertEquals("hh:mm", result.first)
-        assertEquals("hh:mm", result.second)
+        assertEquals("h:mm a", result.first)
+        assertEquals("h:mm a", result.second)
     }
 
     @Test
@@ -46,10 +48,30 @@ class ClockHeaderUtilsTest {
         val resultUnknown = ClockHeaderUtils.resolveClockTimeFormats("RANDOM")
 
         // Assert
-        assertEquals("hh:mm", resultSystem.first)
+        assertEquals("h:mm a", resultSystem.first)
         assertEquals("HH:mm", resultSystem.second)
-        assertEquals("hh:mm", resultUnknown.first)
+        assertEquals("h:mm a", resultUnknown.first)
         assertEquals("HH:mm", resultUnknown.second)
+    }
+
+    @Test
+    fun `when 12H, should format without leading zero and with AM PM`() {
+        // Arrange
+        val pattern = ClockHeaderUtils.resolveClockTimePattern("12H", isSystem24Hour = true)
+        val afternoon = Calendar.getInstance().apply { set(2026, 0, 5, 15, 15, 0) }.timeInMillis
+
+        // Act
+        val text = formatClockSample(pattern, Locale.US, afternoon)
+
+        // Assert
+        assertEquals("3:15 PM", text)
+    }
+
+    @Test
+    fun `when SYSTEM, should follow the system 24 hour setting`() {
+        assertEquals("HH:mm", ClockHeaderUtils.resolveClockTimePattern("SYSTEM", isSystem24Hour = true))
+        assertEquals("h:mm a", ClockHeaderUtils.resolveClockTimePattern("SYSTEM", isSystem24Hour = false))
+        assertEquals("HH:mm", ClockHeaderUtils.resolveClockTimePattern("24H", isSystem24Hour = false))
     }
 
     @Test

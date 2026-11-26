@@ -32,7 +32,8 @@ data class AutoSaveOverlayParams(
     val hasExternalBackdrop: Boolean = false,
     val host: OverlayHostSpec = OverlayHostSpec(),
     val dismissOnTapOutside: Boolean = true,
-    val overlayState: AureoleEditOverlayState? = null
+    val overlayState: AureoleEditOverlayState? = null,
+    val hasTabBottomBar: Boolean = false
 )
 
 /** What closing an auto-save sheet has to do. */

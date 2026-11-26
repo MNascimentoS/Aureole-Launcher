@@ -51,7 +51,7 @@ class OnboardingHostExtTest {
     fun `success count should add done gestures and tasks`() {
         val state = OnboardingUiState(
             completedSteps = setOf(GestureCoachStep.OPEN_APPS),
-            completedTasks = setOf(OnboardingTask.CHOOSE_FONT, OnboardingTask.ADD_WIDGET)
+            completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL, OnboardingTask.ADD_WIDGET)
         )
 
         assertEquals(3, state.successCount)

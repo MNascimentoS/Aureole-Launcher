@@ -38,6 +38,8 @@ data class AureoleDimens(
     val controlHeight: Dp = 44.dp,
     val dragHandleWidth: Dp = 44.dp,
     val dragHandleHeight: Dp = 38.dp,
+    /** Height of the bar of the sheet handle; 0 hides the bar, as Settings › Appearance asks (its touch area stays). */
+    val sheetHandleBarHeight: Dp = 5.dp,
     val clockLineHeightLarge: Dp = 14.dp,
     val dashLength: Dp = 6.dp,
     val floatingElevation: Dp = 8.dp,
@@ -73,6 +75,10 @@ data class AureoleDimens(
     val radiusAppIcon: Dp = 12.dp,
     val radiusFull: Dp = 100.dp,
 ) {
+    /** These tokens with the sheet handle bar drawn, or not ([isHidden]); the handle gestures do not change. */
+    fun withSheetHandleHidden(isHidden: Boolean): AureoleDimens =
+        if (isHidden) copy(sheetHandleBarHeight = 0.dp) else this
+
     companion object {
         /**
          * Derives every radius token from the "Cartões e vidro" corner radius chosen by the user.

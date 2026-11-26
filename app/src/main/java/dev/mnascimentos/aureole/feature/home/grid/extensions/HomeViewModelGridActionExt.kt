@@ -9,6 +9,7 @@ import dev.mnascimentos.aureole.feature.home.components.clock.extensions.dropClo
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.giveNewClockItsConfig
 import dev.mnascimentos.aureole.feature.home.components.clock.extensions.hasItemOnAnyLayout
 import dev.mnascimentos.aureole.feature.home.components.containers.extensions.dropContainers
+import dev.mnascimentos.aureole.feature.home.components.containers.extensions.openNewContainerEditor
 import dev.mnascimentos.aureole.feature.home.components.favorites.extensions.dropFavoritesList
 import dev.mnascimentos.aureole.feature.home.extensions.showUndo
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
@@ -38,8 +39,10 @@ fun HomeViewModel.setEditingGridItem(item: LauncherItemState?) {
 fun HomeViewModel.addGridItem(spec: GridItemSpec) {
     val newId = UUID.randomUUID().toString()
     placeGridItem(spec, newId)
-    val isPlacedClock = spec.type == LauncherItemType.CLOCK && uiState.value.hasItemOnAnyLayout(newId)
-    if (isPlacedClock) giveNewClockItsConfig(newId)
+    val isPlaced = uiState.value.hasItemOnAnyLayout(newId)
+    if (spec.type == LauncherItemType.CLOCK && isPlaced) giveNewClockItsConfig(newId)
+    // A new group opens its editor at once (grupo-apps-pastas RF-A4).
+    if (spec.type == LauncherItemType.SHORTCUTS_CONTAINER && isPlaced) openNewContainerEditor(newId)
 }
 
 private fun HomeViewModel.placeGridItem(spec: GridItemSpec, newId: String) {

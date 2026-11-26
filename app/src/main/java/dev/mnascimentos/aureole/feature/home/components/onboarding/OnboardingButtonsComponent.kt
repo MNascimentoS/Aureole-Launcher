@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -52,6 +54,36 @@ fun OnboardingPrimaryButton(
     }
 }
 
+/** Second call to action: the same pill as [OnboardingPrimaryButton], outlined instead of filled. */
+@Composable
+fun OnboardingOutlinedButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val shape = RoundedCornerShape(AureoleDS.dimens.radiusFull)
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
+            .clip(shape)
+            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.onSurfaceHigh, shape)
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(horizontal = AureoleDS.dimens.large, vertical = AureoleDS.dimens.small),
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleText(
+            text = text,
+            color = AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.text,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+        )
+    }
+}
+
 /** Quiet secondary action: text only, still a full touch target. */
 @Composable
 fun OnboardingTextButton(
@@ -70,7 +102,12 @@ fun OnboardingTextButton(
         AureoleText(
             text = text,
             color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.text, textAlign = TextAlign.Center)
+            format = AureoleTextFormatParams(
+                style = AureoleDS.typography.text,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         )
     }
 }
@@ -84,6 +121,7 @@ private fun OnboardingButtonsPreview() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             OnboardingPrimaryButton(text = stringResource(R.string.home_onboarding_welcome_start), onClick = {})
+            OnboardingOutlinedButton(text = stringResource(R.string.home_onboarding_welcome_preset), onClick = {})
             OnboardingTextButton(text = stringResource(R.string.home_onboarding_welcome_skip), onClick = {})
         }
     }

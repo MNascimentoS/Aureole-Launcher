@@ -170,6 +170,11 @@ class SettingsRepository(
         get() = prefs.getInt(KEY_CORNER_RADIUS_DP, DEFAULT_CORNER_RADIUS_DP)
         set(value) = prefs.edit { putInt(KEY_CORNER_RADIUS_DP, value) }
 
+    /** Settings › Appearance: hides the bar of the sheet handle; its gestures and the dragging stay. */
+    var isSheetHandleHidden: Boolean
+        get() = prefs.getBoolean(KEY_HIDE_SHEET_HANDLE, false)
+        set(value) = prefs.edit { putBoolean(KEY_HIDE_SHEET_HANDLE, value) }
+
     var isThemedAppIconsEnabled: Boolean
         get() = prefs.getBoolean(KEY_USE_THEMED_APP_ICONS, false)
         set(value) = prefs.edit { putBoolean(KEY_USE_THEMED_APP_ICONS, value) }
@@ -474,11 +479,12 @@ class SettingsRepository(
         private const val KEY_HEADER_OFFSET_PERCENT = "header_offset_percent"
         private const val KEY_CORNER_RADIUS_DP = "corner_radius_dp"
         private const val KEY_USE_THEMED_APP_ICONS = "use_themed_app_icons"
+        private const val KEY_HIDE_SHEET_HANDLE = "hide_sheet_handle"
         private const val KEY_DISABLE_ALPHABET_SCRUBBER = "disable_alphabet_scrubber"
         private const val KEY_SWIPE_DOWN_NOTIFICATIONS = "swipe_down_notifications"
-        const val DEFAULT_SWIPE_DOWN_NOTIFICATIONS = true
+        const val DEFAULT_SWIPE_DOWN_NOTIFICATIONS = false
         private const val KEY_SWIPE_UP_ALL_APPS = "swipe_up_all_apps"
-        const val DEFAULT_SWIPE_UP_ALL_APPS = true
+        const val DEFAULT_SWIPE_UP_ALL_APPS = false
         private const val KEY_SHOW_SETTINGS_BUTTON_IN_ALL_APPS = "show_settings_button_in_all_apps"
         private const val KEY_SETTINGS_BUTTON_POSITION = "settings_button_position"
         private const val KEY_SHOW_SEARCH_BAR_IN_ALL_APPS = "show_search_bar_in_all_apps"

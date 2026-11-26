@@ -58,7 +58,8 @@ fun AureoleAutoSaveOverlay(
                 onSettingsClick = params.onSettingsClick,
                 hasExternalBackdrop = params.hasExternalBackdrop,
                 host = params.host,
-                dismissOnTapOutside = params.dismissOnTapOutside
+                dismissOnTapOutside = params.dismissOnTapOutside,
+                hasTabBottomBar = params.hasTabBottomBar
             ),
             previewContent = preview,
             bottomBarContent = bottomExtra,

@@ -92,7 +92,7 @@ class CustomizeBottomSheetTest {
 
     @Test
     fun `when container is clicked, should add a shortcuts container and dismiss`() =
-        assertAddsType("Container", LauncherItemType.SHORTCUTS_CONTAINER)
+        assertAddsType("App & folder group", LauncherItemType.SHORTCUTS_CONTAINER)
 
     @Test
     fun `when widget group is clicked, should add a widget list and dismiss`() =
@@ -252,7 +252,7 @@ class CustomizeBottomSheetTest {
         val LABELS_IN_ORDER = listOf(
             "Clock",
             "Apps list",
-            "Container",
+            "App & folder group",
             "Widget group",
             "Scrolling group",
             "Quick button",

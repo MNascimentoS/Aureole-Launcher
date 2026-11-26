@@ -72,9 +72,10 @@ data class MainUiState(
     val glassLevel: GlassLevel = GlassLevel.MEDIUM,
     val isInAppUpdateEnabled: Boolean = true,
     val isThemedAppIconsEnabled: Boolean = false,
+    val isSheetHandleHidden: Boolean = false,
     val isAlphabetScrubberDisabled: Boolean = false,
-    val isSwipeDownNotificationsEnabled: Boolean = true,
-    val isSwipeUpAllAppsEnabled: Boolean = true,
+    val isSwipeDownNotificationsEnabled: Boolean = false,
+    val isSwipeUpAllAppsEnabled: Boolean = false,
     val showSettingsButtonInAllApps: Boolean = true,
     val settingsButtonPosition: String = "Right",
     val showSearchBarInAllApps: Boolean = true,
@@ -154,6 +155,12 @@ data class MainUiState(
     val editingContainerId: String? = null,
     val isEditContainerDialogVisible: Boolean = false,
     val editContainerOpenCount: Int = 0,
+    /** The group being edited was just added from "Add component": closing it empty removes it (RF-B8, D-11). */
+    val editingContainerIsNew: Boolean = false,
+    /** The tips of the first group were seen (RF-F1): no tips and no "Start here" any more. */
+    val isContainerTipsSeen: Boolean = false,
+    /** Size each group has on the home, by grid item id, in memory only: the editor preview draws it so (RF-B3). */
+    val containerSizes: Map<String, DpSize> = emptyMap(),
 
     // Contextual Bottom Sheets
     val activeContainerAppBottomSheet: ContainerAppBottomSheetState? = null,

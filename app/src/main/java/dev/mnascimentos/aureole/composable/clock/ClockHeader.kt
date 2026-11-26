@@ -1,21 +1,26 @@
 package dev.mnascimentos.aureole.composable.clock
 
+import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -23,6 +28,7 @@ import androidx.compose.ui.semantics.onLongClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.clock.model.CLOCK_TIME_PATTERN_12H
 import dev.mnascimentos.aureole.composable.clock.model.ClockHazeConfig
 import dev.mnascimentos.aureole.composable.clock.model.ClockHeaderContentParams
 import dev.mnascimentos.aureole.composable.clock.model.ResolvedClockConfig
@@ -40,20 +46,19 @@ import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
  * The clock card. Its sizes come from the room it gets (`resolveClockSizing`): the time takes the biggest size that
  * fits the width and the height, and every other size is a share of it (relogio-home-sheet D-08), so the card is
  * the same at any size on the grid and in the editor preview. [onLongClick] opens the editor; a tap does nothing
- * and shows no ripple (RF-A1).
+ * and shows no ripple (RF-A1). With [isCentered], a card taller than its lines (a tall cell on the grid) centers them.
  */
 @Composable
 fun ClockHeader(
     resolvedConfig: ResolvedClockConfig,
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
-    onLongClick: (() -> Unit)? = null
+    onLongClick: (() -> Unit)? = null,
+    isCentered: Boolean = false
 ) {
     val hazeStateRef = hazeConfig.hazeState ?: LocalHazeState.current
     val isHazeEnabled = hazeConfig.isHazeEnabled
     val hazeOpacity = hazeConfig.hazeOpacity
-    val isBgEnabled = hazeConfig.isBackgroundEnabled
-
     val defaultTextColor = AureoleDS.colors.onSurfaceHigh
     val colorPrimaryInt = if (resolvedConfig.textColor != 0) resolvedConfig.textColor else defaultTextColor.toArgb()
     val colorPrimaryCompose = if (resolvedConfig.textColor != 0) Color(resolvedConfig.textColor) else defaultTextColor
@@ -72,7 +77,7 @@ fun ClockHeader(
     val greeting = clockGreeting(layoutChoice.message, resolvedConfig.customGreeting, hourGreeting)
 
     val containerBgColor = resolveClockBgColor(
-        isBgEnabled = isBgEnabled,
+        isBgEnabled = hazeConfig.isBackgroundEnabled,
         isHazeEnabled = isHazeEnabled,
         bgColorInt = resolvedConfig.backgroundColor,
         hazeOpacity = hazeOpacity,
@@ -84,12 +89,15 @@ fun ClockHeader(
             lines = layoutChoice.layout.lines,
             maxTextWidthDp = (maxWidth - sidePadding * 2).value,
             maxHeightDp = maxHeight.value,
-            fontScale = fontScale
+            fontScale = fontScale,
+            isTwelveHour = isTwelveHourClock(resolvedConfig.timeFormat)
         )
         val edge = sizing.metrics.edgeDp.dp
         Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxWidth()
+                .then(if (isCentered && constraints.hasBoundedHeight) Modifier.fillMaxHeight() else Modifier)
                 .clip(RoundedCornerShape(sizing.metrics.radiusDp.dp))
                 .clockHazeEffect(isHazeEnabled, hazeStateRef, hazeOpacity, hazeBlurRadius, hazeTintColor)
                 .background(containerBgColor)
@@ -114,6 +122,14 @@ fun ClockHeader(
         }
     }
 }
+
+/** The clock shows "h:mm a": the saved format asks for it, or follows the system and the system is on 12 h. */
+@Composable
+@ReadOnlyComposable
+private fun isTwelveHourClock(timeFormat: String): Boolean = ClockHeaderUtils.resolveClockTimePattern(
+    timeFormat,
+    DateFormat.is24HourFormat(LocalContext.current)
+) == CLOCK_TIME_PATTERN_12H
 
 /** The custom message when the layout asks for it and it is not blank; the greeting of the hour otherwise. */
 private fun clockGreeting(message: ClockMessage, customGreeting: String, hourGreeting: String): String =

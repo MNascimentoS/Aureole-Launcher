@@ -1,11 +1,5 @@
 package dev.mnascimentos.aureole.core.designsystem.model
 
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-
-/** Thickness of the handle bar drawn at the top of the sheet (RF-C1); no spacing or icon token has it. */
-internal val SheetHandleBarHeight: Dp = 5.dp
-
 /** Accessibility actions offered by the sheet handle (the strip at the top of the sheet). */
 internal enum class SheetHandleAction { Expand, Collapse, Settings }
 

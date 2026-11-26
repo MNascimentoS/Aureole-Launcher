@@ -37,6 +37,14 @@ class ClockSizingTest {
     }
 
     @Test
+    fun `when the time is 12 h, should leave room for AM PM on a narrow card`() {
+        val twentyFour = resolveClockSizing(full, maxTextWidthDp = 160f, maxHeightDp = 200f)
+        val twelve = resolveClockSizing(full, maxTextWidthDp = 160f, maxHeightDp = 200f, isTwelveHour = true)
+
+        assertTrue(twelve.textSizePx < twentyFour.textSizePx)
+    }
+
+    @Test
     fun `when the height grows, should grow the time continuously, not in steps`() {
         val sizes = (60..140 step 4).map { resolveClockSizing(full, wide, it.toFloat()).textSizePx }
 

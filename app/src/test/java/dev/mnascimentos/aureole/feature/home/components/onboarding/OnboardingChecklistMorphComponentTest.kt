@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 private const val TITLE = "First steps"
-private const val PILL_TEXT = "0/9 first steps"
+private const val PILL_TEXT = "First steps · 0/8"
 private const val MID_TRANSITION_MS = 80L
 private const val SETTLE_MS = 3_000L
 private val isRing = SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo)
@@ -98,14 +98,13 @@ class OnboardingChecklistMorphComponentTest {
     }
 
     @Test
-    fun `when the home peeks, should show the ring bubble with nothing to tap, then open the list`() {
+    fun `when the home peeks, should show the pill in place of the old bubble, then open the list`() {
         onboarding = onboarding.copy(isChecklistExpanded = false, isHomePeeking = true)
         render()
 
         composeTestRule.onNode(isRing).assertExists()
-        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(0)
         composeTestRule.onNodeWithText(TITLE).assertDoesNotExist()
-        composeTestRule.onNodeWithText(PILL_TEXT).assertDoesNotExist()
+        composeTestRule.onAllNodes(hasClickAction()).assertCountEquals(1)
 
         composeTestRule.mainClock.autoAdvance = false
         onboarding = onboarding.copy(isHomePeeking = false, isChecklistExpanded = true)
@@ -117,6 +116,31 @@ class OnboardingChecklistMorphComponentTest {
 
         composeTestRule.onNodeWithText(TITLE).assertExists()
         assertEquals(emptyList<Boolean>(), expandedCalls)
+    }
+
+    @Test
+    fun `when a step is tapped, should shrink the list first and open the step after`() {
+        val events = mutableListOf<String>()
+        composeTestRule.setContent {
+            AureoleLauncherTheme {
+                OnboardingChecklistMorphComponent(
+                    onboarding = onboarding,
+                    isOtherOverlayActive = false,
+                    glass = OnboardingGlass(),
+                    actions = OnboardingActions(
+                        onSetChecklistExpanded = { events += "expanded=$it" },
+                        onTaskClick = { events += "task=$it" }
+                    )
+                )
+            }
+        }
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Set as home app").performClick()
+        composeTestRule.mainClock.advanceTimeBy(SETTLE_MS)
+        composeTestRule.waitUntil(timeoutMillis = SETTLE_MS) { events.size == 2 }
+
+        assertEquals(listOf("expanded=false", "task=SET_DEFAULT_HOME"), events)
     }
 
     @Test

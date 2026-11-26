@@ -1,7 +1,7 @@
 package dev.mnascimentos.aureole.composable.favorites
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilterChip
@@ -14,6 +14,7 @@ import dev.mnascimentos.aureole.composable.favorites.model.FavoriteAppsDialogCon
 import dev.mnascimentos.aureole.composable.favorites.model.ShowAllAppsParams
 import dev.mnascimentos.aureole.composable.favorites.model.ShowLabelsParams
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
+import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
 import dev.mnascimentos.aureole.core.designsystem.icons.Check
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
@@ -30,9 +31,11 @@ internal fun FavoriteAppsListHeader(
     modifier: Modifier = Modifier
 ) {
     val showAllApps = config.showAllApps ?: return
-    Row(
+    // A chip that does not fit next to the other goes to the next line, whole, instead of breaking its label.
+    FlowRow(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
+        horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall),
+        verticalArrangement = Arrangement.spacedBy(AureoleDS.dimens.xSmall)
     ) {
         FavoriteAppsOptionChip(
             label = stringResource(R.string.home_apps_list_show_all),
@@ -62,7 +65,7 @@ private fun FavoriteAppsOptionChip(
         selected = selected,
         onClick = onClick,
         enabled = enabled,
-        label = { AureoleText(label) },
+        label = { AureoleText(label, format = AureoleTextFormatParams(maxLines = 1)) },
         leadingIcon = if (selected) {
             {
                 // The icon has its own default tint; the chip's leading icon color does not reach it.

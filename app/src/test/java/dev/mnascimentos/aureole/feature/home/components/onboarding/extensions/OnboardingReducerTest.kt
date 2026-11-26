@@ -29,7 +29,9 @@ class OnboardingReducerTest {
     private fun MainUiState.withOnboarding(transform: OnboardingUiState.() -> OnboardingUiState) =
         copy(onboarding = onboarding.transform())
 
-    private val allTasksButFont = OnboardingTask.entries.toSet() - OnboardingTask.CHOOSE_FONT
+    private val allTasksButVisual = OnboardingTask.entries.toSet() - OnboardingTask.CHOOSE_VISUAL
+    private val homeTasksButFavorites = OnboardingTask.entries.filterNot { it.isExtra }.toSet() -
+        OnboardingTask.ADD_FAVORITE_APPS
 
     // region reduce
 
@@ -137,8 +139,7 @@ class OnboardingReducerTest {
             OnboardingUiState(
                 completedSteps = setOf(
                     GestureCoachStep.OPEN_APPS,
-                    GestureCoachStep.ALPHABET_SCRUB,
-                    GestureCoachStep.NOTIFICATIONS
+                    GestureCoachStep.ALPHABET_SCRUB
                 )
             )
         )
@@ -158,7 +159,6 @@ class OnboardingReducerTest {
             OnboardingUiState(
                 completedSteps = setOf(
                     GestureCoachStep.OPEN_APPS,
-                    GestureCoachStep.NOTIFICATIONS,
                     GestureCoachStep.CUSTOMIZE
                 ),
                 succeededStep = GestureCoachStep.CUSTOMIZE
@@ -265,7 +265,7 @@ class OnboardingReducerTest {
         val previous = MainUiState()
         val next = stateAt(
             OnboardingStage.CHECKLIST,
-            OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_FONT), isChecklistExpanded = false)
+            OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL), isChecklistExpanded = false)
         )
 
         assertSame(next, OnboardingReducer.reduce(previous, next))
@@ -289,7 +289,7 @@ class OnboardingReducerTest {
     fun `when the last task is done, should complete and celebrate`() {
         val previous = stateAt(
             OnboardingStage.CHECKLIST,
-            OnboardingUiState(completedTasks = allTasksButFont, activePicker = AppearancePicker.FONT)
+            OnboardingUiState(completedTasks = allTasksButVisual, activePicker = AppearancePicker.FONT)
         )
         val next = OnboardingReducer.applySignal(previous, OnboardingSignal.PICKER_CONFIRMED)
 
@@ -306,7 +306,7 @@ class OnboardingReducerTest {
     fun `when the last task is done with the home hidden, should hold the celebration`() {
         val previous = stateAt(
             OnboardingStage.CHECKLIST,
-            OnboardingUiState(completedTasks = allTasksButFont, isHomeInForeground = false)
+            OnboardingUiState(completedTasks = allTasksButVisual, isHomeInForeground = false)
         )
         val next = previous.withOnboarding { copy(completedTasks = OnboardingTask.entries.toSet()) }
 
@@ -315,6 +315,42 @@ class OnboardingReducerTest {
         assertEquals(OnboardingStage.COMPLETED, result.stage)
         assertFalse(result.isCelebrating)
         assertTrue(result.isCelebrationPending)
+    }
+
+    @Test
+    fun `when the last home step is skipped, should open the list on the unlocked extras`() {
+        val previous = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(completedTasks = homeTasksButFavorites, isChecklistExpanded = false)
+        )
+        val next = previous.withOnboarding { copy(skippedTasks = setOf(OnboardingTask.ADD_FAVORITE_APPS)) }
+
+        val result = OnboardingReducer.reduce(previous, next).onboarding
+
+        assertEquals(OnboardingStage.CHECKLIST, result.stage)
+        assertTrue(result.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when the extras unlock while the home peeks, should leave the reopening to the peek`() {
+        val previous = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(completedTasks = homeTasksButFavorites, isChecklistExpanded = false, isHomePeeking = true)
+        )
+        val next = previous.withOnboarding { copy(skippedTasks = setOf(OnboardingTask.ADD_FAVORITE_APPS)) }
+
+        assertFalse(OnboardingReducer.reduce(previous, next).onboarding.isChecklistExpanded)
+    }
+
+    @Test
+    fun `when only the extras are left, should keep the tour going until both are resolved`() {
+        val homeDone = OnboardingTask.entries.filterNot { it.isExtra }.toSet()
+        val previous = stateAt(OnboardingStage.CHECKLIST, OnboardingUiState(completedTasks = homeDone))
+        val oneExtra = previous.withOnboarding { copy(skippedTasks = setOf(OnboardingTask.ADJUST_LAYOUT)) }
+        val both = oneExtra.withOnboarding { copy(completedTasks = homeDone + OnboardingTask.EXPLORE_SETTINGS) }
+
+        assertEquals(OnboardingStage.CHECKLIST, OnboardingReducer.reduce(previous, oneExtra).onboarding.stage)
+        assertEquals(OnboardingStage.COMPLETED, OnboardingReducer.reduce(oneExtra, both).onboarding.stage)
     }
 
     // endregion
@@ -343,22 +379,28 @@ class OnboardingReducerTest {
     }
 
     @Test
-    fun `when the palette picker is confirmed, should complete the palette task and close the picker`() {
+    fun `when the Visual sheet closes on the palette tab, should complete the visual step`() {
         val state = stateAt(OnboardingStage.CHECKLIST, OnboardingUiState(activePicker = AppearancePicker.PALETTE))
 
         val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding
 
-        assertEquals(setOf(OnboardingTask.CHOOSE_PALETTE), result.completedTasks)
+        assertEquals(setOf(OnboardingTask.CHOOSE_VISUAL), result.completedTasks)
         assertNull(result.activePicker)
+        assertTrue(result.isChecklistExpanded)
     }
 
     @Test
-    fun `when the font picker is confirmed, should complete the font task`() {
-        val state = stateAt(OnboardingStage.CHECKLIST, OnboardingUiState(activePicker = AppearancePicker.FONT))
+    fun `when the Visual sheet closes on the font tab, should complete the visual step and close the sheet`() {
+        val state = stateAt(
+            OnboardingStage.CHECKLIST,
+            OnboardingUiState(activePicker = AppearancePicker.FONT, skippedTasks = setOf(OnboardingTask.CHOOSE_VISUAL))
+        )
 
         val result = OnboardingReducer.applySignal(state, OnboardingSignal.PICKER_CONFIRMED).onboarding
 
-        assertEquals(setOf(OnboardingTask.CHOOSE_FONT), result.completedTasks)
+        assertEquals(setOf(OnboardingTask.CHOOSE_VISUAL), result.completedTasks)
+        assertTrue(result.skippedTasks.isEmpty())
+        assertNull(result.activePicker)
     }
 
     @Test

@@ -45,7 +45,8 @@ fun ClockContainer(
                 isBackgroundEnabled = clockConfig.isBackgroundEnabled
             ),
             config = clockConfig.toHeaderConfig(),
-            onLongClick = { actions.onOpenEditClockBottomSheet(clockId) }
+            onLongClick = { actions.onOpenEditClockBottomSheet(clockId) },
+            isCentered = true
         )
     }
 }

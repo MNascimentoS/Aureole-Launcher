@@ -23,7 +23,7 @@ class OnboardingSkipTest {
     private val checklist = OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = false)
 
     @Test
-    fun `when a skippable task is skipped, should not complete it and should show the list again`() {
+    fun `when a task is skipped, should not complete it and should show the list again`() {
         val result = checklist.skipping(OnboardingTask.ADD_CLOCK, hasHomeItems = true)
 
         assertEquals(setOf(OnboardingTask.ADD_CLOCK), result.skippedTasks)
@@ -32,8 +32,7 @@ class OnboardingSkipTest {
     }
 
     @Test
-    fun `when the task cannot be skipped or is done, should change nothing`() {
-        assertSame(checklist, checklist.skipping(OnboardingTask.CHOOSE_FONT, hasHomeItems = true))
+    fun `when the task is done, should change nothing`() {
         val done = checklist.copy(completedTasks = setOf(OnboardingTask.ADD_CLOCK))
         assertSame(done, done.skipping(OnboardingTask.ADD_CLOCK, hasHomeItems = true))
     }
@@ -80,30 +79,26 @@ class OnboardingSkipTest {
     @Test
     fun `when skipped tasks exist, should count them as resolved for the next task and the progress`() {
         val state = checklist.copy(
-            completedTasks = setOf(
-                OnboardingTask.SET_DEFAULT_HOME,
-                OnboardingTask.CHOOSE_PALETTE,
-                OnboardingTask.CHOOSE_FONT
-            ),
+            completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_VISUAL),
             skippedTasks = setOf(OnboardingTask.ADD_CLOCK)
         )
 
         assertEquals(OnboardingTask.ADD_WIDGET, state.nextPendingTask)
-        assertEquals(4, state.resolvedTasks.size)
-        assertEquals(4f / OnboardingTask.entries.size, state.taskProgress, 0.0001f)
+        assertEquals(3, state.resolvedTasks.size)
+        assertEquals(3f / 8, state.taskProgress, 0.0001f)
     }
 
     @Test
     fun `when skipped tasks are saved, should keep them apart from the done ones round trip`() {
         val state = checklist.copy(
-            completedTasks = setOf(OnboardingTask.CHOOSE_FONT),
+            completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL),
             skippedTasks = setOf(OnboardingTask.ADD_WIDGET)
         )
 
         val progress = state.toProgress()
 
         assertEquals(setOf(OnboardingTask.ADD_WIDGET), progress.skippedTasks)
-        assertEquals(setOf(OnboardingTask.CHOOSE_FONT, OnboardingTask.ADD_WIDGET), progress.resolvedTasks)
+        assertEquals(setOf(OnboardingTask.CHOOSE_VISUAL, OnboardingTask.ADD_WIDGET), progress.resolvedTasks)
         assertEquals(progress.skippedTasks, progress.toUiState(isDefaultLauncher = false).skippedTasks)
     }
 
@@ -139,7 +134,7 @@ class OnboardingSkipTest {
     @Test
     fun `when an item task is done, should let the layout step start`() {
         assertFalse(checklist.hasItemTaskDone)
-        assertFalse(checklist.copy(completedTasks = setOf(OnboardingTask.CHOOSE_FONT)).hasItemTaskDone)
+        assertFalse(checklist.copy(completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL)).hasItemTaskDone)
         assertTrue(checklist.copy(completedTasks = setOf(OnboardingTask.ADD_FAVORITE_APPS)).hasItemTaskDone)
     }
 
@@ -170,34 +165,44 @@ class OnboardingSkipTest {
     }
 
     @Test
-    fun `the checklist has nine tasks with the layout step right before the settings`() {
-        val tasks = OnboardingTask.entries
-
-        assertEquals(9, tasks.size)
-        assertEquals(OnboardingTask.ADJUST_LAYOUT, tasks[tasks.indexOf(OnboardingTask.EXPLORE_SETTINGS) - 1])
+    fun `the checklist has eight steps, six for the home and the two extras last`() {
         assertEquals(
-            setOf(
+            listOf(
+                OnboardingTask.SET_DEFAULT_HOME,
+                OnboardingTask.CHOOSE_VISUAL,
                 OnboardingTask.ADD_CLOCK,
                 OnboardingTask.ADD_WIDGET,
                 OnboardingTask.ADD_FAVORITE_APPS,
                 OnboardingTask.FILL_CONTAINER,
-                OnboardingTask.ADJUST_LAYOUT
+                OnboardingTask.ADJUST_LAYOUT,
+                OnboardingTask.EXPLORE_SETTINGS
             ),
-            tasks.filter { it.isSkippable }.toSet()
+            OnboardingTask.entries
         )
+        assertEquals(
+            listOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS),
+            OnboardingTask.entries.filter { it.isExtra }
+        )
+    }
+
+    @Test
+    fun `every step can be skipped, the home app and the extras included`() {
+        listOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_VISUAL, OnboardingTask.EXPLORE_SETTINGS)
+            .forEach { task -> assertEquals(setOf(task), checklist.skipping(task, hasHomeItems = true).skippedTasks) }
     }
 
     @Test
     fun `row status should tell done, skipped, the leading task and the rest apart`() {
         val state = checklist.copy(
             completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME),
-            skippedTasks = setOf(OnboardingTask.CHOOSE_PALETTE)
+            skippedTasks = setOf(OnboardingTask.CHOOSE_VISUAL)
         )
         val next = state.nextPendingTask
 
         assertEquals(OnboardingTaskStatus.DONE, state.statusOf(OnboardingTask.SET_DEFAULT_HOME, next))
-        assertEquals(OnboardingTaskStatus.SKIPPED, state.statusOf(OnboardingTask.CHOOSE_PALETTE, next))
-        assertEquals(OnboardingTaskStatus.NEXT, state.statusOf(OnboardingTask.CHOOSE_FONT, next))
-        assertEquals(OnboardingTaskStatus.PENDING, state.statusOf(OnboardingTask.ADD_CLOCK, next))
+        assertEquals(OnboardingTaskStatus.SKIPPED, state.statusOf(OnboardingTask.CHOOSE_VISUAL, next))
+        assertEquals(OnboardingTaskStatus.NEXT, state.statusOf(OnboardingTask.ADD_CLOCK, next))
+        assertEquals(OnboardingTaskStatus.PENDING, state.statusOf(OnboardingTask.ADD_WIDGET, next))
+        assertEquals(OnboardingTaskStatus.LOCKED, state.statusOf(OnboardingTask.ADJUST_LAYOUT, next))
     }
 }

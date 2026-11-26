@@ -1,19 +1,17 @@
 package dev.mnascimentos.aureole.feature.home.components.clock
 
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import dev.mnascimentos.aureole.R
+import dev.mnascimentos.aureole.composable.sheets.AureoleSheetSavedHint
+import dev.mnascimentos.aureole.composable.sheets.asSheetPage
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.designsystem.model.AureoleEditOverlayConfig
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemeColorRef
-import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.home.components.clock.model.ClockTab
 import dev.mnascimentos.aureole.feature.home.components.clock.model.EditClockPagerParams
 import dev.mnascimentos.aureole.feature.home.components.clock.model.clockColorTitleRes
@@ -33,13 +31,11 @@ internal fun AureoleEditOverlayConfig.withColorPage(
     onClose: () -> Unit
 ): AureoleEditOverlayConfig {
     if (role == null) return this
-    return copy(
+    return asSheetPage(
         title = stringResource(clockColorTitleRes(role)),
         subtitle = stringResource(R.string.home_clock_picker_subtitle),
-        onBackPress = onBack,
-        onDismiss = onClose,
-        headerLeadingAction = { EditClockColorPageBack(onBack = onBack) },
-        hasTabBottomBar = false
+        onBack = onBack,
+        onClose = onClose
     )
 }
 
@@ -69,10 +65,12 @@ internal fun EditClockSheetBody(
     params: EditClockPagerParams,
     onColorPicked: (ComponentColorRole, ThemeColorRef?) -> Unit
 ) {
+    // Outlives the color page, so coming back to the tabs keeps the height of the session (RF-C2).
+    val sessionTallest = remember { IntArray(1) }
     if (colorRole != null) {
         EditClockColorPage(uiState = params.uiState, role = colorRole) { onColorPicked(colorRole, it) }
     } else {
-        EditClockPager(pagerState = pagerState, params = params)
+        EditClockPager(pagerState = pagerState, params = params, sessionTallest = sessionTallest)
     }
 }
 
@@ -84,10 +82,7 @@ internal fun ColumnScope.EditClockBottomBar(
     pagerState: PagerState
 ) {
     if (showsClockSaveHint(clockState.onboarding.stage, clockState.isClockSaveHintDismissed)) {
-        EditClockSaveHint(
-            onDismiss = actions.onDismissClockSaveHint,
-            modifier = Modifier.padding(bottom = AureoleDS.dimens.xSmall)
-        )
+        AureoleSheetSavedHint(onClick = actions.onDismissClockSaveHint)
     }
     EditClockFooter(pagerState = pagerState)
 }

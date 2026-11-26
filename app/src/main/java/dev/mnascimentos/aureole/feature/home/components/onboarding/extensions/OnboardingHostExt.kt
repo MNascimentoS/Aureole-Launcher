@@ -19,7 +19,7 @@ import dev.mnascimentos.aureole.feature.home.model.isHomeOverlayActive
 /** The expanded list steps aside while a picker is open, so the home re-themes in full view. */
 val OnboardingUiState.visibleSurface: OnboardingSurface
     get() = when (stage) {
-        OnboardingStage.WELCOME -> OnboardingSurface.WELCOME
+        OnboardingStage.WELCOME -> if (isChoosingPreset) OnboardingSurface.PRESETS else OnboardingSurface.WELCOME
         OnboardingStage.DEFAULT_HOME -> OnboardingSurface.DEFAULT_HOME
         OnboardingStage.GESTURES -> OnboardingSurface.GESTURE_COACH
         OnboardingStage.CHECKLIST -> if (isChecklistExpanded && activePicker == null) {
@@ -38,19 +38,25 @@ val OnboardingUiState.hostSurface: OnboardingSurface
 val OnboardingUiState.isChecklistMinimized: Boolean
     get() = stage == OnboardingStage.CHECKLIST && !isChecklistExpanded && activePicker == null && !isHomePeeking
 
-/** The home shows alone after a task: the bubble sits in the pill's place until the list comes back. */
-val OnboardingUiState.isPeekBubbleShown: Boolean
+/**
+ * The home shows alone after a task, with the pill in its place (the peek bubble is gone, onboarding-redesenho
+ * RF-D2) until the list comes back.
+ */
+val OnboardingUiState.isHomePeekShown: Boolean
     get() = stage == OnboardingStage.CHECKLIST && isHomePeeking && activePicker == null && pendingTask == null
 
 /**
- * What the checklist layer shows; the pill and the peek bubble hide while [isOtherOverlayActive], so they never
- * cover an editor.
+ * The item the step just added, highlighted on the home (RF-D1) until the list opens or the next step starts
+ * (RF-D3, D-02); null when nothing is highlighted. Only during the onboarding.
  */
+val OnboardingUiState.highlightedItemId: String?
+    get() = peekItemId?.takeIf { isHomePeekShown && !isChecklistExpanded }
+
+/** What the checklist layer shows; the pill hides while [isOtherOverlayActive], so it never covers an editor. */
 fun OnboardingUiState.checklistMorph(isOtherOverlayActive: Boolean): ChecklistMorph = when {
     visibleSurface == OnboardingSurface.CHECKLIST -> ChecklistMorph.EXPANDED
     isOtherOverlayActive -> ChecklistMorph.HIDDEN
-    isChecklistMinimized -> ChecklistMorph.MINIMIZED
-    isPeekBubbleShown -> ChecklistMorph.PEEK
+    isChecklistMinimized || isHomePeekShown -> ChecklistMorph.MINIMIZED
     else -> ChecklistMorph.HIDDEN
 }
 
@@ -78,16 +84,24 @@ fun MainUiState.toOnboardingHostParams(hazeState: HazeState?, isTouchExploration
             isLeftHandedMode = isLeftHandedMode,
             isTouchExplorationEnabled = isTouchExplorationEnabled,
             isLandscape = isLandscape,
-            isSwipeDownEnabled = isSwipeDownNotificationsEnabled,
-            isAlphabetLoading = alphabet.isEmpty()
+            isAlphabetLoading = alphabet.isEmpty(),
+            isAllAppsOpen = isAllAppsDrawerOpen
         ),
-        selection = AppearanceSelection(paletteName = selectedThemeName, fontName = selectedFontName),
+        selection = AppearanceSelection(
+            paletteName = selectedThemeName,
+            fontName = selectedFontName,
+            clockTimeFormat = clockTimeFormat,
+            clockDateFormat = clockDateFormat
+        ),
         isHomeOverlayActive = isHomeOverlayActive,
         showEditHint = isGridEditMode && onboarding.pendingTask?.isJudgedOnSave == true && !isTaskEditorOpen,
         editHintGrid = editHintItems().toEditHintGrid(
             maxRows = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_ROWS else GridEngineUtils.PORTRAIT_MAX_ROWS,
             maxCols = if (isLandscape) GridEngineUtils.LANDSCAPE_MAX_COLS else GridEngineUtils.PORTRAIT_MAX_COLS
-        )
+        ),
+        canUsePreset = canTakeLayoutPreset(portraitGridItems, landscapeGridItems),
+        undoSnackbar = undoSnackbar.takeIf { onboarding.stage != OnboardingStage.COMPLETED },
+        isLeftHanded = isLeftHandedMode
     )
 
 /**
@@ -107,6 +121,5 @@ val MainUiState.isScrubberHintVisible: Boolean
         onboarding.succeededStep == null &&
         onboarding.currentGestureStep(
             isAlphabetScrubberDisabled,
-            isLandscape,
-            isSwipeDownNotificationsEnabled
+            isLandscape
         ) == GestureCoachStep.ALPHABET_SCRUB

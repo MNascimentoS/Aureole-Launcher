@@ -17,7 +17,6 @@ private const val TRAIL_ALPHA = 0.35f
 private const val SWIPE_START_Y = 0.78f
 
 /** Below the coach card, so the finger and its trail never pass under it. */
-private const val SWIPE_DOWN_START_Y = 0.42f
 private const val PRESS_Y = 0.6f
 private const val FADE_OUT_START = 0.8f
 
@@ -38,16 +37,6 @@ internal fun DrawScope.drawSwipeUp(phase: State<Float>, loopMs: Int, color: Colo
     val t = FastOutSlowInEasing.transform((phase.value / FADE_OUT_START).coerceIn(0f, 1f))
     val start = Offset(size.width / 2, size.height * SWIPE_START_Y)
     val finger = start.copy(y = start.y - size.height * OnboardingMotionSpec.HAND_SWIPE_TRAVEL * t)
-    val alpha = fadeFor(phase.value, loopMs)
-    val trailWidth = OnboardingMotionSpec.HAND_TRAIL_WIDTH.toPx()
-    drawLine(color.copy(alpha = TRAIL_ALPHA * alpha), start, finger, trailWidth, StrokeCap.Round)
-    drawFinger(finger, alpha, color)
-}
-
-internal fun DrawScope.drawSwipeDown(phase: State<Float>, loopMs: Int, color: Color) {
-    val t = FastOutSlowInEasing.transform((phase.value / FADE_OUT_START).coerceIn(0f, 1f))
-    val start = Offset(size.width / 2, size.height * SWIPE_DOWN_START_Y)
-    val finger = start.copy(y = start.y + size.height * OnboardingMotionSpec.HAND_SWIPE_TRAVEL * t)
     val alpha = fadeFor(phase.value, loopMs)
     val trailWidth = OnboardingMotionSpec.HAND_TRAIL_WIDTH.toPx()
     drawLine(color.copy(alpha = TRAIL_ALPHA * alpha), start, finger, trailWidth, StrokeCap.Round)

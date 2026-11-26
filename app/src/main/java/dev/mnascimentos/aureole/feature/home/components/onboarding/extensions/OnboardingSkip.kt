@@ -24,12 +24,12 @@ internal val OnboardingUiState.hasItemTaskDone: Boolean
     get() = completedTasks.any { it in itemTasks }
 
 /**
- * Marks [task] skipped: it stops blocking but stays undone. A task that is not skippable or is already done is
+ * Marks [task] skipped: it stops blocking but stays undone. Every step can be skipped (D-11); one already done is
  * left alone. When the clock, the widgets and the container are all skipped and the home has no item, the layout
  * step has nothing to adjust, so it is skipped with them.
  */
 internal fun OnboardingUiState.skipping(task: OnboardingTask, hasHomeItems: Boolean): OnboardingUiState {
-    if (!task.isSkippable || task in completedTasks) return this
+    if (task in completedTasks) return this
     val skipped = skippedTasks + task
     val nothingToAdjust = !hasHomeItems && skipped.containsAll(itemTasksWithoutApps)
     return copy(

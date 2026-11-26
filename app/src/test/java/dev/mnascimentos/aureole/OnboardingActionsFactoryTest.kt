@@ -21,6 +21,7 @@ import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.VisualChoice
 import dev.mnascimentos.aureole.feature.home.grid.GridEngineUtils
 import dev.mnascimentos.aureole.feature.home.grid.extensions.cancelGridEditMode
 import dev.mnascimentos.aureole.feature.home.grid.extensions.saveGridEditMode
@@ -76,6 +77,7 @@ class OnboardingActionsFactoryTest {
         onAddGridItem = { type, _, _ -> calls += "add:$type" },
         onSetIsAddingSingleWidget = { adding -> calls += "singleWidget:$adding" },
         onAddWidgetClick = { stack -> calls += "widgetPicker:$stack" },
+        onOpenEditGridItemDialog = { item -> calls += "widgetGroup:${item.id}" },
         onOpenEditClockBottomSheet = { calls += "clock:$it" },
         onSaveGridEditMode = { calls += "saveGrid" }
     )
@@ -174,12 +176,12 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when the widget task is tapped, should save a compact widget list and open the picker for it`() {
+    fun `when the widget task is tapped, should save a compact widget list and open its group editor`() {
         actions().onTaskClick(OnboardingTask.ADD_WIDGET)
 
         val state = viewModel.uiState.value
         val list = state.gridItems.single()
-        assertEquals(listOf("widgetPicker:${list.id}"), calls)
+        assertEquals(listOf("widgetGroup:${list.id}"), calls)
         assertEquals(LauncherItemType.WIDGET_LIST, list.safeType)
         assertFalse(state.isGridEditMode)
         assertEquals(OnboardingTask.ADD_WIDGET, state.onboarding.pendingTask)
@@ -288,8 +290,8 @@ class OnboardingActionsFactoryTest {
     }
 
     @Test
-    fun `when an appearance task is tapped, should open its picker without other editors`() {
-        actions().onTaskClick(OnboardingTask.CHOOSE_PALETTE)
+    fun `when the visual task is tapped, should open the Visual sheet on the palette tab without other editors`() {
+        actions().onTaskClick(OnboardingTask.CHOOSE_VISUAL)
 
         assertTrue(calls.isEmpty())
         assertEquals(AppearancePicker.PALETTE, viewModel.uiState.value.onboarding.activePicker)
@@ -341,16 +343,14 @@ class OnboardingActionsFactoryTest {
         actions.onSetChecklistExpanded(false)
         assertFalse(viewModel.uiState.value.onboarding.isChecklistExpanded)
 
-        actions.onTaskClick(OnboardingTask.CHOOSE_FONT)
-        actions.onSelectFont("Space Grotesk")
-        actions.onConfirmAppearancePicker()
-        assertTrue(OnboardingTask.CHOOSE_FONT in viewModel.uiState.value.onboarding.completedTasks)
-
-        actions.onTaskClick(OnboardingTask.CHOOSE_PALETTE)
-        actions.onSelectPalette("Abyss")
-        actions.onDismissAppearancePicker(true)
+        actions.onTaskClick(OnboardingTask.CHOOSE_VISUAL)
+        assertEquals(AppearancePicker.PALETTE, viewModel.uiState.value.onboarding.activePicker)
+        actions.onCloseVisual(VisualChoice(paletteName = "Abyss"))
         assertEquals("Abyss", viewModel.uiState.value.selectedThemeName)
-        assertTrue(OnboardingTask.CHOOSE_PALETTE in viewModel.uiState.value.onboarding.completedTasks)
+        // First visit: the untouched font tab gets the default.
+        assertEquals("Istok Web", viewModel.uiState.value.selectedFontName)
+        assertNull(viewModel.uiState.value.onboarding.activePicker)
+        assertTrue(OnboardingTask.CHOOSE_VISUAL in viewModel.uiState.value.onboarding.completedTasks)
 
         actions.onDismissChecklist()
         assertEquals(OnboardingStage.COMPLETED, viewModel.uiState.value.onboarding.stage)

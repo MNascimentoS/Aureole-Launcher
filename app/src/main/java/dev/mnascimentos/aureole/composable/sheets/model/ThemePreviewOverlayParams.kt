@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.composable.sheets.model
 
+import dev.mnascimentos.aureole.composable.minihome.model.MiniHomeContent
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
 
 /**
@@ -14,6 +15,8 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleThemeConfig
  * @property onSettingsClick Opens the Aureole settings from the header logo; null hides the logo (used inside
  * the settings themselves, where it would be circular).
  * @property hasExternalBackdrop True when the screen around draws the backdrop itself.
+ * @property miniHome What the mini-home above the sheet shows; null draws the sample (fixed time and date).
+ * @property hasTabBottomBar The bottom bar is a tab bar (the Visual sheet of the onboarding): tight margins.
  */
 data class ThemePreviewOverlayParams(
     val title: String,
@@ -23,5 +26,7 @@ data class ThemePreviewOverlayParams(
     val onCommit: () -> Unit,
     val onDismissRequest: () -> Unit,
     val onSettingsClick: (() -> Unit)? = null,
-    val hasExternalBackdrop: Boolean = false
+    val hasExternalBackdrop: Boolean = false,
+    val miniHome: MiniHomeContent? = null,
+    val hasTabBottomBar: Boolean = false
 )

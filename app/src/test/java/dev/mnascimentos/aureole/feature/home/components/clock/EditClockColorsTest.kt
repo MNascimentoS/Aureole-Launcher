@@ -138,7 +138,7 @@ class EditClockColorsTest {
         advance()
         val current = hasText(string(R.string.theme_color_option_current)) and isSelectable()
         composeTestRule.onNode(current).assertIsSelected()
-        composeTestRule.onNodeWithContentDescription(string(R.string.home_clock_color_back)).performClick()
+        composeTestRule.onNodeWithContentDescription(string(R.string.overlay_sheet_page_back)).performClick()
         advance()
 
         assertEquals(0, calls)

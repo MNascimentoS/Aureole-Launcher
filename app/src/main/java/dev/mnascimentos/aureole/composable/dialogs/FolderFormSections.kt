@@ -29,7 +29,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import dev.mnascimentos.aureole.R
-import dev.mnascimentos.aureole.composable.color.AureoleThemeColorPicker
+import dev.mnascimentos.aureole.composable.color.AureoleColorField
+import dev.mnascimentos.aureole.composable.color.model.ColorFieldParams
 import dev.mnascimentos.aureole.composable.controls.AureoleSegmentedControl
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormBodyActions
 import dev.mnascimentos.aureole.composable.dialogs.model.FolderFormBodyState
@@ -41,13 +42,13 @@ import dev.mnascimentos.aureole.composable.dialogs.model.folderIconSuggestions
 import dev.mnascimentos.aureole.composable.dialogs.model.folderIconTypeAt
 import dev.mnascimentos.aureole.composable.dialogs.model.folderIconTypeIndex
 import dev.mnascimentos.aureole.composable.dialogs.model.isFolderIconMarked
-import dev.mnascimentos.aureole.composable.dialogs.model.toggleFolderColor
 import dev.mnascimentos.aureole.composable.icons.AureoleIconCatalogGrid
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuEntries
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuSectionLabel
 import dev.mnascimentos.aureole.composable.menu.model.MenuEntry
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
+import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
 import dev.mnascimentos.aureole.core.data.model.FolderIconType
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleTextFormatParams
@@ -87,10 +88,14 @@ internal fun FolderFormBody(state: FolderFormBodyState, actions: FolderFormBodyA
                 onPick = { update(draft.copy(emoji = it)) }
             )
         }
-        AureoleMenuSectionLabel(text = stringResource(R.string.home_folder_color))
-        AureoleThemeColorPicker(
-            selected = draft.color,
-            onSelect = { update(draft.copy(color = toggleFolderColor(draft.color, it))) }
+        AureoleColorField(
+            params = ColorFieldParams(
+                title = stringResource(R.string.home_folder_color),
+                selected = draft.color,
+                themeColor = AureoleDS.colors.surfaceVariant,
+                role = ComponentColorRole.CARD,
+                onSelect = { update(draft.copy(color = it)) }
+            )
         )
         actions.onDelete?.takeIf { state.showDelete }?.let { onDelete ->
             AureoleMenuEntries(

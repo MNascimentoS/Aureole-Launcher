@@ -245,7 +245,7 @@ class AppItemMenusTest {
             }
         }
 
-        composeTestRule.onNodeWithText("Container settings").performClick()
+        composeTestRule.onNodeWithText("Customize group").performClick()
         assertTrue(containerSettingsOpened)
         assertTrue(dismissed)
     }
@@ -415,7 +415,7 @@ class AppItemMenusTest {
         }
 
         fun top(text: String) = composeTestRule.onNodeWithText(text).getUnclippedBoundsInRoot().top
-        val order = listOf("App info", "Container settings", "Remove from folder", "Uninstall")
+        val order = listOf("App info", "Customize group", "Remove from folder", "Uninstall")
         assertEquals(order, order.sortedBy { top(it) })
         composeTestRule.onNodeWithText("Hold to confirm").assertIsDisplayed()
     }

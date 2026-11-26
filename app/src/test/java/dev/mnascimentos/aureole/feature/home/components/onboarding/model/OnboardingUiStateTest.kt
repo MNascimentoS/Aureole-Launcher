@@ -57,9 +57,9 @@ class OnboardingUiStateTest {
 
     @Test
     fun `when tasks are done, should report the fraction of all tasks`() {
-        val state = OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_FONT))
+        val state = OnboardingUiState(completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL))
 
-        assertEquals(1f / OnboardingTask.entries.size, state.taskProgress, 0.0001f)
+        assertEquals(1f / 8, state.taskProgress, 0.0001f)
         assertEquals(1f, OnboardingUiState(completedTasks = OnboardingTask.entries.toSet()).taskProgress, 0.0001f)
     }
 
@@ -71,7 +71,7 @@ class OnboardingUiStateTest {
     @Test
     fun `when the alphabet scrubber is disabled, should skip the scrub step`() {
         assertEquals(
-            listOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.NOTIFICATIONS, GestureCoachStep.CUSTOMIZE),
+            listOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.CUSTOMIZE),
             visibleGestureSteps(isAlphabetScrubberDisabled = true)
         )
     }
@@ -106,10 +106,27 @@ class OnboardingUiStateTest {
         val state = OnboardingUiState(completedSteps = setOf(GestureCoachStep.OPEN_APPS))
 
         assertEquals(GestureCoachStep.ALPHABET_SCRUB, state.currentGestureStep(isAlphabetScrubberDisabled = false))
-        assertEquals(GestureCoachStep.NOTIFICATIONS, state.currentGestureStep(isAlphabetScrubberDisabled = true))
+        assertEquals(GestureCoachStep.CUSTOMIZE, state.currentGestureStep(isAlphabetScrubberDisabled = true))
         assertEquals(
             null,
             state.copy(completedSteps = GestureCoachStep.entries.toSet()).currentGestureStep(false)
         )
+    }
+
+    @Test
+    fun `when the tour is running in any stage, should lock the home items`() {
+        listOf(
+            OnboardingStage.WELCOME,
+            OnboardingStage.DEFAULT_HOME,
+            OnboardingStage.GESTURES,
+            OnboardingStage.CHECKLIST
+        ).forEach { stage ->
+            assertTrue(stage.name, OnboardingUiState(stage = stage).locksHomeItems)
+        }
+    }
+
+    @Test
+    fun `when the tour is over, should leave the home items alone`() {
+        assertFalse(OnboardingUiState(stage = OnboardingStage.COMPLETED).locksHomeItems)
     }
 }

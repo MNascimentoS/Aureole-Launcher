@@ -1,5 +1,11 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +50,7 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.ED
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintBandCols
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintBandRows
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.editHintEdge
+import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintBand
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintConfig
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.EditHintEdge
@@ -54,6 +61,9 @@ import dev.mnascimentos.aureole.feature.home.model.LocalHomeActions
 import kotlinx.coroutines.delay
 
 private const val GESTURE_PILL_ALPHA = 0.25f
+
+/** The hint card folding into the Save pill: fade and resize (RF-03). */
+private const val EDIT_HINT_FOLD_MS = 280
 
 /** Width of the folded save pill with its margin, in touch targets: the part of the edge the pill takes. */
 private const val PILL_WIDTH_IN_TOUCH_TARGETS = 4
@@ -132,33 +142,54 @@ private fun EditHintBody(
     val hint = stringResource(R.string.home_onboarding_edit_hint)
     val save = stringResource(R.string.home_onboarding_edit_save)
     val pillAlpha = Modifier.alpha(if (isGesturing) GESTURE_PILL_ALPHA else 1f)
-    if (isFolded) {
-        EditHintSaveButton(
-            params = EditHintSaveParams(save, hint, isGesturing),
-            onClick = onSave,
-            modifier = pillAlpha.padding(AureoleDS.dimens.medium)
-        )
-        return
+    val foldMs = if (rememberOnboardingLoopsEnabled()) EDIT_HINT_FOLD_MS else 0
+    AnimatedContent(
+        targetState = isFolded,
+        transitionSpec = {
+            (fadeIn(tween(foldMs)) togetherWith fadeOut(tween(foldMs)))
+                .using(SizeTransform(clip = false) { _, _ -> tween(foldMs) })
+        },
+        label = "editHintFold"
+    ) { folded ->
+        if (folded) {
+            EditHintSaveButton(
+                params = EditHintSaveParams(save, hint, isGesturing),
+                onClick = onSave,
+                modifier = pillAlpha.padding(AureoleDS.dimens.medium)
+            )
+        } else {
+            EditHintCard(
+                config = config,
+                params = EditHintSaveParams(save, hint, isGesturing),
+                onSave = onSave,
+                modifier = pillAlpha
+            )
+        }
     }
+}
+
+@Composable
+private fun EditHintCard(
+    config: EditHintConfig,
+    params: EditHintSaveParams,
+    onSave: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     OnboardingGlassCard(
         glass = config.glass,
-        modifier = pillAlpha.widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH).padding(AureoleDS.dimens.medium)
+        modifier = modifier.widthIn(max = OnboardingMotionSpec.CHECKLIST_MAX_WIDTH).padding(AureoleDS.dimens.medium)
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AureoleText(
-                text = hint,
+                text = params.hint,
                 color = AureoleDS.colors.onSurfaceHigh,
                 modifier = Modifier.weight(1f),
                 format = AureoleTextFormatParams(style = AureoleDS.typography.text)
             )
-            EditHintSaveButton(
-                params = EditHintSaveParams(save, hint, isGesturing),
-                onClick = onSave,
-                modifier = Modifier.width(IntrinsicSize.Max)
-            )
+            EditHintSaveButton(params = params, onClick = onSave, modifier = Modifier.width(IntrinsicSize.Max))
         }
     }
 }

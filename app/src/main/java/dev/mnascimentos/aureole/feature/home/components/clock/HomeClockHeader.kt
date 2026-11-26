@@ -20,14 +20,16 @@ fun HomeClockHeader(
     modifier: Modifier = Modifier,
     hazeConfig: ClockHazeConfig = ClockHazeConfig(),
     config: ClockHeaderConfig = ClockHeaderConfig(),
-    onLongClick: (() -> Unit)? = null
+    onLongClick: (() -> Unit)? = null,
+    isCentered: Boolean = false
 ) {
     val uiState = LocalHomeUiState.current
     ClockHeader(
         resolvedConfig = resolveClockConfig(config, uiState, AureoleDS.colors),
         modifier = modifier,
         hazeConfig = resolveClockHazeConfig(hazeConfig, uiState, config),
-        onLongClick = onLongClick
+        onLongClick = onLongClick,
+        isCentered = isCentered
     )
 }
 

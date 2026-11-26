@@ -22,8 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.AndroidView
 import dev.chrisbanes.haze.HazeState
 import dev.mnascimentos.aureole.R
@@ -109,7 +112,14 @@ fun GridContainerContent(
 ) {
     val actions = LocalHomeActions.current
     val containerConfig = uiState.containerConfigFor(item, if (isInScrollView) null else hazeState)
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    val density = LocalDensity.current
+    // The editor preview draws this group at the size it has here (grupo-apps-pastas RF-B3).
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .onSizeChanged { size -> actions.onContainerMeasured(item.id, with(density) { size.toSize().toDpSize() }) },
+        contentAlignment = Alignment.Center
+    ) {
         Container(
             config = containerConfig,
             onFolderClick = { folder, topYPx ->

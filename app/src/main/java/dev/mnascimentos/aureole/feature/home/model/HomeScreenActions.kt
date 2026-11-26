@@ -87,6 +87,10 @@ data class HomeScreenActions(
     val onCloseEditContainerDialog: (String?) -> Unit = {},
     val onSaveContainerModel: (ContainerModel) -> Unit = {},
     val onDeleteContainerInstance: (String) -> Unit = {},
+    /** The first group's tips were skipped or finished (grupo-apps-pastas RF-F1). */
+    val onContainerTipsSeen: () -> Unit = {},
+    /** Reports the size a group has on the home (grid item id), for the editor preview (RF-B3). */
+    val onContainerMeasured: (String, DpSize) -> Unit = { _, _ -> },
 
     val onOpenCustomizeBottomSheet: () -> Unit = {},
     val onCloseCustomizeBottomSheet: () -> Unit = {},

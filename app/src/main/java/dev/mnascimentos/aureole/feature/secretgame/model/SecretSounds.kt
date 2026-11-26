@@ -5,6 +5,23 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 /** Efeitos sonoros do jogo; cada um é um `res/raw/secret_<nome>.ogg` (nome = [SecretSound.name] em minúsculas). */
 enum class SecretSound { OPEN, LANE, COUNT, GO, LEVEL, CRASH, FIREWORK, RECORD, LOSE }
 
+/** Ganho (0..1) de cada som: nave, GO, batida e recorde ficam um pouco abaixo do resto, sem sumir. */
+object SecretSoundTuning {
+    const val FULL_GAIN = 1f
+    const val LANE_GAIN = 0.6f
+    const val GO_GAIN = 0.75f
+    const val CRASH_GAIN = 0.75f
+    const val RECORD_GAIN = 0.75f
+}
+
+fun SecretSound.gain(): Float = when (this) {
+    SecretSound.LANE -> SecretSoundTuning.LANE_GAIN
+    SecretSound.GO -> SecretSoundTuning.GO_GAIN
+    SecretSound.CRASH -> SecretSoundTuning.CRASH_GAIN
+    SecretSound.RECORD -> SecretSoundTuning.RECORD_GAIN
+    else -> SecretSoundTuning.FULL_GAIN
+}
+
 /** Som de cada evento do engine; null = evento sem som. `OPEN` toca no gatilho (5º toque), fora do engine. */
 fun SecretGameEvent.sound(): SecretSound? = when (this) {
     SecretGameEvent.LaneTick -> SecretSound.LANE

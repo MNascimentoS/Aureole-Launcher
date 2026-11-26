@@ -6,50 +6,44 @@ import dev.mnascimentos.aureole.core.designsystem.palette.resolveThemeSeedColor
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.VisualChoice
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.resolveVisualClose
 
 internal const val DEFAULT_PALETTE_NAME = "Frostbite"
 internal const val DEFAULT_FONT_NAME = "Istok Web"
 
+/** What the Visual sheet applies to a tab left untouched the first time (as the separate pickers did). */
+internal val visualDefaults = VisualChoice(paletteName = DEFAULT_PALETTE_NAME, fontName = DEFAULT_FONT_NAME)
+
 /**
- * Appearance tasks open their picker on the home. Every other task opens its own screen or the edit mode, so
- * the list collapses to the pill first: the onboarding is the top layer and must not cover it. A skipped task
- * tapped again is taken back.
+ * The Visual step opens its sheet (Palette | Font, RF-C1) on the home. Every other task opens its own screen or the
+ * edit mode, so the list collapses to the pill first: the onboarding is the top layer and must not cover it.
+ * A skipped task tapped again is taken back.
  */
 fun HomeViewModel.onTaskClick(task: OnboardingTask) {
     updateOnboarding(OnboardingStage.CHECKLIST) { unskipping(task) }
     when (task) {
-        OnboardingTask.CHOOSE_PALETTE -> openAppearancePicker(AppearancePicker.PALETTE)
-        OnboardingTask.CHOOSE_FONT -> openAppearancePicker(AppearancePicker.FONT)
+        OnboardingTask.CHOOSE_VISUAL -> openVisualSheet()
         else -> setChecklistExpanded(false)
     }
 }
 
-fun HomeViewModel.openAppearancePicker(picker: AppearancePicker) {
-    updateOnboarding(OnboardingStage.CHECKLIST) { copy(activePicker = picker) }
+fun HomeViewModel.openVisualSheet(tab: AppearancePicker = AppearancePicker.PALETTE) {
+    updateOnboarding(OnboardingStage.CHECKLIST) { copy(activePicker = tab) }
 }
 
 /**
- * The picker closed without "Apply" and counts as done. A previewed option stays as it is; with no tap at all the
- * default applies (Frostbite / Istok Web). Either way it follows the confirm path.
+ * The Visual sheet closed, whichever way (no button, D-05): applies what was tapped, and the defaults of the tabs
+ * left untouched the first time ([resolveVisualClose]), then completes the step.
  */
-fun HomeViewModel.dismissAppearancePicker(hadPreview: Boolean = false) {
-    if (uiState.value.onboarding.stage != OnboardingStage.CHECKLIST) return
-    when (dismissDefaultFor(uiState.value.onboarding.activePicker, hadPreview)) {
-        DismissDefault.PALETTE -> selectPalette(DEFAULT_PALETTE_NAME)
-        DismissDefault.FONT -> selectFont(DEFAULT_FONT_NAME)
-        DismissDefault.NONE -> Unit
-    }
-    confirmAppearancePicker()
-}
-
-internal enum class DismissDefault { NONE, PALETTE, FONT }
-
-/** What a close without "Apply" applies: the default of the [picker] only when nothing was previewed. */
-internal fun dismissDefaultFor(picker: AppearancePicker?, hadPreview: Boolean): DismissDefault = when {
-    hadPreview -> DismissDefault.NONE
-    picker == AppearancePicker.PALETTE -> DismissDefault.PALETTE
-    picker == AppearancePicker.FONT -> DismissDefault.FONT
-    else -> DismissDefault.NONE
+fun HomeViewModel.closeVisualSheet(tapped: VisualChoice) {
+    val onboarding = uiState.value.onboarding
+    if (onboarding.stage != OnboardingStage.CHECKLIST) return
+    val isFirstVisit = OnboardingTask.CHOOSE_VISUAL !in onboarding.completedTasks
+    val choice = resolveVisualClose(tapped, isFirstVisit, visualDefaults)
+    choice.paletteName?.let(::selectPalette)
+    choice.fontName?.let(::selectFont)
+    onOnboardingSignal(OnboardingSignal.PICKER_CONFIRMED)
 }
 
 /** Applies the palette right away so the whole home re-themes behind the picker. */
@@ -63,10 +57,6 @@ fun HomeViewModel.selectPalette(themeName: String) {
 fun HomeViewModel.selectFont(fontName: String) {
     settingsRepository.selectedFontName = fontName
     updateUiState { it.copy(selectedFontName = fontName) }
-}
-
-fun HomeViewModel.confirmAppearancePicker() {
-    onOnboardingSignal(OnboardingSignal.PICKER_CONFIRMED)
 }
 
 fun HomeViewModel.setChecklistExpanded(expanded: Boolean) {

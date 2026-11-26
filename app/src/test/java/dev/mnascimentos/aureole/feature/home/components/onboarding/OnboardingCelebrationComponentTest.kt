@@ -51,8 +51,8 @@ class OnboardingCelebrationComponentTest {
     }
 
     @Test
-    fun `should stay for four and a half seconds`() {
-        assertEquals(4_500L, OnboardingMotionSpec.CELEBRATION_MS)
+    fun `should stay for about two and a half seconds (RF-D5)`() {
+        assertEquals(2_400L, OnboardingMotionSpec.CELEBRATION_MS)
     }
 
     private companion object {

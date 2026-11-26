@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.core.data.repository
 import android.content.Context
 import androidx.core.content.edit
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
+import dev.mnascimentos.aureole.core.data.model.LayoutPreset
 import dev.mnascimentos.aureole.core.data.model.OnboardingProgress
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
@@ -39,13 +40,24 @@ class OnboardingPreferencesTest {
         val progress = OnboardingProgress(
             stage = OnboardingStage.CHECKLIST,
             completedSteps = setOf(GestureCoachStep.OPEN_APPS, GestureCoachStep.CUSTOMIZE),
-            completedTasks = setOf(OnboardingTask.CHOOSE_PALETTE, OnboardingTask.ADD_WIDGET),
+            completedTasks = setOf(OnboardingTask.CHOOSE_VISUAL, OnboardingTask.ADD_WIDGET),
             isChecklistCollapsed = true
         )
 
         preferences.write(progress)
 
         assertEquals(progress, preferences.read())
+    }
+
+    @Test
+    fun `when a preset was applied, should read it back and forget it once cleared`() {
+        val progress = OnboardingProgress(stage = OnboardingStage.GESTURES, appliedPreset = LayoutPreset.WIDGETS)
+
+        preferences.write(progress)
+        assertEquals(progress, preferences.read())
+
+        preferences.write(progress.copy(appliedPreset = null))
+        assertNull(preferences.read()?.appliedPreset)
     }
 
     @Test
@@ -94,13 +106,35 @@ class OnboardingPreferencesTest {
         settingsPrefs().edit {
             putString("onboarding_stage", OnboardingStage.CHECKLIST.name)
             putString("onboarding_completed_steps", "OPEN_APPS,OLD_STEP,,")
-            putString("onboarding_completed_tasks", "OLD_TASK,CHOOSE_FONT")
+            putString("onboarding_completed_tasks", "OLD_TASK,ADD_CLOCK")
         }
 
         val progress = preferences.read()
 
         assertEquals(setOf(GestureCoachStep.OPEN_APPS), progress?.completedSteps)
-        assertEquals(setOf(OnboardingTask.CHOOSE_FONT), progress?.completedTasks)
+        assertEquals(setOf(OnboardingTask.ADD_CLOCK), progress?.completedTasks)
+    }
+
+    @Test
+    fun `when progress was saved with the palette and font steps, should read them as the visual step`() {
+        settingsPrefs().edit {
+            putString("onboarding_stage", OnboardingStage.CHECKLIST.name)
+            putString("onboarding_completed_tasks", "ADD_CLOCK,CHOOSE_FONT,CHOOSE_PALETTE,SET_DEFAULT_HOME")
+            putString("onboarding_skipped_tasks", "ADD_WIDGET")
+        }
+
+        val progress = preferences.read()
+
+        assertEquals(
+            setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_VISUAL, OnboardingTask.ADD_CLOCK),
+            progress?.completedTasks
+        )
+        assertEquals(setOf(OnboardingTask.ADD_WIDGET), progress?.skippedTasks)
+        progress?.let(preferences::write)
+        assertEquals(
+            "ADD_CLOCK,CHOOSE_VISUAL,SET_DEFAULT_HOME",
+            settingsPrefs().getString("onboarding_completed_tasks", null)
+        )
     }
 
     @Test

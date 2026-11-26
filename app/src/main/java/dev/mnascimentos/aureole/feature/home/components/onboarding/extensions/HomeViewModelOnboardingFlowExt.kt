@@ -4,9 +4,19 @@ import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.feature.home.HomeViewModel
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingSignal
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.coachNeedsSwipeUp
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.currentGestureStep
 import dev.mnascimentos.aureole.feature.home.extensions.setAllAppsDrawerOpen
 import dev.mnascimentos.aureole.feature.home.extensions.setShowCustomizeBottomSheet
+import dev.mnascimentos.aureole.feature.home.model.MainUiState
+
+/** Switches the swipe-up setting on when the tour reaches the gesture coach, so the first gesture it teaches works. */
+internal fun HomeViewModel.enableSwipeUpForCoach(previous: MainUiState) {
+    val state = uiState.value
+    if (!coachNeedsSwipeUp(previous.onboarding.stage, state.onboarding.stage, state.isSwipeUpAllAppsEnabled)) return
+    settingsRepository.isSwipeUpAllAppsEnabled = true
+    updateUiState { it.copy(isSwipeUpAllAppsEnabled = true) }
+}
 
 fun HomeViewModel.startOnboarding() {
     updateOnboarding(OnboardingStage.WELCOME) {
@@ -37,17 +47,13 @@ fun HomeViewModel.skipGestures() {
     }
 }
 
-/**
- * Performs the current gesture for the user; the reducer then completes the step. The shade is a system surface,
- * so [openNotificationShade] (which also reports the step) comes from the activity side.
- */
-fun HomeViewModel.showMeGesture(openNotificationShade: () -> Unit = {}) {
+/** Performs the current gesture for the user; the reducer then completes the step. */
+fun HomeViewModel.showMeGesture() {
     val state = uiState.value
     if (state.onboarding.stage != OnboardingStage.GESTURES) return
     val step = state.onboarding.currentGestureStep(
         state.isAlphabetScrubberDisabled,
-        state.isLandscape,
-        state.isSwipeDownNotificationsEnabled
+        state.isLandscape
     )
     when (step) {
         GestureCoachStep.OPEN_APPS -> setAllAppsDrawerOpen(true)
@@ -55,13 +61,7 @@ fun HomeViewModel.showMeGesture(openNotificationShade: () -> Unit = {}) {
             setAllAppsDrawerOpen(true)
             onOnboardingSignal(OnboardingSignal.ALPHABET_SCRUBBED)
         }
-        GestureCoachStep.NOTIFICATIONS -> openNotificationShade()
         GestureCoachStep.CUSTOMIZE -> setShowCustomizeBottomSheet(true)
         null -> Unit
     }
-}
-
-/** The swipe down success card was read: the coach goes on to the next step. */
-fun HomeViewModel.finishNotificationsStep() {
-    updateOnboarding(OnboardingStage.GESTURES) { finishedNotificationsStep() }
 }

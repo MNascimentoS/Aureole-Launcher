@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +25,7 @@ import dev.chrisbanes.haze.HazeTint
 import dev.chrisbanes.haze.hazeEffect
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.ProvideHomeUiState
+import dev.mnascimentos.aureole.composable.appitem.AppListSkeletonComponent
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
@@ -132,8 +132,15 @@ private fun WidgetSelectorContent(
             .clickable(enabled = false) {}
     ) {
         if (state.isLoading) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+            // Never an empty screen with a spinner (onboarding-redesenho RF-C4): skeleton rows under the search.
+            Box(modifier = Modifier.weight(1f)) {
+                AppListSkeletonComponent(modifier = Modifier.padding(horizontal = AureoleDS.dimens.large))
+                WidgetGroupList(
+                    state = state,
+                    onIntent = onIntent,
+                    onWidgetSelected = onWidgetSelected,
+                    onDismiss = onDismiss
+                )
             }
         } else if (state.widgetGroups.isEmpty() && state.searchQuery.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

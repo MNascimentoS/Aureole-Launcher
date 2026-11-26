@@ -4,6 +4,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/** 12 h time without a leading zero and with AM/PM ("3:15 PM", onboarding-redesenho RF-C3). */
+const val CLOCK_TIME_PATTERN_12H = "h:mm a"
+const val CLOCK_TIME_PATTERN_24H = "HH:mm"
+
 /**
  * Date formats of the clock. [storageKey] is what the settings keep; [skeleton] is resolved per locale into the
  * real pattern, so the weekday, day and month always come in the order and language of the device.

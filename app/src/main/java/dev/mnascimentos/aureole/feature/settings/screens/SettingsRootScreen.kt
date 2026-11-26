@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.settings.screens
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,12 +26,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.sheets.ReleaseNotesBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -42,6 +45,7 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Star
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.glassBlurRadius
 import dev.mnascimentos.aureole.feature.secretgame.components.SecretGameLayer
 import dev.mnascimentos.aureole.feature.secretgame.components.SecretThankYou
 import dev.mnascimentos.aureole.feature.secretgame.components.rememberSecretShine
@@ -79,6 +83,13 @@ fun SettingsRootScreen(
     )
 }
 
+/** Blur of Settings while the best-score popup is on top of it (animated; 0 when closed). */
+@Composable
+private fun secretPopupBlur(isPopupShown: Boolean): Dp = animateDpAsState(
+    targetValue = if (isPopupShown) glassBlurRadius(AureoleDS.dimens.large) else 0.dp,
+    label = "secretPopupBlur"
+).value
+
 /** The root of Settings; [onSecretGameOver] receives the score of the hidden game (see [SecretGameLayer]). */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,9 +117,10 @@ fun SettingsRootScreen(
     val header =
         SettingsHeaderParams(versionName, onClick = { showReleaseNotes = true }, secret = secret, shine = shine)
 
+    val popupBlur = secretPopupBlur(game.showBestScore)
     Box(modifier = modifier.fillMaxSize().then(game.rootModifier)) {
         Scaffold(
-            modifier = Modifier,
+            modifier = Modifier.blur(popupBlur),
             containerColor = AureoleDS.colors.surface
         ) { innerPadding ->
             BoxWithConstraints(

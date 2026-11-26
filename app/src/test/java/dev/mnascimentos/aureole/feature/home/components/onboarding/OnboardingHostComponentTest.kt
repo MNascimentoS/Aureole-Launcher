@@ -51,16 +51,16 @@ class OnboardingHostComponentTest {
         render(OnboardingUiState(stage = OnboardingStage.CHECKLIST, isChecklistExpanded = false))
 
         composeTestRule.onNodeWithText("First steps").assertDoesNotExist()
-        composeTestRule.onNodeWithText("0/9 first steps").performClick()
+        composeTestRule.onNodeWithText("First steps · 0/8").performClick()
 
         assertEquals(listOf("expanded=true"), calls)
     }
 
     @Test
-    fun `when a picker is open, should show it instead of the list`() {
+    fun `when the Visual sheet is open, should show it instead of the list`() {
         render(OnboardingUiState(stage = OnboardingStage.CHECKLIST, activePicker = AppearancePicker.PALETTE))
 
-        composeTestRule.onNodeWithText("Pick a palette").assertExists()
+        composeTestRule.onNodeWithText("Look").assertExists()
         composeTestRule.onNodeWithText("First steps").assertDoesNotExist()
     }
 

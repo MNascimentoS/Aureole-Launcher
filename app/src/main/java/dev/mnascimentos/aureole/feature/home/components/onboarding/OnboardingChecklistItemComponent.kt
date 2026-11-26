@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.home.components.onboarding
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -9,6 +10,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,14 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.fromHtml
-import androidx.compose.ui.text.style.TextDecoration
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.components.AureoleText
@@ -40,75 +43,115 @@ import dev.mnascimentos.aureole.core.designsystem.icons.Home
 import dev.mnascimentos.aureole.core.designsystem.icons.MultipleView
 import dev.mnascimentos.aureole.core.designsystem.icons.RoundCheck
 import dev.mnascimentos.aureole.core.designsystem.icons.Settings
-import dev.mnascimentos.aureole.core.designsystem.icons.Text
 import dev.mnascimentos.aureole.core.designsystem.icons.VerticalContainer
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.rememberOnboardingLoopsEnabled
 import dev.mnascimentos.aureole.feature.home.components.onboarding.extensions.titleRes
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingMotionSpec
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingTaskStatus
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isClickable
 
 private const val BREATH_MIN_ALPHA = 0.25f
+private const val LOCKED_ALPHA = 0.4f
 
 /**
- * One "First steps" row. Pending rows are buttons; done rows show a check and no longer react. The next row of a
- * skippable task also has "Skip" at its end; a skipped row is struck through and taps back into a pending one.
+ * One "First steps" row. Pending rows are buttons; done rows show a check and tap back into their screen (RF-A3).
+ * The next row has "Skip" at its end (D-11); a skipped row shows "– · skipped" and taps back into a pending one.
+ * A locked extra is dimmed, does not react and reads as disabled (RF-A4). [presetLabelRes] names the ready-made
+ * layout that did the step (RF-F4).
  */
 @Composable
 fun OnboardingChecklistItemComponent(
     task: OnboardingTask,
     status: OnboardingTaskStatus,
-    onClick: (OnboardingTask) -> Unit,
+    actions: OnboardingActions,
     modifier: Modifier = Modifier,
-    onSkip: (OnboardingTask) -> Unit = {}
+    @StringRes presetLabelRes: Int? = null
 ) {
     val isDone = status == OnboardingTaskStatus.DONE
     val isSkipped = status == OnboardingTaskStatus.SKIPPED
     val isNext = status == OnboardingTaskStatus.NEXT
+    val isLocked = status == OnboardingTaskStatus.LOCKED
     val title = AnnotatedString.fromHtml(stringResource(task.titleRes()))
-    val description = stringResource(
-        when {
-            isDone -> R.string.home_onboarding_task_done_a11y
-            isSkipped -> R.string.home_onboarding_task_skipped_a11y
-            else -> R.string.home_onboarding_task_pending_a11y
-        },
-        title.text
-    )
+    val description = stringResource(status.a11yRes(), title.text)
     val shape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
-    val showSkip = isNext && task.isSkippable
+    val isClickable = status.isClickable(task)
+    val onClick = actions.onTaskClick
     Row(
         modifier = modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = AureoleDS.dimens.minTouchTarget)
             .clip(shape)
+            .then(if (isLocked) Modifier.alpha(LOCKED_ALPHA) else Modifier)
             .then(if (isNext) Modifier.breathingOutline(shape) else Modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
                 .weight(1f)
-                .then(if (isDone) Modifier else Modifier.clickable(role = Role.Button) { onClick(task) })
-                .semantics(mergeDescendants = true) { contentDescription = description }
+                .then(if (isClickable) Modifier.clickable(role = Role.Button) { onClick(task) } else Modifier)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = description
+                    if (isLocked) disabled()
+                }
                 .padding(horizontal = AureoleDS.dimens.small, vertical = AureoleDS.dimens.xSmall),
             horizontalArrangement = Arrangement.spacedBy(AureoleDS.dimens.small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             RowIcon(task = task, isDone = isDone, isSkipped = isSkipped)
-            AureoleText(
-                text = title,
-                color = if (isDone || isSkipped) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
-                format = AureoleTextFormatParams(
-                    style = AureoleDS.typography.bodyLarge,
-                    textDecoration = if (isSkipped) TextDecoration.LineThrough else null
-                )
+            ChecklistRowText(
+                title = title,
+                isResolved = isDone || isSkipped,
+                presetLabelRes = presetLabelRes,
+                modifier = Modifier.weight(1f, fill = false)
             )
+            if (isSkipped) {
+                AureoleText(
+                    text = stringResource(R.string.home_onboarding_task_skipped_label),
+                    color = AureoleDS.colors.onSurfaceMedium,
+                    format = AureoleTextFormatParams(style = AureoleDS.typography.text, maxLines = 1)
+                )
+            }
         }
-        if (showSkip) {
+        if (isNext) {
             OnboardingTextButton(
                 text = stringResource(R.string.home_onboarding_task_skip),
-                onClick = { onSkip(task) }
+                onClick = { actions.onSkipTask(task) }
+            )
+        }
+    }
+}
+
+@StringRes
+private fun OnboardingTaskStatus.a11yRes(): Int = when (this) {
+    OnboardingTaskStatus.DONE -> R.string.home_onboarding_task_done_a11y
+    OnboardingTaskStatus.LOCKED -> R.string.home_onboarding_task_locked_a11y
+    OnboardingTaskStatus.SKIPPED -> R.string.home_onboarding_task_skipped_a11y
+    else -> R.string.home_onboarding_task_pending_a11y
+}
+
+/** Title of the row and, under it, the "LAYOUT <NAME> APPLIED" line (RF-F4). */
+@Composable
+private fun ChecklistRowText(
+    title: AnnotatedString,
+    isResolved: Boolean,
+    @StringRes presetLabelRes: Int?,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        AureoleText(
+            text = title,
+            color = if (isResolved) AureoleDS.colors.onSurfaceMedium else AureoleDS.colors.onSurfaceHigh,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge)
+        )
+        if (presetLabelRes != null) {
+            AureoleText(
+                text = stringResource(presetLabelRes),
+                color = AureoleDS.colors.onSurfaceLow,
+                format = AureoleTextFormatParams(style = AureoleDS.typography.labelSmall, maxLines = 1)
             )
         }
     }
@@ -132,8 +175,7 @@ private fun OnboardingTaskIcon(task: OnboardingTask) {
     val iconModifier = Modifier.size(AureoleDS.dimens.iconMedium)
     when (task) {
         OnboardingTask.SET_DEFAULT_HOME -> AureoleDS.icons.Home(iconModifier, tint)
-        OnboardingTask.CHOOSE_PALETTE -> AureoleDS.icons.ColorFill(iconModifier, tint)
-        OnboardingTask.CHOOSE_FONT -> AureoleDS.icons.Text(iconModifier, tint)
+        OnboardingTask.CHOOSE_VISUAL -> AureoleDS.icons.ColorFill(iconModifier, tint)
         OnboardingTask.ADD_CLOCK -> AureoleDS.icons.Calendar(iconModifier, tint)
         OnboardingTask.ADD_FAVORITE_APPS -> AureoleDS.icons.Favorite(iconModifier, tint)
         OnboardingTask.FILL_CONTAINER -> AureoleDS.icons.VerticalContainer(iconModifier, tint)
@@ -157,12 +199,24 @@ private fun Modifier.breathingOutline(shape: RoundedCornerShape): Modifier {
 
 @AureolePreview
 @Composable
+private fun OnboardingChecklistItemLockedPreview() {
+    AureoleLauncherTheme {
+        OnboardingChecklistItemComponent(
+            task = OnboardingTask.ADJUST_LAYOUT,
+            status = OnboardingTaskStatus.LOCKED,
+            actions = OnboardingActions()
+        )
+    }
+}
+
+@AureolePreview
+@Composable
 private fun OnboardingChecklistItemPreview() {
     AureoleLauncherTheme {
         OnboardingChecklistItemComponent(
-            task = OnboardingTask.CHOOSE_PALETTE,
+            task = OnboardingTask.CHOOSE_VISUAL,
             status = OnboardingTaskStatus.NEXT,
-            onClick = {}
+            actions = OnboardingActions()
         )
     }
 }

@@ -16,10 +16,12 @@ import dev.mnascimentos.aureole.feature.home.components.appsdrawer.AppsListDrawe
 import dev.mnascimentos.aureole.feature.home.components.overlays.HomeOverlaysContent
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.letterCenterY
 import dev.mnascimentos.aureole.feature.home.components.scrubber.model.scrubberBoundsFor
+import dev.mnascimentos.aureole.feature.home.model.DrawerDragState
 import dev.mnascimentos.aureole.feature.home.model.HomeOverlaysConfig
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.fixtures.HomeCase
+import dev.mnascimentos.aureole.fixtures.HomeScreenCase
 import dev.mnascimentos.aureole.fixtures.sampleApp
 
 private val APP_LABELS = listOf(
@@ -110,3 +112,21 @@ private fun BuscaScreenshotTest() = DrawerCase(
 @AureolePreview
 @Composable
 private fun AlfabetoScreenshotTest() = DrawerHeldOnLetter(letter = 'P')
+
+/** A home com a gaveta a meio caminho de um swipe up: a gaveta sobe, a home escurece e encolhe (gestos-swipe RF-04). */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun GavetaPuxadaScreenshotTest() = HomeScreenCase(
+    uiState = MainUiState(
+        apps = DRAWER_APPS,
+        filteredApps = DRAWER_APPS,
+        alphabet = listOf('C', 'G', 'S'),
+        isLoading = false,
+        isHazeEnabled = false,
+        isSwipeUpAllAppsEnabled = true
+    ),
+    drawerDrag = DrawerDragState(isAnimated = false, initialProgress = PULLED_PROGRESS)
+)
+
+private const val PULLED_PROGRESS = 0.5f

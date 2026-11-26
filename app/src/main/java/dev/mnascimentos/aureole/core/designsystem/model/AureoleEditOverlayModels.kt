@@ -73,6 +73,8 @@ fun rememberAureoleEditOverlayState(
  * @property headerAccessory Drawn in the header slot in place of the logo, not clickable (the showcase ring).
  * @property headerLeadingAction Drawn in the 48 dp slot across from the logo, at the start of the title line (the
  * end, left-handed): a shortcut of the sheet, such as the "Customize home" pencil of "Choose favorites".
+ * @property contentKey Changes whenever the content of the sheet swaps for another of a different height (a tab, a
+ * page, an item added) without the sheet itself changing size: the sheet then measures again how far it can expand.
  */
 data class AureoleEditOverlayConfig(
     val title: String? = null,
@@ -104,6 +106,7 @@ data class AureoleEditOverlayConfig(
     val showsDismissFeedback: Boolean = false,
     val headerAccessory: (@Composable () -> Unit)? = null,
     val headerLeadingAction: (@Composable () -> Unit)? = null,
+    val contentKey: Any? = null,
 )
 
 /**

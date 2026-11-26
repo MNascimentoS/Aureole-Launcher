@@ -2,8 +2,11 @@ package dev.mnascimentos.aureole.feature.home.components.onboarding.extensions
 
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.isTaskLocked
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class OnboardingTaskCopyTest {
@@ -18,10 +21,10 @@ class OnboardingTaskCopyTest {
     @Test
     fun `next task should be the first pending one in list order`() {
         val state = OnboardingUiState(
-            completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.CHOOSE_FONT)
+            completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME, OnboardingTask.ADD_CLOCK)
         )
 
-        assertEquals(OnboardingTask.CHOOSE_PALETTE, state.nextPendingTask)
+        assertEquals(OnboardingTask.CHOOSE_VISUAL, state.nextPendingTask)
     }
 
     @Test
@@ -29,8 +32,7 @@ class OnboardingTaskCopyTest {
         val state = OnboardingUiState(
             completedTasks = setOf(
                 OnboardingTask.SET_DEFAULT_HOME,
-                OnboardingTask.CHOOSE_PALETTE,
-                OnboardingTask.CHOOSE_FONT,
+                OnboardingTask.CHOOSE_VISUAL,
                 OnboardingTask.ADD_CLOCK
             )
         )
@@ -48,8 +50,7 @@ class OnboardingTaskCopyTest {
         assertEquals(
             listOf(
                 OnboardingTask.SET_DEFAULT_HOME,
-                OnboardingTask.CHOOSE_PALETTE,
-                OnboardingTask.CHOOSE_FONT,
+                OnboardingTask.CHOOSE_VISUAL,
                 OnboardingTask.ADD_CLOCK,
                 OnboardingTask.ADD_WIDGET,
                 OnboardingTask.ADD_FAVORITE_APPS,
@@ -59,5 +60,26 @@ class OnboardingTaskCopyTest {
             ),
             OnboardingTask.entries.toList()
         )
+    }
+
+    @Test
+    fun `layout and settings should be locked while a home step is pending`() {
+        val state = OnboardingUiState(completedTasks = setOf(OnboardingTask.SET_DEFAULT_HOME))
+
+        assertTrue(state.isTaskLocked(OnboardingTask.ADJUST_LAYOUT))
+        assertTrue(state.isTaskLocked(OnboardingTask.EXPLORE_SETTINGS))
+        assertFalse(state.isTaskLocked(OnboardingTask.ADD_WIDGET))
+    }
+
+    @Test
+    fun `layout and settings should unlock when the home steps are done or skipped`() {
+        val others = OnboardingTask.entries - setOf(OnboardingTask.ADJUST_LAYOUT, OnboardingTask.EXPLORE_SETTINGS)
+        val state = OnboardingUiState(
+            completedTasks = others.take(3).toSet(),
+            skippedTasks = others.drop(3).toSet()
+        )
+
+        assertFalse(state.isTaskLocked(OnboardingTask.ADJUST_LAYOUT))
+        assertFalse(state.isTaskLocked(OnboardingTask.EXPLORE_SETTINGS))
     }
 }
