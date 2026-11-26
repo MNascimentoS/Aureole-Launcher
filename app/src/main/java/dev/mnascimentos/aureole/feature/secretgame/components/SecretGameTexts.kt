@@ -98,7 +98,7 @@ private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretG
 }
 
 /**
- * Best score (small, darker, above; only when it was not just beaten), Your score (big) and the message. After a
+ * Best score (smaller, above; only when it was not just beaten), Your score (big) and the message. After a
  * new record the title moves up and the message takes the old center, with a wider gap.
  */
 private fun DrawScope.drawResult(
@@ -112,13 +112,12 @@ private fun DrawScope.drawResult(
     val color = colors.ship.copy(alpha = result.alpha)
     if (result.isNewRecord) {
         drawCentered(pen, SecretText(texts.title, mid - u * D.RECORD_TITLE_ABOVE, D.TITLE_TEXT, color, true))
-        drawCentered(pen, SecretText(texts.sub, mid, D.SUB_TEXT, texts.subColor, true))
+        drawCentered(pen, SecretText(texts.sub, mid, D.RESULT_SUB_TEXT, texts.subColor, true))
         return
     }
-    val dim = colors.ship.copy(alpha = result.alpha * D.BACK_HINT_ALPHA)
-    drawCentered(pen, SecretText(texts.best, mid - u * D.RESULT_BEST_ABOVE, D.BEST_TEXT, dim, true))
+    drawCentered(pen, SecretText(texts.best, mid - u * D.RESULT_BEST_ABOVE, D.BEST_TEXT, color, true))
     drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
-    drawCentered(pen, SecretText(texts.sub, mid + u * D.RESULT_SUB_BELOW, D.SUB_TEXT, texts.subColor, true))
+    drawCentered(pen, SecretText(texts.sub, mid + u * D.RESULT_SUB_BELOW, D.RESULT_SUB_TEXT, texts.subColor, true))
 }
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)

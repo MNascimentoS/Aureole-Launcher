@@ -80,7 +80,8 @@ object SecretGameDrawing {
     const val PAUSE_VEIL_ALPHA = 0.6f
     const val TITLE_TEXT = 0.1f
     const val SUB_TEXT = 0.05f
-    const val BEST_TEXT = 0.04f
+    const val BEST_TEXT = 0.055f
+    const val RESULT_SUB_TEXT = 0.045f
     const val RESULT_LINE_GAP = 0.09f
     const val RESULT_BEST_ABOVE = 0.113f
     const val RESULT_SUB_BELOW = 0.121f

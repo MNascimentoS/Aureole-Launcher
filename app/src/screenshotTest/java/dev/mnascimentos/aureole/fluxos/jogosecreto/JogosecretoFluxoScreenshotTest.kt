@@ -119,6 +119,15 @@ private fun P05FimScreenshotTest() = GameCase(
 @Composable
 private fun P06RecordeScreenshotTest() = BestScoreCase()
 
+/** Fim sem recorde: Best score pequeno acima de Your score e a mensagem abaixo. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun P07FimSemRecordeScreenshotTest() = GameCase(
+    sampleState(SecretGamePhase.RESULT, RESULT_MS, score = LOSE_SCORE, bestScore = LOSE_BEST)
+        .copy(particles = emptyList())
+)
+
 private val SampleLayout = SecretGameLayout(aspect = SAMPLE_ASPECT, logoX = 0.5f, logoY = 0.25f, logoWidth = 0.33f)
 
 private val SampleFaces = listOf(
@@ -126,7 +135,13 @@ private val SampleFaces = listOf(
     SecretFace(1, 2, 0.8f, SecretFaceKind.DREAMER, 1f),
 )
 
-private fun sampleState(phase: SecretGamePhase, phaseMs: Long, score: Int = 0, record: Boolean = false) =
+private fun sampleState(
+    phase: SecretGamePhase,
+    phaseMs: Long,
+    score: Int = 0,
+    record: Boolean = false,
+    bestScore: Int = if (record) score else score + 1
+) =
     SecretGameState(
         layout = SampleLayout,
         phase = phase,
@@ -138,7 +153,7 @@ private fun sampleState(phase: SecretGamePhase, phaseMs: Long, score: Int = 0, r
         particles = listOf(SecretParticle(0.5f, 1.0f, 0f, 0f, 0.8f, 0.01f, SecretParticleKind.SHIP)),
         score = score,
         isNewRecord = record,
-        bestScore = if (record) score else score + 1,
+        bestScore = bestScore,
     )
 
 private fun fireworksSample() = FireworksState(
@@ -163,6 +178,8 @@ private const val PLAY_MS = 4000L
 private const val RESULT_MS = 1000L
 private const val PLAY_SCORE = 120
 private const val RECORD_SCORE = 290
+private const val LOSE_SCORE = 10
+private const val LOSE_BEST = 100
 private const val FIREWORK_SPARKS = 40
 private const val FIREWORK_ANGLE_STEP = 0.157f
 private const val FIREWORK_RING = 0.2f
