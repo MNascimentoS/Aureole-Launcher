@@ -5,17 +5,30 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
+
+private val PreviewBackdropBlur = 24.dp
+
+/**
+ * The screen behind an overlay, blurred only in a preview or screenshot render, where Haze draws nothing; on a
+ * device the backdrop blurs it live, so this is a no-op there.
+ */
+@Composable
+fun Modifier.previewBlurSource(): Modifier =
+    if (LocalInspectionMode.current) blur(PreviewBackdropBlur) else this
 
 val LocalHazeState = staticCompositionLocalOf<HazeState?> { null }
 
