@@ -118,10 +118,17 @@ private fun DrawScope.drawResult(
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)
 
-/** Draws [spec] horizontally centered on the canvas. */
+/** Draws [spec] horizontally centered on the canvas, shrunk to fit when it is wider (a long score). */
 private fun DrawScope.drawCentered(pen: TextPen, spec: SecretText) {
-    val style = pen.style.copy(color = spec.color, fontSize = (size.width * spec.size).toSp())
-    val layout: TextLayoutResult = pen.measurer.measure(spec.text, style)
+    val fontSize = size.width * spec.size
+    fun measure(px: Float): TextLayoutResult =
+        pen.measurer.measure(spec.text, pen.style.copy(color = spec.color, fontSize = px.toSp()))
+    var layout = measure(fontSize)
+    val maxWidth = size.width * MAX_TEXT_WIDTH_FRACTION
+    if (layout.size.width > maxWidth) layout = measure(fontSize * maxWidth / layout.size.width)
     val top = if (spec.middle) spec.y - layout.size.height * D.HALF else spec.y
     drawText(layout, topLeft = Offset((size.width - layout.size.width) * D.HALF, top))
 }
+
+/** A text never takes more than this share of the width: it shrinks instead. */
+private const val MAX_TEXT_WIDTH_FRACTION = 0.92f
