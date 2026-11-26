@@ -36,6 +36,7 @@ internal fun SecretGameTexts(
     val backToExit = stringResource(R.string.secret_game_back_to_exit)
     val level = stringResource(R.string.secret_game_level, frame.levelLabel)
     val resultTitle = frame.result?.let { stringResource(R.string.secret_game_score, it.score) }
+    val resultBest = frame.result?.let { stringResource(R.string.secret_game_best_score, it.bestScore) }
     val resultSub = frame.result?.let {
         stringResource(if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck)
     }
@@ -77,8 +78,12 @@ internal fun SecretGameTexts(
         frame.result?.let {
             val mid = u * aspect * T.CENTER_Y_FRACTION
             val color = colors.ship.copy(alpha = it.alpha)
+            val bestColor = colors.ship.copy(alpha = it.alpha * D.BACK_HINT_ALPHA)
+            val sub = mid + u * D.RESULT_LINE_GAP * D.RESULT_SUB_LINES
             drawCentered(pen, SecretText(resultTitle.orEmpty(), mid, D.TITLE_TEXT, color, true))
-            drawCentered(pen, SecretText(resultSub.orEmpty(), mid + u * D.RESULT_LINE_GAP, D.SUB_TEXT, color, true))
+            drawCentered(pen, SecretText(resultBest.orEmpty(), mid + u * D.RESULT_LINE_GAP, D.BEST_TEXT, bestColor, true))
+            drawCentered(pen, SecretText(resultSub.orEmpty(), sub, D.SUB_TEXT, color, true))
+            drawCentered(pen, SecretText(backToExit, sub + u * D.RESULT_LINE_GAP, D.SUB_TEXT, bestColor, true))
         }
     }
 }

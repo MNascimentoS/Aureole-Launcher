@@ -58,15 +58,10 @@ fun SecretBestScoreCard(
             modifier = Modifier.size(AureoleDS.dimens.sizeLarge)
         )
         AureoleText(
-            text = stringResource(R.string.secret_game_best_title),
-            color = AureoleDS.colors.onSurfaceMedium,
-            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium)
-        )
-        AureoleText(
-            text = bestScore.toString(),
+            text = stringResource(R.string.secret_game_best_score, bestScore),
             color = AureoleDS.colors.onSurfaceHigh,
             format = AureoleTextFormatParams(
-                style = AureoleDS.typography.displaySmall,
+                style = AureoleDS.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         )

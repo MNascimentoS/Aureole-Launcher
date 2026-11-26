@@ -158,6 +158,12 @@ class SecretGameEngineTest {
     }
 
     @Test
+    fun `back on the result screen exits right away`() {
+        val result = playing().copy(score = 40).to(SecretGamePhase.RESULT)
+        assertEquals(SecretGamePhase.EXIT, engine.onBack(result).state.phase)
+    }
+
+    @Test
     fun `back during animations is consumed without effect`() {
         val entering = engine.start(layout, 0)
         assertEquals(entering, engine.onBack(entering).state)

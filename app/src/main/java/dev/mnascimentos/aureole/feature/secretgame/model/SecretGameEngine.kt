@@ -43,13 +43,14 @@ class SecretGameEngine(private val random: Random = Random.Default) {
         return SecretGameStep(pressed.copy(lane = target), listOf(SecretGameEvent.LaneTick))
     }
 
-    /** Back: jogando pausa; pausado sai salvando o recorde; nas animações é consumido sem efeito. */
+    /** Back: jogando pausa; pausado sai salvando o recorde; no resultado sai na hora; nas animações é consumido. */
     fun onBack(state: SecretGameState): SecretGameStep = when (state.phase) {
         SecretGamePhase.PLAY -> SecretGameStep(state.to(SecretGamePhase.PAUSED))
         SecretGamePhase.PAUSED -> SecretGameStep(
             state.finishRun().copy(faces = emptyList()).to(SecretGamePhase.EXIT),
             listOf(SecretGameEvent.GameOver(state.score)),
         )
+        SecretGamePhase.RESULT -> SecretGameStep(state.to(SecretGamePhase.EXIT))
         else -> SecretGameStep(state)
     }
 

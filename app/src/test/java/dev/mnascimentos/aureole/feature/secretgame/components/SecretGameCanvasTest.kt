@@ -66,7 +66,7 @@ class SecretGameCanvasTest {
             }
         }
 
-        rule.onNodeWithText("290").assertExists()
+        rule.onNodeWithText("290", substring = true).assertExists()
     }
 
     private companion object {

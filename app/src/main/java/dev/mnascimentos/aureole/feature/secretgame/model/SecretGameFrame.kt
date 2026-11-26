@@ -32,7 +32,7 @@ enum class SecretCountdownLabel { THREE, TWO, ONE, GO }
 
 data class SecretCountdownFrame(val label: SecretCountdownLabel, val alpha: Float, val scale: Float)
 
-data class SecretResultFrame(val score: Int, val isNewRecord: Boolean, val alpha: Float)
+data class SecretResultFrame(val score: Int, val bestScore: Int, val isNewRecord: Boolean, val alpha: Float)
 
 /** Tudo que a tela desenha num quadro. Sem estado: só leitura de [SecretGameState]. */
 data class SecretGameFrame(
@@ -76,7 +76,7 @@ fun SecretGameState.toFrame(): SecretGameFrame {
         SecretGamePhase.PAUSED,
         -> arenaFrame(base)
         SecretGamePhase.EXPLODE -> explodeFrame(base)
-        SecretGamePhase.RESULT -> base.copy(result = SecretResultFrame(score, isNewRecord, resultAlpha()))
+        SecretGamePhase.RESULT -> base.copy(result = SecretResultFrame(score, bestScore, isNewRecord, resultAlpha()))
         SecretGamePhase.EXIT, SecretGamePhase.DONE -> base
     }
 }
