@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.res.stringResource
 import com.android.tools.screenshot.PreviewTest
+import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkRocket
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkSpark
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkTone
@@ -81,7 +83,7 @@ private fun BestScoreCase() {
                 .background(AureoleDS.colors.surface),
             contentAlignment = Alignment.Center
         ) {
-            SecretBestScoreCard(bestScore = RECORD_SCORE, triggerText = "Muito obrigado!")
+            SecretBestScoreCard(bestScore = RECORD_SCORE, triggerText = stringResource(R.string.settings_root_thank_you))
         }
     }
 }
