@@ -1,13 +1,9 @@
 package dev.mnascimentos.aureole.feature.settings.components
 
-import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
-import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performSemanticsAction
 import dev.mnascimentos.aureole.composable.color.model.RecommendedColors
 import dev.mnascimentos.aureole.composable.sheets.PickPaletteBottomSheet
 import dev.mnascimentos.aureole.core.designsystem.palette.ThemePalette
@@ -76,12 +72,14 @@ class SettingsAppearanceDialogsTest {
     }
 
     @Test
-    fun `when picking a swatch and closing, should save the swatch color`() {
+    fun `when picking a color card and closing, should save the swatch color`() {
         var color: Int? = null
         setBackgroundSheet(onSolid = { color = it })
 
-        // The swatch can sit outside the test window, where a touch would hit the scrim: use the semantic click.
-        composeTestRule.onAllNodes(isSelectable()).onLast().performSemanticsAction(SemanticsActions.OnClick)
+        // "Solid color" opens the card-grid picker; a card is chosen at once and closes it.
+        composeTestRule.onNodeWithText("Solid color").performClick()
+        composeTestRule.onNodeWithText("Abyss").performClick()
+        composeTestRule.waitForIdle()
         composeTestRule.closeOverlayWithBack()
 
         assertNotNull(color)

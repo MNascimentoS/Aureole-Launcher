@@ -18,7 +18,12 @@ class AureoleSheetPageTest {
 
     @Test
     fun `page has the back arrow by default`() {
-        val config = AureoleEditOverlayConfig().asSheetPage(title = "Add apps", subtitle = null, onBack = {}, onClose = {})
+        val config = AureoleEditOverlayConfig().asSheetPage(
+            title = "Add apps",
+            subtitle = null,
+            onBack = {},
+            onClose = {}
+        )
 
         assertNotNull(config.headerLeadingAction)
     }

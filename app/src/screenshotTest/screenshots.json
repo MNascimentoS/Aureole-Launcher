@@ -1557,6 +1557,13 @@
             "feature/secretgame/SecretGameScreenshotTestKt/SecretBestScoreEmptyScreenshotTest_Dark Mode",
             "feature/secretgame/SecretGameScreenshotTestKt/SecretBestScoreRecordScreenshotTest_Dark Mode"
           ]
+        },
+        {
+          "id": "P07FimSemRecorde",
+          "titulo": {
+            "pt": "Fim sem recorde",
+            "en": "Game over, no record"
+          }
         }
       ]
     },
