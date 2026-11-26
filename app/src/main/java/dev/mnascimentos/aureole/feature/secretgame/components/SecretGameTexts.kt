@@ -44,8 +44,7 @@ internal fun SecretGameTexts(
             best = stringResource(R.string.secret_game_best_score, it.bestScore),
             sub = stringResource(
                 if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck
-            ),
-            backToExit = pause.backToExit
+            )
         )
     }
     val veil = AureoleDS.colors.surface
@@ -86,7 +85,7 @@ internal fun SecretGameTexts(
 
 private class PauseTexts(val paused: String, val resume: String, val backToExit: String)
 
-private class ResultTexts(val title: String, val best: String, val sub: String, val backToExit: String)
+private class ResultTexts(val title: String, val best: String, val sub: String)
 
 private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretGameColors, mid: Float) {
     val u = size.width
@@ -96,7 +95,7 @@ private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretG
     drawCentered(pen, SecretText(texts.backToExit, mid + u * D.BACK_HINT_GAP, D.SUB_TEXT, backColor, true))
 }
 
-/** Your Score (big), Best Score (small, darker, only when it was not just beaten), the message and the exit hint. */
+/** Your Score (big), Best Score (small, darker, only when it was not just beaten) and the message. */
 private fun DrawScope.drawResult(
     pen: TextPen,
     texts: ResultTexts,
@@ -115,7 +114,6 @@ private fun DrawScope.drawResult(
     }
     val sub = mid + u * D.RESULT_LINE_GAP * line
     drawCentered(pen, SecretText(texts.sub, sub, D.SUB_TEXT, color, true))
-    drawCentered(pen, SecretText(texts.backToExit, sub + u * D.RESULT_LINE_GAP, D.SUB_TEXT, dim, true))
 }
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)
