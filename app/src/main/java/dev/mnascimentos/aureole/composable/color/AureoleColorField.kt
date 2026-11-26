@@ -15,13 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.color.model.ColorFieldParams
 import dev.mnascimentos.aureole.composable.menu.AureoleMenuRow
 import dev.mnascimentos.aureole.composable.menu.model.MenuRowParams
-import dev.mnascimentos.aureole.composable.sheets.ComponentColorSheet
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorEntry
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorOptions
 import dev.mnascimentos.aureole.composable.sheets.model.ComponentColorRole
@@ -50,23 +47,17 @@ fun AureoleColorField(params: ColorFieldParams, modifier: Modifier = Modifier) {
         modifier = modifier
     )
     if (isOpen) {
-        // The picker is a full-screen overlay: its own window keeps it out of the sheet's scrolling content.
-        Dialog(
-            onDismissRequest = { isOpen = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
-        ) {
-            ComponentColorSheet(
-                options = ComponentColorOptions(
-                    role = params.role,
-                    title = params.title,
-                    subtitle = null,
-                    selected = params.selected,
-                    themeColor = params.themeColor,
-                    onSelect = params.onSelect
-                ),
-                onDismissRequest = { isOpen = false }
-            )
-        }
+        AureoleColorPickerDialog(
+            options = ComponentColorOptions(
+                role = params.role,
+                title = params.title,
+                subtitle = null,
+                selected = params.selected,
+                themeColor = params.themeColor,
+                onSelect = params.onSelect
+            ),
+            onDismissRequest = { isOpen = false }
+        )
     }
 }
 
