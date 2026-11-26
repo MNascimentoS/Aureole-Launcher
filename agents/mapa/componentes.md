@@ -40,12 +40,9 @@ Antes de criar um composable, procure aqui. Regras em `agents/aureole_components
 ## Seletores e controles
 | Nome | Arquivo | Para que serve | Quando usar |
 |---|---|---|---|
-| AureoleThemeColorPicker | composable/color/AureoleThemeColorPicker.kt | Cor do tema ou fixa; `selected`, `onSelect`, `defaultOption` | Seletor inline dos que ainda não migraram (botão rápido, container, pastas); componente novo usa o modo cor do `PickPaletteBottomSheet` |
 | AureoleColorRow, ColorPageTileChip, ColorDot, NoneColorDot | composable/colorpage/ColorPageComponents.kt | Linha de cor (bolinha, título, valor, chevron; cor nula = "Nenhuma" tracejada) e tile da página de cor (`ColorTileLook`) | title, value, color, onClick | Cor de componente dentro da própria sheet (relógio, grupo) |
 | ColorPageTile, `cardColorTiles`, `selectedCardColorTile`, `toCardColorRef`, ColorPageMetrics | composable/colorpage/model/ColorPageTiles.kt | Tiles de uma página de cor de cartão: "Nenhuma" (nula), "Tema" (= `themeRef` do componente), "Atual", paletas | saved, themeRef, isDarkTheme | Relógio (`CLOCK_CARD_THEME_REF`) e grupo |
-| AureoleColorSwatches / Swatch | composable/color/AureoleColorSwatches.kt | Grade de cores | Cor crua |
-| AureoleThemeSwatchRow, AureolePaletteSwatchRow | composable/color/AureolePaletteRows.kt | Amostras de tema e paletas | Peças do picker |
-| AureoleHueSlider | composable/color/AureoleHueSlider.kt | Slider de matiz | Cor livre (evitar, ver regra §8) |
+| AureoleColorField, AureoleColorPickerDialog | composable/color/AureoleColorField.kt, AureoleColorPickerDialog.kt | Escolha de cor: a linha abre a grade de cartões (`ComponentColorSheet`, referência "Card color") numa janela própria; o dialog sozinho serve quem abre a grade por outro gatilho (cartão "Solid color" do fundo) | `ColorFieldParams` / `ComponentColorOptions` | Toda cor de componente (pasta, botão rápido, fundo). Sem bolinhas, chips nem matiz |
 | AureoleSegmentedControl, AureoleIconSegmentedControl | composable/controls/AureoleSegmentedControl.kt | Controle segmentado; `style = SegmentStyle(itemHeight, role)` (`composable/controls/model/SegmentStyle.kt`; altura padrão 48 dp, papel padrão `Role.Tab`, `Role.RadioButton` para escolha de valor) | Poucas opções exclusivas |
 | AureoleOptionTile / AureoleCenteredOptionTile | composable/optiontile/AureoleOptionTile.kt (+ `model/OptionTileContent.kt`) | Tile de opção visual (`onClick` nulo = desligado); a versão `Centered` centraliza amostra e rótulo (pills do Format do relógio) | Escolha visual |
 | AureoleIconCatalogGrid | composable/icons/AureoleIconCatalogGrid.kt | Catálogo de ícones | Escolher ícone |

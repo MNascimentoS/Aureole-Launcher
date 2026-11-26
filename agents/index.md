@@ -13,7 +13,7 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
    - Rules for Jetpack Compose UI files (`*Screen.kt`, `*Component.kt`, `*Dialog.kt`, `*Sheet.kt`, `*Popup.kt`).
    - Strict separation of UI and Models (all data classes, states, and actions must reside in `model/`).
    - Reusable components in the global `composable/` package.
-   - Action sheets, `OverlaySheetHeader` (`sheetHeaderGap`, título e subtítulo centrados), alça visível com alvo de 48 dp, abas embaixo com fading edge, `AureoleThemeColorPicker` + `ThemeColorRef`; exceção do relógio: seletor de cor como página na mesma sheet, cartão "Nenhuma".
+   - Action sheets, `OverlaySheetHeader` (`sheetHeaderGap`, título e subtítulo centrados), alça visível com alvo de 48 dp, abas embaixo com fading edge, `AureoleColorField` / `AureoleColorPickerDialog` (grade de cartões) + `ThemeColorRef`; exceção do relógio: seletor de cor como página na mesma sheet, cartão "Nenhuma".
 
 3. **[Providers & Dependency Injection](aureole_providers.md)**
    - Koin dependency injection configuration (`di/`).

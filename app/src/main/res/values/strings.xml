@@ -454,18 +454,6 @@
     <string name="undo_quick_button_changed">Quick button updated</string>
     <string name="undo_cards_glass_changed">Cards and glass updated</string>
     <string name="undo_folder_changed">Folder updated</string>
-    <string name="settings_background_section_theme">From your theme</string>
-    <string name="settings_background_section_tones">Tones</string>
-    <string name="settings_background_category_cold">Cold</string>
-    <string name="settings_background_category_cool">Cool</string>
-    <string name="settings_background_category_neutral">Neutral</string>
-    <string name="settings_background_category_warm">Warm</string>
-    <string name="settings_background_swatch_background">Background</string>
-    <string name="settings_background_swatch_surface">Surface</string>
-    <string name="settings_background_swatch_variant">Variant</string>
-    <string name="settings_background_swatch_outline">Outline</string>
-    <string name="settings_background_swatch_accent">Accent</string>
-    <string name="theme_color_section_other_palettes">From other palettes</string>
     <string name="settings_background_light_warning">This color makes a light theme</string>
     <string name="home_undo_action">Undo</string>
     <string name="home_undo_removed_from_folder">%1$s left the folder</string>
@@ -654,7 +642,6 @@
     <string name="secret_game_sound_off">Sound off</string>
     <string name="secret_game_move_left">Move left</string>
     <string name="secret_game_move_right">Move right</string>
-    <string name="theme_color_section_default">Default</string>
     <string name="home_clock_color_text_title">Text color</string>
     <string name="home_clock_color_card_title">Card color</string>
     <string name="home_clock_color_none">None</string>
