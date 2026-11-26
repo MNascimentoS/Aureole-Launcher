@@ -34,7 +34,7 @@ object SecretGameDrawing {
     const val STREAK_WIDTH = 0.004f
     const val HUD_ALPHA = 0.45f
     const val HUD_TEXT = 0.06f
-    const val HUD_TOP = 0.06f
+    const val HUD_TOP = 0.09f
     const val LEVEL_TEXT = 0.035f
     const val LEVEL_GAP = 1.5f
     const val BACK_HINT_ALPHA = 0.55f
