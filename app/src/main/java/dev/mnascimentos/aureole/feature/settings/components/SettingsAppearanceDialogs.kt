@@ -9,6 +9,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +47,7 @@ internal fun BackgroundPickerContent(
     onDraftChange: (BackgroundDraft) -> Unit,
     onLockDialog: (LockScreenDialog?) -> Unit
 ) {
+    var isColorOpen by rememberSaveable { mutableStateOf(false) }
     Column(modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
         SheetSectionHeading(text = stringResource(R.string.settings_appearance_background_type), isFirst = true)
         val photo = params.customImagePath?.takeIf { params.isCustomImageSet }?.let { path ->
@@ -65,6 +68,7 @@ internal fun BackgroundPickerContent(
             selected = draft.type,
             onSelect = {
                 onDraftChange(draft.copy(type = it))
+                if (it == BackgroundType.SOLID_COLOR) isColorOpen = true
                 if (it == BackgroundType.CUSTOM_IMAGE && photo == null) params.onCustomImageClick()
             },
             isLeftHanded = params.isLeftHanded,
@@ -78,10 +82,12 @@ internal fun BackgroundPickerContent(
             },
             modifier = Modifier.padding(top = AureoleDS.dimens.small)
         )
-        if (draft.type == BackgroundType.SOLID_COLOR) {
-            BackgroundColorSections(
+        if (draft.type == BackgroundType.SOLID_COLOR) BackgroundLightWarning(color = draft.color)
+        if (isColorOpen) {
+            BackgroundColorPicker(
                 selected = draft.color,
-                onSelect = { onDraftChange(draft.copy(color = it)) }
+                onSelect = { onDraftChange(draft.copy(color = it)) },
+                onDismissRequest = { isColorOpen = false }
             )
         }
         Spacer(modifier = Modifier.height(AureoleDS.dimens.large))

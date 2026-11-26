@@ -2,16 +2,12 @@ package dev.mnascimentos.aureole.feature.settings.components
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.click
-import androidx.compose.ui.test.isSelectable
 import androidx.compose.ui.test.junit4.v2.createComposeRule
-import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.feature.settings.SettingsNavGraph
@@ -62,7 +58,9 @@ class AppearanceBackgroundInnerTest {
 
         composeTestRule.onNodeWithText("Set background").assertExists()
         composeTestRule.onNodeWithText("TYPE").assertExists()
-        composeTestRule.onNodeWithText("Color").assertExists()
+        composeTestRule.onNodeWithText("Solid color").assertExists()
+        composeTestRule.onNodeWithText("Color").assertDoesNotExist()
+        composeTestRule.onNodeWithText("TONES").assertDoesNotExist()
         composeTestRule.onNodeWithText("VIVID").assertDoesNotExist()
         composeTestRule.onNodeWithText("09:41").assertExists()
         composeTestRule.onNodeWithText("Themed icons").assertDoesNotExist()
@@ -86,7 +84,10 @@ class AppearanceBackgroundInnerTest {
         val saved = mutableListOf<Int>()
         openBackground(actions = SettingsScreenActions(onSelectBackgroundColor = { saved += it }))
 
-        composeTestRule.onAllNodes(isSelectable()).onLast().performSemanticsAction(SemanticsActions.OnClick)
+        // "Solid color" opens the card-grid picker; a card is chosen at once and closes it.
+        composeTestRule.onNodeWithText("Solid color").performClick()
+        composeTestRule.onNodeWithText("Abyss").performClick()
+        composeTestRule.waitForIdle()
         assertTrue(saved.isEmpty())
         composeTestRule.closeOverlayWithBack()
 

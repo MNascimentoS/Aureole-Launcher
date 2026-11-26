@@ -71,7 +71,13 @@ internal fun AureoleEditOverlayConfig.forGroupPage(
         is GroupSheetPage.FolderEditor -> stringResource(folderFormTitleRes(nav.folderMode, isEditing = true)) to null
         is GroupSheetPage.QuickButtonEditor -> stringResource(R.string.home_quickbutton_appearance_title) to null
     }
-    return asSheetPage(title = title, subtitle = subtitle, onBack = onBack, onClose = onClose)
+    return asSheetPage(
+        title = title,
+        subtitle = subtitle,
+        onBack = onBack,
+        onClose = onClose,
+        hasBackArrow = nav.page !is GroupSheetPage.Color
+    )
 }
 
 /**

@@ -17,19 +17,21 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 /**
  * The header of a page shown inside an edit sheet in place of its tabs (the clock's color page, the group's
  * "Add apps"): back arrow, [title] and [subtitle], and no tab bar. Back ([onBack], the arrow or the system back)
- * returns to the tab; dragging down or tapping outside still closes the sheet ([onClose]).
+ * returns to the tab; dragging down or tapping outside still closes the sheet ([onClose]). Without [hasBackArrow]
+ * (the group's color page) the arrow is left out and back stays on the system back.
  */
 fun AureoleEditOverlayConfig.asSheetPage(
     title: String,
     subtitle: String?,
     onBack: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    hasBackArrow: Boolean = true
 ): AureoleEditOverlayConfig = copy(
     title = title,
     subtitle = subtitle,
     onBackPress = onBack,
     onDismiss = onClose,
-    headerLeadingAction = { SheetPageBackButton(onBack = onBack) },
+    headerLeadingAction = if (hasBackArrow) ({ SheetPageBackButton(onBack = onBack) }) else null,
     hasTabBottomBar = false
 )
 

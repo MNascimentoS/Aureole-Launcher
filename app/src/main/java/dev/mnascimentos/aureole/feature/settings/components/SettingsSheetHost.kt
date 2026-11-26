@@ -41,6 +41,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
+import dev.mnascimentos.aureole.core.designsystem.utils.previewBlurSource
 import dev.mnascimentos.aureole.feature.settings.model.AppearanceMenuDialogActions
 import dev.mnascimentos.aureole.feature.settings.model.AreaSheetEvents
 import dev.mnascimentos.aureole.feature.settings.model.AreaSheetSpec
@@ -112,7 +113,7 @@ fun SettingsSheetHost(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxSize().hazeSource(hazeState)) {
+        Box(modifier = Modifier.fillMaxSize().previewBlurSource().hazeSource(hazeState)) {
             root { opened -> dispatch(SettingsSheetEvent.OpenArea(opened)) }
         }
         CompositionLocalProvider(
@@ -124,7 +125,7 @@ fun SettingsSheetHost(
                 enter = fadeIn(tween(BACKDROP_FADE_MS)),
                 exit = fadeOut(tween(BACKDROP_FADE_MS))
             ) {
-                AureoleOverlayBackdrop(hazeState = hazeState, modifier = Modifier.fillMaxSize())
+                AureoleOverlayBackdrop(hazeState = hazeState, modifier = Modifier.fillMaxSize(), scrimsPreview = true)
             }
             if (area != null) {
                 OpenArea(

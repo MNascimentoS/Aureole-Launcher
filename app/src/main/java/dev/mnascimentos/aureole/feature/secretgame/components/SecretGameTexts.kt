@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
@@ -44,7 +45,8 @@ internal fun SecretGameTexts(
             best = stringResource(R.string.secret_game_best_score, it.bestScore),
             sub = stringResource(
                 if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck
-            )
+            ),
+            subColor = AureoleDS.colors.onSurfaceLow.copy(alpha = it.alpha)
         )
     }
     val veil = AureoleDS.colors.surface
@@ -85,7 +87,7 @@ internal fun SecretGameTexts(
 
 private class PauseTexts(val paused: String, val resume: String, val backToExit: String)
 
-private class ResultTexts(val title: String, val best: String, val sub: String)
+private class ResultTexts(val title: String, val best: String, val sub: String, val subColor: Color)
 
 private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretGameColors, mid: Float) {
     val u = size.width
@@ -95,7 +97,10 @@ private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretG
     drawCentered(pen, SecretText(texts.backToExit, mid + u * D.BACK_HINT_GAP, D.SUB_TEXT, backColor, true))
 }
 
-/** Your Score (big), Best Score (small, darker, only when it was not just beaten) and the message. */
+/**
+ * Best score (smaller, above; only when it was not just beaten), Your score (big) and the message. After a
+ * new record the title moves up and the message takes the old center, with a wider gap.
+ */
 private fun DrawScope.drawResult(
     pen: TextPen,
     texts: ResultTexts,
@@ -105,15 +110,14 @@ private fun DrawScope.drawResult(
 ) {
     val u = size.width
     val color = colors.ship.copy(alpha = result.alpha)
-    val dim = colors.ship.copy(alpha = result.alpha * D.BACK_HINT_ALPHA)
-    drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
-    var line = 1f
-    if (!result.isNewRecord) {
-        drawCentered(pen, SecretText(texts.best, mid + u * D.RESULT_LINE_GAP, D.BEST_TEXT, dim, true))
-        line = D.RESULT_SUB_LINES
+    if (result.isNewRecord) {
+        drawCentered(pen, SecretText(texts.title, mid - u * D.RECORD_TITLE_ABOVE, D.TITLE_TEXT, color, true))
+        drawCentered(pen, SecretText(texts.sub, mid, D.RESULT_SUB_TEXT, texts.subColor, true))
+        return
     }
-    val sub = mid + u * D.RESULT_LINE_GAP * line
-    drawCentered(pen, SecretText(texts.sub, sub, D.SUB_TEXT, color, true))
+    drawCentered(pen, SecretText(texts.best, mid - u * D.RESULT_BEST_ABOVE, D.BEST_TEXT, color, true))
+    drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
+    drawCentered(pen, SecretText(texts.sub, mid + u * D.RESULT_SUB_BELOW, D.RESULT_SUB_TEXT, texts.subColor, true))
 }
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)

@@ -1,6 +1,7 @@
 package dev.mnascimentos.aureole.feature.secretgame.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -99,18 +100,19 @@ fun SecretBestScoreCard(
 
 @Composable
 private fun SecretPlayButton(onClick: () -> Unit) {
+    val buttonShape = RoundedCornerShape(AureoleDS.dimens.radiusMedium)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = AureoleDS.dimens.minTouchTarget)
-            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
-            .background(AureoleDS.colors.onSurfaceHigh)
+            .clip(buttonShape)
+            .border(AureoleDS.dimens.borderMinimal, AureoleDS.colors.onSurfaceHigh, buttonShape)
             .clickable(role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         AureoleText(
             text = stringResource(R.string.secret_game_play),
-            color = AureoleDS.colors.surface,
+            color = AureoleDS.colors.onSurfaceMedium,
             format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
         )
     }

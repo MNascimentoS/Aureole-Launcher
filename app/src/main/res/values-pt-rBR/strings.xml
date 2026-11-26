@@ -460,18 +460,6 @@
     <string name="undo_quick_button_changed">Botão rápido atualizado</string>
     <string name="undo_cards_glass_changed">Cartões e vidro atualizados</string>
     <string name="undo_folder_changed">Pasta atualizada</string>
-    <string name="settings_background_section_theme">Do seu tema</string>
-    <string name="settings_background_section_tones">Tons</string>
-    <string name="settings_background_category_cold">Frias</string>
-    <string name="settings_background_category_cool">Frescas</string>
-    <string name="settings_background_category_neutral">Neutras</string>
-    <string name="settings_background_category_warm">Quentes</string>
-    <string name="settings_background_swatch_background">Fundo</string>
-    <string name="settings_background_swatch_surface">Superfície</string>
-    <string name="settings_background_swatch_variant">Variante</string>
-    <string name="settings_background_swatch_outline">Contorno</string>
-    <string name="settings_background_swatch_accent">Destaque</string>
-    <string name="theme_color_section_other_palettes">De outras paletas</string>
     <string name="settings_background_light_warning">Essa cor gera um tema claro</string>
     <string name="home_undo_action">Desfazer</string>
     <string name="home_undo_removed_from_folder">%1$s saiu da pasta</string>
@@ -662,7 +650,6 @@
     <string name="secret_game_sound_off">Som desligado</string>
     <string name="secret_game_move_left">Mover para a esquerda</string>
     <string name="secret_game_move_right">Mover para a direita</string>
-    <string name="theme_color_section_default">Padrão</string>
     <string name="home_clock_color_text_title">Cor do texto</string>
     <string name="home_clock_color_card_title">Cor do cartão</string>
     <string name="home_clock_color_none">Nenhuma</string>
