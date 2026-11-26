@@ -638,9 +638,11 @@
     <string name="home_scrollgroup_remove_item">Remove %1$s</string>
     <string name="home_scrollgroup_decrease">Decrease %1$s</string>
     <string name="home_scrollgroup_increase">Increase %1$s</string>
-<string name="secret_game_best_score">Best Your Score: %1$d</string>
-    <string name="secret_game_best_hint">Tap “%1$s” %2$s times to play.</string>
-    <string name="secret_game_score">Score: %1$d</string>
+<string name="secret_game_best_score">Best Score: %1$d</string>
+    <string name="secret_game_best_hint">Or tap %2$sx on “%1$s”</string>
+    <string name="secret_game_play_prompt">Press here to play</string>
+    <string name="secret_game_play">Play</string>
+    <string name="secret_game_score">Your Score: %1$d</string>
     <string name="secret_game_new_record">New best score!</string>
     <string name="secret_game_better_luck">Better luck next time…</string>
     <string name="secret_game_go">GO!!</string>

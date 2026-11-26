@@ -1,8 +1,12 @@
 package dev.mnascimentos.aureole.feature.secretgame.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.window.Dialog
@@ -29,11 +34,12 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning
 fun SecretBestScorePopup(
     bestScore: Int,
     triggerText: String,
+    onPlay: () -> Unit,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
-        SecretBestScoreCard(bestScore = bestScore, triggerText = triggerText, modifier = modifier)
+        SecretBestScoreCard(bestScore = bestScore, triggerText = triggerText, onPlay = onPlay, modifier = modifier)
     }
 }
 
@@ -41,10 +47,12 @@ fun SecretBestScorePopup(
 fun SecretBestScoreCard(
     bestScore: Int,
     triggerText: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onPlay: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
+            .padding(horizontal = AureoleDS.dimens.xLarge)
             .clip(RoundedCornerShape(AureoleDS.dimens.radiusLarge))
             .background(AureoleDS.colors.surfaceVariant)
             .padding(AureoleDS.dimens.large),
@@ -66,17 +74,44 @@ fun SecretBestScoreCard(
             )
         )
         AureoleText(
+            text = stringResource(R.string.secret_game_play_prompt),
+            color = AureoleDS.colors.onSurfaceMedium,
+            modifier = Modifier.padding(top = AureoleDS.dimens.small),
+            format = AureoleTextFormatParams(style = AureoleDS.typography.bodyLarge, textAlign = TextAlign.Center)
+        )
+        SecretPlayButton(onClick = onPlay)
+        AureoleText(
             text = stringResource(
                 R.string.secret_game_best_hint,
                 triggerText,
                 SecretGameTuning.TAPS_TO_OPEN.toString()
             ),
-            color = AureoleDS.colors.onSurfaceMedium,
+            color = AureoleDS.colors.onSurfaceLow,
             modifier = Modifier.padding(top = AureoleDS.dimens.xSmall),
             format = AureoleTextFormatParams(
-                style = AureoleDS.typography.bodyMedium,
+                style = AureoleDS.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
+        )
+    }
+}
+
+@Composable
+private fun SecretPlayButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = AureoleDS.dimens.minTouchTarget)
+            .clip(RoundedCornerShape(AureoleDS.dimens.radiusMedium))
+            .background(AureoleDS.colors.onSurfaceHigh)
+            .clickable(role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        AureoleText(
+            text = stringResource(R.string.secret_game_play),
+            color = AureoleDS.colors.surface,
+            format = AureoleTextFormatParams(style = AureoleDS.typography.titleMedium, fontWeight = FontWeight.Bold)
         )
     }
 }

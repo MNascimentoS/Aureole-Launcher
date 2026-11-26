@@ -20,6 +20,10 @@ fun SecretGameLayer(
         SecretBestScorePopup(
             bestScore = bestScore,
             triggerText = stringResource(R.string.settings_root_thank_you),
+            onPlay = {
+                host.showBestScore = false
+                host.open()
+            },
             onDismissRequest = { host.showBestScore = false }
         )
     }
