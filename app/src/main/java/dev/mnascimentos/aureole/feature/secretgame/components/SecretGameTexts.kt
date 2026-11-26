@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextLayoutResult
@@ -44,7 +45,8 @@ internal fun SecretGameTexts(
             best = stringResource(R.string.secret_game_best_score, it.bestScore),
             sub = stringResource(
                 if (it.isNewRecord) R.string.secret_game_new_record else R.string.secret_game_better_luck
-            )
+            ),
+            subColor = AureoleDS.colors.onSurfaceLow.copy(alpha = it.alpha)
         )
     }
     val veil = AureoleDS.colors.surface
@@ -85,7 +87,7 @@ internal fun SecretGameTexts(
 
 private class PauseTexts(val paused: String, val resume: String, val backToExit: String)
 
-private class ResultTexts(val title: String, val best: String, val sub: String)
+private class ResultTexts(val title: String, val best: String, val sub: String, val subColor: Color)
 
 private fun DrawScope.drawPause(pen: TextPen, texts: PauseTexts, colors: SecretGameColors, mid: Float) {
     val u = size.width
@@ -110,13 +112,13 @@ private fun DrawScope.drawResult(
     val color = colors.ship.copy(alpha = result.alpha)
     if (result.isNewRecord) {
         drawCentered(pen, SecretText(texts.title, mid - u * D.RECORD_TITLE_ABOVE, D.TITLE_TEXT, color, true))
-        drawCentered(pen, SecretText(texts.sub, mid, D.SUB_TEXT, color, true))
+        drawCentered(pen, SecretText(texts.sub, mid, D.SUB_TEXT, texts.subColor, true))
         return
     }
     val dim = colors.ship.copy(alpha = result.alpha * D.BACK_HINT_ALPHA)
     drawCentered(pen, SecretText(texts.best, mid - u * D.RESULT_BEST_ABOVE, D.BEST_TEXT, dim, true))
     drawCentered(pen, SecretText(texts.title, mid, D.TITLE_TEXT, color, true))
-    drawCentered(pen, SecretText(texts.sub, mid + u * D.RESULT_SUB_BELOW, D.SUB_TEXT, color, true))
+    drawCentered(pen, SecretText(texts.sub, mid + u * D.RESULT_SUB_BELOW, D.SUB_TEXT, texts.subColor, true))
 }
 
 private class TextPen(val measurer: TextMeasurer, val style: TextStyle)
