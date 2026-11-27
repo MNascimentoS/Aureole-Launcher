@@ -49,6 +49,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleLauncherTheme
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalHazeState
 import dev.mnascimentos.aureole.core.designsystem.utils.LocalSharedTransitionScope
+import dev.mnascimentos.aureole.core.designsystem.utils.previewBlurSource
 import dev.mnascimentos.aureole.feature.home.components.clock.EditClockBottomSheet
 import dev.mnascimentos.aureole.feature.home.components.common.HomeScreenFolderOverlays
 import dev.mnascimentos.aureole.feature.home.components.common.WallpaperBackground
@@ -224,7 +225,14 @@ private fun BoxScope.HomeUndoSnackbar(uiState: MainUiState, actions: HomeScreenA
 private fun BoxScope.HomeScreenBody(
     config: HomeScreenBodyConfig
 ) {
-    val homeContentHazeModifier = Modifier.hazeSource(state = config.hazeState)
+    val onboarding = config.uiState.onboarding
+    // Haze draws nothing in a preview or screenshot render: the onboarding sheets and scrims that dim the whole
+    // home get the blur by hand there. On a device `previewBlurSource` is a no-op.
+    val isHomeBlurredByOnboarding = onboarding.isChoosingPreset || onboarding.activePicker != null ||
+        (onboarding.stage == OnboardingStage.CHECKLIST && onboarding.isChecklistExpanded)
+    val homeContentHazeModifier = Modifier
+        .then(if (isHomeBlurredByOnboarding) Modifier.previewBlurSource() else Modifier)
+        .hazeSource(state = config.hazeState)
 
     Box(
         modifier = Modifier

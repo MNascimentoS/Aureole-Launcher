@@ -10,6 +10,7 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.settings.components.CardsGlassBottomSheet
+import dev.mnascimentos.aureole.feature.settings.components.wallpaper.WallpaperEditorOverlay
 import dev.mnascimentos.aureole.feature.settings.model.BlurOpacity
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassDraft
 import dev.mnascimentos.aureole.feature.settings.model.CardsGlassParams
@@ -17,6 +18,9 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsArea
 import dev.mnascimentos.aureole.feature.settings.model.SettingsInnerKind
 import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
+import dev.mnascimentos.aureole.feature.settings.model.WallpaperEditorParams
+import dev.mnascimentos.aureole.feature.settings.model.WallpaperEditorTab
+import dev.mnascimentos.aureole.fixtures.OrientedCase
 import dev.mnascimentos.aureole.fixtures.SettingsSheetCase
 
 private const val CARD_RADIUS_DP = 16
@@ -68,3 +72,37 @@ private fun FotoScreenshotTest() = SettingsSheetCase(
         wallpaperAdjustments = EDITED
     )
 )
+
+@Composable
+private fun EditorCase(tab: WallpaperEditorTab, isLeftHanded: Boolean) = OrientedCase {
+    AureoleLauncherTheme {
+        WallpaperEditorOverlay(
+            params = WallpaperEditorParams(
+                photoPath = null,
+                initial = EDITED,
+                onFinish = { _, _ -> },
+                onDismissRequest = {},
+                isLeftHanded = isLeftHanded,
+                initialTab = tab
+            )
+        )
+    }
+}
+
+/** Editor de papel de parede: home fantasma, moldura da tela, etiqueta de zoom e a sheet na aba Enquadrar. */
+@PreviewTest
+@AureolePreview
+@AureoleLandscapePreview
+@Composable
+private fun EnquadrarScreenshotTest() = EditorCase(WallpaperEditorTab.FRAME, isLeftHanded = false)
+
+/** Slider de escurecer com o valor (desfoque tem o mesmo layout). */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun AjusteScreenshotTest() = EditorCase(WallpaperEditorTab.DIM, isLeftHanded = false)
+
+@PreviewTest
+@AureolePreview
+@Composable
+private fun CanhotoScreenshotTest() = EditorCase(WallpaperEditorTab.FRAME, isLeftHanded = true)

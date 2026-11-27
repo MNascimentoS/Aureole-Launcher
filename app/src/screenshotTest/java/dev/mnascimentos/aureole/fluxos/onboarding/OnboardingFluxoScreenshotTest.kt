@@ -1,9 +1,11 @@
 package dev.mnascimentos.aureole.fluxos.onboarding
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import com.android.tools.screenshot.PreviewTest
 import dev.mnascimentos.aureole.core.data.model.GestureCoachStep
+import dev.mnascimentos.aureole.core.data.model.LayoutPreset
 import dev.mnascimentos.aureole.core.data.model.OnboardingStage
 import dev.mnascimentos.aureole.core.data.model.OnboardingTask
 import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
@@ -12,9 +14,12 @@ import dev.mnascimentos.aureole.feature.home.components.onboarding.GestureCoachB
 import dev.mnascimentos.aureole.feature.home.components.onboarding.OnboardingVisualSheetComponent
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearancePicker
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.AppearanceSelection
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.LayoutPresetPlan
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingActions
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingGlass
 import dev.mnascimentos.aureole.feature.home.components.onboarding.model.OnboardingUiState
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.PresetFolder
+import dev.mnascimentos.aureole.feature.home.components.onboarding.model.completedTasks
 import dev.mnascimentos.aureole.feature.home.grid.GridDefaults
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.fixtures.OnboardingCase
@@ -174,7 +179,9 @@ private fun peek(itemId: String) = checklist(
 /** A sheet Visual sobre a home; o fuso fica em UTC para a hora fixa sair igual em qualquer máquina. */
 @Composable
 private fun VisualCase(picker: AppearancePicker) {
+    val previous = remember { TimeZone.getDefault() }
     remember { TimeZone.setDefault(TimeZone.getTimeZone("UTC")) }
+    DisposableEffect(Unit) { onDispose { TimeZone.setDefault(previous) } }
     OnboardingCase(
         onboarding = checklist(expanded = false).copy(activePicker = picker),
         overlay = {
@@ -190,3 +197,53 @@ private fun VisualCase(picker: AppearancePicker) {
 
 /** 5 jan 2026, 15:00 UTC. */
 private const val VISUAL_NOW_MILLIS = 1_767_625_200_000L
+
+private const val PHONE = "com.example.phone"
+private const val MESSAGES = "com.example.messages"
+private const val CAMERA = "com.example.camera"
+private const val BROWSER = "com.example.browser"
+private const val SETTINGS = "com.example.settings"
+
+/** Os três layouts como o aparelho de exemplo os montaria. */
+private val plans = listOf(
+    LayoutPresetPlan(LayoutPreset.MINIMAL, favorites = listOf(PHONE, MESSAGES, CAMERA, BROWSER, SETTINGS)),
+    LayoutPresetPlan(
+        LayoutPreset.PRODUCTIVE,
+        favorites = listOf(PHONE, MESSAGES, CAMERA, BROWSER),
+        folders = listOf(
+            PresetFolder(category = 4, name = "Social", packageNames = listOf(MESSAGES, PHONE)),
+            PresetFolder(category = 5, name = "Productivity", packageNames = listOf(BROWSER, SETTINGS))
+        ),
+        groupApps = listOf(CAMERA)
+    ),
+    LayoutPresetPlan(
+        LayoutPreset.WIDGETS,
+        favorites = listOf(PHONE, MESSAGES, CAMERA),
+        groupApps = listOf(BROWSER, SETTINGS, PHONE, CAMERA)
+    )
+)
+
+/** "Escolha um ponto de partida": os três cartões, o Produtivo selecionado. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun P18EscolhaLayoutScreenshotTest() = OnboardingCase(
+    OnboardingUiState(
+        stage = OnboardingStage.WELCOME,
+        isChoosingPreset = true,
+        presetPlans = plans,
+        selectedPreset = LayoutPreset.PRODUCTIVE
+    )
+)
+
+/** A lista logo depois de aplicar o Produtivo: as etapas do layout feitas e a do widget ainda pendente. */
+@PreviewTest
+@AureolePreview
+@Composable
+private fun P19ChecklistLayoutAplicadoScreenshotTest() = OnboardingCase(
+    OnboardingUiState(
+        stage = OnboardingStage.CHECKLIST,
+        completedTasks = plans[1].completedTasks() + OnboardingTask.SET_DEFAULT_HOME,
+        appliedPreset = LayoutPreset.PRODUCTIVE
+    )
+)

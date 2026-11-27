@@ -110,41 +110,6 @@
       "excecao": "gestos-swipe D-09"
     },
     {
-      "id": "gruporolavel",
-      "area": "home",
-      "titulo": {
-        "pt": "Grupo rolável",
-        "en": "Scroll group"
-      },
-      "paisagem": true,
-      "estados": [
-        {
-          "id": "Padrao",
-          "titulo": {
-            "pt": "Padrão",
-            "en": "Default"
-          },
-          "antes": [
-            "feature/home/HomeDialogsScreenshotTestKt/EditContainerDialogScreenshotTest_Dark Mode",
-            "feature/home/grid/EditContainerDialogSectionsScreenshotTestKt/EditContainerDialogSectionsScreenshotTest_Dark Mode",
-            "feature/home/grid/ScrollGroupSheetScreenshotTestKt/ScrollGroupHorizontalScreenshotTest_Dark Mode",
-            "feature/home/grid/ScrollGroupSheetScreenshotTestKt/ScrollGroupVerticalScreenshotTest_Dark Mode"
-          ]
-        },
-        {
-          "id": "NaHome",
-          "titulo": {
-            "pt": "Na home",
-            "en": "On the home"
-          },
-          "antes": [
-            "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeHorizontalScreenshotTest_Dark Mode",
-            "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeVerticalScreenshotTest_Dark Mode"
-          ]
-        }
-      ]
-    },
-    {
       "id": "menuapp",
       "area": "home",
       "titulo": {
@@ -610,21 +575,9 @@
             "en": "Color page"
           },
           "antes": []
-        }
-      ],
-      "excecao": "grupo-apps-pastas D-17"
-    },
-    {
-      "id": "adicionarcomponente",
-      "area": "home",
-      "titulo": {
-        "pt": "Adicionar componente",
-        "en": "Add component"
-      },
-      "paisagem": true,
-      "estados": [
+        },
         {
-          "id": "Padrao",
+          "id": "Adicionar",
           "titulo": {
             "pt": "Padrão",
             "en": "Default"
@@ -632,7 +585,8 @@
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/AddContainerDialogLeftHandedScreenshotTest_Dark Mode",
             "feature/home/HomeDialogsScreenshotTestKt/AddContainerDialogScreenshotTest_Dark Mode",
-            "feature/home/components/containers/ContainerAddButtonScreenshotTestKt/ContainerAddButtonScreenshotTest_Dark Mode"
+            "feature/home/components/containers/ContainerAddButtonScreenshotTestKt/ContainerAddButtonScreenshotTest_Dark Mode",
+            "telas/adicionarcomponente/AdicionarcomponenteTelaScreenshotTestKt/PadraoScreenshotTest_Dark Mode"
           ]
         },
         {
@@ -642,47 +596,38 @@
             "en": "Inside a group"
           },
           "antes": [
-            "feature/home/HomeDialogsScreenshotTestKt/AddContainerNestedDialogScreenshotTest_Dark Mode"
+            "feature/home/HomeDialogsScreenshotTestKt/AddContainerNestedDialogScreenshotTest_Dark Mode",
+            "telas/adicionarcomponente/AdicionarcomponenteTelaScreenshotTestKt/ComponentesScreenshotTest_Dark Mode"
           ]
-        }
-      ]
-    },
-    {
-      "id": "itemgrade",
-      "area": "home",
-      "titulo": {
-        "pt": "Grupo de widgets",
-        "en": "Widget group"
-      },
-      "paisagem": true,
-      "estados": [
+        },
         {
-          "id": "Padrao",
+          "id": "Rolavel",
           "titulo": {
             "pt": "Padrão",
             "en": "Default"
           },
           "antes": [
-            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenLeftHandedScreenshotTest_Dark Mode",
-            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenScreenshotTest_Dark Mode",
-            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenTwoWidgetsScreenshotTest_Dark Mode",
-            "feature/home/components/widgets/WidgetMoveRowScreenshotTestKt/WidgetMoveRowLeftHandedScreenshotTest_Dark Mode",
-            "feature/home/components/widgets/WidgetMoveRowScreenshotTestKt/WidgetMoveRowRightHandedScreenshotTest_Dark Mode"
+            "feature/home/HomeDialogsScreenshotTestKt/EditContainerDialogScreenshotTest_Dark Mode",
+            "feature/home/grid/EditContainerDialogSectionsScreenshotTestKt/EditContainerDialogSectionsScreenshotTest_Dark Mode",
+            "feature/home/grid/ScrollGroupSheetScreenshotTestKt/ScrollGroupHorizontalScreenshotTest_Dark Mode",
+            "feature/home/grid/ScrollGroupSheetScreenshotTestKt/ScrollGroupVerticalScreenshotTest_Dark Mode",
+            "telas/gruporolavel/GruporolavelTelaScreenshotTestKt/PadraoScreenshotTest_Dark Mode"
           ]
-        }
-      ]
-    },
-    {
-      "id": "pasta",
-      "area": "home",
-      "titulo": {
-        "pt": "Pasta aberta",
-        "en": "Opened folder"
-      },
-      "paisagem": true,
-      "estados": [
+        },
         {
-          "id": "Padrao",
+          "id": "RolavelNaHome",
+          "titulo": {
+            "pt": "Na home",
+            "en": "On the home"
+          },
+          "antes": [
+            "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeHorizontalScreenshotTest_Dark Mode",
+            "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeVerticalScreenshotTest_Dark Mode",
+            "telas/gruporolavel/GruporolavelTelaScreenshotTestKt/NaHomeScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Pasta",
           "titulo": {
             "pt": "Padrão",
             "en": "Default"
@@ -699,32 +644,23 @@
             "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenContainerFolderItemRendered_shouldRenderItemScreenshotTest_Dark Mode",
             "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderDialogRendered_shouldRenderFolderDialogScreenshotTest_Dark Mode",
             "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderMiniGridRendered_shouldRenderMiniGridScreenshotTest_Dark Mode",
-            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenOpenedFolderPopupRendered_shouldRenderPopupScreenshotTest_Dark Mode"
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenOpenedFolderPopupRendered_shouldRenderPopupScreenshotTest_Dark Mode",
+            "telas/pasta/PastaTelaScreenshotTestKt/PadraoScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "UltimoItem",
+          "id": "PastaUltimoItem",
           "titulo": {
             "pt": "Do último item",
             "en": "From the last item"
           },
           "antes": [
-            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderOpensFromTheLastItem_shouldStayAboveTheNavigationBarScreenshotTest_Dark Mode"
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderOpensFromTheLastItem_shouldStayAboveTheNavigationBarScreenshotTest_Dark Mode",
+            "telas/pasta/PastaTelaScreenshotTestKt/UltimoItemScreenshotTest_Dark Mode"
           ]
-        }
-      ]
-    },
-    {
-      "id": "pastaformulario",
-      "area": "home",
-      "titulo": {
-        "pt": "Formulário de pasta",
-        "en": "Folder form"
-      },
-      "paisagem": true,
-      "estados": [
+        },
         {
-          "id": "Padrao",
+          "id": "PastaCriar",
           "titulo": {
             "pt": "Criar",
             "en": "Create"
@@ -735,11 +671,12 @@
             "composable/dialogs/FolderFormScreenshotTestKt/FolderFormNewRightHandedScreenshotTest_Dark Mode",
             "feature/home/HomeDialogsScreenshotTestKt/CreateFolderDialogScreenshotTest_Dark Mode",
             "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsFolderFormLeftHandedScreenshotTest_Dark Mode",
-            "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsFolderFormRightHandedScreenshotTest_Dark Mode"
+            "feature/home/components/containers/ContainerManageItemsScreenshotTestKt/ContainerManageItemsFolderFormRightHandedScreenshotTest_Dark Mode",
+            "telas/pastaformulario/PastaformularioTelaScreenshotTestKt/PadraoScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "Editar",
+          "id": "PastaEditar",
           "titulo": {
             "pt": "Editar",
             "en": "Edit"
@@ -756,22 +693,12 @@
             "composable/dialogs/FolderFormScreenshotTestKt/FolderFormPreviewTileScreenshotTest_Dark Mode",
             "feature/home/HomeDialogsScreenshotTestKt/EditFolderDialogScreenshotTest_Dark Mode",
             "feature/home/HomeDialogsScreenshotTestKt/FolderFormDialogScreenshotTest_Dark Mode",
-            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderFormDialogRendered_shouldRenderFormDialogScreenshotTest_Dark Mode"
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderFormDialogRendered_shouldRenderFormDialogScreenshotTest_Dark Mode",
+            "telas/pastaformulario/PastaformularioTelaScreenshotTestKt/EditarScreenshotTest_Dark Mode"
           ]
-        }
-      ]
-    },
-    {
-      "id": "pastaapps",
-      "area": "home",
-      "titulo": {
-        "pt": "Apps da pasta",
-        "en": "Folder apps"
-      },
-      "paisagem": true,
-      "estados": [
+        },
         {
-          "id": "Padrao",
+          "id": "PastaApps",
           "titulo": {
             "pt": "Padrão",
             "en": "Default"
@@ -781,31 +708,103 @@
             "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridCellStatesScreenshotTest_Dark Mode",
             "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridRightHandedScreenshotTest_Dark Mode",
             "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridWithMarkedAppsScreenshotTest_Dark Mode",
-            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderAppPickerDialogRendered_shouldRenderPickerScreenshotTest_Dark Mode"
+            "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderAppPickerDialogRendered_shouldRenderPickerScreenshotTest_Dark Mode",
+            "telas/pastaapps/PastaappsTelaScreenshotTestKt/PadraoScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "Busca",
+          "id": "PastaAppsBusca",
           "titulo": {
             "pt": "Busca",
             "en": "Search"
           },
           "antes": [
             "feature/home/components/containers/folder/FolderPickerSearchScreenshotTestKt/FolderPickerSearchLeftHandedScreenshotTest_Dark Mode",
-            "feature/home/components/containers/folder/FolderPickerSearchScreenshotTestKt/FolderPickerSearchRightHandedScreenshotTest_Dark Mode"
+            "feature/home/components/containers/folder/FolderPickerSearchScreenshotTestKt/FolderPickerSearchRightHandedScreenshotTest_Dark Mode",
+            "telas/pastaapps/PastaappsTelaScreenshotTestKt/BuscaScreenshotTest_Dark Mode"
           ]
         },
         {
-          "id": "Canhoto",
+          "id": "PastaAppsCanhoto",
           "titulo": {
             "pt": "Canhoto",
             "en": "Left-handed"
           },
           "antes": [
             "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridLeftHandedScreenshotTest_Dark Mode",
-            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridWithMarkedAppsLeftHandedScreenshotTest_Dark Mode"
+            "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridWithMarkedAppsLeftHandedScreenshotTest_Dark Mode",
+            "telas/pastaapps/PastaappsTelaScreenshotTestKt/CanhotoScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NovoAdicionarComponente",
+          "titulo": {
+            "pt": "Adicionar componente",
+            "en": "Add component"
+          },
+          "antes": [
+            "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P01AdicionarComponenteScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NovoGrupoVazioDica1",
+          "titulo": {
+            "pt": "Grupo vazio, dica 1",
+            "en": "Empty group, tip 1"
+          },
+          "antes": [
+            "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P02GrupoVazioDica1ScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NovoAdicionarApps",
+          "titulo": {
+            "pt": "Adicionar apps",
+            "en": "Add apps"
+          },
+          "antes": [
+            "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P03AdicionarAppsScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NovoItensDica2",
+          "titulo": {
+            "pt": "Itens, dica 2",
+            "en": "Items, tip 2"
+          },
+          "antes": [
+            "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P04ItensDica2ScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NovoLayoutDica3",
+          "titulo": {
+            "pt": "Layout, dica 3",
+            "en": "Layout, tip 3"
+          },
+          "antes": [
+            "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P05LayoutDica3ScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "NovoNovaPasta",
+          "titulo": {
+            "pt": "Nova pasta",
+            "en": "New folder"
+          },
+          "antes": [
+            "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P06NovaPastaScreenshotTest_Dark Mode"
           ]
         }
+      ],
+      "excecao": "previews-same-folder D-02",
+      "idsAntigos": [
+        "adicionarcomponente",
+        "gruporolavel",
+        "pasta",
+        "pastaformulario",
+        "pastaapps",
+        "adicionargrupo"
       ]
     },
     {
@@ -826,7 +825,24 @@
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/WidgetPickerBottomSheetScreenshotTest_Dark Mode"
           ]
+        },
+        {
+          "id": "Grupo",
+          "titulo": {
+            "pt": "Grupo de widgets",
+            "en": "Widget group"
+          },
+          "antes": [
+            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenScreenshotTest_Dark Mode",
+            "feature/home/HomeDialogsScreenshotTestKt/EditWidgetGroupScreenTwoWidgetsScreenshotTest_Dark Mode",
+            "feature/home/components/widgets/WidgetMoveRowScreenshotTestKt/WidgetMoveRowLeftHandedScreenshotTest_Dark Mode",
+            "feature/home/components/widgets/WidgetMoveRowScreenshotTestKt/WidgetMoveRowRightHandedScreenshotTest_Dark Mode"
+          ]
         }
+      ],
+      "idsAntigos": [
+        "itemgrade"
       ]
     },
     {
@@ -1034,8 +1050,45 @@
             "feature/settings/WallpaperEditorScreenshotTestKt/SetBackgroundPhotoCardLeftHandedScreenshotTest_Dark Mode",
             "feature/settings/WallpaperEditorScreenshotTestKt/SetBackgroundPhotoCardScreenshotTest_Dark Mode"
           ]
+        },
+        {
+          "id": "Enquadrar",
+          "titulo": {
+            "pt": "Enquadrar",
+            "en": "Frame"
+          },
+          "antes": [
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Ajuste",
+          "titulo": {
+            "pt": "Ajuste",
+            "en": "Adjust"
+          },
+          "antes": [
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorDimLeftHandedScreenshotTest_Dark Mode",
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorDimScreenshotTest_Dark Mode"
+          ]
+        },
+        {
+          "id": "Canhoto",
+          "titulo": {
+            "pt": "Canhoto",
+            "en": "Left-handed"
+          },
+          "antes": [
+            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameLeftHandedScreenshotTest_Dark Mode"
+          ]
         }
-      ]
+      ],
+      "idsAntigos": [
+        "wallpaper"
+      ],
+      "excecao": "previews-same-folder D-01"
     },
     {
       "id": "ajustesbloqueio",
@@ -1227,50 +1280,6 @@
         }
       ],
       "excecao": "screenshots-telas-fluxos D-20"
-    },
-    {
-      "id": "wallpaper",
-      "area": "ajustes",
-      "titulo": {
-        "pt": "Editor de papel de parede",
-        "en": "Wallpaper editor"
-      },
-      "paisagem": true,
-      "estados": [
-        {
-          "id": "Padrao",
-          "titulo": {
-            "pt": "Enquadrar",
-            "en": "Frame"
-          },
-          "antes": [
-            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameScreenshotTest_Dark Mode"
-          ]
-        },
-        {
-          "id": "Ajuste",
-          "titulo": {
-            "pt": "Ajuste",
-            "en": "Adjust"
-          },
-          "antes": [
-            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurLeftHandedScreenshotTest_Dark Mode",
-            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurScreenshotTest_Dark Mode",
-            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorDimLeftHandedScreenshotTest_Dark Mode",
-            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorDimScreenshotTest_Dark Mode"
-          ]
-        },
-        {
-          "id": "Canhoto",
-          "titulo": {
-            "pt": "Canhoto",
-            "en": "Left-handed"
-          },
-          "antes": [
-            "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameLeftHandedScreenshotTest_Dark Mode"
-          ]
-        }
-      ]
     }
   ],
   "fluxos": [
@@ -1452,31 +1461,30 @@
             "feature/home/components/onboarding/OnboardingParticlesScreenshotTestKt/OnboardingCelebrationBurstScreenshotTest_Dark Mode",
             "fluxos/onboarding/OnboardingFluxoScreenshotTestKt/P11ComemoracaoScreenshotTest_Dark Mode"
           ]
-        }
-      ]
-    },
-    {
-      "id": "layoutpronto",
-      "area": "home",
-      "titulo": {
-        "pt": "Layout pronto",
-        "en": "Ready-made layout"
-      },
-      "passos": [
+        },
         {
-          "id": "P01Escolha",
+          "id": "P18EscolhaLayout",
           "titulo": {
             "pt": "Escolher o ponto de partida",
             "en": "Pick a starting point"
-          }
+          },
+          "antes": [
+            "fluxos/layoutpronto/LayoutprontoFluxoScreenshotTestKt/P01EscolhaScreenshotTest_Dark Mode"
+          ]
         },
         {
-          "id": "P02ChecklistAplicado",
+          "id": "P19ChecklistLayoutAplicado",
           "titulo": {
             "pt": "Lista com o layout aplicado",
             "en": "Checklist with the layout applied"
-          }
+          },
+          "antes": [
+            "fluxos/layoutpronto/LayoutprontoFluxoScreenshotTestKt/P02ChecklistAplicadoScreenshotTest_Dark Mode"
+          ]
         }
+      ],
+      "idsAntigos": [
+        "layoutpronto"
       ]
     },
     {
@@ -1589,7 +1597,7 @@
             "pt": "Nome e ícone da pasta",
             "en": "Folder name and icon"
           },
-          "ref": "telas/pastaformulario/Padrao"
+          "ref": "telas/container/PastaCriar"
         },
         {
           "id": "P03Apps",
@@ -1597,7 +1605,7 @@
             "pt": "Escolher os apps",
             "en": "Choose the apps"
           },
-          "ref": "telas/pastaapps/Padrao"
+          "ref": "telas/container/PastaApps"
         },
         {
           "id": "P04PastaAberta",
@@ -1605,7 +1613,7 @@
             "pt": "Pasta aberta",
             "en": "Open folder"
           },
-          "ref": "telas/pasta/Padrao"
+          "ref": "telas/container/Pasta"
         }
       ]
     },
@@ -1697,63 +1705,6 @@
             "en": "Search shortcut"
           },
           "ref": "telas/atalhos/Busca"
-        }
-      ]
-    },
-    {
-      "id": "adicionargrupo",
-      "area": "home",
-      "titulo": {
-        "pt": "Adicionar grupo",
-        "en": "Add group"
-      },
-      "passos": [
-        {
-          "id": "P01AdicionarComponente",
-          "titulo": {
-            "pt": "Adicionar componente",
-            "en": "Add component"
-          }
-        },
-        {
-          "id": "P02GrupoVazioDica1",
-          "titulo": {
-            "pt": "Grupo vazio, dica 1",
-            "en": "Empty group, tip 1"
-          }
-        },
-        {
-          "id": "P03AdicionarApps",
-          "titulo": {
-            "pt": "Adicionar apps",
-            "en": "Add apps"
-          }
-        },
-        {
-          "id": "P04ItensDica2",
-          "titulo": {
-            "pt": "Itens, dica 2",
-            "en": "Items, tip 2"
-          }
-        },
-        {
-          "id": "P05LayoutDica3",
-          "titulo": {
-            "pt": "Layout, dica 3",
-            "en": "Layout, tip 3"
-          }
-        },
-        {
-          "id": "P06NovaPasta",
-          "titulo": {
-            "pt": "Nova pasta",
-            "en": "New folder"
-          }
-        },
-        {
-          "id": "P07Home",
-          "ref": "telas/home/Padrao",
-          "excecao": "grupo-apps-pastas D-18"
         }
       ]
     }
