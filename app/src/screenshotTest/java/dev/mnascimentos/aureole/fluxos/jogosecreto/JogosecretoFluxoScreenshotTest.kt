@@ -3,6 +3,7 @@
  *
  * @en Secret game
  * @area jogo
+ * @paisagem
  * @ref P01CincoToques telas/ajustes/Padrao Cinco toques no logo / Five taps on the logo
  */
 package dev.mnascimentos.aureole.fluxos.jogosecreto
@@ -43,6 +44,16 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretStreak
 import dev.mnascimentos.aureole.feature.secretgame.model.newSecretStars
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalDensity
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleFoldLandscapePreview
+import dev.mnascimentos.aureole.core.designsystem.utils.AureoleFoldPreview
+import dev.mnascimentos.aureole.feature.secretgame.components.SecretGameStage
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretLogoPlacement
+import dev.mnascimentos.aureole.feature.secretgame.model.rescaledTo
+import dev.mnascimentos.aureole.feature.secretgame.model.secretArenaOf
+import dev.mnascimentos.aureole.feature.secretgame.model.secretLayoutOf
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -79,6 +90,34 @@ private fun GameCase(state: SecretGameState, showSoundButton: Boolean = false) {
     }
 }
 
+/**
+ * O jogo numa janela mais larga que um celular (dobrável aberto): arena centrada, estrelas também nas laterais e
+ * setas no meio de cada lateral. O quadro é o do [state] levado para a arena da janela.
+ */
+@Composable
+private fun WideGameCase(state: SecretGameState) {
+    AureoleLauncherTheme {
+        val colors = SecretGameColors(
+            ship = AureoleDS.colors.onSurfaceHigh,
+            face = lerp(AureoleDS.colors.onSurfaceHigh, AureoleDS.colors.surface, SecretGameDrawing.FACE_LIGHTEN)
+        )
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(AureoleDS.colors.surface)
+        ) {
+            val arena = secretArenaOf(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat())
+            val logo = SecretLogoPlacement(Offset(arena.left + arena.width / 2, arena.width / 4), arena.width / 3)
+            val layout = secretLayoutOf(arena, logo, LocalDensity.current.density)
+            val wide = state.rescaledTo(layout).copy(
+                stars = newSecretStars(layout.aspect, Random(1), layout.sideSpan),
+                streaks = SampleStreaks + listOf(SecretStreak(-0.4f, 0.8f, 0.1f), SecretStreak(1.3f, 0.3f, 0.12f)),
+            )
+            SecretGameStage(frame = wide.toFrame(), colors = colors, layout = layout, arena = arena)
+        }
+    }
+}
+
 /** O popup central do recorde (`jogo-secreto` D-06), na tela inteira. */
 @Composable
 private fun BestScoreCase() {
@@ -94,6 +133,32 @@ private fun BestScoreCase() {
         }
     }
 }
+
+/**
+ * Dobrável deitado.
+ *
+ * Fold aberto em paisagem: o jogo numa coluna centrada, estrelas na tela toda e setas no meio das laterais.
+ *
+ * @en Foldable, landscape
+ */
+@PreviewTest
+@AureoleFoldLandscapePreview
+@Composable
+private fun P08FoldPaisagemScreenshotTest() =
+    WideGameCase(sampleState(SecretGamePhase.PLAY, PLAY_MS, score = PLAY_SCORE))
+
+/**
+ * Dobrável em pé.
+ *
+ * Fold aberto em retrato: a mesma arena, com laterais menores.
+ *
+ * @en Foldable, portrait
+ */
+@PreviewTest
+@AureoleFoldPreview
+@Composable
+private fun P09FoldRetratoScreenshotTest() =
+    WideGameCase(sampleState(SecretGamePhase.PLAY, PLAY_MS, score = PLAY_SCORE))
 
 /**
  * Início.
@@ -169,6 +234,8 @@ private fun P07FimSemRecordeScreenshotTest() = GameCase(
 
 private val SampleLayout = SecretGameLayout(aspect = SAMPLE_ASPECT, logoX = 0.5f, logoY = 0.25f, logoWidth = 0.33f)
 
+private val SampleStreaks = listOf(SecretStreak(0.2f, 0.5f, 0.1f), SecretStreak(0.7f, 1.2f, 0.12f))
+
 private val SampleFaces = listOf(
     SecretFace(0, 0, 0.35f, SecretFaceKind.CREATOR, 0f),
     SecretFace(1, 2, 0.8f, SecretFaceKind.DREAMER, 1f),
@@ -188,7 +255,7 @@ private fun sampleState(
         clockMs = phaseMs,
         faces = SampleFaces,
         stars = newSecretStars(SAMPLE_ASPECT, Random(1)),
-        streaks = listOf(SecretStreak(0.2f, 0.5f, 0.1f), SecretStreak(0.7f, 1.2f, 0.12f)),
+        streaks = SampleStreaks,
         particles = listOf(SecretParticle(0.5f, 1.0f, 0f, 0f, 0.8f, 0.01f, SecretParticleKind.SHIP)),
         score = score,
         isNewRecord = record,

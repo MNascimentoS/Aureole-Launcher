@@ -22,32 +22,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
-import dev.mnascimentos.aureole.feature.secretgame.model.secretKeyAction
-import dev.mnascimentos.aureole.feature.secretgame.model.secretButtonTopLeft
-import dev.mnascimentos.aureole.feature.secretgame.model.onKey
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.input.key.type
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
+import dev.mnascimentos.aureole.feature.secretgame.model.ArenaDp
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameCallbacks
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameEngine
@@ -56,10 +54,13 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGamePhase
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameSound
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameStep
-import dev.mnascimentos.aureole.feature.secretgame.model.ArenaDp
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretKeyAction
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretLogoPlacement
+import dev.mnascimentos.aureole.feature.secretgame.model.onKey
 import dev.mnascimentos.aureole.feature.secretgame.model.rescaledTo
 import dev.mnascimentos.aureole.feature.secretgame.model.secretArenaOf
+import dev.mnascimentos.aureole.feature.secretgame.model.secretButtonTopLeft
+import dev.mnascimentos.aureole.feature.secretgame.model.secretKeyAction
 import dev.mnascimentos.aureole.feature.secretgame.model.secretLayoutOf
 import dev.mnascimentos.aureole.feature.secretgame.model.secretSoundsFor
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
@@ -124,12 +125,7 @@ fun SecretGameOverlay(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .onKeyEvent { event ->
-                    val action = secretKeyAction(event.key)?.takeIf { event.type == KeyEventType.KeyDown }
-                    action?.let { apply(engine.onKey(state, it)) }
-                    action != null
-                }
-                .focusRequester(focus)
+                .secretKeys(focus) { apply(engine.onKey(state, it)) }
                 .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
                     state = engine.onTap(state)
                 }
@@ -144,6 +140,14 @@ fun SecretGameOverlay(
         }
     }
 }
+
+/** Keyboard (D-05): with [focus], arrows, A/D and Space reach [onAction] on key down. */
+private fun Modifier.secretKeys(focus: FocusRequester, onAction: (SecretKeyAction) -> Unit): Modifier =
+    onKeyEvent { event ->
+        val action = secretKeyAction(event.key)?.takeIf { event.type == KeyEventType.KeyDown }
+        action?.let(onAction)
+        action != null
+    }.focusRequester(focus)
 
 private fun handleEvent(event: SecretGameEvent, haptic: HapticFeedback, onGameOver: (Int) -> Unit) {
     when (event) {

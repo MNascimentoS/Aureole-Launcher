@@ -26,13 +26,13 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticle
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretStreak
 import dev.mnascimentos.aureole.feature.secretgame.model.newSecretStars
+import dev.mnascimentos.aureole.feature.secretgame.model.secretArenaOf
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.math.cos
-import dev.mnascimentos.aureole.feature.secretgame.model.secretArenaOf
 import kotlin.math.sin
 import kotlin.random.Random
 
