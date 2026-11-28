@@ -12,8 +12,8 @@ class SecretGameEngine(private val random: Random = Random.Default) {
         SecretGameState(
             layout = layout,
             bestScore = bestScore,
-            streaks = newStreaks(layout.aspect, random),
-            stars = newSecretStars(layout.aspect, random),
+            streaks = newStreaks(layout.aspect, random, layout.sideSpan),
+            stars = newSecretStars(layout.aspect, random, layout.sideSpan),
         )
 
     fun step(state: SecretGameState, deltaMs: Long): SecretGameStep {

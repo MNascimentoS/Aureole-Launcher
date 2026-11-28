@@ -26,9 +26,11 @@ import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.R
 import dev.mnascimentos.aureole.composable.fireworks.drawFireworks
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkColors
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretButtonsFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretFaceKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretParticleKind
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
@@ -71,26 +73,35 @@ private fun rememberSecretPainters(): SecretPainters {
     }
 }
 
-/** Draws one [SecretGameFrame]: stateless, every distance is a fraction of the screen width. */
+/**
+ * Draws one [SecretGameFrame] in the arena it fills: stateless, every distance is a fraction of the arena width.
+ * Nothing is clipped, so the background (and the side buttons) also reach the [SecretGameLayout.sideSpan].
+ */
 @Composable
 fun SecretGameCanvas(
     frame: SecretGameFrame,
     colors: SecretGameColors,
-    aspect: Float,
+    layout: SecretGameLayout,
     modifier: Modifier = Modifier
 ) {
     val painters = rememberSecretPainters()
     Box(modifier = modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawWorld(frame, colors, painters)
+            drawWorld(frame, colors, painters, layout.sideSpan)
         }
-        SecretGameTexts(frame = frame, colors = colors, aspect = aspect, modifier = Modifier.fillMaxSize())
+        SecretGameTexts(frame = frame, colors = colors, layout = layout, modifier = Modifier.fillMaxSize())
     }
 }
 
-private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors, painters: SecretPainters) {
+private fun DrawScope.drawWorld(
+    frame: SecretGameFrame,
+    colors: SecretGameColors,
+    painters: SecretPainters,
+    sideSpan: Float
+) {
     val u = size.width
     drawStars(frame.stars, colors.face)
+    if (sideSpan > 0f) frame.buttons?.let { drawArenaEdges(it, colors.ship) }
     frame.streaks.forEach {
         drawLine(
             color = colors.ship.copy(alpha = D.STREAK_ALPHA * frame.streaksAlpha),
@@ -119,6 +130,15 @@ private fun DrawScope.drawWorld(frame: SecretGameFrame, colors: SecretGameColors
     val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
     drawFireworks(frame.rockets, frame.sparks, fireworkColors, frame.fireworksAlpha)
     frame.buttons?.let { drawButtons(it, colors.ship) }
+}
+
+/** Two faint lines on the sides of the arena, drawn and collapsed together with the button frames (D-02). */
+private fun DrawScope.drawArenaEdges(buttons: SecretButtonsFrame, color: Color) {
+    val alpha = D.ARENA_EDGE_ALPHA * buttons.draw.coerceAtMost(1f) * (1f - buttons.collapse)
+    if (alpha <= 0f) return
+    val tint = color.copy(alpha = alpha)
+    val stroke = D.ARENA_EDGE_STROKE_DP.dp.toPx()
+    listOf(0f, size.width).forEach { drawLine(tint, Offset(it, 0f), Offset(it, size.height), stroke) }
 }
 
 private fun DrawScope.drawStars(stars: List<SecretStarSprite>, color: Color) {

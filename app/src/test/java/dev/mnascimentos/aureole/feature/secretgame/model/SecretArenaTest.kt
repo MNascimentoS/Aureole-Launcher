@@ -55,13 +55,41 @@ class SecretArenaTest {
     }
 
     @Test
-    fun `same aspect only swaps the layout`() {
+    fun `same measures only swap the layout`() {
         val state = playing()
-        val wider = state.layout.copy(sideSpan = 0.8f)
-        val moved = state.rescaledTo(wider)
-        assertEquals(wider, moved.layout)
+        val other = state.layout.copy(logoX = -0.4f)
+        val moved = state.rescaledTo(other)
+        assertEquals(other, moved.layout)
         assertSame(state.faces, moved.faces)
         assertSame(state.stars, moved.stars)
+    }
+
+    @Test
+    fun `new sides spread the background from side to side and keep the game`() {
+        val state = playing()
+        val moved = state.rescaledTo(state.layout.copy(sideSpan = 0.5f))
+        assertTrue(moved.stars.all { it.x in -0.5f..1.5f })
+        assertEquals(-0.5f + state.stars.first().x * 2f, moved.stars.first().x, EPS)
+        assertEquals(state.stars.first().y, moved.stars.first().y, EPS)
+        assertEquals(state.faces, moved.faces)
+    }
+
+    @Test
+    fun `background on the sides keeps the arena density`() {
+        val layout = SecretGameLayout(T.REFERENCE_ASPECT, 0.5f, 0.4f, 0.3f, sideSpan = 0.5f)
+        val started = SecretGameEngine(Random(SEED)).start(layout, bestScore = 0)
+        assertEquals(SecretStarsTuning.COUNT * 2, started.stars.size)
+        assertTrue(started.stars.all { it.x in -0.5f..1.5f })
+        assertTrue(started.stars.any { it.x < 0f } && started.stars.any { it.x > 1f })
+        val huge = SecretGameEngine(Random(SEED)).start(layout.copy(sideSpan = 4f), bestScore = 0)
+        assertEquals((SecretStarsTuning.COUNT * T.MAX_SPREAD_FACTOR).toInt(), huge.stars.size)
+    }
+
+    @Test
+    fun `phone stars are the same as before`() {
+        val layout = SecretGameLayout(T.REFERENCE_ASPECT, 0.5f, 0.4f, 0.3f)
+        assertEquals(SecretStarsTuning.COUNT, SecretGameEngine(Random(SEED)).start(layout, 0).stars.size)
+        assertTrue(SecretGameEngine(Random(SEED)).start(layout, 0).stars.all { it.x in 0f..1f })
     }
 
     @Test

@@ -17,7 +17,7 @@ internal fun SecretGameState.stepPlay(dt: Long, random: Random): SecretGameStep 
         faces = kept,
         score = newScore,
         levelFlashMs = if (levelUp) T.LEVEL_FLASH_MS else levelFlashMs,
-        streaks = streaks.map { it.fall(fall * T.STREAK_SPEED, layout.aspect, random) },
+        streaks = streaks.map { it.fall(fall * T.STREAK_SPEED, layout, random) },
         spawnCooldownMs = spawnCooldownMs - dt,
     ).spawnIfDue(random)
     val levelEvents = if (levelUp) listOf(SecretGameEvent.LevelUp(secretLevel(newScore))) else emptyList()

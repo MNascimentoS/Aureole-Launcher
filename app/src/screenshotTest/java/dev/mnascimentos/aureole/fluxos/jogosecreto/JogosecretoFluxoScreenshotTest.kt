@@ -64,7 +64,7 @@ private fun GameCase(state: SecretGameState, showSoundButton: Boolean = false) {
                 .aspectRatio(1f / SAMPLE_ASPECT)
                 .background(AureoleDS.colors.surface)
         ) {
-            SecretGameCanvas(frame = state.toFrame(), colors = colors, aspect = SAMPLE_ASPECT)
+            SecretGameCanvas(frame = state.toFrame(), colors = colors, layout = state.layout)
             if (showSoundButton) {
                 val gap = SAMPLE_ASPECT * SecretGameTuning.CENTER_Y_FRACTION + SecretGameDrawing.SOUND_BUTTON_GAP
                 SecretSoundButton(

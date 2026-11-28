@@ -59,7 +59,7 @@ private fun SecretGameOpeningPreview() {
                 .aspectRatio(1f / PREVIEW_ASPECT)
                 .background(AureoleDS.colors.surface)
         ) {
-            SecretGameCanvas(frame = state.toFrame(), colors = colors, aspect = PREVIEW_ASPECT)
+            SecretGameCanvas(frame = state.toFrame(), colors = colors, layout = layout)
         }
     }
 }

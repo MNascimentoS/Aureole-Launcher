@@ -32,6 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import kotlin.math.cos
+import dev.mnascimentos.aureole.feature.secretgame.model.secretArenaOf
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -48,8 +49,25 @@ class SecretGameCanvasTest {
         rule.setContent {
             AureoleLauncherTheme {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    SecretGameCanvas(frame = frames[index], colors = SampleColors, aspect = SAMPLE_ASPECT)
+                    SecretGameCanvas(frame = frames[index], colors = SampleColors, layout = SampleLayout)
                 }
+            }
+        }
+        frames.indices.forEach {
+            index = it
+            rule.waitForIdle()
+        }
+    }
+
+    @Test
+    fun `when the window is wider than a phone, should draw every frame in the centered arena`() {
+        val arena = secretArenaOf(WIDE_WIDTH, WIDE_HEIGHT)
+        val layout = SampleLayout.copy(aspect = arena.aspect, sideSpan = arena.left / arena.width)
+        val frames = sampleFrames()
+        var index by mutableStateOf(0)
+        rule.setContent {
+            AureoleLauncherTheme {
+                SecretGameStage(frame = frames[index], colors = SampleColors, layout = layout, arena = arena)
             }
         }
         frames.indices.forEach {
@@ -71,6 +89,8 @@ class SecretGameCanvasTest {
 
     private companion object {
         val SampleColors = SecretGameColors(ship = Color.White, face = Color.LightGray)
+        const val WIDE_WIDTH = 2208f
+        const val WIDE_HEIGHT = 1840f
     }
 }
 

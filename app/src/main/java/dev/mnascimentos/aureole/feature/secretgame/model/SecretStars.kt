@@ -54,11 +54,12 @@ data class SecretStarSprite(
     val tail: Float = 0f,
 )
 
-fun newSecretStars(aspect: Float, random: Random): List<SecretStar> {
+/** Estrelas da arena e, com [sideSpan] > 0, também das laterais (mesma densidade, com teto). */
+fun newSecretStars(aspect: Float, random: Random, sideSpan: Float = 0f): List<SecretStar> {
     val bottom = aspect - SecretGameTuning.BUTTON_BOTTOM_OFFSET - SecretStarsTuning.ABOVE_BUTTONS
-    return List(SecretStarsTuning.COUNT) {
+    return List(spreadCount(SecretStarsTuning.COUNT, sideSpan)) {
         SecretStar(
-            x = random.nextFloat(),
+            x = spreadX(random, sideSpan),
             y = SecretStarsTuning.TOP + random.nextFloat() * (bottom - SecretStarsTuning.TOP),
             radius = SecretStarsTuning.MIN_RADIUS + random.nextFloat() * SecretStarsTuning.EXTRA_RADIUS,
             speed = SecretStarsTuning.MIN_SPEED + random.nextFloat() * SecretStarsTuning.EXTRA_SPEED,

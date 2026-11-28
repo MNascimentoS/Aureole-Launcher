@@ -3,6 +3,7 @@ package dev.mnascimentos.aureole.feature.secretgame.model
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 
 /** Cores do jogo, todas vindas do tema: [ship] é a cor do logo de Settings e [face] ela clareada. */
 data class SecretGameColors(val ship: Color, val face: Color)
@@ -71,6 +72,8 @@ object SecretGameDrawing {
     const val BUTTON_SHAFT = 0.18f
     const val BUTTON_HEAD = 0.15f
     const val PRESS_RING_STROKE_DP = 1.2f
+    const val ARENA_EDGE_ALPHA = 0.18f
+    const val ARENA_EDGE_STROKE_DP = 1f
     const val PRESS_START_RING = 0.5f
     const val BUTTON_TARGET_SCALE = 1.5f
     const val COLLAPSE_SCALE_MIN = 0.1f
@@ -89,3 +92,6 @@ object SecretGameDrawing {
     const val RESULT_BELOW_CENTER = 0.0f
     const val HALF = 0.5f
 }
+
+/** The arena in dp, for the touch targets laid over it: its [left] edge in the window and its [width]. */
+data class ArenaDp(val left: Dp, val width: Dp)

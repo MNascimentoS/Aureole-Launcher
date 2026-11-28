@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.res.stringResource
@@ -18,6 +19,7 @@ import dev.mnascimentos.aureole.core.designsystem.theme.AureoleDS
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretCountdownLabel
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameColors
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameFrame
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretResultFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretText
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
@@ -28,9 +30,10 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 internal fun SecretGameTexts(
     frame: SecretGameFrame,
     colors: SecretGameColors,
-    aspect: Float,
+    layout: SecretGameLayout,
     modifier: Modifier = Modifier
 ) {
+    val aspect = layout.aspect
     val pen = TextPen(rememberTextMeasurer(), AureoleDS.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
     val go = stringResource(R.string.secret_game_go)
     val level = stringResource(R.string.secret_game_level, frame.levelLabel)
@@ -78,7 +81,8 @@ internal fun SecretGameTexts(
         }
         val mid = u * aspect * T.CENTER_Y_FRACTION
         if (frame.isPaused) {
-            drawRect(veil.copy(alpha = D.PAUSE_VEIL_ALPHA))
+            val side = u * layout.sideSpan
+            drawRect(veil.copy(alpha = D.PAUSE_VEIL_ALPHA), Offset(-side, 0f), Size(u + side * 2f, size.height))
             drawPause(pen, pause, colors, mid)
         }
         frame.result?.let { shown -> result?.let { drawResult(pen, it, shown, colors, mid) } }

@@ -27,10 +27,12 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -44,7 +46,11 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGamePhase
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameSound
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameStep
+import dev.mnascimentos.aureole.feature.secretgame.model.ArenaDp
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretLogoPlacement
+import dev.mnascimentos.aureole.feature.secretgame.model.rescaledTo
+import dev.mnascimentos.aureole.feature.secretgame.model.secretArenaOf
+import dev.mnascimentos.aureole.feature.secretgame.model.secretLayoutOf
 import dev.mnascimentos.aureole.feature.secretgame.model.secretSoundsFor
 import dev.mnascimentos.aureole.feature.secretgame.model.toFrame
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
@@ -65,17 +71,14 @@ fun SecretGameOverlay(
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val widthPx = constraints.maxWidth.toFloat()
-        val layout = remember(widthPx, logo) {
-            SecretGameLayout(
-                aspect = constraints.maxHeight / widthPx,
-                logoX = logo.center.x / widthPx,
-                logoY = logo.center.y / widthPx,
-                logoWidth = logo.widthPx / widthPx
-            )
-        }
+        val arena = secretArenaOf(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat())
+        val layout = remember(arena, logo) { secretLayoutOf(arena, logo) }
         val engine = remember { SecretGameEngine() }
         var state by remember { mutableStateOf(engine.start(layout, bestScore)) }
+        LaunchedEffect(layout) {
+            // Dobrou, girou ou a janela mudou de tamanho: pausa e leva a partida para a arena nova (D-03).
+            if (state.layout != layout) state = engine.onLifecyclePause(state).rescaledTo(layout)
+        }
         val haptic = LocalHapticFeedback.current
         val currentOnFrame by rememberUpdatedState(callbacks.onFrame)
         val currentOnGameOver by rememberUpdatedState(callbacks.onGameOver)
@@ -112,10 +115,14 @@ fun SecretGameOverlay(
                     state = engine.onTap(state)
                 }
         ) {
-            SecretGameCanvas(frame = state.toFrame(), colors = colors, aspect = layout.aspect)
+            SecretGameStage(frame = state.toFrame(), colors = colors, layout = layout, arena = arena)
         }
-        if (state.phase == SecretGamePhase.PAUSED) PausedSoundButton(sound, layout)
-        MoveTargets(layout, enabled = state.acceptsInput) { direction -> apply(engine.move(state, direction)) }
+        val arenaWidth = with(LocalDensity.current) { arena.width.toDp() }
+        val arenaLeft = with(LocalDensity.current) { arena.left.toDp() }
+        if (state.phase == SecretGamePhase.PAUSED) PausedSoundButton(sound, layout, arenaWidth)
+        MoveTargets(layout, ArenaDp(arenaLeft, arenaWidth), enabled = state.acceptsInput) { direction ->
+            apply(engine.move(state, direction))
+        }
     }
 }
 
@@ -158,31 +165,36 @@ private fun PauseOnBackground(onPause: () -> Unit) {
 
 /** The sound pill under the pause texts: pressing it flips the sound and does not resume the game. */
 @Composable
-private fun BoxWithConstraintsScope.PausedSoundButton(sound: SecretGameSound, layout: SecretGameLayout) {
+private fun BoxWithConstraintsScope.PausedSoundButton(
+    sound: SecretGameSound,
+    layout: SecretGameLayout,
+    arenaWidth: Dp
+) {
     SecretSoundButton(
         isOn = sound.isOn,
         onToggle = sound.onToggle,
         modifier = Modifier
             .align(Alignment.TopCenter)
-            .offset(y = maxWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP) + AureoleDS.dimens.medium)
+            .offset(y = arenaWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP) + AureoleDS.dimens.medium)
     )
 }
 
 /** Transparent touch targets over the ← → frames (bigger than the frames themselves). */
 @Composable
-private fun BoxWithConstraintsScope.MoveTargets(
+private fun MoveTargets(
     layout: SecretGameLayout,
+    arena: ArenaDp,
     enabled: Boolean,
     onMove: (Int) -> Unit
 ) {
     if (!enabled) return
-    val target = maxWidth * (T.BUTTON_SIZE * D.BUTTON_TARGET_SCALE)
+    val target = arena.width * (T.BUTTON_SIZE * D.BUTTON_TARGET_SCALE)
     listOf(true, false).forEach { left ->
         val center = buttonTopLeft(left, layout.aspect) + Offset(T.BUTTON_SIZE * D.HALF, T.BUTTON_SIZE * D.HALF)
         val description = stringResource(if (left) R.string.secret_game_move_left else R.string.secret_game_move_right)
         Box(
             modifier = Modifier
-                .offset(maxWidth * center.x - target * D.HALF, maxWidth * center.y - target * D.HALF)
+                .offset(arena.left + arena.width * center.x - target * D.HALF, arena.width * center.y - target * D.HALF)
                 .size(target)
                 .semantics { contentDescription = description }
                 .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {

@@ -29,17 +29,21 @@ fun secretLayoutOf(arena: SecretArena, logo: SecretLogoPlacement): SecretGameLay
 
 /**
  * O mesmo jogo num [layout] novo (a janela mudou no meio da partida). Com outro aspect, as alturas são
- * reescaladas para a mesma fração da arena; com o mesmo aspect, só o layout muda.
+ * reescaladas para a mesma fração da arena; com outras laterais, o fundo se espalha de uma lateral à outra.
+ * Sem mudança de medida, só o layout é trocado.
  */
 fun SecretGameState.rescaledTo(layout: SecretGameLayout): SecretGameState {
     val ratio = layout.aspect / this.layout.aspect
-    if (ratio == 1f) return copy(layout = layout)
+    val from = this.layout.sideSpan
+    val to = layout.sideSpan
+    if (ratio == 1f && from == to) return copy(layout = layout)
+    val spread = { x: Float -> -to + (x + from) / (1f + 2f * from) * (1f + 2f * to) }
     return copy(
         layout = layout,
         faces = faces.map { it.copy(y = it.y * ratio) },
         particles = particles.map { it.copy(y = it.y * ratio, vy = it.vy * ratio) },
-        streaks = streaks.map { it.copy(y = it.y * ratio) },
-        stars = stars.map { it.copy(y = it.y * ratio) },
+        streaks = streaks.map { it.copy(x = spread(it.x), y = it.y * ratio) },
+        stars = stars.map { it.copy(x = spread(it.x), y = it.y * ratio) },
         fireworks = fireworks.rescaled(ratio),
     )
 }
