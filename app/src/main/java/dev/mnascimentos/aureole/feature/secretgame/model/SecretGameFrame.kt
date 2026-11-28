@@ -1,5 +1,6 @@
 package dev.mnascimentos.aureole.feature.secretgame.model
 
+import androidx.compose.ui.geometry.Offset
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkRocket
 import dev.mnascimentos.aureole.composable.fireworks.model.FireworkSpark
 import kotlin.math.sin
@@ -106,7 +107,7 @@ private fun SecretGameState.enterFrame(base: SecretGameFrame): SecretGameFrame {
     val shipIn = easeOutCubic((morph - T.SHIP_IN_FROM) / T.SHIP_IN_SPAN)
     val framesFrom = descendFrom + (T.DESCEND_MS * T.FRAMES_LEAD).toLong()
     return base.copy(
-        logo = enterLogo(y, spin, morph),
+        logo = enterLogo(Offset(lerp(layout.logoX, HALF_WIDTH, toCenter), y), spin, morph),
         glow = morphGlow(y, morph),
         ship = if (shipIn > 0f) {
             SecretSprite(
@@ -124,10 +125,11 @@ private fun SecretGameState.enterFrame(base: SecretGameFrame): SecretGameFrame {
     )
 }
 
-private fun SecretGameState.enterLogo(y: Float, spin: Float, morph: Float): SecretSprite? {
+/** The Settings logo flying to the center of the arena, where the ship is born (also sideways on wide windows). */
+private fun SecretGameState.enterLogo(at: Offset, spin: Float, morph: Float): SecretSprite? {
     if (morph >= T.LOGO_FADE_END) return null
     val keep = 1f - morph / T.LOGO_FADE_END
-    return SecretSprite(layout.logoX, y, layout.logoWidth * lerp(T.LOGO_MIN_SCALE, 1f, keep), spin, keep)
+    return SecretSprite(at.x, at.y, layout.logoWidth * lerp(T.LOGO_MIN_SCALE, 1f, keep), spin, keep)
 }
 
 private fun morphGlow(y: Float, morph: Float): SecretGlow? {

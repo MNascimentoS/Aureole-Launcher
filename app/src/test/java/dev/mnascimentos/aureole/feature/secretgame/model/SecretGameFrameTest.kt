@@ -28,6 +28,15 @@ class SecretGameFrameTest {
     }
 
     @Test
+    fun `logo off center (wide window) flies sideways to where the ship is born`() {
+        val wide = base.copy(layout = layout.copy(logoX = -0.6f))
+        val start = assertNotNullAndGet(at(SecretGamePhase.ENTER, 0L, wide).logo)
+        assertEquals(-0.6f, start.x, EPS)
+        val atCenter = assertNotNullAndGet(at(SecretGamePhase.ENTER, T.HIDE_MS + T.TO_CENTER_MS, wide).logo)
+        assertEquals(0.5f, atCenter.x, EPS)
+    }
+
+    @Test
     fun `logo turns into the ship with a glow, then the ship lands and frames draw`() {
         val mid = at(SecretGamePhase.ENTER, T.HIDE_MS + T.TO_CENTER_MS + T.MORPH_MS / 2)
         assertNotNull(mid.ship)
