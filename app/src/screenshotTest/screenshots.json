@@ -579,8 +579,8 @@
         {
           "id": "Adicionar",
           "titulo": {
-            "pt": "Padrão",
-            "en": "Default"
+            "pt": "Adicionar componente",
+            "en": "Add component"
           },
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/AddContainerDialogLeftHandedScreenshotTest_Dark Mode",
@@ -592,8 +592,8 @@
         {
           "id": "Componentes",
           "titulo": {
-            "pt": "Dentro do grupo",
-            "en": "Inside a group"
+            "pt": "Adicionar componente, dentro do grupo",
+            "en": "Add component, inside a group"
           },
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/AddContainerNestedDialogScreenshotTest_Dark Mode",
@@ -603,8 +603,8 @@
         {
           "id": "Rolavel",
           "titulo": {
-            "pt": "Padrão",
-            "en": "Default"
+            "pt": "Grupo rolável",
+            "en": "Scroll group"
           },
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/EditContainerDialogScreenshotTest_Dark Mode",
@@ -617,8 +617,8 @@
         {
           "id": "RolavelNaHome",
           "titulo": {
-            "pt": "Na home",
-            "en": "On the home"
+            "pt": "Grupo rolável na home",
+            "en": "Scroll group on the home"
           },
           "antes": [
             "feature/home/components/content/ScrollGroupHomeScreenshotTestKt/ScrollGroupHomeHorizontalScreenshotTest_Dark Mode",
@@ -629,8 +629,8 @@
         {
           "id": "Pasta",
           "titulo": {
-            "pt": "Padrão",
-            "en": "Default"
+            "pt": "Pasta aberta",
+            "en": "Open folder"
           },
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/FolderDialogScreenshotTest_Dark Mode",
@@ -651,8 +651,8 @@
         {
           "id": "PastaUltimoItem",
           "titulo": {
-            "pt": "Do último item",
-            "en": "From the last item"
+            "pt": "Pasta aberta, do último item",
+            "en": "Open folder, from the last item"
           },
           "antes": [
             "feature/home/components/containers/folder/FolderScreenshotTestKt/WhenFolderOpensFromTheLastItem_shouldStayAboveTheNavigationBarScreenshotTest_Dark Mode",
@@ -662,8 +662,8 @@
         {
           "id": "PastaCriar",
           "titulo": {
-            "pt": "Criar",
-            "en": "Create"
+            "pt": "Formulário de pasta, criar",
+            "en": "Folder form, create"
           },
           "antes": [
             "composable/dialogs/FolderFormScreenshotTestKt/FolderFormNewLandscapeScreenshotTest_Dark Mode Landscape",
@@ -678,8 +678,8 @@
         {
           "id": "PastaEditar",
           "titulo": {
-            "pt": "Editar",
-            "en": "Edit"
+            "pt": "Formulário de pasta, editar",
+            "en": "Folder form, edit"
           },
           "antes": [
             "composable/dialogs/FolderFormScreenshotTestKt/FolderAllIconsLeftHandedScreenshotTest_Dark Mode",
@@ -700,8 +700,8 @@
         {
           "id": "PastaApps",
           "titulo": {
-            "pt": "Padrão",
-            "en": "Default"
+            "pt": "Apps da pasta",
+            "en": "Folder apps"
           },
           "antes": [
             "feature/home/HomeDialogsScreenshotTestKt/FolderAppPickerDialogScreenshotTest_Dark Mode",
@@ -715,8 +715,8 @@
         {
           "id": "PastaAppsBusca",
           "titulo": {
-            "pt": "Busca",
-            "en": "Search"
+            "pt": "Apps da pasta, busca",
+            "en": "Folder apps, search"
           },
           "antes": [
             "feature/home/components/containers/folder/FolderPickerSearchScreenshotTestKt/FolderPickerSearchLeftHandedScreenshotTest_Dark Mode",
@@ -727,8 +727,8 @@
         {
           "id": "PastaAppsCanhoto",
           "titulo": {
-            "pt": "Canhoto",
-            "en": "Left-handed"
+            "pt": "Apps da pasta, canhoto",
+            "en": "Folder apps, left-handed"
           },
           "antes": [
             "feature/home/components/containers/folder/FolderPickerGridScreenshotTestKt/FolderPickerGridLeftHandedScreenshotTest_Dark Mode",
@@ -739,8 +739,8 @@
         {
           "id": "NovoAdicionarComponente",
           "titulo": {
-            "pt": "Adicionar componente",
-            "en": "Add component"
+            "pt": "Novo grupo · Adicionar componente",
+            "en": "New group · Add component"
           },
           "antes": [
             "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P01AdicionarComponenteScreenshotTest_Dark Mode"
@@ -749,8 +749,8 @@
         {
           "id": "NovoGrupoVazioDica1",
           "titulo": {
-            "pt": "Grupo vazio, dica 1",
-            "en": "Empty group, tip 1"
+            "pt": "Novo grupo · Grupo vazio, dica 1",
+            "en": "New group · Empty group, tip 1"
           },
           "antes": [
             "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P02GrupoVazioDica1ScreenshotTest_Dark Mode"
@@ -759,8 +759,8 @@
         {
           "id": "NovoAdicionarApps",
           "titulo": {
-            "pt": "Adicionar apps",
-            "en": "Add apps"
+            "pt": "Novo grupo · Adicionar apps",
+            "en": "New group · Add apps"
           },
           "antes": [
             "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P03AdicionarAppsScreenshotTest_Dark Mode"
@@ -769,8 +769,8 @@
         {
           "id": "NovoItensDica2",
           "titulo": {
-            "pt": "Itens, dica 2",
-            "en": "Items, tip 2"
+            "pt": "Novo grupo · Itens, dica 2",
+            "en": "New group · Items, tip 2"
           },
           "antes": [
             "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P04ItensDica2ScreenshotTest_Dark Mode"
@@ -779,8 +779,8 @@
         {
           "id": "NovoLayoutDica3",
           "titulo": {
-            "pt": "Layout, dica 3",
-            "en": "Layout, tip 3"
+            "pt": "Novo grupo · Layout, dica 3",
+            "en": "New group · Layout, tip 3"
           },
           "antes": [
             "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P05LayoutDica3ScreenshotTest_Dark Mode"
@@ -789,8 +789,8 @@
         {
           "id": "NovoNovaPasta",
           "titulo": {
-            "pt": "Nova pasta",
-            "en": "New folder"
+            "pt": "Novo grupo · Nova pasta",
+            "en": "New group · New folder"
           },
           "antes": [
             "fluxos/adicionargrupo/AdicionargrupoFluxoScreenshotTestKt/P06NovaPastaScreenshotTest_Dark Mode"
@@ -1054,8 +1054,8 @@
         {
           "id": "Enquadrar",
           "titulo": {
-            "pt": "Enquadrar",
-            "en": "Frame"
+            "pt": "Editor de foto, enquadrar",
+            "en": "Photo editor, frame"
           },
           "antes": [
             "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameScreenshotTest_Dark Mode"
@@ -1064,8 +1064,8 @@
         {
           "id": "Ajuste",
           "titulo": {
-            "pt": "Ajuste",
-            "en": "Adjust"
+            "pt": "Editor de foto, ajuste",
+            "en": "Photo editor, adjust"
           },
           "antes": [
             "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorBlurLeftHandedScreenshotTest_Dark Mode",
@@ -1077,8 +1077,8 @@
         {
           "id": "Canhoto",
           "titulo": {
-            "pt": "Canhoto",
-            "en": "Left-handed"
+            "pt": "Editor de foto, canhoto",
+            "en": "Photo editor, left-handed"
           },
           "antes": [
             "feature/settings/WallpaperEditorScreenshotTestKt/WallpaperEditorFrameLeftHandedScreenshotTest_Dark Mode"
