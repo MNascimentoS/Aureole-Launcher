@@ -53,6 +53,10 @@ object SecretGameTuning {
     const val INTIMIDATE_TO_Y = 0.178f
     const val PASS_MARGIN = FACE_SIZE
 
+    // Arena: no celular é a tela toda; em tela mais larga, uma coluna com a proporção do protótipo (360 × 772)
+    const val PHONE_MIN_ASPECT = 1.75f
+    const val REFERENCE_ASPECT = 772f / 360f
+
     // Dificuldade: curvas por nível em SecretDifficulty
     const val FIRST_SPAWN_MS = 600f
     const val POINTS_PER_FACE = 10
