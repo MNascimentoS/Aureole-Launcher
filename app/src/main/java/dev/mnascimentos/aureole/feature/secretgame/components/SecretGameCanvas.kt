@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
@@ -37,13 +39,37 @@ import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 /** Painters of the sprites, remembered once per canvas. */
 private class SecretPainters(val logo: Painter, val ship: Painter, val creator: Painter, val dreamer: Painter)
 
-@Composable
-private fun rememberSecretPainters(): SecretPainters = SecretPainters(
-    logo = rememberVectorPainter(ImageVector.vectorResource(R.drawable.ic_aureole_logo)),
-    ship = BitmapPainter(ImageBitmap.imageResource(R.drawable.secret_game_ship)),
-    creator = BitmapPainter(ImageBitmap.imageResource(R.drawable.secret_game_creator)),
-    dreamer = BitmapPainter(ImageBitmap.imageResource(R.drawable.secret_game_dreamer)),
+/** Sprites read once per canvas, not on every frame (re-reading them each frame breaks the animated preview). */
+private class SecretSprites(
+    val logo: ImageVector,
+    val ship: ImageBitmap,
+    val creator: ImageBitmap,
+    val dreamer: ImageBitmap
 )
+
+@Composable
+private fun rememberSecretPainters(): SecretPainters {
+    val res = LocalResources.current
+    // No key: the sprites never change while the game runs, and the preview tool reports a "cycle" after it
+    // parses the same XML 50 times in one (animated) render.
+    val sprites = remember {
+        SecretSprites(
+            logo = ImageVector.vectorResource(res = res, resId = R.drawable.ic_aureole_logo),
+            ship = ImageBitmap.imageResource(res, R.drawable.secret_game_ship),
+            creator = ImageBitmap.imageResource(res, R.drawable.secret_game_creator),
+            dreamer = ImageBitmap.imageResource(res, R.drawable.secret_game_dreamer),
+        )
+    }
+    val logo = rememberVectorPainter(sprites.logo)
+    return remember(sprites, logo) {
+        SecretPainters(
+            logo = logo,
+            ship = BitmapPainter(sprites.ship),
+            creator = BitmapPainter(sprites.creator),
+            dreamer = BitmapPainter(sprites.dreamer),
+        )
+    }
+}
 
 /** Draws one [SecretGameFrame]: stateless, every distance is a fraction of the screen width. */
 @Composable
