@@ -33,6 +33,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import dev.mnascimentos.aureole.feature.secretgame.model.secretKeyAction
+import dev.mnascimentos.aureole.feature.secretgame.model.secretButtonTopLeft
+import dev.mnascimentos.aureole.feature.secretgame.model.onKey
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -72,7 +82,8 @@ fun SecretGameOverlay(
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val arena = secretArenaOf(constraints.maxWidth.toFloat(), constraints.maxHeight.toFloat())
-        val layout = remember(arena, logo) { secretLayoutOf(arena, logo) }
+        val density = LocalDensity.current.density
+        val layout = remember(arena, logo, density) { secretLayoutOf(arena, logo, density) }
         val engine = remember { SecretGameEngine() }
         var state by remember { mutableStateOf(engine.start(layout, bestScore)) }
         LaunchedEffect(layout) {
@@ -108,9 +119,17 @@ fun SecretGameOverlay(
             ship = AureoleDS.colors.onSurfaceHigh,
             face = lerp(AureoleDS.colors.onSurfaceHigh, AureoleDS.colors.surface, D.FACE_LIGHTEN)
         )
+        val focus = remember { FocusRequester() }
+        LaunchedEffect(focus) { focus.requestFocus() }
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .onKeyEvent { event ->
+                    val action = secretKeyAction(event.key)?.takeIf { event.type == KeyEventType.KeyDown }
+                    action?.let { apply(engine.onKey(state, it)) }
+                    action != null
+                }
+                .focusRequester(focus)
                 .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
                     state = engine.onTap(state)
                 }
@@ -120,8 +139,8 @@ fun SecretGameOverlay(
         val arenaWidth = with(LocalDensity.current) { arena.width.toDp() }
         val arenaLeft = with(LocalDensity.current) { arena.left.toDp() }
         if (state.phase == SecretGamePhase.PAUSED) PausedSoundButton(sound, layout, arenaWidth)
-        MoveTargets(layout, ArenaDp(arenaLeft, arenaWidth), enabled = state.acceptsInput) { direction ->
-            apply(engine.move(state, direction))
+        MoveTargets(layout, ArenaDp(arenaLeft, arenaWidth), maxHeight, enabled = state.acceptsInput) {
+            apply(engine.move(state, it))
         }
     }
 }
@@ -170,32 +189,44 @@ private fun BoxWithConstraintsScope.PausedSoundButton(
     layout: SecretGameLayout,
     arenaWidth: Dp
 ) {
+    val gap = AureoleDS.dimens.medium
     SecretSoundButton(
         isOn = sound.isOn,
         onToggle = sound.onToggle,
         modifier = Modifier
             .align(Alignment.TopCenter)
-            .offset(y = arenaWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP) + AureoleDS.dimens.medium)
+            .offset(y = arenaWidth * (layout.aspect * T.CENTER_Y_FRACTION + D.SOUND_BUTTON_GAP) + gap)
     )
 }
 
-/** Transparent touch targets over the ← → frames (bigger than the frames themselves). */
+/**
+ * Transparent touch targets: over the ← → frames (bigger than the frames themselves) or, when the frames are on
+ * the sides of a wide window, the whole side, to play holding the device with both hands (D-04).
+ */
 @Composable
 private fun MoveTargets(
     layout: SecretGameLayout,
     arena: ArenaDp,
+    windowHeight: Dp,
     enabled: Boolean,
     onMove: (Int) -> Unit
 ) {
     if (!enabled) return
     val target = arena.width * (T.BUTTON_SIZE * D.BUTTON_TARGET_SCALE)
     listOf(true, false).forEach { left ->
-        val center = buttonTopLeft(left, layout.aspect) + Offset(T.BUTTON_SIZE * D.HALF, T.BUTTON_SIZE * D.HALF)
         val description = stringResource(if (left) R.string.secret_game_move_left else R.string.secret_game_move_right)
-        Box(
-            modifier = Modifier
+        val area = if (layout.buttonsOnSides) {
+            Modifier
+                .offset(x = if (left) 0.dp else arena.left + arena.width)
+                .size(arena.left, windowHeight)
+        } else {
+            val center = secretButtonTopLeft(left, layout) + Offset(T.BUTTON_SIZE * D.HALF, T.BUTTON_SIZE * D.HALF)
+            Modifier
                 .offset(arena.left + arena.width * center.x - target * D.HALF, arena.width * center.y - target * D.HALF)
                 .size(target)
+        }
+        Box(
+            modifier = area
                 .semantics { contentDescription = description }
                 .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
                     onMove(if (left) -1 else 1)

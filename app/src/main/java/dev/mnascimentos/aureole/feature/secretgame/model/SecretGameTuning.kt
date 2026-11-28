@@ -57,6 +57,7 @@ object SecretGameTuning {
     const val PHONE_MIN_ASPECT = 1.75f
     const val REFERENCE_ASPECT = 772f / 360f
     const val MAX_SPREAD_FACTOR = 3f
+    const val SIDE_CONTROL_MIN_DP = 105f
 
     // Dificuldade: curvas por nível em SecretDifficulty
     const val FIRST_SPAWN_MS = 600f

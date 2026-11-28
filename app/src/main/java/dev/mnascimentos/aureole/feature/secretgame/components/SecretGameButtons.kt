@@ -15,31 +15,30 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.dp
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretButtonsFrame
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
+import dev.mnascimentos.aureole.feature.secretgame.model.secretButtonCornerX
+import dev.mnascimentos.aureole.feature.secretgame.model.secretButtonTopLeft
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameDrawing as D
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameTuning as T
 
-/** Top-left of the frame of the [left] or right button, in width fractions (the frame is [T.BUTTON_SIZE] wide). */
-internal fun buttonTopLeft(left: Boolean, aspect: Float): Offset {
-    val x = if (left) T.BUTTON_SIDE_INSET else 1f - T.BUTTON_SIDE_INSET - T.BUTTON_SIZE
-    return Offset(x, aspect - T.BUTTON_BOTTOM_OFFSET - T.BUTTON_SIZE * D.HALF)
+/**
+ * The two arrow frames, under the arena or on its sides ([layout]): [frame] traces the outline, collapses them
+ * into the window corners and shows the touch effect.
+ */
+internal fun DrawScope.drawButtons(frame: SecretButtonsFrame, layout: SecretGameLayout, color: Color) {
+    drawButton(true, layout, frame, color)
+    drawButton(false, layout, frame, color)
 }
 
-/** The two arrow frames: [frame] traces the outline, collapses them into the corners and shows the touch effect. */
-internal fun DrawScope.drawButtons(frame: SecretButtonsFrame, color: Color) {
-    val aspect = size.height / size.width
-    drawButton(true, aspect, frame, color)
-    drawButton(false, aspect, frame, color)
-}
-
-private fun DrawScope.drawButton(left: Boolean, aspect: Float, frame: SecretButtonsFrame, color: Color) {
+private fun DrawScope.drawButton(left: Boolean, layout: SecretGameLayout, frame: SecretButtonsFrame, color: Color) {
     val draw = frame.draw
     if (draw <= D.MIN_DRAW) return
     val u = size.width
     val side = T.BUTTON_SIZE * u
     val press = if (left) frame.leftPress else frame.rightPress
     val squeeze = if (left) frame.leftSqueeze else frame.rightSqueeze
-    val origin = buttonTopLeft(left, aspect) * u
-    val corner = Offset(if (left) 0f else u, size.height)
+    val origin = secretButtonTopLeft(left, layout) * u
+    val corner = Offset(secretButtonCornerX(left, layout) * u, size.height)
     val scale = 1f - frame.collapse * (1f - D.COLLAPSE_SCALE_MIN)
     val tint = color.copy(alpha = D.BUTTON_ALPHA * (1f - frame.collapse))
     withTransform({

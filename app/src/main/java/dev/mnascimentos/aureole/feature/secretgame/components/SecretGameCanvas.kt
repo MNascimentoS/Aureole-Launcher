@@ -87,7 +87,7 @@ fun SecretGameCanvas(
     val painters = rememberSecretPainters()
     Box(modifier = modifier.fillMaxSize()) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawWorld(frame, colors, painters, layout.sideSpan)
+            drawWorld(frame, colors, painters, layout)
         }
         SecretGameTexts(frame = frame, colors = colors, layout = layout, modifier = Modifier.fillMaxSize())
     }
@@ -97,11 +97,11 @@ private fun DrawScope.drawWorld(
     frame: SecretGameFrame,
     colors: SecretGameColors,
     painters: SecretPainters,
-    sideSpan: Float
+    layout: SecretGameLayout
 ) {
     val u = size.width
     drawStars(frame.stars, colors.face)
-    if (sideSpan > 0f) frame.buttons?.let { drawArenaEdges(it, colors.ship) }
+    if (layout.sideSpan > 0f) frame.buttons?.let { drawArenaEdges(it, colors.ship) }
     frame.streaks.forEach {
         drawLine(
             color = colors.ship.copy(alpha = D.STREAK_ALPHA * frame.streaksAlpha),
@@ -129,7 +129,7 @@ private fun DrawScope.drawWorld(
     }
     val fireworkColors = FireworkColors(colors.ship, colors.face, colors.ship)
     drawFireworks(frame.rockets, frame.sparks, fireworkColors, frame.fireworksAlpha)
-    frame.buttons?.let { drawButtons(it, colors.ship) }
+    frame.buttons?.let { drawButtons(it, layout, colors.ship) }
 }
 
 /** Two faint lines on the sides of the arena, drawn and collapsed together with the button frames (D-02). */

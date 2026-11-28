@@ -12,6 +12,7 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretButtonsFrame
+import dev.mnascimentos.aureole.feature.secretgame.model.SecretGameLayout
 import dev.mnascimentos.aureole.feature.secretgame.model.SecretSprite
 import org.junit.Rule
 import org.junit.Test
@@ -48,7 +49,9 @@ class SecretGameDrawingTest {
         var draw by mutableFloatStateOf(0f)
         rule.setContent {
             Canvas(modifier = Modifier.fillMaxSize()) {
-                drawButtons(SecretButtonsFrame(draw, 0f, leftPress = 0.5f, leftSqueeze = 0.04f), Color.White)
+                val frame = SecretButtonsFrame(draw, 0f, leftPress = 0.5f, leftSqueeze = 0.04f)
+                drawButtons(frame, PhoneLayout, Color.White)
+                drawButtons(frame, PhoneLayout.copy(sideSpan = 0.8f, buttonsOnSides = true), Color.White)
             }
         }
 
@@ -57,5 +60,9 @@ class SecretGameDrawingTest {
             rule.waitForIdle()
             rule.onRoot().captureToImage()
         }
+    }
+
+    private companion object {
+        val PhoneLayout = SecretGameLayout(aspect = 2.1f, logoX = 0.5f, logoY = 0.25f, logoWidth = 0.33f)
     }
 }

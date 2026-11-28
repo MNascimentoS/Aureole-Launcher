@@ -18,14 +18,19 @@ fun secretArenaOf(windowWidth: Float, windowHeight: Float): SecretArena {
     return SecretArena((windowWidth - width) / 2f, 0f, width, windowHeight)
 }
 
-/** O layout do jogo na [arena]; o logo de Settings vem em px da janela e vira coordenada da arena. */
-fun secretLayoutOf(arena: SecretArena, logo: SecretLogoPlacement): SecretGameLayout = SecretGameLayout(
-    aspect = arena.aspect,
-    logoX = (logo.center.x - arena.left) / arena.width,
-    logoY = (logo.center.y - arena.top) / arena.width,
-    logoWidth = logo.widthPx / arena.width,
-    sideSpan = arena.left / arena.width,
-)
+/**
+ * O layout do jogo na [arena]; o logo de Settings vem em px da janela e vira coordenada da arena. As setas vão
+ * para as laterais quando cada uma tem pelo menos [T.SIDE_CONTROL_MIN_DP] ([density] px por dp).
+ */
+fun secretLayoutOf(arena: SecretArena, logo: SecretLogoPlacement, density: Float = 1f): SecretGameLayout =
+    SecretGameLayout(
+        aspect = arena.aspect,
+        logoX = (logo.center.x - arena.left) / arena.width,
+        logoY = (logo.center.y - arena.top) / arena.width,
+        logoWidth = logo.widthPx / arena.width,
+        sideSpan = arena.left / arena.width,
+        buttonsOnSides = arena.left >= T.SIDE_CONTROL_MIN_DP * density,
+    )
 
 /**
  * O mesmo jogo num [layout] novo (a janela mudou no meio da partida). Com outro aspect, as alturas são

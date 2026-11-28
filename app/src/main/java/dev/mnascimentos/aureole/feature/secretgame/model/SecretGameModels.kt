@@ -30,7 +30,8 @@ data class SecretStreak(val x: Float, val y: Float, val length: Float)
 
 /**
  * Medidas da arena em larguras da arena: [aspect] = altura / largura; o logo é o da tela de Settings.
- * [sideSpan] = largura de cada lateral fora da arena (0 no celular, onde a arena é a tela toda).
+ * [sideSpan] = largura de cada lateral fora da arena (0 no celular, onde a arena é a tela toda); com laterais
+ * largas o bastante, [buttonsOnSides] leva as setas para o meio delas.
  */
 data class SecretGameLayout(
     val aspect: Float,
@@ -38,6 +39,7 @@ data class SecretGameLayout(
     val logoY: Float,
     val logoWidth: Float,
     val sideSpan: Float = 0f,
+    val buttonsOnSides: Boolean = false,
 )
 
 data class SecretGameState(

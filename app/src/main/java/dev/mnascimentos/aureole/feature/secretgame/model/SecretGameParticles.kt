@@ -26,7 +26,7 @@ internal fun SecretStreak.fall(distance: Float, layout: SecretGameLayout, random
     return if (y > layout.aspect) SecretStreak(spreadX(random, layout.sideSpan), -length, length) else copy(y = y)
 }
 
-/** Quantos pontos de fundo cabem na arena mais as laterais, com a densidade da arena (teto em [T.MAX_SPREAD_FACTOR]). */
+/** Quantos pontos de fundo cabem na arena mais as laterais, com a densidade da arena (teto: [T.MAX_SPREAD_FACTOR]). */
 internal fun spreadCount(count: Int, sideSpan: Float): Int =
     (count * minOf(1f + 2f * sideSpan, T.MAX_SPREAD_FACTOR)).roundToInt()
 
