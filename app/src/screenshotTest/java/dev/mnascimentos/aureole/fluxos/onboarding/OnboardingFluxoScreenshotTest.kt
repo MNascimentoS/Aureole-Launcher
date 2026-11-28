@@ -1,3 +1,10 @@
+/**
+ * Onboarding.
+ *
+ * @en Onboarding
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.fluxos.onboarding
 
 import androidx.compose.runtime.Composable
@@ -48,30 +55,56 @@ private fun emptyHome(state: MainUiState) = state.copy(
     landscapeGridItems = emptyList()
 )
 
+/**
+ * Boas-vindas.
+ *
+ * @en Welcome
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P01BoasVindasScreenshotTest() =
     OnboardingCase(OnboardingUiState(stage = OnboardingStage.WELCOME), edit = ::emptyHome)
 
+/**
+ * Launcher padrão.
+ *
+ * @en Default launcher
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P02LauncherPadraoScreenshotTest() =
     OnboardingCase(OnboardingUiState(stage = OnboardingStage.DEFAULT_HOME))
 
-/** O coach no primeiro gesto; em paisagem o passo do alfabeto não existe. */
+/**
+ * Gesto: todos os apps.
+ *
+ * O coach no primeiro gesto; em paisagem o passo do alfabeto não existe.
+ *
+ * @en Gesture: all apps
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun P03TodosAppsScreenshotTest() = OnboardingCase(coach())
 
+/**
+ * Gesto: alfabeto.
+ *
+ * @en Gesture: alphabet
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P04AlfabetoScreenshotTest() = OnboardingCase(coach(GestureCoachStep.OPEN_APPS))
 
+/**
+ * Gesto: segurar.
+ *
+ * @en Gesture: touch and hold
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -79,7 +112,13 @@ private fun P05SegurarScreenshotTest() = OnboardingCase(
     coach(GestureCoachStep.OPEN_APPS, GestureCoachStep.ALPHABET_SCRUB)
 )
 
-/** "Isso aí!": o cartão do gesto que acabou de dar certo, antes de encolher (2 s). */
+/**
+ * Gesto: "Isso aí!".
+ *
+ * "Isso aí!": o cartão do gesto que acabou de dar certo, antes de encolher (2 s).
+ *
+ * @en Gesture: "Nice!"
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -91,7 +130,13 @@ private fun P06IssoAiScreenshotTest() = OnboardingCase(
     )
 )
 
-/** O cartão encolhido no chip do canto superior direito, com a home livre. */
+/**
+ * Gesto: chip para voltar.
+ *
+ * O cartão encolhido no chip do canto superior direito, com a home livre.
+ *
+ * @en Gesture: back chip
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -100,14 +145,26 @@ private fun P07ChipVolteScreenshotTest() = OnboardingCase(
     overlay = { GestureCoachBackChip(glass = OnboardingGlass()) }
 )
 
-/** A lista no começo: a primeira etapa da home pendente e os extras ainda sem aparecer liberados. */
+/**
+ * Lista: começo.
+ *
+ * A lista no começo: a primeira etapa da home pendente e os extras ainda sem aparecer liberados.
+ *
+ * @en Checklist: start
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P08ChecklistInicioScreenshotTest() =
     OnboardingCase(checklist(done = setOf(OnboardingTask.SET_DEFAULT_HOME)))
 
-/** Falta uma etapa da home: os extras aparecem bloqueados. */
+/**
+ * Lista: extras bloqueados.
+ *
+ * Falta uma etapa da home: os extras aparecem bloqueados.
+ *
+ * @en Checklist: locked extras
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -115,7 +172,13 @@ private fun P09ChecklistExtrasBloqueadosScreenshotTest() = OnboardingCase(
     checklist(done = homeTasks - OnboardingTask.FILL_CONTAINER)
 )
 
-/** A seção da home resolvida (uma etapa pulada): os extras liberados. */
+/**
+ * Lista: extras liberados.
+ *
+ * A seção da home resolvida (uma etapa pulada): os extras liberados.
+ *
+ * @en Checklist: unlocked extras
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -123,37 +186,73 @@ private fun P10ChecklistExtrasLiberadosScreenshotTest() = OnboardingCase(
     checklist(done = homeTasks - OnboardingTask.ADD_WIDGET, skipped = setOf(OnboardingTask.ADD_WIDGET))
 )
 
-/** A lista minimizada vira a pílula sobre a home. */
+/**
+ * Lista minimizada.
+ *
+ * A lista minimizada vira a pílula sobre a home.
+ *
+ * @en Minimized checklist
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P11PilulaScreenshotTest() = OnboardingCase(checklist(expanded = false))
 
-/** A sheet Visual na aba Paleta, com a hora e a data de [VISUAL_NOW_MILLIS]. */
+/**
+ * Visual: paleta.
+ *
+ * A sheet Visual na aba Paleta, com a hora e a data de [VISUAL_NOW_MILLIS].
+ *
+ * @en Visual: palette
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P12VisualPaletaScreenshotTest() = VisualCase(AppearancePicker.PALETTE)
 
-/** A mesma sheet na aba Fonte. */
+/**
+ * Visual: fonte.
+ *
+ * A mesma sheet na aba Fonte.
+ *
+ * @en Visual: font
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P13VisualFonteScreenshotTest() = VisualCase(AppearancePicker.FONT)
 
-/** O relógio que a etapa acabou de colocar: contorno tracejado e o chip "Novo". */
+/**
+ * Destaque no relógio.
+ *
+ * O relógio que a etapa acabou de colocar: contorno tracejado e o chip "Novo".
+ *
+ * @en Clock highlight
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P14DestaqueRelogioScreenshotTest() = OnboardingCase(peek(GridDefaults.CLOCK_ITEM_ID))
 
-/** Os favoritos que a etapa acabou de colocar. */
+/**
+ * Destaque nos favoritos.
+ *
+ * Os favoritos que a etapa acabou de colocar.
+ *
+ * @en Favorites highlight
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P15DestaqueFavoritosScreenshotTest() = OnboardingCase(peek(GridDefaults.APPS_LIST_ITEM_ID))
 
-/** A tarefa de ajustar o layout espera na grade em edição: a dica de como salvar. */
+/**
+ * Dica de edição.
+ *
+ * A tarefa de ajustar o layout espera na grade em edição: a dica de como salvar.
+ *
+ * @en Edit hint
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -162,6 +261,11 @@ private fun P16DicaEdicaoScreenshotTest() = OnboardingCase(
     edit = { it.copy(isGridEditMode = true) }
 )
 
+/**
+ * Tudo pronto.
+ *
+ * @en All set
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -223,7 +327,13 @@ private val plans = listOf(
     )
 )
 
-/** "Escolha um ponto de partida": os três cartões, o Produtivo selecionado. */
+/**
+ * Escolher o ponto de partida.
+ *
+ * "Escolha um ponto de partida": os três cartões, o Produtivo selecionado.
+ *
+ * @en Pick a starting point
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -236,7 +346,13 @@ private fun P18EscolhaLayoutScreenshotTest() = OnboardingCase(
     )
 )
 
-/** A lista logo depois de aplicar o Produtivo: as etapas do layout feitas e a do widget ainda pendente. */
+/**
+ * Lista com o layout aplicado.
+ *
+ * A lista logo depois de aplicar o Produtivo: as etapas do layout feitas e a do widget ainda pendente.
+ *
+ * @en Checklist with the layout applied
+ */
 @PreviewTest
 @AureolePreview
 @Composable

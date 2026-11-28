@@ -1,3 +1,10 @@
+/**
+ * Jogo secreto.
+ *
+ * @en Secret game
+ * @area jogo
+ * @ref P01CincoToques telas/ajustes/Padrao Cinco toques no logo / Five taps on the logo
+ */
 package dev.mnascimentos.aureole.fluxos.jogosecreto
 
 import androidx.compose.foundation.background
@@ -88,24 +95,45 @@ private fun BestScoreCase() {
     }
 }
 
+/**
+ * Início.
+ *
+ * @en Start
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P02InicioScreenshotTest() = GameCase(sampleState(SecretGamePhase.COUNTDOWN, COUNTDOWN_MS))
 
+/**
+ * Jogando.
+ *
+ * @en Playing
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P03JogandoScreenshotTest() =
     GameCase(sampleState(SecretGamePhase.PLAY, PLAY_MS, score = PLAY_SCORE))
 
+/**
+ * Pausa.
+ *
+ * @en Paused
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P04PausaScreenshotTest() =
     GameCase(sampleState(SecretGamePhase.PAUSED, PLAY_MS, score = PLAY_SCORE), showSoundButton = true)
 
-/** Fim com recorde novo e os fogos. */
+/**
+ * Fim.
+ *
+ * Fim com recorde novo e os fogos.
+ *
+ * @en Game over
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -114,12 +142,23 @@ private fun P05FimScreenshotTest() = GameCase(
         .copy(fireworks = fireworksSample())
 )
 
+/**
+ * Recorde.
+ *
+ * @en Best score
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun P06RecordeScreenshotTest() = BestScoreCase()
 
-/** Fim sem recorde: Best score pequeno acima de Your score e a mensagem abaixo. */
+/**
+ * Fim sem recorde.
+ *
+ * Fim sem recorde: Best score pequeno acima de Your score e a mensagem abaixo.
+ *
+ * @en Game over, no record
+ */
 @PreviewTest
 @AureolePreview
 @Composable

@@ -1,3 +1,8 @@
+/**
+ * Marca e prévias.
+ *
+ * @en Brand and previews
+ */
 package dev.mnascimentos.aureole.catalogo.marca
 
 import android.content.ComponentName
@@ -174,8 +179,12 @@ private fun BrandRow() {
 }
 
 /**
+ * Marca e prévias.
+ *
  * Grupo marca: `AureoleLogoRing`, `AureoleFireworks`, `AureoleDashedBorder`, `AureolePreviewFrame`,
  * `AureoleMiniHome` (destro, canhoto, ícones temáticos), raio do ícone (0, 20, 24 dp) e o relógio na grade.
+ *
+ * @en Brand and previews
  */
 @PreviewTest
 @AureoleCatalogPreview

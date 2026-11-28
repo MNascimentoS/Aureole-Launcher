@@ -1,3 +1,10 @@
+/**
+ * Fonte e cor do relógio.
+ *
+ * @en Clock font and color
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.relogioseletor
 
 import androidx.compose.runtime.Composable
@@ -35,19 +42,36 @@ private fun FontCase(isExpanded: Boolean) = OrientedCase {
     }
 }
 
+/**
+ * Fonte.
+ *
+ * @en Font
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = FontCase(isExpanded = false)
 
-/** RF-F2: o seletor de fonte expandido chega ao teto de 0,9 da tela. */
+/**
+ * Fonte expandida.
+ *
+ * RF-F2: o seletor de fonte expandido chega ao teto de 0,9 da tela.
+ *
+ * @en Font expanded
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun ExpandidoScreenshotTest() = FontCase(isExpanded = true)
 
-/** Seletor de cor do cartão, com o cartão "Nenhuma" escolhido; o de cor do texto tem o mesmo layout (D-18). */
+/**
+ * Cor.
+ *
+ * Seletor de cor do cartão, com o cartão "Nenhuma" escolhido; o de cor do texto tem o mesmo layout (D-18).
+ *
+ * @en Color
+ */
 @PreviewTest
 @AureolePreview
 @Composable

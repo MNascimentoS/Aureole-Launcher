@@ -1,3 +1,10 @@
+/**
+ * Seletor de favoritos.
+ *
+ * @en Favorites picker
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.favoritosseletor
 
 import androidx.compose.runtime.Composable
@@ -12,7 +19,13 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.fixtures.HomeCase
 import dev.mnascimentos.aureole.fixtures.createSampleHomeData
 
-/** Seletor de favoritos de uma lista de apps da home, com "Mostrar todos os apps" ligado. */
+/**
+ * Padrão.
+ *
+ * Seletor de favoritos de uma lista de apps da home, com "Mostrar todos os apps" ligado.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview

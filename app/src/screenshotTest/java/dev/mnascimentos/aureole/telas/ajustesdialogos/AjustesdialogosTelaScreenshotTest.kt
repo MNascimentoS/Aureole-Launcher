@@ -1,3 +1,11 @@
+/**
+ * Diálogos dos ajustes.
+ *
+ * @en Settings dialogs
+ * @area ajustes
+ * @paisagem
+ * @excecao screenshots-telas-fluxos D-20
+ */
 package dev.mnascimentos.aureole.telas.ajustesdialogos
 
 import androidx.compose.runtime.Composable
@@ -14,7 +22,13 @@ import dev.mnascimentos.aureole.feature.settings.screens.ResetGridDialog
 import dev.mnascimentos.aureole.fixtures.OrientedCase
 import dev.mnascimentos.aureole.fixtures.SettingsSheetCase
 
-/** Confirmação de resetar a grade. */
+/**
+ * Resetar.
+ *
+ * Confirmação de resetar a grade.
+ *
+ * @en Reset
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -25,7 +39,13 @@ private fun PadraoScreenshotTest() = OrientedCase {
     }
 }
 
-/** Sheet de colaboradores, aberta pela seção Sobre do Avançado. */
+/**
+ * Sobre.
+ *
+ * Sheet de colaboradores, aberta pela seção Sobre do Avançado.
+ *
+ * @en About
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -33,7 +53,13 @@ private fun SobreScreenshotTest() = SettingsSheetCase(
     sheet = SettingsSheet.Child(SettingsChildKind.CONTRIBUTORS, returnTo = SettingsArea.ADVANCED)
 )
 
-/** Sheet de posição do botão de ajustes. */
+/**
+ * Posição do botão.
+ *
+ * Sheet de posição do botão de ajustes.
+ *
+ * @en Button position
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -43,7 +69,13 @@ private fun PosicaoBotaoScreenshotTest() = OrientedCase {
     }
 }
 
-/** Sheet de posição do ícone de busca. */
+/**
+ * Posição da busca.
+ *
+ * Sheet de posição do ícone de busca.
+ *
+ * @en Search position
+ */
 @PreviewTest
 @AureolePreview
 @Composable

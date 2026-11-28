@@ -10,7 +10,7 @@ Ao criar ou remover algo público, atualize a linha do mapa no mesmo passo (`aur
 | [design-system.md](design-system.md) | precisar de um token (dimens, colors, typography), ícone ou paleta |
 | [features.md](features.md) | mexer em `home`, `settings` ou `secretgame`: ViewModel, UiState, e a ordem em que sheets e dialogs abrem |
 | [dados.md](dados.md) | tocar em repositório, Room, preferência, Koin ou lifecycle observer |
-| [aureole_screenshots.md](../aureole_screenshots.md) | mexer em screenshot test, `screenshots.json` ou referências (telas, fluxos, catálogo) |
+| [aureole_screenshots.md](../aureole_screenshots.md) | mexer em screenshot test (título no KDoc) ou referências (telas, fluxos, catálogo) |
 | [receitas.md](receitas.md) | fizer uma tarefa recorrente: sheet, string, token, preferência, screenshot test, teste JVM |
 
 Caminhos nos mapas são relativos a `app/src/main/java/dev/mnascimentos/aureole/`, salvo quando começam com `app/`.

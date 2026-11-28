@@ -1,3 +1,10 @@
+/**
+ * Personalizar.
+ *
+ * @en Customize
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.personalizar
 
 import androidx.compose.runtime.Composable
@@ -18,12 +25,22 @@ private fun CustomizeCase(isLeftHanded: Boolean) {
     }
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = CustomizeCase(isLeftHanded = false)
 
+/**
+ * Canhoto.
+ *
+ * @en Left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable

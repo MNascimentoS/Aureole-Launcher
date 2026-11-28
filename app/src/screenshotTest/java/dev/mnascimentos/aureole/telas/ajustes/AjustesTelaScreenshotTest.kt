@@ -1,3 +1,10 @@
+/**
+ * Ajustes.
+ *
+ * @en Settings
+ * @area ajustes
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.ajustes
 
 import androidx.compose.runtime.Composable
@@ -9,20 +16,38 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.fixtures.SettingsRootCase
 import dev.mnascimentos.aureole.fixtures.SettingsSheetCase
 
-/** Raiz dos ajustes; na prévia de paisagem, os dois painéis. */
+/**
+ * Padrão.
+ *
+ * Raiz dos ajustes; na prévia de paisagem, os dois painéis.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = SettingsRootCase()
 
-/** Sheet Aparência: a prévia da home em cima e a lista embaixo. */
+/**
+ * Aparência.
+ *
+ * Sheet Aparência: a prévia da home em cima e a lista embaixo.
+ *
+ * @en Appearance
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun AparenciaScreenshotTest() = SettingsSheetCase(sheet = SettingsSheet.Area(SettingsArea.APPEARANCE))
 
-/** Sheet Avançado (o mesmo layout de lista do Comportamento). */
+/**
+ * Avançado.
+ *
+ * Sheet Avançado (o mesmo layout de lista do Comportamento).
+ *
+ * @en Advanced
+ */
 @PreviewTest
 @AureolePreview
 @Composable

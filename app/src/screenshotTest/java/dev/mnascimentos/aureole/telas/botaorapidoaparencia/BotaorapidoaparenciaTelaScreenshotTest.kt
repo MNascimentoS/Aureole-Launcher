@@ -1,3 +1,10 @@
+/**
+ * Aparência do botão rápido.
+ *
+ * @en Quick button appearance
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.botaorapidoaparencia
 
 import androidx.compose.runtime.Composable
@@ -10,7 +17,13 @@ import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.feature.home.model.createDefaultHomeScreenActions
 import dev.mnascimentos.aureole.fixtures.HomeCase
 
-/** Editor de aparência: prévia ancorada, Cancelar / Salvar com Salvar sob o polegar. */
+/**
+ * Padrão.
+ *
+ * Editor de aparência: prévia ancorada, Cancelar / Salvar com Salvar sob o polegar.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview

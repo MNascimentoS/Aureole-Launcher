@@ -1,3 +1,10 @@
+/**
+ * Novidades.
+ *
+ * @en Release notes
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.novidades
 
 import androidx.compose.runtime.Composable
@@ -35,7 +42,13 @@ private val SAMPLE_VERSION = ReleaseNoteVersion(
     )
 )
 
-/** Novidades: a versão atual aberta e duas anteriores. */
+/**
+ * Padrão.
+ *
+ * Novidades: a versão atual aberta e duas anteriores.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview

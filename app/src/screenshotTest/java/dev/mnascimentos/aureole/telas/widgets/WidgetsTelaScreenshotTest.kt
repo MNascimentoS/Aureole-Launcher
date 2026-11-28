@@ -1,3 +1,10 @@
+/**
+ * Widgets.
+ *
+ * @en Widgets
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.widgets
 
 import androidx.compose.runtime.Composable
@@ -19,7 +26,13 @@ import dev.mnascimentos.aureole.fixtures.createSampleHomeData
 
 private const val CALENDAR_ID = "com.example.calendar"
 
-/** Seletor de widgets com um app aberto e duas variantes. */
+/**
+ * Padrão.
+ *
+ * Seletor de widgets com um app aberto e duas variantes.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -46,7 +59,13 @@ private fun PadraoScreenshotTest() {
     }
 }
 
-/** Grupo de widgets: carrossel com três widgets, o "+" no fim e as setas para mover. */
+/**
+ * Grupo de widgets.
+ *
+ * Grupo de widgets: carrossel com três widgets, o "+" no fim e as setas para mover.
+ *
+ * @en Widget group
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview

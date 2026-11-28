@@ -1,3 +1,10 @@
+/**
+ * Botão rápido.
+ *
+ * @en Quick button
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.botaorapido
 
 import androidx.compose.runtime.Composable
@@ -19,12 +26,22 @@ private fun QuickButtonSettingsCase(isLeftHanded: Boolean) {
     }
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = QuickButtonSettingsCase(isLeftHanded = false)
 
+/**
+ * Canhoto.
+ *
+ * @en Left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable

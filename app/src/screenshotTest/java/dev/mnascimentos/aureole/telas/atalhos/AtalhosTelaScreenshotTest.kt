@@ -1,3 +1,10 @@
+/**
+ * Atalhos.
+ *
+ * @en Shortcuts
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.atalhos
 
 import androidx.compose.runtime.Composable
@@ -38,12 +45,22 @@ private fun ShortcutCase(query: String = "") {
     }
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = ShortcutCase()
 
+/**
+ * Busca.
+ *
+ * @en Search
+ */
 @PreviewTest
 @AureolePreview
 @Composable

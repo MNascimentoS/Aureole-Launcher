@@ -1,3 +1,10 @@
+/**
+ * Menus da home.
+ *
+ * @en Home menus
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.menushome
 
 import androidx.compose.runtime.Composable
@@ -17,7 +24,13 @@ import dev.mnascimentos.aureole.fixtures.createSampleHomeData
 @Composable
 private fun MenuCase(content: @Composable () -> Unit) = HomeCase(createSampleHomeData().uiState, content = content)
 
-/** Menu de uma pasta dentro de um container: editar atalhos, nome, ícone, ajustes; Remover por último. */
+/**
+ * Pasta.
+ *
+ * Menu de uma pasta dentro de um container: editar atalhos, nome, ícone, ajustes; Remover por último.
+ *
+ * @en Folder
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -36,7 +49,13 @@ private fun PadraoScreenshotTest() = MenuCase {
     )
 }
 
-/** Menu de um item da grade (relógio). */
+/**
+ * Item da grade.
+ *
+ * Menu de um item da grade (relógio).
+ *
+ * @en Grid item
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -48,7 +67,13 @@ private fun ItemScreenshotTest() = MenuCase {
     )
 }
 
-/** Menu de uma pilha de widgets. */
+/**
+ * Pilha de widgets.
+ *
+ * Menu de uma pilha de widgets.
+ *
+ * @en Widget stack
+ */
 @PreviewTest
 @AureolePreview
 @Composable

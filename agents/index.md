@@ -42,8 +42,9 @@ Welcome to the **Aureole Launcher** agent documentation hub. This index guides A
    - Onde guardar a memória do projeto.
 
 8. **[Screenshots: telas, fluxos e catálogo](aureole_screenshots.md)**
-   - Contrato v1 das referências: tela inteira (até 3 estados), fluxo em passos `P01…`, catálogo por grupo do DS.
-   - Pastas `telas/`, `fluxos/`, `catalogo/`, manifesto `app/src/screenshotTest/screenshots.json`, chave estável.
+   - Contrato v2 das referências: tela inteira (até 3 estados), fluxo em passos `P01…`, catálogo por grupo do DS.
+   - Pastas `telas/`, `fluxos/`, `catalogo/`, título no KDoc de cada teste (`@en`, `@area`, `@paisagem`, `@ref`),
+     chave estável; sem manifesto.
    - Guarda `ScreenshotContractTest` no `testDebugUnitTest`; componente isolado não tem screenshot próprio.
 
 ## 🗺️ Mapa do código (leitura sob demanda)

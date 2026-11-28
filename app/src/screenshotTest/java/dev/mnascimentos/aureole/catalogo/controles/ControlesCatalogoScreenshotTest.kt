@@ -1,3 +1,8 @@
+/**
+ * Controles.
+ *
+ * @en Controls
+ */
 package dev.mnascimentos.aureole.catalogo.controles
 
 import androidx.compose.foundation.background
@@ -163,8 +168,12 @@ private fun ReorderColumnCase(isLeftHanded: Boolean) {
 }
 
 /**
+ * Controles.
+ *
  * Grupo controles: switch e linha de menu, segmentado, option tile, busca e barra flutuante, listas
  * reordenáveis; destro e canhoto onde o layout espelha. A `AureoleRadioSheet` aparece em `telas/ajustesopcao`.
+ *
+ * @en Controls
  */
 @PreviewTest
 @AureoleCatalogPreview

@@ -1,3 +1,11 @@
+/**
+ * Personalizar relógio.
+ *
+ * @en Customize clock
+ * @area home
+ * @paisagem
+ * @grupo Relógio / Clock
+ */
 package dev.mnascimentos.aureole.telas.relogio
 
 import androidx.compose.runtime.Composable
@@ -34,18 +42,34 @@ private fun EditClockCase(tab: ClockTab = ClockTab.STYLE, colorRole: ComponentCo
     }
 }
 
+/**
+ * Estilo.
+ *
+ * @en Style
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = EditClockCase()
 
+/**
+ * Cores.
+ *
+ * @en Colors
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun CoresScreenshotTest() = EditClockCase(tab = ClockTab.COLORS)
 
-/** A página de cor do texto dentro da sheet: voltar, título e sem barra de abas. */
+/**
+ * Página de cor.
+ *
+ * A página de cor do texto dentro da sheet: voltar, título e sem barra de abas.
+ *
+ * @en Color page
+ */
 @PreviewTest
 @AureolePreview
 @Composable

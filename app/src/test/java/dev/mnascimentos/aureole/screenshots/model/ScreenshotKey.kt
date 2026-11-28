@@ -1,62 +1,6 @@
 package dev.mnascimentos.aureole.screenshots.model
 
-import com.google.gson.Gson
-
-/**
- * Modelo do manifesto `app/src/screenshotTest/screenshots.json` (contrato v1, `agents/aureole_screenshots.md` §3).
- * Campos anuláveis porque o Gson não aplica valor padrão de construtor; leia com `orEmpty()`.
- */
-data class ScreenshotManifest(
-    val contrato: Int? = null,
-    val referencias: String? = null,
-    val telas: List<ScreenshotTela>? = null,
-    val fluxos: List<ScreenshotFluxo>? = null,
-    val catalogo: List<ScreenshotGrupo>? = null
-)
-
-data class ScreenshotTitulo(val pt: String? = null, val en: String? = null)
-
-data class ScreenshotTela(
-    val id: String? = null,
-    val area: String? = null,
-    val titulo: ScreenshotTitulo? = null,
-    val paisagem: Boolean? = null,
-    val excecao: String? = null,
-    val idsAntigos: List<String>? = null,
-    val estados: List<ScreenshotEstado>? = null
-)
-
-data class ScreenshotEstado(
-    val id: String? = null,
-    val titulo: ScreenshotTitulo? = null,
-    val antes: List<String>? = null
-)
-
-data class ScreenshotFluxo(
-    val id: String? = null,
-    val area: String? = null,
-    val titulo: ScreenshotTitulo? = null,
-    val paisagem: Boolean? = null,
-    val excecao: String? = null,
-    val idsAntigos: List<String>? = null,
-    val passos: List<ScreenshotPasso>? = null
-)
-
-data class ScreenshotPasso(
-    val id: String? = null,
-    val titulo: ScreenshotTitulo? = null,
-    val ref: String? = null,
-    val antes: List<String>? = null
-)
-
-data class ScreenshotGrupo(
-    val id: String? = null,
-    val titulo: ScreenshotTitulo? = null,
-    val paisagem: Boolean? = null,
-    val excecao: String? = null,
-    val idsAntigos: List<String>? = null,
-    val antes: List<String>? = null
-)
+// Chave estável das imagens de referência (contrato v2, `agents/aureole_screenshots.md` §2).
 
 /** Chave estável `<tipo>/<id>/<estado|passo|grupo>/<preview>` de uma imagem de referência. */
 data class ScreenshotKey(val tipo: String, val id: String, val item: String, val preview: String) {
@@ -65,7 +9,6 @@ data class ScreenshotKey(val tipo: String, val id: String, val item: String, val
     override fun toString(): String = "$tipo/$id/$item/$preview"
 }
 
-const val CONTRACT_VERSION = 1
 const val TIPO_TELAS = "telas"
 const val TIPO_FLUXOS = "fluxos"
 const val TIPO_CATALOGO = "catalogo"
@@ -76,12 +19,6 @@ private const val FUNCTION_SUFFIX = "ScreenshotTest"
 private const val CLASS_SUFFIX = "Kt"
 private const val PNG_EXTENSION = ".png"
 private const val CONTRACT_PATH_SEGMENTS = 4
-
-/** Lê o manifesto; `null` quando o texto falta ou não é JSON válido. */
-fun parseScreenshotManifest(json: String?): ScreenshotManifest? {
-    if (json.isNullOrBlank()) return null
-    return runCatching { Gson().fromJson(json, ScreenshotManifest::class.java) }.getOrNull()
-}
 
 /** `a/b/Classe/Funcao_preview_hash_0.png` → `a/b/Classe/Funcao_preview` (chave legada, sem hash e índice). */
 fun legacyKey(relativePath: String): String {

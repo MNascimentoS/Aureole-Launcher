@@ -1,3 +1,10 @@
+/**
+ * Home.
+ *
+ * @en Home
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.home
 
 import android.content.res.Configuration
@@ -96,17 +103,32 @@ private fun StraightContainersCase() {
     HomeScreenCase(uiState, AureoleDimens.forCornerRadius(STRAIGHT_RADIUS_DP))
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = DefaultHomeCase(isLeftHanded = false)
 
+/**
+ * Canhoto.
+ *
+ * @en Left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun CanhotoScreenshotTest() = DefaultHomeCase(isLeftHanded = true)
 
+/**
+ * Raio 0.
+ *
+ * @en Zero radius
+ */
 @PreviewTest
 @AureolePreview
 @Composable

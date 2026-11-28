@@ -1,3 +1,10 @@
+/**
+ * Tela de bloqueio.
+ *
+ * @en Lock screen
+ * @area ajustes
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.ajustesbloqueio
 
 import androidx.compose.runtime.Composable
@@ -11,7 +18,13 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.fixtures.SettingsSheetCase
 
-/** Sheet de fundo com "Usar também na tela de bloqueio" ligado. */
+/**
+ * Ligado.
+ *
+ * Sheet de fundo com "Usar também na tela de bloqueio" ligado.
+ *
+ * @en On
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview

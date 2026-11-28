@@ -1,3 +1,12 @@
+/**
+ * Personalizar grupo.
+ *
+ * @en Customize group
+ * @area home
+ * @paisagem
+ * @excecao previews-same-folder D-02
+ * @grupo Grupos e pastas / Groups and folders
+ */
 package dev.mnascimentos.aureole.telas.container
 
 import androidx.compose.foundation.layout.Box
@@ -111,31 +120,59 @@ private fun GroupSheetCase(
     }
 }
 
-/** Aba Itens: tiles Adicionar, a lista "No grupo" com apps e uma pasta. */
+/**
+ * Itens.
+ *
+ * Aba Itens: tiles Adicionar, a lista "No grupo" com apps e uma pasta.
+ *
+ * @en Items
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = GroupSheetCase()
 
+/**
+ * Layout.
+ *
+ * @en Layout
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun LayoutScreenshotTest() = GroupSheetCase(tab = GroupTab.LAYOUT, homeSize = DpSize(HOME_WIDTH.dp, HOME_HEIGHT.dp))
 
+/**
+ * Aparência.
+ *
+ * @en Appearance
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun AparenciaScreenshotTest() = GroupSheetCase(tab = GroupTab.APPEARANCE)
 
-/** A página de cor do fundo dentro da sheet: voltar, título e sem barra de abas. */
+/**
+ * Página de cor.
+ *
+ * A página de cor do fundo dentro da sheet: voltar, título e sem barra de abas.
+ *
+ * @en Color page
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun PaginaCorScreenshotTest() =
     GroupSheetCase(tab = GroupTab.APPEARANCE, page = GroupSheetPage.Color(GroupColorTarget.BACKGROUND))
 
-/** "Adicionar à home": os tipos de componente que a grade aceita. */
+/**
+ * Adicionar componente.
+ *
+ * "Adicionar à home": os tipos de componente que a grade aceita.
+ *
+ * @en Add component
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -144,7 +181,13 @@ private fun AdicionarScreenshotTest() = HomeCase(MainUiState()) {
     AddContainerDialog(onDismissRequest = {}, onSelectType = {})
 }
 
-/** Adicionar dentro de um grupo rolável: só os componentes que cabem num grupo. */
+/**
+ * Adicionar componente, dentro do grupo.
+ *
+ * Adicionar dentro de um grupo rolável: só os componentes que cabem num grupo.
+ *
+ * @en Add component, inside a group
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -167,7 +210,13 @@ private fun group(children: List<LauncherItemState>) = LauncherItemState(
     children = children
 )
 
-/** Sheet do grupo: relógio com "Altura" e "- Nx +", lista de apps com "Lista inteira". */
+/**
+ * Grupo rolável.
+ *
+ * Sheet do grupo: relógio com "Altura" e "- Nx +", lista de apps com "Lista inteira".
+ *
+ * @en Scroll group
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -185,7 +234,13 @@ private fun RolavelScreenshotTest() = HomeCase(createSampleHomeData().uiState) {
     )
 }
 
-/** Grupo na home só com a lista de apps (todos os apps): a lista aparece inteira e o grupo é que rola. */
+/**
+ * Grupo rolável na home.
+ *
+ * Grupo na home só com a lista de apps (todos os apps): a lista aparece inteira e o grupo é que rola.
+ *
+ * @en Scroll group on the home
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -224,7 +279,13 @@ private val PHONE_HEIGHT = 640.dp
 private val ANCHOR_FROM_BOTTOM = 80.dp
 private val POPUP_END_PADDING = 88.dp
 
-/** Pasta aberta em popup sobre a home. */
+/**
+ * Pasta aberta.
+ *
+ * Pasta aberta em popup sobre a home.
+ *
+ * @en Open folder
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -238,8 +299,12 @@ private fun PastaScreenshotTest() {
 }
 
 /**
+ * Pasta aberta, do último item.
+ *
  * Pasta aberta do último item do container, no pé da tela: sobe até ficar 16 dp acima da barra de navegação
  * (prévias não têm barras: 16 dp acima do fim).
+ *
+ * @en Open folder, from the last item
  */
 @PreviewTest
 @AureolePreview
@@ -283,14 +348,26 @@ private fun FolderFormCase(folder: AppFolder?) = HomeCase(MainUiState()) {
     )
 }
 
-/** Pasta nova: nome vazio sob o tile, segmento Ícone com as sugestões, "Criar e escolher apps". */
+/**
+ * Formulário de pasta, criar.
+ *
+ * Pasta nova: nome vazio sob o tile, segmento Ícone com as sugestões, "Criar e escolher apps".
+ *
+ * @en Folder form, create
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PastaCriarScreenshotTest() = FolderFormCase(folder = null)
 
-/** Editar pasta: cor própria, ícone salvo marcado, "Excluir pasta" no fim, sem botões. */
+/**
+ * Formulário de pasta, editar.
+ *
+ * Editar pasta: cor própria, ícone salvo marcado, "Excluir pasta" no fim, sem botões.
+ *
+ * @en Folder form, edit
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -327,13 +404,24 @@ private fun PickerGridCase(isLeftHanded: Boolean) {
     }
 }
 
+/**
+ * Apps da pasta.
+ *
+ * @en Folder apps
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PastaAppsScreenshotTest() = PickerGridCase(isLeftHanded = false)
 
-/** Buscando "cam": resultados em cima da grade, a bandeja continua. */
+/**
+ * Apps da pasta, busca.
+ *
+ * Buscando "cam": resultados em cima da grade, a bandeja continua.
+ *
+ * @en Folder apps, search
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -361,6 +449,11 @@ private fun PastaAppsBuscaScreenshotTest() {
     }
 }
 
+/**
+ * Apps da pasta, canhoto.
+ *
+ * @en Folder apps, left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -406,7 +499,13 @@ private fun NewGroupCase(
     }
 }
 
-/** "Adicionar componente" com a pílula "Comece aqui" no grupo (primeira vez). */
+/**
+ * Novo grupo · Adicionar componente.
+ *
+ * "Adicionar componente" com a pílula "Comece aqui" no grupo (primeira vez).
+ *
+ * @en New group · Add component
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -414,32 +513,62 @@ private fun NovoAdicionarComponenteScreenshotTest() = HomeCase(MainUiState()) {
     AddContainerDialog(onDismissRequest = {}, onSelectType = {}, showsGroupStartHere = true)
 }
 
-/** O grupo novo, vazio, com a dica 1 ("Adicionar app"). */
+/**
+ * Novo grupo · Grupo vazio, dica 1.
+ *
+ * O grupo novo, vazio, com a dica 1 ("Adicionar app").
+ *
+ * @en New group · Empty group, tip 1
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun NovoGrupoVazioDica1ScreenshotTest() = NewGroupCase(tip = GroupTip.FIRST_APP)
 
-/** A página "Adicionar apps". */
+/**
+ * Novo grupo · Adicionar apps.
+ *
+ * A página "Adicionar apps".
+ *
+ * @en New group · Add apps
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun NovoAdicionarAppsScreenshotTest() = NewGroupCase(tip = GroupTip.FIRST_APP, page = GroupSheetPage.AddApps)
 
-/** De volta na aba Itens, com um app e a dica 2 ("Escolher posição"). */
+/**
+ * Novo grupo · Itens, dica 2.
+ *
+ * De volta na aba Itens, com um app e a dica 2 ("Escolher posição").
+ *
+ * @en New group · Items, tip 2
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun NovoItensDica2ScreenshotTest() = NewGroupCase(tip = GroupTip.CHOOSE_POSITION, withApp = true)
 
-/** A aba Layout com a dica 3 ("Em pé ou deitado?"). */
+/**
+ * Novo grupo · Layout, dica 3.
+ *
+ * A aba Layout com a dica 3 ("Em pé ou deitado?").
+ *
+ * @en New group · Layout, tip 3
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun NovoLayoutDica3ScreenshotTest() =
     NewGroupCase(tip = GroupTip.PICK_POSITION, tab = GroupTab.LAYOUT, withApp = true)
 
-/** A página "Nova pasta". */
+/**
+ * Novo grupo · Nova pasta.
+ *
+ * A página "Nova pasta".
+ *
+ * @en New group · New folder
+ */
 @PreviewTest
 @AureolePreview
 @Composable

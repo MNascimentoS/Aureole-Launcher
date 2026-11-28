@@ -1,3 +1,8 @@
+/**
+ * Dialogs e popups.
+ *
+ * @en Dialogs and popups
+ */
 package dev.mnascimentos.aureole.catalogo.dialogos
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,8 +57,12 @@ private fun DialogWithIconCase() {
 }
 
 /**
+ * Dialogs e popups.
+ *
  * Grupo dialogos: `AureoleDialog` (padrão e com ícone e logo), o cabeçalho sozinho, `AureolePopup` com cabeçalho de
  * sessão e `AureoleOverlayBackdrop` sem blur. O dialog no preview fica centrado numa moldura (sem janela).
+ *
+ * @en Dialogs and popups
  */
 @PreviewTest
 @AureoleCatalogPreview

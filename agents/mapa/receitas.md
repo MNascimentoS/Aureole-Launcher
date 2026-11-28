@@ -48,19 +48,22 @@ linhas; `@PreviewTest` vem de `com.android.tools.screenshot.PreviewTest`. Depois
 Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/telas/<tela>/<Tela>TelaScreenshotTest.kt`.
 1. Um arquivo por tela; id da pasta em minúsculas sem separador (`todosapps`), imutável.
 2. `@PreviewTest @AureolePreview @Composable private fun <Estado>ScreenshotTest() = XCase(...)`; o primeiro é `Padrao`.
-3. Até 3 estados em retrato, só quando muda o layout. O `Padrao` leva também `@AureoleLandscapePreview` e a tela
-   `"paisagem": true`; caso fora de `HomeCase`/`SettingsRootCase`/`SettingsSheetCase` vai dentro de `OrientedCase { }`.
-4. Item em `screenshots.json` (`telas[]`): `id`, `area`, `titulo` pt/en, `estados` com `antes` se substitui chave legada.
+3. Até 3 estados em retrato, só quando muda o layout. O `Padrao` leva também `@AureoleLandscapePreview` e o arquivo
+   `@paisagem`; caso fora de `HomeCase`/`SettingsRootCase`/`SettingsSheetCase` vai dentro de `OrientedCase { }`.
+4. KDoc antes do `package` com o título da tela, `@en`, `@area` e `@paisagem`; KDoc em cada função com o título do
+   estado na primeira frase e `@en` (`aureole_screenshots.md` §3). Nada a listar em outro arquivo.
 
 ### Passo de fluxo
 Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/fluxos/<fluxo>/<Fluxo>FluxoScreenshotTest.kt`.
 1. `fun P<NN><Passo>ScreenshotTest()` com `NN` contínuo a partir de `01`, estado de cada passo montado à mão.
-2. Passo igual a um estado de tela não gera PNG: no manifesto, `"ref": "telas/<id>/<Estado>"`.
+2. Passo igual a um estado de tela não gera PNG: linha `@ref <passo> telas/<id>/<Estado> <título> / <title>` no KDoc
+   do arquivo do fluxo. Os outros passos têm o título no KDoc da função, como os estados de tela.
 
 ### Item de catálogo
 Exemplo: `app/src/screenshotTest/java/dev/mnascimentos/aureole/catalogo/<grupo>/<Grupo>CatalogoScreenshotTest.kt`.
 1. Um preview por grupo (`fun <Grupo>ScreenshotTest()`) com todas as variantes em coluna.
-2. Variante nova de um primitivo entra na coluna do grupo, não em PNG novo; item em `catalogo[]` do manifesto.
+2. Variante nova de um primitivo entra na coluna do grupo, não em PNG novo; grupo novo leva o título no KDoc do
+   arquivo e da função.
 
 ## Novo teste de lógica de ViewModel em JVM puro
 Exemplos: `app/src/test/.../composable/menu/model/MenuModelsTest.kt`, `.../feature/home/model/MainUiStateFavoritesTest.kt`.

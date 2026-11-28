@@ -1,3 +1,10 @@
+/**
+ * Atualização.
+ *
+ * @en Update
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.atualizacao
 
 import androidx.compose.runtime.Composable
@@ -9,7 +16,13 @@ import dev.mnascimentos.aureole.feature.home.components.overlays.UpdateDownloade
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.fixtures.HomeCase
 
-/** Atualização disponível na loja. */
+/**
+ * Disponível.
+ *
+ * Atualização disponível na loja.
+ *
+ * @en Available
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -18,7 +31,13 @@ private fun PadraoScreenshotTest() = HomeCase(MainUiState()) {
     UpdateAvailableDialog(onConfirmUpdate = {}, onDismiss = {})
 }
 
-/** Atualização baixada, pronta para reiniciar. */
+/**
+ * Baixada.
+ *
+ * Atualização baixada, pronta para reiniciar.
+ *
+ * @en Downloaded
+ */
 @PreviewTest
 @AureolePreview
 @Composable

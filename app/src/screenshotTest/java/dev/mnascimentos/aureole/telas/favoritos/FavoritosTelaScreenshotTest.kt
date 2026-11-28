@@ -1,3 +1,10 @@
+/**
+ * Favoritos.
+ *
+ * @en Favorites
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.favoritos
 
 import androidx.compose.runtime.Composable
@@ -33,19 +40,36 @@ private fun FavoritesCase(isLeftHanded: Boolean, favorites: List<String>) {
     }
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = FavoritesCase(isLeftHanded = false, favorites = THREE_FAVORITES)
 
-/** Sem favoritos: o aviso de uma linha sobre a lista. */
+/**
+ * Vazio.
+ *
+ * Sem favoritos: o aviso de uma linha sobre a lista.
+ *
+ * @en Empty
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun VazioScreenshotTest() = FavoritesCase(isLeftHanded = false, favorites = emptyList())
 
-/** Canhoto: o logo vai para o início da linha do título e o lápis para o fim. */
+/**
+ * Canhoto.
+ *
+ * Canhoto: o logo vai para o início da linha do título e o lápis para o fim.
+ *
+ * @en Left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable

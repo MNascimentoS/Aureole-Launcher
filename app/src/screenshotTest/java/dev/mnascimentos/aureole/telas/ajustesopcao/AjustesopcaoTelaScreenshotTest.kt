@@ -1,3 +1,10 @@
+/**
+ * Sheet de opção.
+ *
+ * @en Option sheet
+ * @area ajustes
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.ajustesopcao
 
 import androidx.compose.runtime.Composable
@@ -20,12 +27,22 @@ private fun PositionCase(isLeftHanded: Boolean) = OrientedCase {
     }
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = PositionCase(isLeftHanded = false)
 
+/**
+ * Canhoto.
+ *
+ * @en Left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable

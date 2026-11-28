@@ -1,3 +1,8 @@
+/**
+ * Menus.
+ *
+ * @en Menus
+ */
 package dev.mnascimentos.aureole.catalogo.menus
 
 import androidx.compose.foundation.layout.Column
@@ -119,7 +124,13 @@ private fun PopupItemsCase() {
     }
 }
 
-/** Grupo menus: linhas do `AureoleMenu`, `AureoleActionRow` e `AureolePopupItem`, destro e canhoto. */
+/**
+ * Menus.
+ *
+ * Grupo menus: linhas do `AureoleMenu`, `AureoleActionRow` e `AureolePopupItem`, destro e canhoto.
+ *
+ * @en Menus
+ */
 @PreviewTest
 @AureoleCatalogPreview
 @Composable

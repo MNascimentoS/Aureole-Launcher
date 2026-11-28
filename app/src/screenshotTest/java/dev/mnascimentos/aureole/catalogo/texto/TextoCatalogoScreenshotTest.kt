@@ -1,3 +1,8 @@
+/**
+ * Texto.
+ *
+ * @en Text
+ */
 package dev.mnascimentos.aureole.catalogo.texto
 
 import androidx.compose.foundation.layout.Arrangement
@@ -69,7 +74,13 @@ private fun SectionHeadersCase() {
     }
 }
 
-/** Grupo texto: `AureoleText` nas duas escalas e `AureoleSectionHeader`. */
+/**
+ * Texto.
+ *
+ * Grupo texto: `AureoleText` nas duas escalas e `AureoleSectionHeader`.
+ *
+ * @en Text
+ */
 @PreviewTest
 @AureoleCatalogPreview
 @Composable

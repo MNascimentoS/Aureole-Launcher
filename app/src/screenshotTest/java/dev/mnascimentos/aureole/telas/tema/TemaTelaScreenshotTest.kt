@@ -1,3 +1,11 @@
+/**
+ * Paleta e fonte.
+ *
+ * @en Palette and font
+ * @area ajustes
+ * @paisagem
+ * @grupo Tema / Theme
+ */
 package dev.mnascimentos.aureole.telas.tema
 
 import androidx.compose.runtime.Composable
@@ -15,7 +23,13 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsSheet
 import dev.mnascimentos.aureole.fixtures.OrientedCase
 import dev.mnascimentos.aureole.fixtures.SettingsSheetCase
 
-/** Seletor de paletas (o que abre do Personalizar e do onboarding). */
+/**
+ * Paleta.
+ *
+ * Seletor de paletas (o que abre do Personalizar e do onboarding).
+ *
+ * @en Palette
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -28,7 +42,13 @@ private fun PadraoScreenshotTest() = OrientedCase {
     }
 }
 
-/** Seletor de fontes. */
+/**
+ * Fonte.
+ *
+ * Seletor de fontes.
+ *
+ * @en Font
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -40,7 +60,13 @@ private fun FonteScreenshotTest() {
     }
 }
 
-/** Paleta dentro da sheet Aparência: a mesma prévia da home, a grade no lugar da lista. */
+/**
+ * Prévia.
+ *
+ * Paleta dentro da sheet Aparência: a mesma prévia da home, a grade no lugar da lista.
+ *
+ * @en Preview
+ */
 @PreviewTest
 @AureolePreview
 @Composable

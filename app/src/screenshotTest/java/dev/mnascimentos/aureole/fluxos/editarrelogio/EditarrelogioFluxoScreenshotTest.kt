@@ -1,3 +1,13 @@
+/**
+ * Editar relógio.
+ *
+ * @en Edit clock
+ * @area home
+ * @ref P01SegurarRelogio telas/home/Padrao Segurar o relógio / Long-press the clock
+ * @ref P03Estilo telas/relogio/Padrao Estilo / Style
+ * @ref P04PaginaCor telas/relogio/PaginaCor Página de cor / Color page
+ * @ref P05Desfazer telas/desfazer/Padrao Desfazer / Undo
+ */
 package dev.mnascimentos.aureole.fluxos.editarrelogio
 
 import androidx.compose.runtime.Composable
@@ -15,8 +25,12 @@ import dev.mnascimentos.aureole.fixtures.createSampleHomeData
 private const val FIXED_NOW_MILLIS = 1_794_418_140_000L
 
 /**
+ * Aviso de salvar no onboarding.
+ *
  * A sheet "Personalizar relógio" aberta durante o onboarding: mostra o aviso "arraste para fechar, já está salvo"
  * até o "Entendi" (relogio-home-sheet RF-D2). Fora do onboarding é `telas/relogio/Padrao`.
+ *
+ * @en Save notice during onboarding
  */
 @PreviewTest
 @AureolePreview

@@ -1,3 +1,8 @@
+/**
+ * Edit overlay.
+ *
+ * @en Edit overlay
+ */
 package dev.mnascimentos.aureole.catalogo.overlay
 
 import androidx.compose.animation.AnimatedVisibility
@@ -137,8 +142,12 @@ private fun SheetSurfaceExpandedCase() {
 }
 
 /**
+ * Edit overlay.
+ *
  * Grupo overlay: corpo e cabeçalho da sheet (régua, título longo, subtítulo; destro e canhoto), zona de gesto,
  * `AureoleEditOverlay` com sheet curta e alta e a superfície expandida, cada tela cheia numa moldura.
+ *
+ * @en Edit overlay
  */
 @PreviewTest
 @AureoleCatalogPreview

@@ -1,3 +1,10 @@
+/**
+ * Licenças.
+ *
+ * @en Licenses
+ * @area ajustes
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.licencas
 
 import androidx.compose.runtime.Composable
@@ -14,7 +21,13 @@ import dev.mnascimentos.aureole.feature.settings.model.SettingsUiState
 import dev.mnascimentos.aureole.feature.settings.screens.SettingsLicensesScreen
 import dev.mnascimentos.aureole.fixtures.OrientedCase
 
-/** Lista de licenças de código aberto. */
+/**
+ * Lista.
+ *
+ * Lista de licenças de código aberto.
+ *
+ * @en List
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -25,7 +38,13 @@ private fun PadraoScreenshotTest() = OrientedCase {
     }
 }
 
-/** Sheet com o texto de uma licença (Apache 2.0). */
+/**
+ * Detalhe.
+ *
+ * Sheet com o texto de uma licença (Apache 2.0).
+ *
+ * @en Detail
+ */
 @PreviewTest
 @AureolePreview
 @Composable

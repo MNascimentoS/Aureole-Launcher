@@ -1,3 +1,10 @@
+/**
+ * Menu do app.
+ *
+ * @en App menu
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.menuapp
 
 import android.content.pm.ShortcutInfo
@@ -43,12 +50,22 @@ private fun AppMenuCase(isLeftHanded: Boolean) =
         )
     }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = AppMenuCase(isLeftHanded = false)
 
+/**
+ * Canhoto.
+ *
+ * @en Left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable

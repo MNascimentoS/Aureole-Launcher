@@ -1,3 +1,10 @@
+/**
+ * Desfazer.
+ *
+ * @en Undo
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.desfazer
 
 import androidx.compose.runtime.Composable
@@ -10,7 +17,13 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureoleLandscapePreview
 import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.fixtures.OrientedCase
 
-/** Snackbar de desfazer (4 s) depois de uma remoção. */
+/**
+ * Padrão.
+ *
+ * Snackbar de desfazer (4 s) depois de uma remoção.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview

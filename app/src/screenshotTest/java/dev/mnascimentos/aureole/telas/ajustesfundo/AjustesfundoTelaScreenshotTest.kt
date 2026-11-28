@@ -1,3 +1,11 @@
+/**
+ * Fundo.
+ *
+ * @en Background
+ * @area ajustes
+ * @paisagem
+ * @excecao previews-same-folder D-01
+ */
 package dev.mnascimentos.aureole.telas.ajustesfundo
 
 import androidx.compose.runtime.Composable
@@ -33,14 +41,26 @@ private val EDITED = WallpaperAdjustments(zoom = 2f, dim = 0.45f, blurDp = 8f)
 
 private val MediumGlass = CardsGlassDraft(CARD_RADIUS_DP, GlassLevel.MEDIUM, BlurOpacity.MEDIUM.value)
 
-/** Seletor de fundo: cartões de tipo, amostras de cor e a mini-home ancorada em cima. */
+/**
+ * Padrão.
+ *
+ * Seletor de fundo: cartões de tipo, amostras de cor e a mini-home ancorada em cima.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun PadraoScreenshotTest() = SettingsSheetCase(sheet = BackgroundSheet)
 
-/** Sheet "Vidro dos cartões" com raio e vidro médios. */
+/**
+ * Vidro dos cartões.
+ *
+ * Sheet "Vidro dos cartões" com raio e vidro médios.
+ *
+ * @en Cards glass
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -60,7 +80,13 @@ private fun VidroScreenshotTest() {
     }
 }
 
-/** Imagem própria: cartão com a miniatura e os botões Editar foto / Trocar foto, sem amostras. */
+/**
+ * Imagem própria.
+ *
+ * Imagem própria: cartão com a miniatura e os botões Editar foto / Trocar foto, sem amostras.
+ *
+ * @en Custom image
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -89,19 +115,36 @@ private fun EditorCase(tab: WallpaperEditorTab, isLeftHanded: Boolean) = Oriente
     }
 }
 
-/** Editor de papel de parede: home fantasma, moldura da tela, etiqueta de zoom e a sheet na aba Enquadrar. */
+/**
+ * Editor de foto, enquadrar.
+ *
+ * Editor de papel de parede: home fantasma, moldura da tela, etiqueta de zoom e a sheet na aba Enquadrar.
+ *
+ * @en Photo editor, frame
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
 @Composable
 private fun EnquadrarScreenshotTest() = EditorCase(WallpaperEditorTab.FRAME, isLeftHanded = false)
 
-/** Slider de escurecer com o valor (desfoque tem o mesmo layout). */
+/**
+ * Editor de foto, ajuste.
+ *
+ * Slider de escurecer com o valor (desfoque tem o mesmo layout).
+ *
+ * @en Photo editor, adjust
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun AjusteScreenshotTest() = EditorCase(WallpaperEditorTab.DIM, isLeftHanded = false)
 
+/**
+ * Editor de foto, canhoto.
+ *
+ * @en Photo editor, left-handed
+ */
 @PreviewTest
 @AureolePreview
 @Composable

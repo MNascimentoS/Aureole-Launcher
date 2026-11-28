@@ -1,3 +1,11 @@
+/**
+ * Todos os apps.
+ *
+ * @en All apps
+ * @area home
+ * @paisagem
+ * @excecao gestos-swipe D-09
+ */
 package dev.mnascimentos.aureole.telas.todosapps
 
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -79,6 +87,11 @@ private fun DrawerHeldOnLetter(letter: Char) {
     }
 }
 
+/**
+ * Padrão.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -93,6 +106,11 @@ private fun PadraoScreenshotTest() = DrawerCase(
     )
 )
 
+/**
+ * Busca.
+ *
+ * @en Search
+ */
 @PreviewTest
 @AureolePreview
 @Composable
@@ -108,12 +126,23 @@ private fun BuscaScreenshotTest() = DrawerCase(
     )
 )
 
+/**
+ * Alfabeto.
+ *
+ * @en Alphabet scrub
+ */
 @PreviewTest
 @AureolePreview
 @Composable
 private fun AlfabetoScreenshotTest() = DrawerHeldOnLetter(letter = 'P')
 
-/** A home com a gaveta a meio caminho de um swipe up: a gaveta sobe, a home escurece e encolhe (gestos-swipe RF-04). */
+/**
+ * Gaveta puxada.
+ *
+ * A home com a gaveta a meio caminho de um swipe up: a gaveta sobe, a home escurece e encolhe (gestos-swipe RF-04).
+ *
+ * @en Pulled drawer
+ */
 @PreviewTest
 @AureolePreview
 @Composable

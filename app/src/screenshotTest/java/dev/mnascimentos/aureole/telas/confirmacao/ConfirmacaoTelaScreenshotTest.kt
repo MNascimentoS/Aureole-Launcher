@@ -1,3 +1,10 @@
+/**
+ * Confirmação.
+ *
+ * @en Confirmation
+ * @area home
+ * @paisagem
+ */
 package dev.mnascimentos.aureole.telas.confirmacao
 
 import androidx.compose.runtime.Composable
@@ -10,7 +17,13 @@ import dev.mnascimentos.aureole.core.designsystem.utils.AureolePreview
 import dev.mnascimentos.aureole.feature.home.model.MainUiState
 import dev.mnascimentos.aureole.fixtures.HomeCase
 
-/** Confirmação simples: restaurar o layout da home. */
+/**
+ * Padrão.
+ *
+ * Confirmação simples: restaurar o layout da home.
+ *
+ * @en Default
+ */
 @PreviewTest
 @AureolePreview
 @AureoleLandscapePreview
@@ -27,7 +40,13 @@ private fun PadraoScreenshotTest() = HomeCase(MainUiState()) {
     )
 }
 
-/** Confirmação destrutiva: resetar o launcher segurando o botão. */
+/**
+ * Segurar para resetar.
+ *
+ * Confirmação destrutiva: resetar o launcher segurando o botão.
+ *
+ * @en Hold to reset
+ */
 @PreviewTest
 @AureolePreview
 @Composable
